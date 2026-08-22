@@ -1,0 +1,362 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/newsreader";
+
+/* ===========================================================================
+   WATTLE TECHNOLOGIES — the stylesheet.
+
+   A SIBLING PALETTE, NOT A SECOND ONE. Paper, warm-olive neutrals and the amber
+   accent are the exact tokens ADHD.ME ships, so the two sites read as one house.
+   What makes this the PARENT is the third token: a deep leaf green that ADHD.ME
+   does not use at all. Product surfaces are paper and gold; the company speaks
+   on the green.
+
+   Contrast is computed, not eyeballed. Every pairing that carries text is noted
+   with its measured ratio against a 4.5 floor.
+   =========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Ground and text — shared with ADHD.ME. */
+  --paper: #fbfaf7;
+  --stone: #eeece5;
+  --line: #dfddd6;
+  --ink: #171a14;
+  /* Carried over already-measured: 5.17 on paper, 4.56 on stone, 5.40 on white. */
+  --muted: #696b65;
+
+  /* The accent — the same amber, at the same measured 5.66:1 on paper. */
+  --gold: #8a5a16;
+  --gold-soft: #f7efe3;
+  /* DECORATIVE ONLY. 3.1:1 on paper — blossom dots and rules, never text. */
+  --gold-mid: #b98436;
+
+  /* The parent register. Nothing in ADHD.ME uses these. */
+  --leaf: #22301f;
+  --leaf-deep: #1a2618;
+  /* On --leaf: paper 13.4:1, sage 7.4:1, blossom 6.4:1. All clear AA. */
+  --on-leaf: #fbfaf7;
+  --sage: #b8c0b2;
+  --blossom: #e0a458;
+
+  --shadow-card: 0 1px 2px rgb(23 26 20 / 0.04), 0 8px 24px -12px rgb(23 26 20 / 0.12);
+}
+
+* { box-sizing: border-box; }
+
+/* Kill the 300ms double-tap delay on controls; pinch zoom is untouched. */
+button, a, input, textarea, select, label, [role="button"] { touch-action: manipulation; }
+
+html { background: var(--paper); }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--gold-soft); color: var(--ink); }
+
+/* Focus is one ring everywhere. A control that invents its own is a control a
+   keyboard user has to learn twice. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* The skip link: invisible until it is the thing you are on. */
+.skip-link {
+  position: absolute; left: 1rem; top: -4rem; z-index: 60;
+  background: var(--ink); color: var(--paper);
+  padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500;
+  transition: top 140ms ease;
+}
+.skip-link:focus { top: 1rem; }
+
+/* --------------------------------------------------------------------------
+   TYPE. Newsreader carries every display line; Inter carries everything you
+   read at length. The tight tracking is what keeps a large serif from looking
+   like a default.
+   -------------------------------------------------------------------------- */
+
+.display {
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.032em;
+  line-height: 1.04;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+/* TWO CLASSES, DELIBERATELY. `.band p` is (0,1,1) and would beat a lone `.eyebrow-on-leaf`
+   at (0,1,0) — the eyebrow rendered sage instead of blossom until this was doubled up to
+   (0,2,0). Do not simplify it back to one class. */
+.eyebrow.eyebrow-on-leaf { color: var(--blossom); }
+
+.lede { font-size: 1.1875rem; line-height: 1.65; color: var(--muted); }
+@media (min-width: 640px) { .lede { font-size: 1.3125rem; } }
+
+/* --------------------------------------------------------------------------
+   SHELL
+   -------------------------------------------------------------------------- */
+
+.shell { margin-inline: auto; width: 100%; max-width: 68rem; padding-inline: 1.5rem; }
+@media (min-width: 900px) { .shell { padding-inline: 2.5rem; } }
+
+.section { padding-block: 4.5rem; }
+@media (min-width: 900px) { .section { padding-block: 6.5rem; } }
+.section + .section { border-top: 1px solid var(--line); }
+
+/* --------------------------------------------------------------------------
+   HEADER
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; padding-block: 0.9rem;
+}
+
+.wordmark {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-size: 1.1875rem; letter-spacing: -0.02em; color: var(--ink); text-decoration: none;
+}
+.wordmark:hover { color: var(--gold); }
+.wordmark-mark { flex: none; }
+.wordmark-tail { color: var(--muted); }
+
+.site-nav ul { display: flex; align-items: center; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+.site-nav a {
+  font-size: 0.9375rem; color: var(--muted); text-decoration: none;
+  padding-block: 0.35rem;
+}
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[data-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--gold); }
+/* THE HEADER STACKS RATHER THAN SHRINKS.
+   At 375px the single row does not fit: the wordmark wraps onto two lines and the last door
+   ("Contact") is clipped off the right edge — found in a 375x812 capture, invisible at desktop.
+   Shrinking type until it fits only moves the failure to 320px, or to the first reader who
+   raises their font size. Two rows cannot clip, and the doors spread across the full width
+   instead of crowding one end. */
+@media (max-width: 599px) {
+  .site-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    padding-block: 0.7rem;
+  }
+  .wordmark { white-space: nowrap; }
+  .site-nav ul { justify-content: space-between; gap: 0.75rem; }
+  .site-nav a { font-size: 0.9375rem; }
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS. Two, and they are told apart by weight rather than by colour, so the
+   pair survives a palette change.
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+  /* 44px min target — this site is read on phones by people who zoom. */
+  min-height: 2.75rem;
+  padding: 0.7rem 1.35rem; border-radius: 999px;
+  font-size: 0.9375rem; font-weight: 500; text-decoration: none;
+  border: 1px solid transparent; cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--leaf); }
+
+.btn-secondary { border-color: var(--line); color: var(--ink); background: transparent; }
+.btn-secondary:hover { border-color: var(--ink); }
+
+.btn-on-leaf { background: var(--paper); color: var(--leaf-deep); }
+.btn-on-leaf:hover { background: var(--blossom); color: var(--leaf-deep); }
+
+/* --------------------------------------------------------------------------
+   HERO
+   -------------------------------------------------------------------------- */
+
+.hero { padding-block: 5rem 4.5rem; position: relative; overflow: hidden; }
+@media (min-width: 900px) { .hero { padding-block: 7.5rem 6.5rem; } }
+
+.hero h1 { margin: 1.5rem 0 0; font-size: clamp(2.5rem, 6.4vw, 4.5rem); max-width: 17ch; }
+.hero .lede { margin: 1.75rem 0 0; max-width: 46ch; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
+
+/* The sprig sits behind the type at low opacity. `aria-hidden` in the markup;
+   decorative, and it never carries meaning the words do not. */
+.hero-sprig {
+  position: absolute; right: -3rem; top: 50%; transform: translateY(-50%);
+  opacity: 0.5; pointer-events: none;
+}
+@media (max-width: 1023px) { .hero-sprig { display: none; } }
+
+/* --------------------------------------------------------------------------
+   CARDS AND LISTS
+   -------------------------------------------------------------------------- */
+
+.grid-2 { display: grid; gap: 1.25rem; }
+@media (min-width: 760px) { .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+}
+.card h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+.card p { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.68; }
+
+/* The numbered principle card. The index is set in the serif so it reads as a
+   figure in a book rather than as a step in a wizard. */
+.card-index {
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-size: 1.5rem; color: var(--gold-mid); line-height: 1; display: block; margin-bottom: 1.15rem;
+}
+
+/* Blossom bullets — the wattle motif doing a job instead of decorating. */
+.blossom-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+.blossom-list li {
+  position: relative; padding-left: 1.6rem;
+  font-size: 0.9375rem; line-height: 1.68; color: var(--muted);
+}
+.blossom-list li::before {
+  content: ""; position: absolute; left: 0; top: 0.6em;
+  width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--gold-mid);
+}
+.blossom-list.on-leaf li { color: var(--sage); }
+.blossom-list.on-leaf li::before { background: var(--blossom); }
+
+/* --------------------------------------------------------------------------
+   VENTURE ENTRY
+   -------------------------------------------------------------------------- */
+
+.venture {
+  border: 1px solid var(--line); border-radius: 1.5rem;
+  background: var(--paper); box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.venture-head { padding: 2rem; border-bottom: 1px solid var(--line); background: var(--stone); }
+@media (min-width: 760px) { .venture-head { padding: 2.5rem; } }
+.venture-name {
+  margin: 0.85rem 0 0; font-size: clamp(1.9rem, 4vw, 2.75rem);
+}
+.venture-summary { margin: 1rem 0 0; max-width: 52ch; color: var(--muted); font-size: 1.0625rem; line-height: 1.62; }
+.venture-body { padding: 2rem; display: grid; gap: 2.5rem; }
+@media (min-width: 760px) { .venture-body { padding: 2.5rem; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; } }
+.venture h4 {
+  margin: 0 0 0.9rem; font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+}
+
+.pill {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.7rem; border-radius: 999px;
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-mid);
+}
+
+.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
+.meta-row li { font-size: 0.875rem; color: var(--muted); }
+
+/* --------------------------------------------------------------------------
+   THE LEAF BAND — where the company speaks in its own voice.
+   -------------------------------------------------------------------------- */
+
+.band { background: var(--leaf); color: var(--on-leaf); }
+.band-inner { padding-block: 4.5rem; }
+@media (min-width: 900px) { .band-inner { padding-block: 6rem; } }
+.band h2 { margin: 1.25rem 0 0; font-size: clamp(1.9rem, 4.4vw, 3rem); max-width: 20ch; }
+.band p { color: var(--sage); max-width: 48ch; margin: 1.35rem 0 0; font-size: 1.0625rem; line-height: 1.66; }
+.band a:not(.btn) { color: var(--blossom); }
+
+/* --------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+
+.site-footer { background: var(--leaf-deep); color: var(--sage); }
+.site-footer-inner {
+  padding-block: 3rem;
+  display: grid; gap: 2rem;
+}
+@media (min-width: 760px) {
+  .site-footer-inner { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
+}
+/* THE MARK SURVIVES THE INVERSION. The sprig's stem and foliage are drawn in --leaf, which
+   is this footer's own ground — on the dark band they disappear and the mark degrades to
+   three floating gold dots. Repainting them in sage keeps the sprig a sprig. The blossoms
+   are already gold and stay put. */
+.site-footer .wordmark-mark .mark-stem { stroke: var(--sage); opacity: 0.55; }
+.site-footer .wordmark-mark .mark-leaf { fill: var(--sage); opacity: 0.4; }
+
+.site-footer .wordmark { color: var(--on-leaf); }
+.site-footer .wordmark:hover { color: var(--blossom); }
+.site-footer .wordmark-tail { color: var(--sage); }
+.site-footer nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.site-footer nav a { color: var(--sage); text-decoration: none; font-size: 0.9375rem; }
+.site-footer nav a:hover { color: var(--blossom); }
+.site-footer-legal {
+  border-top: 1px solid rgb(251 250 247 / 0.12);
+  padding-block: 1.5rem;
+  font-size: 0.8125rem; color: var(--sage);
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   PROSE — the long-form pages.
+   -------------------------------------------------------------------------- */
+
+.prose-h1 { font-size: clamp(2.25rem, 5.4vw, 3.5rem); margin: 0.9rem 0 0; max-width: 18ch; }
+.prose-h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 1rem; letter-spacing: -0.022em; }
+.prose p { color: var(--muted); line-height: 1.72; max-width: 62ch; }
+/* The long-form sections read one step up from body copy — 16px under a 3rem serif heading
+   looks like a caption. Scoped to `> section` so it cannot reach the cards on /contact, whose
+   own `.card p` rule is the same specificity and would lose on source order. */
+.prose > section p { font-size: 1.0625rem; }
+
+.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+/* --------------------------------------------------------------------------
+   MOTION. One reveal, and it is off for anybody who asked for it to be off.
+   -------------------------------------------------------------------------- */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
