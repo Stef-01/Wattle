@@ -28,7 +28,7 @@ Playwright suite uses 3100. All three can run at once.
 
 ## Layout
 
-- `app/` — the routes: `/` (home), `/ventures`, `/approach`, `/contact`, `/team` (gated)
+- `app/` — the routes: `/` (home), `/ventures`, `/approach`, `/team`, `/contact`
 - `app/globals.css` — the whole palette and every component class, tokens at the top
 - `src/content/company.ts` — **the company register.** Every fact about Wattle Technologies
 - `src/content/ventures.ts` — the venture register. ADHD.ME's entry
@@ -58,16 +58,27 @@ close these:**
    in its Organization JSON-LD, so it discloses nothing new — but it is a personal Gmail, and it
    is the one constant to change once a domain exists.
 
-## The team gate
+## The team tab
 
-`/team` is **built and switched off**. ADHD.ME's own team page was gated by founder direction on
-2026-08-21 ("we are still building and we dont know who will be on it finally"), and that
-direction is about a set of named real people — it does not stop applying because the page moved
-to the parent company's domain.
+`/team` is **live**, carrying Vikram Ganeshalingam and Stefan Thottunkal — Vikram's direction,
+2026-08-22.
 
-Flip `TEAM_PUBLIC` in `src/content/team.ts` to `true` and the route, the header door, the footer
-door and the sitemap entry all come back together. `TEAM` is empty; populate it from ADHD.ME's
-`app/about/team.ts` rather than retyping it, so there is one register to keep true.
+`TEAM_PUBLIC` in `src/content/team.ts` is the single switch: the route, the header door, the
+footer door, the sitemap entry *and* the `robots.txt` disallow all read it, so the page cannot
+end up live-but-noindexed or linked-but-404. Adding a person is one entry in `TEAM`.
+
+Both entries are **transcribed** from ADHD.ME's `app/about/team.ts`, where they were supplied by
+their subjects — not rewritten for a company page. `role` and `remit` render only when supplied,
+so somebody can be added the day their name arrives and gain a line later; a plate with nothing
+but a name is the honest intermediate state. Portraits are the founder-supplied photographs from
+the same tree, and `portrait: null` falls back to a monogram at the same size. Affiliation logos
+ship only where licensed to us — which is why Bond renders as a wordmark and NOURISH and the
+Health Systems Innovation Lab render as marks.
+
+**ADHD.ME's own `/about` stays gated.** Its 2026-08-21 direction ("we dont know who will be on it
+finally") covers five people, two of whom have not confirmed their entries. A narrower
+instruction here is not a wider one there, which is why the two gates are separate flags in
+separate trees.
 
 ## Design
 

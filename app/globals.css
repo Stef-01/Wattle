@@ -286,6 +286,73 @@ body {
 .meta-row li { font-size: 0.875rem; color: var(--muted); }
 
 /* --------------------------------------------------------------------------
+   TEAM PLATES
+
+   The plates are capped at 320px rather than stretched to fill the column. With
+   two people on a 68rem shell, `1fr` columns would render two 490px portraits —
+   a size that reads as a photo gallery rather than as a team. The cap also means
+   a third and fourth plate flow in without the first two changing size.
+   -------------------------------------------------------------------------- */
+
+.team-plates {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 3.5rem 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 320px));
+  justify-content: start;
+}
+
+.team-portrait {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: var(--stone);
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+}
+.team-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* The fallback when no photograph has been handed over. Same footprint as a portrait, so a
+   plate without one does not collapse the row. */
+.team-monogram {
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-size: 3rem; color: var(--gold); letter-spacing: -0.02em;
+}
+
+.team-id { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 1.25rem; }
+.team-id strong {
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2;
+}
+.team-role { font-size: 0.875rem; font-weight: 500; color: var(--gold); }
+
+.team-remit { margin: 0.7rem 0 0; font-size: 0.9375rem; line-height: 1.66; color: var(--muted); }
+
+.team-affiliations {
+  list-style: none; margin: 1.25rem 0 0; padding: 1.15rem 0 0;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 0.9rem; align-items: flex-start;
+}
+.team-affiliations a {
+  display: inline-flex; align-items: center;
+  /* 44px of vertical room for a link that is often a small wordmark. */
+  min-height: 2.75rem;
+  text-decoration: none;
+}
+/* The wordmark fallback. It is the LABEL that renders, not the short name — "Final-year MD
+   candidate, Bond University" is the fact somebody supplied, and trimming it to "Bond
+   University" on the page would publish a different one. */
+.team-affiliations a span {
+  font-size: 0.8125rem; line-height: 1.5; color: var(--muted);
+}
+.team-affiliations a:hover span { color: var(--ink); }
+.team-affiliations img {
+  width: auto; height: 1.75rem; max-width: 100%; object-fit: contain;
+  opacity: 0.78; transition: opacity 140ms ease;
+}
+.team-affiliations a:hover img { opacity: 1; }
+
+/* --------------------------------------------------------------------------
    THE LEAF BAND — where the company speaks in its own voice.
    -------------------------------------------------------------------------- */
 
