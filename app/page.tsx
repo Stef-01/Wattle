@@ -4,6 +4,7 @@ import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
 import { MotionToggle } from "./motion-toggle";
+import { HeroCanvas } from "./hero-canvas";
 import { ArrowRight } from "./icons";
 
 /**
@@ -22,6 +23,7 @@ export default function HomePage() {
   return (
     <>
       <section className="hero">
+        <HeroCanvas />
         <div className="shell hero-grid">
           <div>
             <h1 className="display claim resolve">{COMPANY.tagline}</h1>

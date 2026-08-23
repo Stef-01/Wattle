@@ -59,6 +59,13 @@ export default function AccessibilityPage() {
                 drawn in their finished state rather than disappearing.
               </li>
               <li>
+                <strong style={{ color: "var(--ink)" }}>The animated field is optional.</strong> The
+                generative wattle field on the home page is decorative and carries no information.
+                It never loads at all under reduced motion, on Data Saver or a slow connection, on
+                a small screen, or on a lower-powered device — a hand-drawn version is already on
+                screen before that decision is made, and nothing waits for it.
+              </li>
+              <li>
                 <strong style={{ color: "var(--ink)" }}>Motion you can stop.</strong> The home page
                 carries a <em>Pause motion</em> control. The wattle spray moves on its own and keeps
                 moving past five seconds, which under WCAG 2.2.2 needs a way to stop it — and a

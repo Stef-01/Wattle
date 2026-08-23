@@ -41,6 +41,11 @@
   /* DECORATIVE ONLY — 2.49 on paper. The mark's depth, and nothing that is read. */
   --gold-mid: #c9992a;
   --blossom: #f2c230;
+  /* NEW GROWTH. Acacia pycnantha flushes bronze before it colours up, and the generative field
+     uses that literally: a dispersed floret is bronze and matures gold as it assembles.
+     Decorative only — it is a particle colour and never carries text, which is why it is absent
+     from the contrast gate's pairs list. */
+  --bronze: #5a5228;
 
   --leaf: #2e3d24;
   --leaf-deep: #232f1b;
@@ -286,6 +291,32 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   .hero-grid { gap: var(--gap-3); }
   .hero-bloom { max-height: 12rem; }
 }
+
+/* THE GENERATIVE FIELD.
+
+   Sits behind the hero's content and in front of its ground. `inset: 0` rather
+   than a sized box so it re-lays out with the hero at every breakpoint without
+   a second set of numbers to keep in sync. Pointer-events off: it is texture,
+   never a control, and it must never intercept a click meant for the buttons. */
+.wattle-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Fades in under its own opacity uniform; this stops a hard edge on arrival. */
+  /* THE FIELD KEEPS OFF THE COPY.
+     Centred right and falling away well before the text column, so the headline and the lead
+     never sit on top of moving particles. This is not a nicety: text contrast has to be
+     predictable, and a body of additive gold drifting behind a sentence makes it a variable.
+     The generative layer occupies the half of the hero that has nothing to read in it. */
+  mask-image: radial-gradient(ellipse 62% 92% at 78% 50%, #000 30%, transparent 76%);
+}
+
+/* The static SVG bloom is the fallback AND the baseline. When the field loads it would sit on
+   top of the particles, so it steps back to a faint structural trace — the stem and foliage the
+   particles do not draw — rather than disappearing, which would leave the composition without
+   its spine. */
+.hero:has(.wattle-field) .hero-bloom { opacity: 0.28; }
 
 /* THE LIVE PART.
 

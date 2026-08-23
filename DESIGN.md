@@ -18,6 +18,16 @@ hero. That switch is deliberate and load-bearing: *the dark hero earns attention
 arrived curious; the register earns belief from one who arrived to check.* A commissioner gets both,
 in that order.
 
+## The generative layer
+
+The hero carries a code-driven particle field derived from the plant's real structure — 40–80
+florets per head, racemes that bloom base-to-tip, bronze new growth maturing to gold. It is
+**progressive enhancement behind a capability gate**: three.js never enters the baseline bundle,
+and a hand-authored SVG spray is the fallback *and* the thing already on screen.
+
+Full spec, architecture, accessibility fallback and performance plan:
+**[docs/GENERATIVE-SYSTEM.md](docs/GENERATIVE-SYSTEM.md)**.
+
 ## Information architecture
 
 Four doors, one per job somebody arrives with — the quadrant model large health-tech companies use,
@@ -52,6 +62,7 @@ unreadable.
 | `--gold-soft` | `#fbf1d2` | Blossom tint ground |
 | `--gold-mid` | `#c9992a` | Decorative only (2.49 on paper) — mark depth, rules, scrollbar |
 | `--blossom` | `#f2c230` | The real flower. Dark grounds and the hero bloom |
+| `--bronze` | `#5a5228` | New growth. Particle colour only, never text |
 | `--leaf` | `#2e3d24` | The company's own voice |
 | `--leaf-deep` | `#232f1b` | Hero ground, footer |
 | `--on-leaf` | `#fcfaf4` | Type on green |
