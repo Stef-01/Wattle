@@ -380,9 +380,12 @@ void main() {
      the eye reads as a wattle head. Fading to nothing at the tip threw that away, so the shaft
      dims only gently and then brightens sharply over the last quarter. Definition only — the
      colour is still uGold, untouched. */
-  float shaft  = 1.0 - vTip * 0.5;
-  float anther = smoothstep(0.74, 1.0, vTip);
-  float a = (shaft * 0.42 + anther * 0.85) * vOpen * uOpacity;
+  /* Each filament is nearly invisible on its own. A head's fuzz is the SUM of a few dozen of
+     them at the shell; when any single one is legible as a line, the head reads as an asterisk.
+     The anther is kept but small, so the rim gets its dotted texture without drawing spokes. */
+  float shaft  = 1.0 - vTip * 0.35;
+  float anther = smoothstep(0.82, 1.0, vTip);
+  float a = (shaft * 0.13 + anther * 0.28) * vOpen * uOpacity;
   gl_FragColor = vec4(uGold, a);
 }
 `;

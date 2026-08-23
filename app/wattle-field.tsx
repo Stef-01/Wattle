@@ -145,7 +145,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* STAMENS ARE SHORT. At 0.62 they rendered as starbursts — fireworks, not wattle. A real head
        is a dense fuzzy BALL whose stamens give it its fuzz; they are barely longer than the head
        itself. 0.26 puts them just past the floret shell, which is where they actually sit. */
-    const st = stamens(near.centres, stamensPerHead, 0.26);
+    const st = stamens(near.centres, stamensPerHead, 0.13, 303, 0.32);
     const stGeo = new THREE.BufferGeometry();
     stGeo.setAttribute("position", new THREE.BufferAttribute(st.position, 3));
     stGeo.setAttribute("aAttr", new THREE.BufferAttribute(st.attr, 3));
@@ -251,6 +251,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     let pausedSince: number | null = null;
     let raf = 0;
     let bloom = 0;
+    let lastFrame = performance.now();
 
     // easeOutCubic: fast open, gentle landing. An entrance decelerates.
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -267,6 +268,16 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
         uTime.value = (now - started - elapsedAtPause) / 1000;
       }
 
+      /* EVERY EASING BELOW IS PER-SECOND, NOT PER-FRAME.
+         `x += (target - x) * k` advances by k of the remaining distance each FRAME, so the
+         whole shot ran at whatever rate the display and the GPU happened to agree on: twice as
+         fast on 120Hz as on 60Hz, and crawling on a software rasteriser. The exponential form
+         below covers the same ground in the same wall-clock time on any of them. dt is clamped
+         so a dropped frame or a backgrounded tab cannot jump the animation. */
+      const dt = Math.min(0.05, (now - lastFrame) / 1000);
+      lastFrame = now;
+      const approach = (rate: number) => 1 - Math.exp(-rate * dt);
+
       const clock = now - started - elapsedAtPause;
       const intro = Math.min(1, clock / INTRO_MS);
 
@@ -274,7 +285,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       const r = host.getBoundingClientRect();
       const travelled = 1 - Math.min(1, Math.max(0, (r.bottom - r.height * 0.15) / (r.height * 0.85)));
       const target = intro < 1 ? easeOut(intro) * REST : REST + travelled * (1 - REST);
-      bloom += (target - bloom) * (intro < 1 ? 0.2 : 0.05);
+      bloom += (target - bloom) * approach(intro < 1 ? 12 : 3);
       uBloom.value = bloom;
 
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
@@ -292,13 +303,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       /* 0.95, not 0.62. The cap was set when the subject sat behind a headline on a dark-green
          ground and had to stay out of the type's way. On a pure-black gate with nothing behind
          it but a pill, holding it at 0.62 just made the poster's subject look underexposed. */
-      uOpacity.value = Math.min(0.95, uOpacity.value + 0.01);
-      uPointer.value.lerp(pointerTarget, 0.08);
-      uPointerOn.value += (pointerOnTarget - uPointerOn.value) * 0.06;
+      uOpacity.value = Math.min(0.95, uOpacity.value + 0.6 * dt);
+      uPointer.value.lerp(pointerTarget, approach(5));
+      uPointerOn.value += (pointerOnTarget - uPointerOn.value) * approach(3.6);
 
-      tiltVel.x += (tiltTarget.x - plant.rotation.x) * 0.016;
-      tiltVel.y += (tiltTarget.y - plant.rotation.y) * 0.016;
-      tiltVel.x *= 0.85; tiltVel.y *= 0.85;
+      tiltVel.x += (tiltTarget.x - plant.rotation.x) * approach(1.0);
+      tiltVel.y += (tiltTarget.y - plant.rotation.y) * approach(1.0);
+      const damp = Math.exp(-9.7 * dt);
+      tiltVel.x *= damp; tiltVel.y *= damp;
       plant.rotation.x += tiltVel.x;
       plant.rotation.y += tiltVel.y;
 

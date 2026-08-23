@@ -239,7 +239,13 @@ export function bloomLayer(opts: {
  * Returned as pairs of vertices for LineSegments, with the same 0-at-core / 1-at-tip attribute
  * the point shader uses, so the filaments fade and move in step with the florets around them.
  */
-export function stamens(centres: [number, number, number][], perHead: number, reach: number, seed = 303) {
+export function stamens(
+  centres: [number, number, number][],
+  perHead: number,
+  reach: number,
+  seed = 303,
+  shell = 0.30,
+) {
   const rand = mulberry32(seed);
   const position = new Float32Array(centres.length * perHead * 2 * 3);
   const attr = new Float32Array(centres.length * perHead * 2 * 3);
@@ -252,14 +258,20 @@ export function stamens(centres: [number, number, number][], perHead: number, re
       // Even angular spread with jitter, on a random 3D axis.
       const theta = (s / perHead) * Math.PI * 2 + rand() * 0.5;
       const phi = Math.acos(2 * rand() - 1);
-      const len = reach * (0.55 + rand() * 0.75);
-      const dx = Math.sin(phi) * Math.cos(theta) * len;
-      const dy = Math.cos(phi) * len;
-      const dz = Math.sin(phi) * Math.sin(theta) * len;
 
-      // Inner vertex at the core, outer at the tip.
-      position[p++] = c[0]; position[p++] = c[1]; position[p++] = c[2];
-      position[p++] = c[0] + dx; position[p++] = c[1] + dy; position[p++] = c[2] + dz;
+      /* A STAMEN LIVES ON THE SHELL, NOT AT THE CORE. Drawing each filament from the head's
+         centre meant every one of them crossed the whole head and was legible straight through
+         it — which is what made a head read as an asterisk rather than as a ball of fuzz. Real
+         stamens occupy a thin band at the surface. So the inner vertex starts out at the shell,
+         jittered, and the filament extends only a short way past it. */
+      const ux = Math.sin(phi) * Math.cos(theta);
+      const uy = Math.cos(phi);
+      const uz = Math.sin(phi) * Math.sin(theta);
+      const inner = shell * (0.82 + rand() * 0.26);
+      const outer = inner + reach * (0.45 + rand() * 0.55);
+
+      position[p++] = c[0] + ux * inner; position[p++] = c[1] + uy * inner; position[p++] = c[2] + uz * inner;
+      position[p++] = c[0] + ux * outer; position[p++] = c[1] + uy * outer; position[p++] = c[2] + uz * outer;
 
       const cluster = ci / Math.max(1, centres.length - 1);
       const seedV = rand();
