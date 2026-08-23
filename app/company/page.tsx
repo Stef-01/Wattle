@@ -25,25 +25,22 @@ export default function CompanyPage() {
       <section className="shell band-pad">
         <div className="reg lift-in">
           <h2 className="reg-label">What we are</h2>
-          <div className="reg-body prose">
-            <p>
-              Wattle Technologies is the company behind ADHD.ME. It exists as a separate company
-              from the product because the two do different jobs: the product is a regulated
-              health surface governed by Australian advertising law and a compliance suite that
-              runs in its build, and a company page about partnerships or hiring has no business
-              being routed through that gate — nor should that gate be softened to let one
-              through.
+          <div className="reg-body">
+            <p className="say" style={{ maxWidth: "24ch" }}>
+              We build the part of care that happens before care.
             </p>
-            <p>
-              We build the routing layer of care. Not the consultation, not the diagnosis, not the
-              prescription — the part before all of those, where a person looking for help either
-              finds somebody they can reach or gives up. That layer is mostly invisible when it
-              works and is the entire problem when it does not.
+            <p className="under">
+              Not the consultation, the diagnosis or the prescription — the step before all of
+              them, where a person looking for help either finds somebody they can reach or gives
+              up.
             </p>
-            <p>
-              We are small, early, and specific about it. There is one venture, in build. This site
-              is written so that a commissioner, a practice or a clinician can work out in about a
-              minute what is real here and what is not.
+            <p className="under">
+              Wattle Technologies is the company behind ADHD.ME, kept separate from it so a page
+              about partnerships never routes through the product&rsquo;s regulatory gate, and that
+              gate is never softened to let one through.
+            </p>
+            <p className="under" style={{ color: "var(--ink)" }}>
+              One venture, in build. We are specific about being early.
             </p>
           </div>
         </div>

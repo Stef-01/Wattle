@@ -54,25 +54,39 @@ export const UNCONFIRMED: ReadonlyArray<{ item: string; why: string }> = [
 /**
  * What the company does, in the terms the product itself uses. Each line is traceable to the
  * ADHD.ME tree rather than to a positioning exercise.
+ *
+ * TWO LENGTHS, ONE CLAIM. `short` is what the home page shows — a single sentence, because a
+ * visitor scrolling a front page is deciding whether to keep reading, not studying a position.
+ * `body` is the same commitment argued out, and it lives on /approach where somebody who wants
+ * the argument has gone looking for it. The short form never says anything the long form does
+ * not; it is a compression, not a softer claim.
  */
-export const PRACTICE: ReadonlyArray<{ title: string; body: string }> = [
+export const PRACTICE: ReadonlyArray<{ title: string; short: string; body: string }> = [
   {
     title: "Access before anything else",
+    short:
+      "A service you cannot reach has no clinical quality to measure.",
     body:
       "The first question our software asks is not what is wrong with you. It is whether there is anybody you can actually get to — in your language, in your care area, at a practice you can physically reach. A service you cannot reach has no clinical quality to measure.",
   },
   {
     title: "Matching keyed to clinicians, never to symptoms",
+    short:
+      "We match on what clinicians declare about themselves. We never profile a patient.",
     body:
       "Our matching runs on attributes clinicians declare about themselves — the work they do, the languages they speak, where they practise. It does not profile a patient's symptoms to target them. That boundary is a line in the product's compliance suite, not a preference.",
   },
   {
     title: "Regulated from the first commit",
+    short:
+      "A page that makes a claim it cannot source fails the build, not the review.",
     body:
       "Australian health advertising law is not a launch checklist here. Copy linters, a public-surface sweep and a set of founder gates run in the build, so a page that claims an outcome, publishes a rating or advertises a regulated service the wrong way fails the build rather than the review.",
   },
   {
     title: "Figures stay indicative until they are sourced",
+    short:
+      "Ranges are what uncertainty looks like when it is being honest.",
     body:
       "Numbers on our public pages are written as ranges precisely while nobody in the tree has confirmed them against a source. Ranges are how uncertainty looks when it is being honest about itself.",
   },

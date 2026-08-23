@@ -20,8 +20,8 @@ export default function ContactPage() {
       <section className="shell band-pad" style={{ paddingBottom: "var(--gap-4)" }}>
         <h1 className="display claim">Write to us.</h1>
         <p className="lead" style={{ marginTop: "var(--gap-3)" }}>
-          One address, read by the people building the thing. No form, because there is nowhere for
-          a form to go yet and we would rather say so than collect your details into a void.
+          One address, read by the people building the thing. No form — there is nowhere for one to
+          post yet, and we would rather say so than collect your details into a void.
         </p>
         <p style={{ marginTop: "var(--gap-4)" }}>
           <a href={`mailto:${COMPANY.email}`} className="btn btn-primary">
@@ -40,28 +40,28 @@ export default function ContactPage() {
         <dl style={{ margin: 0 }}>
           {[
             {
-              t: "If you commission or fund services",
-              d: "Ask us what is actually live before anything else — the answer is currently “not much, in two areas”, and everything useful follows from starting there. We will send you the same figures we publish, with their sources, or tell you we do not have one.",
+              t: "You commission or fund services",
+              d: "Ask what is actually live first — the answer is “not much, in two areas”. Everything useful follows from starting there.",
             },
             {
-              t: "If you run a general practice",
-              d: "Tell us the care areas your clinicians genuinely take on and the languages they work in. That is the whole of what our matching uses, and it is the fastest way for us to say whether we would be useful to you yet.",
+              t: "You run a general practice",
+              d: "Tell us the care areas your clinicians take on and the languages they work in. That is all our matching uses.",
             },
             {
-              t: "If you are looking for assessment",
-              d: "We do not provide clinical care and cannot advise on your situation. ADHD.ME is a finder for GPs who do ADHD assessment — it points you to a clinician, and the clinical conversation is with them. In an emergency call 000; for 24-hour crisis support, Lifeline is 13 11 14.",
+              t: "You are looking for assessment",
+              d: "We do not provide clinical care. ADHD.ME points you to a GP; the clinical conversation is with them. In an emergency call 000. Lifeline is 13 11 14.",
             },
             {
-              t: "If you want to work with us",
-              d: "There are no advertised roles. That is not a coy way of saying there are; there is no careers process yet. If you build health software or assess ADHD and think we should know each other, write anyway.",
+              t: "You want to work with us",
+              d: "No advertised roles, and no careers process yet. Write anyway if you build health software or assess ADHD.",
             },
             {
-              t: "If something on our sites is wrong",
-              d: "Especially if it is about you — a listing, a name, an affiliation. Corrections about a real person are the one thing we act on before anything else in the queue.",
+              t: "Something on our sites is wrong",
+              d: "Especially if it is about you. Corrections about a real person jump the queue.",
             },
             {
-              t: "If you hit an accessibility barrier",
-              d: "Tell us what you were trying to do and what stopped you, and we will treat it as a defect rather than as feedback. Our accessibility statement sets out what we test and what we know is unfinished.",
+              t: "You hit an accessibility barrier",
+              d: "Tell us what stopped you. We treat it as a defect, not as feedback.",
             },
           ].map((row) => (
             <div key={row.t} className="reg lift-in" style={{ paddingBlock: "var(--gap-3)", borderTop: "1px solid var(--line)" }}>

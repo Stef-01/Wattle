@@ -370,6 +370,46 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 @media (min-width: 760px) { .split { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4); } }
 
 /* --------------------------------------------------------------------------
+   THE STATEMENT PAIR — how every block below the hero is built.
+
+   `.say` is the block's whole point at display size; `.under` is the one line
+   allowed beneath it. The measure is deliberately narrow (28ch / 46ch) because
+   the constraint is the mechanism: a sentence that will not fit is a sentence
+   belonging on the page that argues it, not on the front page.
+   -------------------------------------------------------------------------- */
+
+.say {
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  text-wrap: balance;
+  font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+  margin: var(--gap-3) 0 0;
+  max-width: 28ch;
+}
+.under {
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.on-leaf .under { color: var(--sage); }
+
+/* The tenets: title at display size, one line under it, generous air between.
+   Four of these were three-sentence paragraphs and read as a document. */
+.tenets { margin: 0; display: grid; gap: var(--gap-4); }
+@media (min-width: 780px) { .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4) var(--gap-4); } }
+.tenets dt {
+  font-size: clamp(1.25rem, 2.1vw, 1.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  max-width: 22ch;
+}
+.tenets dd { margin: 0.7rem 0 0; color: var(--muted); line-height: 1.6; max-width: 40ch; }
+
+/* --------------------------------------------------------------------------
    PRESENCE — where the company actually operates.
    -------------------------------------------------------------------------- */
 
@@ -378,7 +418,8 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 
 .place { border-top: 2px solid var(--gold-mid); padding-top: 1rem; }
 .place h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
-.place p { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--muted); line-height: 1.65; max-width: 44ch; }
+.place-status { margin: 0.4rem 0 0 !important; font-size: 0.875rem; font-weight: 600; color: var(--gold); }
+.place p { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--muted); line-height: 1.65; max-width: 42ch; }
 
 /* --------------------------------------------------------------------------
    TEAM

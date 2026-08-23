@@ -13,6 +13,8 @@ export interface Place {
   state: string;
   area: string;
   status: string;
+  /** The home page's version: one clause, no sentence. */
+  short: string;
   detail: string;
 }
 
@@ -21,13 +23,15 @@ export const PRESENCE: ReadonlyArray<Place> = [
     state: "NSW",
     area: "Sydney",
     status: "Clinicians listed",
+    short: "Every listed GP practises in Beecroft.",
     detail:
       "Every GP listed today practises in Beecroft, in northern Sydney. It is the only place in Australia where our matching currently ends in a named clinician.",
   },
   {
     state: "QLD",
     area: "Gold Coast",
-    status: "Focus area, no clinician listed",
+    status: "No clinician listed yet",
+    short: "A declared focus area with nobody in it.",
     detail:
       "A declared focus area with nobody listed in it yet. Somebody searching from here is told that, and told how far away the nearest listed GP is, rather than shown an empty result.",
   },
@@ -39,6 +43,9 @@ export const PRESENCE: ReadonlyArray<Place> = [
  */
 export const REACH_GAP = {
   heading: "Most of Australia is the part we have not reached.",
+  /** The home page carries this and stops. The argument is on /approach. */
+  short:
+    "Two areas, one of them still without a clinician. Everywhere else our software says so.",
   body:
     "Two areas, one of them still without a listed clinician. Outside them our software's only honest answer is that we do not cover you yet, and that is the answer it gives. The distance between where assessment exists and where people live is the problem we are working on, and overstating our own coverage would be a strange way to start.",
   rural:
