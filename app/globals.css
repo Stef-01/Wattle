@@ -451,3 +451,12 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
                 transition:background-color var(--dur-slow) var(--ease-quart),
                            color var(--dur-slow) var(--ease-quart) }
 .motion-toggle:hover{ background:var(--wattle); color:var(--black); border-color:var(--wattle) }
+
+/* THE THREE-COLUMN SLIDE COLLAPSES.
+   Three columns of ruled rows at 767px gives each about 240px, which breaks every line of body
+   copy in half. `!important` is load-bearing here rather than lazy: the column count is set
+   inline on the element, and a stylesheet rule only outranks an inline style when it carries
+   it. The alternative — lifting the whole grid definition out into a class — is the tidier fix
+   and is worth doing if this layout is reused. */
+@media (max-width:991px){ .cols-3{ grid-template-columns:1fr 1fr !important } }
+@media (max-width:767px){ .cols-3{ grid-template-columns:1fr !important } }
