@@ -17,8 +17,8 @@
  */
 export function Acknowledgement() {
   return (
-    <section className="acknowledgement" aria-label="Acknowledgement of Country">
-      <div className="shell">
+    <section className="acknowledgement padding-global" aria-label="Acknowledgement of Country">
+      <div>
         <p>
           Wattle Technologies acknowledges the Traditional Owners of Country throughout Australia,
           and the many First Nations whose lands and waters we live and work among. We pay our

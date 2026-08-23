@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { SiteHeader } from "./site-header";
+import { SiteNav } from "./site-nav";
+import { Reveal } from "./reveal";
 import { SiteFooter } from "./site-footer";
 import { SITE_URL } from "./site";
 import { COMPANY } from "@/content/company";
@@ -11,7 +12,7 @@ import { COMPANY } from "@/content/company";
  * would put a cream seam directly above a dark green band.
  */
 export const viewport: Viewport = {
-  themeColor: "#232f1b",
+  themeColor: "#000000",
 };
 
 export const metadata: Metadata = {
@@ -80,9 +81,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <SiteHeader />
+        <SiteNav />
         <main id="main">{children}</main>
         <SiteFooter />
+        <Reveal />
       </body>
     </html>
   );

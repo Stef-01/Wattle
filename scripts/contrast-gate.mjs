@@ -17,10 +17,12 @@ import { readFileSync } from "node:fs";
 
 const css = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 
+/** Accepts #abc as well as #aabbcc — the palette writes black and white in shorthand. */
 const token = (name) => {
-  const m = css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`));
+  const m = css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,6})`));
   if (!m) throw new Error(`token --${name} not found in globals.css`);
-  return m[1];
+  const h = m[1];
+  return h.length === 4 ? `#${h[1]}${h[1]}${h[2]}${h[2]}${h[3]}${h[3]}` : h;
 };
 
 const srgb = (hex) =>
@@ -39,20 +41,31 @@ const ratio = (a, b) => {
   return (x + 0.05) / (y + 0.05);
 };
 
-/** Every pairing the site actually renders text in. Foreground, background, where. */
+/**
+ * Every pairing the site actually renders text in.
+ *
+ * THE SPEC ITSELF FLAGS THIS AS THE LOOK'S WEAK POINT: --wattle and --bloom fail on white, and
+ * are only ever legal on black or as BACKGROUNDS carrying black text. This gate is what turns
+ * that from a note in a document into something the build enforces — because a rule written down
+ * is a rule somebody breaks on a Friday.
+ *
+ * Any hue used as a section background is listed here with the text colour its utility class
+ * actually sets, so a section whose ground and type disagree cannot ship.
+ */
 const PAIRS = [
-  ["ink", "paper", "body copy"],
-  ["ink", "stone", "text on the tinted ground"],
-  ["muted", "paper", "secondary copy"],
-  ["muted", "stone", "secondary copy on the tinted ground"],
-  ["gold", "paper", "eyebrows, links, card indices"],
-  ["gold", "gold-soft", "text on the blossom tint"],
-  ["paper", "ink", "primary button label"],
-  ["on-leaf", "leaf", "headings on the band"],
-  ["sage", "leaf", "body copy on the band"],
-  ["blossom", "leaf", "eyebrows on the band"],
-  ["sage", "leaf-deep", "footer copy"],
-  ["blossom", "leaf-deep", "footer links on hover"],
+  ["white", "black", "body copy on the default canvas"],
+  ["black", "white", "white punctuation sections"],
+  ["wattle", "black", "accent text and link hover on black"],
+  ["black", "wattle", "the ticker, and gold-ground cards"],
+  ["black", "bloom", "pale blossom grounds"],
+  ["black", "eucalypt", "green grounds — the CTA block"],
+  ["black", "lorikeet", "blue grounds"],
+  ["black", "blossom", "soft pink grounds"],
+  ["black", "ochre", "warm neutral grounds"],
+  ["black", "waratah", "red-orange grounds"],
+  ["black", "boronia", "hot pink grounds"],
+  ["white", "desertpea", "magenta grounds"],
+  ["white", "jacaranda", "violet grounds"],
 ];
 
 const FLOOR = 4.5;

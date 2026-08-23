@@ -179,7 +179,10 @@ void main() {
   colour *= 0.9 + vSeed * 0.2;
 
   // Matte heads reach full opacity; the glowing far copy stays translucent.
-  float o = mix(uOpacity, mix(uOpacity, 1.0, 0.8), uMatte);
+  /* The additive far copy is halved. Stacked over the matte subject on pure black it was
+     summing to white and bleaching the gold out of the whole branch — the thing that made a
+     saturated #ffc400 read as pale cream. */
+  float o = mix(uOpacity * 0.5, mix(uOpacity, 1.0, 0.85), uMatte);
   gl_FragColor = vec4(colour, alpha * o * (0.3 + 0.7 * vOpen));
 }
 `;

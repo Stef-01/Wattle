@@ -3,135 +3,130 @@ import { COMPANY, PRACTICE } from "@/content/company";
 import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
-import { MotionToggle } from "./motion-toggle";
 import { HeroCanvas } from "./hero-canvas";
-import { ArrowRight } from "./icons";
-import { Button } from "@/components/ui/button";
+import { MotionToggle } from "./motion-toggle";
+import { Ticker } from "./ticker";
 
 /**
- * THE HOME PAGE SHOWS, THE INNER PAGES ARGUE.
+ * HOME — the page architecture from the spec: gate, ticker, statement, card grid, featured
+ * 50/50, CTA block, footer.
  *
- * Everything below the hero was three to four sentences per block and read as a document rather
- * than a front page. A visitor scrolling here is deciding whether to keep reading; the case is
- * made on /approach and /ventures, where somebody who wants it has gone looking. So each block
- * now carries one statement at display size and at most one line under it, and the long form
- * lives one click away. No claim was softened to make it shorter — the short forms are
- * compressions of the same sentences, held in the same content registers.
+ * ONE COLOUR PER SECTION, never three in a band. Black gate, gold ticker, gradient statement,
+ * black grid, white featured, eucalypt CTA. The discipline is what stops ten saturated hues
+ * reading as a clown suit.
  */
 export default function HomePage() {
   const lead = VENTURES[0];
 
   return (
     <>
-      <section className="hero">
-        <HeroCanvas />
-        <div className="shell hero-grid">
-          <div>
-            <h1 className="display claim resolve">{COMPANY.tagline}</h1>
-            <p className="lead resolve resolve-2">
-              We build the routing layer of care — the part that decides whether a person who needs
-              a clinician ever reaches one.
-            </p>
-            <div className="hero-actions resolve resolve-3">
-              <Button asChild variant="onLeaf" size="lg">
-                <Link href="/ventures">What we build</Link>
-              </Button>
-              <Button asChild variant="ghostOnLeaf" size="lg">
-                <Link href="/approach">How we work</Link>
-              </Button>
-            </div>
-          </div>
+      {/* 1. THE GATE. Full viewport, black, one subject, one pill CTA on top of it. */}
+      <section className="hero is-black">
+        <div className="hero-inner">
+          <HeroCanvas />
           <WattleBloom className="hero-bloom" />
+          <Link href="/ventures" className="button button-pressed hero-cta">
+            Enter Wattle
+          </Link>
         </div>
         <MotionToggle />
       </section>
 
+      {/* 2. TICKER */}
+      <Ticker
+        className="is-wattle text-colour-black"
+        items={["Health software", "Australia", "ADHD.ME in build", "Access before quality"]}
+      />
+
+      {/* 3. STATEMENT. One headline, justified uppercase subhead, two-stop vertical gradient. */}
+      <section className="section grad-wattle-eucalypt text-colour-black">
+        <div className="padding-global">
+          <h1 className="heading-style-h1 reveal">{COMPANY.tagline}</h1>
+          <p className="subheading-hero max-width-medium reveal" style={{ marginTop: "2vw" }}>
+            We build the routing layer of care — the part that decides whether a person who needs a
+            clinician ever reaches one
+          </p>
+        </div>
+      </section>
+
+      {/* 4. CARD GRID — the four commitments. Black section, so the offset shadow takes gold. */}
+      <section className="section is-black">
+        <div className="padding-global">
+          <div className="inner-section-wrapper">
+            <p className="text-style-tag">How we work</p>
+            <h2 className="heading-style-h3 reveal">Four commitments, enforced in the build</h2>
+          </div>
+          <div className="card-grid">
+            {PRACTICE.map((item) => (
+              <article className="card reveal" key={item.title}>
+                <div className="card-body">
+                  <h3 className="heading-style-h5">{item.title}</h3>
+                  <p className="body-text" style={{ marginTop: "1vw" }}>{item.short}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FEATURED 50/50 — the venture, in one bordered card. */}
       {lead ? (
-        <section className="shell band-pad lift-in">
-          <div className="reg">
-            <h2 className="reg-label">Ventures</h2>
-            <div className="reg-body">
-              <div className="entry-head">
-                <h3 className="display claim-sm">{lead.name}</h3>
-                <span className="entry-status">{STATUS_LABEL[lead.status]}</span>
+        <section className="section is-black">
+          <div className="padding-global">
+            <article className="card card-featured reveal">
+              <div className="card-media is-wattle" style={{ display: "grid", placeItems: "center", padding: "2vw" }}>
+                <p className="display-wordmark" style={{ fontSize: "5.5vw", color: "var(--black)" }}>
+                  {lead.name}
+                </p>
               </div>
-              <p className="say">ADHD assessment you can actually reach.</p>
-              <p className="under">
-                A finder that matches people to GPs who do ADHD assessment, and a console for the
-                practices doing it.
-              </p>
-              <p style={{ marginTop: "var(--gap-3)" }}>
-                <Link href="/ventures" className="go">
-                  The full entry <ArrowRight />
-                </Link>
-              </p>
-            </div>
+              <div className="card-body" style={{ padding: "2vw" }}>
+                <p className="text-style-tag">{STATUS_LABEL[lead.status]}</p>
+                <h3 className="heading-style-h4" style={{ marginTop: ".5vw" }}>
+                  ADHD assessment you can actually reach
+                </h3>
+                <p className="body-text" style={{ marginTop: "1vw" }}>{lead.problem}</p>
+                <p className="text-style-mono" style={{ marginTop: "1.5vw" }}>
+                  {lead.areas.join(" / ")}
+                </p>
+                <p style={{ marginTop: "1.5vw" }}>
+                  <Link href="/ventures" className="button button-small">The full entry</Link>
+                </p>
+              </div>
+            </article>
           </div>
         </section>
       ) : null}
 
-      <hr className="rule" />
-
-      <section className="shell band-pad lift-in">
-        <div className="reg">
-          <h2 className="reg-label">Where we operate</h2>
-          <div className="reg-body">
-            <p className="say" style={{ maxWidth: "20ch" }}>
-              {REACH_GAP.heading}
-            </p>
-            <p className="under">{REACH_GAP.short}</p>
-
-            <div className="presence" style={{ marginTop: "var(--gap-4)" }}>
-              {PRESENCE.map((place) => (
-                <div key={place.area} className="place">
-                  <h3>
-                    {place.area}, {place.state}
-                  </h3>
-                  <p className="place-status">{place.status}</p>
-                  <p>{place.short}</p>
-                </div>
-              ))}
-            </div>
-
-            <p style={{ marginTop: "var(--gap-3)" }}>
-              <Link href="/approach" className="go">
-                Why that gap is the work <ArrowRight />
-              </Link>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <hr className="rule" />
-
-      <section className="shell band-pad lift-in">
-        <div className="reg">
-          <h2 className="reg-label">How we work</h2>
-          <dl className="reg-body tenets">
-            {PRACTICE.map((item) => (
-              <div key={item.title}>
-                <dt className="display">{item.title}</dt>
-                <dd>{item.short}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      <section className="on-leaf">
-        <div className="shell band-pad">
-          <div className="reg">
-            <h2 className="reg-label">Talk to us</h2>
-            <div className="reg-body">
-              <p className="say" style={{ color: "var(--on-leaf)", maxWidth: "18ch" }}>
-                A practice, a service, or a question about the work.
+      {/* 6. PRESENCE — the honest map. Rule list, not cards. */}
+      <section className="section is-white">
+        <div className="padding-global">
+          <div className="inner-section-wrapper">
+            <p className="text-style-tag">Where we operate</p>
+            <div>
+              <h2 className="heading-style-h3 reveal">{REACH_GAP.heading}</h2>
+              <p className="subheading-large reveal" style={{ marginTop: "1.5vw", maxWidth: "48ch" }}>
+                {REACH_GAP.short}
               </p>
-              <div className="hero-actions">
-                <Button asChild variant="onLeaf" size="lg">
-                  <Link href="/contact">Get in touch</Link>
-                </Button>
-              </div>
             </div>
+          </div>
+          <ul className="rule-list">
+            {PRESENCE.map((p) => (
+              <li key={p.area} className="reveal" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2vw" }}>
+                <span className="heading-style-h5">{p.area}, {p.state}</span>
+                <span className="text-style-mono">{p.status}</span>
+                <span className="body-text">{p.short}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* 7. CTA BLOCK */}
+      <section className="section is-black">
+        <div className="padding-global">
+          <div className="cta-block is-eucalypt reveal">
+            <h2 className="heading-style-h4">Talk to us about what is actually live</h2>
+            <Link href="/contact" className="button button-pressed">Get in touch</Link>
           </div>
         </div>
       </section>

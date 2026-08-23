@@ -77,16 +77,23 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const uOpacity = { value: 0 };
     const uPixelRatio = { value: dpr };
 
-    const GOLD = new THREE.Color(token("--blossom", "#f2c230"));
-    const BRONZE = new THREE.Color(token("--bronze", "#5a5228"));
-    const SAGE = new THREE.Color(token("--sage", "#a8b394"));
+    /* REMAPPED ONTO THE TEN-HUE SYSTEM. The old palette's --blossom/--bronze/--sage are gone;
+       --blossom now means soft PINK, which would have quietly turned the wattle into a
+       cherry blossom. Gold is the signature hue, new growth takes the warm neutral, and the
+       foliage takes the green. Nothing outside the ten. */
+    const GOLD = new THREE.Color(token("--wattle", "#ffc400"));
+    /* --waratah, not --ochre. Ochre is the palette's warm NEUTRAL — a pale grey-beige — and
+       using it as the new-growth end of the floret gradient bleached the whole branch to cream.
+       Waratah red-orange is both saturated and botanically right for a bud before it colours up. */
+    const BRONZE = new THREE.Color(token("--waratah", "#ff2e17"));
+    const SAGE = new THREE.Color(token("--eucalypt", "#00a878"));
 
     const plant = new THREE.Group();
     /* COMPOSITION. The spray is authored around the origin because that is where a plant's
        geometry belongs; where it sits in frame is a layout decision, and it belongs in the half
        of the hero with nothing to read in it. Text contrast has to be a constant, not something
        that varies with a drifting particle behind a sentence. */
-    plant.position.set(4.9, -0.25, 0);
+    plant.position.set(0, -0.25, 0);
     scene.add(plant);
     const disposables: { dispose(): void }[] = [];
 
@@ -160,8 +167,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       vertexShader: FOLIAGE_VERT, fragmentShader: FOLIAGE_FRAG,
       uniforms: {
         uTime, uBloom, uPointer, uPointerOn, uOpacity,
-        uLeaf: { value: new THREE.Color("#2b3a2c") },
-        uLeafLit: { value: new THREE.Color(token("--sage", "#a8b394")) },
+        uLeaf: { value: new THREE.Color("#075f47") },
+        uLeafLit: { value: new THREE.Color(token("--eucalypt", "#00a878")) },
       },
       transparent: true, side: THREE.DoubleSide,
       /* NO DEPTH WRITE. Writing depth made the blades punch holes through the flowers in front
@@ -179,7 +186,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     brGeo.setAttribute("aAttr", new THREE.BufferAttribute(br.attr, 4));
     const brMat = new THREE.ShaderMaterial({
       vertexShader: BRANCH_VERT, fragmentShader: BRANCH_FRAG,
-      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uStem: { value: new THREE.Color("#5c6b45") } },
+      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uStem: { value: new THREE.Color("#0a7a5c") } },
       transparent: true, depthWrite: false, blending: THREE.NormalBlending,
     });
     disposables.push(brGeo, brMat);
@@ -273,11 +280,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
          reference's camera move, which is what turns a state change into a shot. */
       const push = Math.sin(Math.min(1, bloom / REST) * Math.PI);
-      camera.position.z = 13.4 - push * 4.2;
+      camera.position.z = 10.2 - push * 3.4;
       camera.position.y = 0.3 + push * 0.35;
-      camera.lookAt(1.9, 0.1, 0);
+      camera.lookAt(0, 0.1, 0);
 
-      uOpacity.value = Math.min(0.62, uOpacity.value + 0.008);
+      /* 0.95, not 0.62. The cap was set when the subject sat behind a headline on a dark-green
+         ground and had to stay out of the type's way. On a pure-black gate with nothing behind
+         it but a pill, holding it at 0.62 just made the poster's subject look underexposed. */
+      uOpacity.value = Math.min(0.95, uOpacity.value + 0.01);
       uPointer.value.lerp(pointerTarget, 0.08);
       uPointerOn.value += (pointerOnTarget - uPointerOn.value) * 0.06;
 
