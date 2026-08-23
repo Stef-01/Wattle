@@ -430,8 +430,11 @@ void main() {
   // Blades further back sit darker and cooler: depth by value, the way the photograph does it.
   vec3 c = mix(uLeaf, uLeafLit, vDepth * 0.85 + vSeed * 0.15);
   // Tips catch light, bases sit in shadow.
-  c *= 0.72 + vAlong * 0.42;
-  float a = uOpacity * (0.55 + vDepth * 0.4);
+  c *= 0.94 + vAlong * 0.5;
+  /* Lifted from 0.55. The phyllodes occupy as much of the reference as the flowers do, and at
+     the old floor the near blades were sitting close enough to black that the plant read as
+     flowers suspended in nothing. They are the half of the plant that says *acacia*. */
+  float a = uOpacity * (0.78 + vDepth * 0.22);
   gl_FragColor = vec4(c, a);
 }
 `;

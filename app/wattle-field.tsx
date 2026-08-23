@@ -253,6 +253,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     let bloom = 0;
     let lastFrame = performance.now();
 
+    /* QA OVERRIDE: `?bloom=0..1` pins the shot at one point in its cycle.
+       Sibling to `?field=force`, and for the same reason: the bloom is time- and scroll-driven,
+       so two screenshots of the same build land at different phases and cannot be compared.
+       Pinning it makes a visual diff mean something. Review-only — it changes nothing about
+       what a visitor sees, because without the parameter `pinned` is null. */
+    const bloomParam = new URLSearchParams(window.location.search).get("bloom");
+    const pinned = bloomParam === null ? null : Math.max(0, Math.min(1, Number(bloomParam)));
+
     // easeOutCubic: fast open, gentle landing. An entrance decelerates.
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -284,8 +292,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       // Scroll takes over once the shot has played.
       const r = host.getBoundingClientRect();
       const travelled = 1 - Math.min(1, Math.max(0, (r.bottom - r.height * 0.15) / (r.height * 0.85)));
-      const target = intro < 1 ? easeOut(intro) * REST : REST + travelled * (1 - REST);
-      bloom += (target - bloom) * approach(intro < 1 ? 12 : 3);
+      const target = pinned ?? (intro < 1 ? easeOut(intro) * REST : REST + travelled * (1 - REST));
+      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : 3);
       uBloom.value = bloom;
 
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the

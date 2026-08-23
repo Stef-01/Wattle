@@ -70,8 +70,12 @@ export function flowerHead(rand: () => number): Floret[] {
     const ringRadius = Math.sqrt(Math.max(0, 1 - y * y));
     const theta = GOLDEN_ANGLE * i;
 
-    // Outward-biased jitter (cube root pushes samples toward the shell).
-    const t = Math.cbrt(0.35 + 0.65 * rand());
+    /* Outward-biased jitter (cube root pushes samples toward the shell). Biased harder than
+       before: at 0.35 the florets filled the head evenly and neighbouring heads merged into one
+       continuous rope, because nothing marked where one ball ended and the next began. A head
+       is visually a SHELL — its mass is stamens at the surface — so packing them there gives
+       each head a rim, and a rim is what separates it from the head beside it. */
+    const t = Math.cbrt(0.62 + 0.38 * rand());
     const r = radius * t;
 
     florets.push({
