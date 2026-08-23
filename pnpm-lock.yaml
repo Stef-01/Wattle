@@ -8,10 +8,10 @@ importers:
 
   .:
     dependencies:
-      '@fontsource-variable/inter':
+      '@fontsource-variable/literata':
         specifier: ^5.3.0
         version: 5.3.0
-      '@fontsource-variable/newsreader':
+      '@fontsource-variable/schibsted-grotesk':
         specifier: ^5.3.0
         version: 5.3.0
       next:
@@ -64,11 +64,11 @@ packages:
   '@emnapi/runtime@1.11.3':
     resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
 
-  '@fontsource-variable/inter@5.3.0':
-    resolution: {integrity: sha512-OupL48va4JNofb97w6NYeF9S7W/kHNKM0Er8Dem5nqi4jeOLrVJDoE8tZEpnMJmtkvNbB1EIPPwHcdkF6b1oUA==}
+  '@fontsource-variable/literata@5.3.0':
+    resolution: {integrity: sha512-1Jw7xvOcoGyB83lxB2nG4bfNbqtX2/TTbdh9sHAOmU064SvmSdulDtA5RBu5JYWf64fdaKX7xU+z3GO1T2bCHA==}
 
-  '@fontsource-variable/newsreader@5.3.0':
-    resolution: {integrity: sha512-rrzYi43qMpbzwuFtf9OkWH8sxAPVPcQQQEwXpPtwaKYeJ8yVg5aLs5kawmo1f2Q1t1M38TLmEKCkGVDsYwgdFw==}
+  '@fontsource-variable/schibsted-grotesk@5.3.0':
+    resolution: {integrity: sha512-ndS6H/KICWANchlHF3q4UdZD+xrZ3Ji0rUobIuXlgvDUzDfqZDsVuXPXZb636nJZMHE9zZ9Fmwgqazm8hMB50Q==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -626,9 +626,9 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
-  '@fontsource-variable/inter@5.3.0': {}
+  '@fontsource-variable/literata@5.3.0': {}
 
-  '@fontsource-variable/newsreader@5.3.0': {}
+  '@fontsource-variable/schibsted-grotesk@5.3.0': {}
 
   '@img/colour@1.1.0':
     optional: true

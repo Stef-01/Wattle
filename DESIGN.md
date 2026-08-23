@@ -73,12 +73,33 @@ and in CI, and the build **fails** under 4.5:1. The comments cannot go stale.
 
 ## Type
 
-- **Display:** Newsreader Variable. `.claim` `clamp(2.35rem, 5.6vw, 4.25rem)`, tracking `-0.035em`,
-  `text-wrap: balance`. Capped well under the 6rem ceiling because the copy is sentences, not slogans.
-- **Text:** Inter Variable, 16px / 1.65. Carried from ADHD.ME so the two sites read as one house.
-  *Flagged by the design detector as an overused face; kept as a recorded brand commitment.*
+Both faces are **variable and self-hosted**, and both are read from tokens (`--font-display`,
+`--font-text`) rather than named in rules — so the pair is one line to change and no surface can
+be left behind on an old face.
+
+- **Display: Literata Variable.** Warm, bookish, with a large x-height and sturdy stems. It has
+  presence at size, which is what a page aimed at commissioners needs — refinement reads as
+  delicacy at 4rem, and this does not.
+- **Text: Schibsted Grotesk Variable.** An editorial grotesque from a news brand: warm, wide
+  apertures, comfortable at the 11px muted sizes this site uses for labels.
+- **Tracking is a property of the face, not the brand.** `-0.022em`, not the `-0.035em` the
+  previous serif was set at — carrying the old value across collapsed Literata's counters at
+  display size.
 - **Measure:** `.prose p` 68ch; leads 60ch; list items 62ch. Inside the 65–75ch band.
 - Tabular numerals on anything that lines up.
+
+**Why these, chosen 2026-08-23.** The previous pair was Newsreader + Inter, carried from ADHD.ME
+so the two sites read as one house. Inter was flagged as an overused face by three independent
+design reviews, and once the text face had to move, keeping a serif that was only there for the
+house link was the weaker half of the pair rather than a constraint worth holding.
+
+Three pairs were built and compared on the real pages. Source Serif 4 + Archivo was rejected on
+measurement: Archivo is too wide for these narrow columns and wrapped a two-line display heading
+onto three.
+
+**This breaks the visual link with ADHD.ME.** That was a deliberate, founder-approved trade, not
+an oversight — but it means the product site and the company site no longer share a type voice,
+and anyone re-aligning them should start from this note.
 
 ## Spacing
 
