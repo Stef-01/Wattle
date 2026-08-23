@@ -1,0 +1,882 @@
+@import "tailwindcss";
+
+/* THE TYPE PAIR. Both variable, both self-hosted, both chosen 2026-08-23 over Newsreader/Inter —
+   Inter was flagged as an overused face by three separate design reviews, and once the text face
+   had to move, keeping a serif that was only there for the ADHD.ME link was the weaker half of
+   the pair rather than a constraint worth holding. */
+@import "@fontsource-variable/literata";
+@import "@fontsource-variable/schibsted-grotesk";
+
+/* ===========================================================================
+   WATTLE TECHNOLOGIES — the design system.
+
+   THE WORLD: A COMPANY RECORD. Not a marketing site with a hero and a card
+   grid. The visitor is a commissioner, a practice, a partner or a future
+   colleague who arrived from a meeting to check the company is real, and the
+   thing that answers that question is a document that looks like it was kept
+   rather than written. So the page is set as a register: a label rail beside a
+   content column, hairlines as the only chrome, one large serif voice for
+   claims, and the foliage green reserved for where the company speaks in the
+   first person.
+
+   That choice does the arguing. A page that publishes what is unresolved at
+   the same weight as what works cannot be laid out as a sales deck without
+   lying about its own posture.
+
+   THE PALETTE IS THE GOLDEN WATTLE — Acacia pycnantha, founder-pinned and
+   binding. Blossom gold, foliage green, bark-dark type. The flower colour is
+   split in two because wattle gold is bright and bright gold on paper is
+   unreadable: --blossom is the real thing and lives on dark grounds, --gold is
+   its AA-safe form and is the only gold that may carry words. Every ratio here
+   is recomputed by scripts/contrast-gate.mjs on every build, so these comments
+   cannot quietly go stale.
+   =========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  --paper: #fcfaf4;
+  --stone: #f2efe3;
+  --line: #e2decf;
+  --ink: #1b2416;
+  --muted: #676c5d;
+
+  --gold: #7c5e0b;
+  --gold-soft: #fbf1d2;
+  /* DECORATIVE ONLY — 2.49 on paper. The mark's depth, and nothing that is read. */
+  --gold-mid: #c9992a;
+  --blossom: #f2c230;
+  /* NEW GROWTH. Acacia pycnantha flushes bronze before it colours up, and the generative field
+     uses that literally: a dispersed floret is bronze and matures gold as it assembles.
+     Decorative only — it is a particle colour and never carries text, which is why it is absent
+     from the contrast gate's pairs list. */
+  --bronze: #5a5228;
+
+  --leaf: #2e3d24;
+  --leaf-deep: #232f1b;
+  --on-leaf: #fcfaf4;
+  --sage: #a8b394;
+
+  /* Depth carries an offset and a soft blur. A zero-offset halo is decoration. */
+  --lift: 0 1px 2px rgb(27 36 22 / 0.05), 0 12px 28px -14px rgb(27 36 22 / 0.18);
+
+  /* The register's rhythm. One scale, so spacing is chosen rather than guessed. */
+  --gap-1: 0.5rem;
+  --gap-2: 0.875rem;
+  --gap-3: 1.5rem;
+  --gap-4: 2.5rem;
+  --gap-5: 4rem;
+  --gap-6: 6.5rem;
+
+  /* THE TYPE PAIR, AS TOKENS.
+     Every rule below reads these rather than naming a family, so the pair is one line to change
+     and no surface can be left behind on an old face. That is how the last swap was done without
+     hunting through the stylesheet. */
+  --font-display: "Literata Variable", Literata, ui-serif, Georgia, serif;
+  --font-text: "Schibsted Grotesk Variable", "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   THE TAILWIND BRIDGE
+
+   COLOUR THEORY, STATED ONCE. The palette is ANALOGOUS — gold, olive and green
+   are neighbours on the wheel, which is why the site reads calm rather than
+   energetic. That is the correct harmony for a company asking to be believed
+   rather than to be exciting, and it is why no complementary accent (a violet
+   or a blue) has been introduced: it would create chromatic tension the message
+   does not want. The one contrast that IS strong is VALUE, not hue — near-black
+   type on cream, cream type on foliage — which is what carries hierarchy here.
+
+   `@theme inline` re-exports the tokens as Tailwind utilities, so shadcn
+   components can be written against `bg-paper` / `text-ink` and inherit the real
+   design system. Deliberately NOT shadcn's generic --background/--foreground
+   names: a second vocabulary for the same colours is how two design systems end
+   up in one codebase, each half-true.
+   -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-blossom: var(--blossom);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-on-leaf: var(--on-leaf);
+  --color-sage: var(--sage);
+
+  --font-display: var(--font-display);
+  --font-text: var(--font-text);
+}
+
+* { box-sizing: border-box; }
+
+button, a, input, textarea, select, label, [role="button"] { touch-action: manipulation; }
+
+html {
+  background: var(--paper);
+  /* The scrollbar is part of the page. Left alone it ships in a grey that
+     belongs to no design system — the cheapest tell that a page was assembled. */
+  scrollbar-color: var(--gold-mid) var(--stone);
+  scrollbar-width: thin;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The caret is a browser surface too. */
+  caret-color: var(--gold);
+}
+
+/* Figures in a register line up. */
+table, .tabular { font-variant-numeric: tabular-nums; }
+
+::selection { background: var(--gold-soft); color: var(--ink); }
+
+/* IN @layer base, DELIBERATELY.
+   Tailwind 4 emits its utilities inside `@layer utilities`, and UNLAYERED author CSS beats any
+   layered rule regardless of specificity. An unlayered `a { color: inherit }` therefore silently
+   defeated `text-leaf-deep` on every Button — the class was in the DOM, the utility was in the
+   stylesheet, and the cascade threw it away. Base element styles belong in a layer for exactly
+   this reason: they are defaults, and a default must lose to something explicit. */
+@layer base {
+  a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute; left: 1rem; top: -4rem; z-index: 60;
+  background: var(--ink); color: var(--paper);
+  padding: 0.7rem 1.1rem; border-radius: 0.4rem; font-size: 0.875rem; font-weight: 500;
+  transition: top 160ms ease;
+}
+.skip-link:focus { top: 1rem; }
+
+/* --------------------------------------------------------------------------
+   TYPE
+   -------------------------------------------------------------------------- */
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* -0.022em, not the -0.035em Newsreader was set at. Literata has a larger x-height and heavier
+     stems; carrying the old tracking across collapsed the counters at display size. Tracking is
+     a property of the face, not of the brand. */
+  letter-spacing: -0.022em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+/* The one voice that makes a claim. Capped well under the 6rem ceiling because
+   the copy is sentences, not slogans. */
+.claim { font-size: clamp(2.35rem, 5.6vw, 4.25rem); margin: 0; }
+.claim-sm { font-size: clamp(1.85rem, 3.6vw, 2.9rem); margin: 0; }
+
+/* Body measure sits in the 65–75ch band. */
+.prose p { max-width: 68ch; color: var(--muted); line-height: 1.72; }
+.lead { font-size: clamp(1.125rem, 1.9vw, 1.375rem); line-height: 1.6; color: var(--muted); max-width: 60ch; }
+
+/* --------------------------------------------------------------------------
+   SHELL AND THE REGISTER GRID
+
+   The label rail is a definition list, not a decorative kicker: the label names
+   what the column holds, sits BESIDE it rather than above a heading, and is
+   read by a screen reader as the term it is.
+   -------------------------------------------------------------------------- */
+
+.shell { margin-inline: auto; width: 100%; max-width: 72rem; padding-inline: 1.5rem; }
+@media (min-width: 900px) { .shell { padding-inline: 3rem; } }
+
+.band-pad { padding-block: var(--gap-5); }
+@media (min-width: 900px) { .band-pad { padding-block: var(--gap-6); } }
+
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+.reg { display: grid; gap: var(--gap-3); }
+@media (min-width: 860px) {
+  .reg { grid-template-columns: 12rem minmax(0, 1fr); gap: var(--gap-4); align-items: start; }
+}
+
+.reg-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  /* Aligns to the cap-height of the column it labels rather than floating. */
+  padding-top: 0.35rem;
+}
+.reg-body { margin: 0; min-width: 0; }
+
+/* On the green, labels take the foliage tint rather than a grey. */
+.on-leaf .reg-label { color: var(--sage); }
+
+/* --------------------------------------------------------------------------
+   BUTTONS live in src/components/ui/button.tsx now — cva variants over the
+   tokens above. The hand-written .btn rules are deleted rather than left in
+   place: a second, unused definition of the same control is the thing that
+   makes a later reader guess which one is live.
+   -------------------------------------------------------------------------- */
+
+/* The inline forward link. Underline is the affordance; the arrow is drawn, not
+   a unicode glyph standing in for an icon. */
+.go {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  color: var(--gold); font-weight: 500; text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold) 35%, transparent);
+}
+.go:hover { text-decoration-color: var(--gold); }
+.go svg { transition: transform 140ms cubic-bezier(0.2, 0, 0, 1); }
+.go:hover svg { transform: translateX(3px); }
+
+/* --------------------------------------------------------------------------
+   HEADER
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.site-header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; padding-block: 0.85rem;
+}
+.wordmark {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.1875rem; letter-spacing: -0.02em; color: var(--ink); text-decoration: none;
+}
+.wordmark:hover { color: var(--gold); }
+.wordmark-mark { flex: none; }
+.wordmark-tail { color: var(--muted); }
+
+.site-nav ul { display: flex; align-items: center; gap: 1.75rem; margin: 0; padding: 0; list-style: none; }
+.site-nav a { font-size: 0.9375rem; color: var(--muted); text-decoration: none; padding-block: 0.35rem; }
+.site-nav a:hover { color: var(--ink); }
+.site-nav a[data-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--gold); }
+
+/* THE TWO PRESENTATIONS.
+   Below 640px the inline nav goes and the panel trigger appears; above it, the reverse. Only one
+   is ever in the accessibility tree, so a screen reader is never offered the same four doors
+   twice. */
+.site-nav-trigger { display: none; }
+@media (max-width: 639px) {
+  .site-nav { display: none; }
+  .site-nav-trigger { display: inline-flex; }
+  .wordmark { white-space: nowrap; }
+}
+
+/* --- the panel --- */
+
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.sheet-title { margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage); }
+
+.sheet-nav { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgb(252 250 244 / 0.14); }
+.sheet-nav li { border-bottom: 1px solid rgb(252 250 244 / 0.14); }
+.sheet-nav a {
+  display: flex; align-items: center;
+  /* 56px. Fitts's law is the whole reason this panel exists — undersizing the targets inside it
+     would give up the only thing it was built to buy. */
+  min-height: 3.5rem;
+  font-size: 1.0625rem; color: var(--on-leaf); text-decoration: none;
+}
+.sheet-nav a:hover { color: var(--blossom); }
+.sheet-nav a[aria-current="page"] { color: var(--blossom); }
+/* The current page is not only colour: colour alone fails for a reader who cannot distinguish it. */
+.sheet-nav a[aria-current="page"]::after { content: "Current"; margin-left: auto; font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); }
+
+/* No border-top on the second group: the primary list already ends in a rule, and adding another
+   after a gap drew what read as an empty row. Proximity alone separates the two groups — which is
+   the cheaper Gestalt cue and the one that does not add a line the eye has to explain. */
+.sheet-nav-secondary { margin-top: 1.75rem; border-top: 0; }
+.sheet-nav-secondary a { min-height: 3rem; font-size: 0.9375rem; color: var(--sage); }
+
+
+/* --------------------------------------------------------------------------
+   THE HERO — one enormous living subject on a dark ground.
+
+   The model is a venture firm's front door: the brand's organism owns the first
+   viewport and is ALIVE rather than entering once. What follows it is paper and
+   is a register, and that switch is deliberate — the dark hero earns attention
+   from a visitor who arrived curious, the register earns belief from one who
+   arrived to check. A commissioner gets both in that order.
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  /* THE SKY. The reference holds a vertical gradient — deepest at the top, warming toward the
+     horizon — and it is what makes one flower on a plain field read as a photograph rather than
+     as a graphic. Ours warms toward a bronze dusk instead of lilac, staying inside the wattle
+     palette, and stays dark enough at the foot that cream type never drops below AA across it
+     (measured 11.8:1 at the lightest stop). */
+  background: linear-gradient(178deg, #171f11 0%, var(--leaf-deep) 38%, #33301c 100%);
+  color: var(--on-leaf);
+  overflow: clip;
+  /* Tall enough to read as a front door, never taller than the viewport minus
+     the header — a hero you must scroll to finish is a hero that hid its point. */
+  min-height: min(88svh, 54rem);
+  display: flex;
+  align-items: center;
+  padding-block: var(--gap-5);
+}
+
+/* A soft ground-light behind the bloom so the subject sits IN the dark rather
+   than on it. Offset and blurred, not a zero-offset halo. */
+.hero::before {
+  content: "";
+  position: absolute;
+  right: 4%; top: 6%;
+  width: min(70vw, 46rem); aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 45%, rgb(242 194 48 / 0.16), transparent 62%);
+  pointer-events: none;
+}
+
+.hero-grid { position: relative; z-index: 1; display: grid; gap: var(--gap-4); align-items: center; }
+@media (min-width: 940px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: var(--gap-5); }
+}
+
+.hero h1 { max-width: 15ch; }
+.hero .lead { color: var(--sage); margin-top: var(--gap-3); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--gap-4); }
+
+.hero-bloom { width: 100%; height: auto; max-height: 30rem; justify-self: center; }
+
+/* MOBILE: THE SUBJECT HAS TO SURVIVE THE FOLD.
+   Stacked at 375px the hero measured 854px against an 812px viewport, which put the bloom —
+   the one thing this hero is built around — entirely below the fold. Trimming the block padding
+   and the bloom's ceiling brings the whole composition back inside one screen. Measured, not
+   guessed: 854 -> ~700. */
+@media (max-width: 939px) {
+  .hero { padding-block: var(--gap-4); min-height: 0; }
+  .hero-grid { gap: var(--gap-3); }
+  .hero-bloom { max-height: 12rem; }
+}
+
+/* THE GENERATIVE FIELD.
+
+   Sits behind the hero's content and in front of its ground. `inset: 0` rather
+   than a sized box so it re-lays out with the hero at every breakpoint without
+   a second set of numbers to keep in sync. Pointer-events off: it is texture,
+   never a control, and it must never intercept a click meant for the buttons. */
+.wattle-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* Fades in under its own opacity uniform; this stops a hard edge on arrival. */
+  /* THE FIELD KEEPS OFF THE COPY.
+     Centred right and falling away well before the text column, so the headline and the lead
+     never sit on top of moving particles. This is not a nicety: text contrast has to be
+     predictable, and a body of additive gold drifting behind a sentence makes it a variable.
+     The generative layer occupies the half of the hero that has nothing to read in it. */
+  /* Gentler than it was: the tight mask was hiding the overlap by cutting the subject in half.
+     Fixing the composition is the fix; the mask only softens the edge. */
+  mask-image: radial-gradient(ellipse 66% 96% at 76% 48%, #000 46%, transparent 88%);
+}
+
+/* THE SVG IS NOW PURELY THE FALLBACK.
+   It used to stay on at 0.28 as a structural spine under the particles, which meant the hero
+   carried TWO plants — a drawn one and a simulated one — overlapping, on unrelated motion. The
+   stem is now geometry inside the WebGL scene running the same motion law as the florets, so
+   the drawn spray has no job left when the field is live and steps out entirely.
+
+   `:has()` is doing real work here: the SVG hides only when the field element is actually in the
+   DOM, and WattleField unrenders itself if its context fails — so a failed WebGL init restores
+   the drawn spray rather than leaving an empty hero. */
+.hero:has(.wattle-field) .hero-bloom { display: none; }
+
+/* THE LIVE PART.
+
+   Three ambient cycles, and the numbers are the whole craft:
+
+   - The spray's ROTATION and its DRIFT are on separate cycles offset from each
+     other, not locked to the same keyframes. Locked together they read as one
+     mechanical rocker; offset, the spray turns slightly out of phase with its
+     rise the way a stem loaded at one end actually behaves.
+   - The heads breathe at 0.985–1.015. They were 0.94–1.06, which is past the
+     point where a pulse stops reading as life and starts demanding attention
+     from someone trying to read the sentence beside it.
+   - Sine-based easing on both, because a looping ambient cycle has to be
+     seamless at the wrap and any ease-out curve visibly stalls there. */
+@keyframes spray-drift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+@keyframes spray-turn {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50%      { transform: rotate(1.3deg); }
+}
+@keyframes head-breathe {
+  0%, 100% { transform: scale(0.985); opacity: 0.92; }
+  50%      { transform: scale(1.015); opacity: 1; }
+}
+
+/* Two elements so the two cycles can differ; one element cannot carry two
+   transform animations at different periods. */
+.bloom-spray {
+  transform-origin: 52px 548px;
+  animation: spray-turn 7s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+.bloom-drift {
+  animation: spray-drift 4.9s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  /* 30% of the turn cycle, so the two never peak together. */
+  animation-delay: -2.1s;
+}
+.bloom-head {
+  transform-box: fill-box;
+  animation: head-breathe 4.3s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+/* The stem draws itself once, on arrival. A dramatic reveal tops out around
+   1.2s; at 1700ms this was a reveal the viewer had time to get bored of. */
+@keyframes stem-draw { from { stroke-dashoffset: 620; } to { stroke-dashoffset: 0; } }
+.bloom-stem {
+  stroke-dasharray: 620;
+  animation: stem-draw 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* PAUSE, BECAUSE WCAG 2.2.2 IS NOT SATISFIED BY prefers-reduced-motion ALONE.
+   Motion that starts on its own, runs past five seconds and sits alongside
+   other content needs a mechanism to stop it. Reduced-motion covers the reader
+   who configured it in advance; this covers the one who did not and is trying
+   to read. */
+[data-motion="paused"] .bloom-spray,
+[data-motion="paused"] .bloom-drift,
+[data-motion="paused"] .bloom-head { animation-play-state: paused; }
+
+.motion-toggle {
+  position: absolute; right: 1.5rem; bottom: 1.5rem; z-index: 2;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  min-height: 2.75rem; padding: 0.5rem 0.9rem;
+  border-radius: 999px; border: 1px solid rgb(252 250 244 / 0.28);
+  background: rgb(35 47 27 / 0.55); color: var(--sage);
+  font-size: 0.8125rem; cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.motion-toggle:hover { color: var(--on-leaf); border-color: var(--sage); }
+@media (prefers-reduced-motion: reduce) { .motion-toggle { display: none; } }
+
+/* The claim resolves from blur once. Nothing else on the site enters this way. */
+@keyframes resolve {
+  from { opacity: 0; transform: translateY(16px); filter: blur(12px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+.resolve { animation: resolve 950ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.resolve-2 { animation-delay: 140ms; }
+.resolve-3 { animation-delay: 260ms; }
+
+/* SCROLL-DRIVEN REVEALS, natively.
+
+   `animation-timeline: view()` runs these off the scroller rather than off a
+   JS observer, so the "live" feel costs no bundle — which is what keeps this
+   compatible with the regional-bandwidth requirement. The default state is
+   ALREADY VISIBLE: browsers without scroll-driven animation, and readers with
+   reduced motion, get the finished page rather than a blank one waiting for a
+   script that will never run. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lift-in {
+      /* NOT linear. A scroll-driven reveal still moves 22px through space, and
+         linear easing on spatial movement is the one thing that reliably reads
+         as machine-driven rather than physical. */
+      animation: lift-in cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+    @keyframes lift-in {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   THE GREEN — where the company speaks in the first person.
+   -------------------------------------------------------------------------- */
+
+.on-leaf { background: var(--leaf); color: var(--on-leaf); }
+.on-leaf p { color: var(--sage); }
+/* Scoped to PROSE links. This was `a:not(.btn)` back when buttons carried a .btn class; once
+   they moved to the component that class went away and the rule started repainting every button
+   in the band. A selector that depends on a class existing elsewhere is a tripwire — naming the
+   containers it actually means removes the dependency. */
+.on-leaf p a,
+.on-leaf li a,
+.on-leaf dd a { color: var(--blossom); }
+
+/* --------------------------------------------------------------------------
+   ENTRIES — ventures, principles, anything the register lists.
+   -------------------------------------------------------------------------- */
+
+.entries { list-style: none; margin: 0; padding: 0; }
+.entries > li { border-top: 1px solid var(--line); padding-block: var(--gap-4); }
+.entries > li:last-child { border-bottom: 1px solid var(--line); }
+
+.entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; }
+.entry-status { font-size: 0.8125rem; font-weight: 500; color: var(--gold); }
+
+.stack { display: grid; gap: 0.85rem; margin: 0; padding: 0; list-style: none; }
+.stack li { color: var(--muted); line-height: 1.7; max-width: 62ch; }
+
+/* A two-column split for what-exists versus what-is-open. Equal weight is the
+   argument: the open column is not a footnote. */
+.split { display: grid; gap: var(--gap-3); margin-top: var(--gap-3); }
+@media (min-width: 760px) { .split { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4); } }
+
+/* --------------------------------------------------------------------------
+   THE STATEMENT PAIR — how every block below the hero is built.
+
+   `.say` is the block's whole point at display size; `.under` is the one line
+   allowed beneath it. The measure is deliberately narrow (28ch / 46ch) because
+   the constraint is the mechanism: a sentence that will not fit is a sentence
+   belonging on the page that argues it, not on the front page.
+   -------------------------------------------------------------------------- */
+
+.say {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+  font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+  margin: var(--gap-3) 0 0;
+  max-width: 28ch;
+}
+.under {
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.on-leaf .under { color: var(--sage); }
+
+/* The tenets: title at display size, one line under it, generous air between.
+   Four of these were three-sentence paragraphs and read as a document. */
+.tenets { margin: 0; display: grid; gap: var(--gap-4); }
+@media (min-width: 780px) { .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4) var(--gap-4); } }
+.tenets dt {
+  font-size: clamp(1.25rem, 2.1vw, 1.5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  max-width: 22ch;
+}
+.tenets dd { margin: 0.7rem 0 0; color: var(--muted); line-height: 1.6; max-width: 40ch; }
+
+/* --------------------------------------------------------------------------
+   PRESENCE — where the company actually operates.
+   -------------------------------------------------------------------------- */
+
+.presence { display: grid; gap: var(--gap-3); }
+@media (min-width: 700px) { .presence { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4); } }
+
+.place { border-top: 2px solid var(--gold-mid); padding-top: 1rem; }
+.place h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+.place-status { margin: 0.4rem 0 0 !important; font-size: 0.875rem; font-weight: 600; color: var(--gold); }
+.place p { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--muted); line-height: 1.65; max-width: 42ch; }
+
+/* --------------------------------------------------------------------------
+   TEAM
+   -------------------------------------------------------------------------- */
+
+.team-plates {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--gap-5) var(--gap-4);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 300px));
+  justify-content: start;
+}
+.team-portrait {
+  position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+  border-radius: 0.75rem; background: var(--stone); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+}
+.team-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.team-monogram {
+  font-family: var(--font-display);
+  font-size: 3rem; color: var(--gold);
+}
+.team-id { margin-top: 1.15rem; }
+.team-id strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2;
+}
+.team-role { display: block; margin-top: 0.2rem; font-size: 0.875rem; font-weight: 500; color: var(--gold); }
+.team-remit { margin: 0.65rem 0 0; font-size: 0.9375rem; line-height: 1.65; color: var(--muted); }
+.team-affiliations {
+  list-style: none; margin: 1.15rem 0 0; padding: 1.1rem 0 0;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start;
+}
+.team-affiliations a { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration: none; }
+.team-affiliations a span { font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.team-affiliations a:hover span { color: var(--ink); }
+.team-affiliations img { width: auto; height: 1.6rem; max-width: 100%; object-fit: contain; opacity: 0.8; transition: opacity 160ms ease; }
+.team-affiliations a:hover img { opacity: 1; }
+
+/* --------------------------------------------------------------------------
+   NOTICE — the standing disclosure block.
+
+   Used where the site has to say what it does NOT have. It is deliberately not
+   a tinted "callout card": a 1px hairline and the blossom tint, so a disclosure
+   reads as part of the record rather than as an alert bolted onto it.
+   -------------------------------------------------------------------------- */
+
+.notice {
+  border: 1px solid var(--gold-mid);
+  background: var(--gold-soft);
+  border-radius: 0.6rem;
+  padding: 1.35rem 1.5rem;
+}
+.notice > :first-child { margin-top: 0; }
+.notice > :last-child { margin-bottom: 0; }
+.notice p { color: color-mix(in srgb, var(--ink) 82%, var(--gold)); max-width: 66ch; }
+
+/* --------------------------------------------------------------------------
+   THE SPECIMEN PLATE
+
+   A herbarium sheet: near-black ground, one specimen, taxonomy beside it. The
+   ground is darker than --leaf-deep because a plate is not the company speaking
+   — it is an object being looked at, and the extra darkness is what separates a
+   presented thing from a branded surface.
+   -------------------------------------------------------------------------- */
+
+.plate {
+  background: #14180f;
+  color: var(--on-leaf);
+  overflow: clip;
+  position: relative;
+}
+
+/* A single low pool of light behind the specimen. Offset and very soft — the sheet
+   is lit, not glowing. */
+.plate::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 46%;
+  width: min(76vw, 44rem); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgb(242 194 48 / 0.07), transparent 66%);
+  pointer-events: none;
+}
+
+.plate-grid {
+  position: relative;
+  display: grid;
+  gap: var(--gap-4);
+  padding-block: var(--gap-5);
+  align-items: center;
+}
+@media (min-width: 1000px) {
+  .plate-grid {
+    /* The figure gets the middle and the most of it — a specimen plate that does not lead with
+       the specimen is a table with a picture next to it. */
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.45fr) minmax(0, 0.74fr);
+    gap: var(--gap-4);
+    padding-block: var(--gap-6);
+  }
+}
+
+/* --- the identification --- */
+
+.plate-family {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blossom);
+}
+.plate-binomial {
+  margin: 0.75rem 0 0;
+  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+  font-style: italic;
+  color: var(--on-leaf);
+}
+.plate-authority { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--sage); }
+.plate-note {
+  margin: 1.5rem 0 0;
+  max-width: 40ch;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--sage);
+}
+
+/* --- the label --- */
+
+.plate-label { margin: 0; display: grid; gap: 0; align-content: start; }
+.plate-label > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 0.85rem;
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+}
+.plate-label > div:last-child { border-bottom: 1px solid rgb(252 250 244 / 0.14); }
+.plate-label dt { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage); }
+.plate-label dd { margin: 0; font-size: 0.9375rem; color: var(--on-leaf); }
+
+/* --- the figure --- */
+
+.plate-figure { display: flex; justify-content: center; }
+.plate-svg { width: 100%; max-width: 42rem; height: auto; }
+@media (max-width: 999px) { .plate-svg { max-width: 22rem; } }
+
+.plate-stem,
+.plate-branch { fill: none; stroke: var(--sage); stroke-linecap: round; }
+.plate-stem { stroke-width: 5; opacity: 0.75; }
+.plate-branch { stroke-width: 2.6; opacity: 0.55; }
+/* The blade is filled and the vein is drawn on it. A phyllode rendered as a stroked midrib is a
+   hairline — botanically the wrong object, and visually invisible at plate scale. */
+/* OPACITY MULTIPLIES. Group 0.5 x fill 0.34 left the blades at 17% of sage over a near-black
+   ground — present in the DOM at 90px and invisible to a reader. Foliage should sit behind the
+   blossom, not vanish behind it. */
+.plate-phyllode { opacity: 0.9; }
+.plate-blade { fill: var(--sage); fill-opacity: 0.5; stroke: var(--sage); stroke-width: 0.14; stroke-opacity: 0.85; }
+.plate-vein { fill: none; stroke: #14180f; stroke-width: 0.16; opacity: 0.55; }
+
+/* --------------------------------------------------------------------------
+   THE PLATE'S ANIMATION
+
+   A specimen assembling itself: the stem draws, the laterals follow it out, the
+   phyllodes unfurl, and the heads open BASE TO TIP — the plant's own flowering
+   order, which is the same law the hero's particle field runs on.
+
+   Everything is keyed off `--o`, each element's position along the stem, so the
+   sequence is a property of the drawing rather than a list of hand-written
+   delays that would rot the moment the geometry changed.
+
+   THE DEFAULT STATE IS FULLY DRAWN. These only animate where scroll-driven
+   timelines exist and motion is welcome; everywhere else the plate is simply a
+   finished botanical illustration, which is what it should be anyway.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .plate-stem {
+      stroke-dasharray: 700;
+      /* NOT linear. A stroke draw-on is movement through space just as much as a translate is,
+         and linear is the curve that reads as machine-driven rather than as growth. */
+      animation: plate-draw cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    @keyframes plate-draw { from { stroke-dashoffset: 700; } to { stroke-dashoffset: 0; } }
+
+    .plate-branch {
+      animation: plate-branch cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      /* Each lateral leaves the stem a little after the one below it. */
+      animation-range: entry calc(18% + var(--i) * 4%) cover calc(42% + var(--i) * 4%);
+      transform-box: fill-box;
+      transform-origin: 0% 100%;
+    }
+    @keyframes plate-branch { from { opacity: 0; transform: scaleX(0.15); } to { opacity: 0.55; transform: none; } }
+
+        .plate-phyllode {
+      animation: plate-unfurl cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry calc(24% + var(--o) * 22%) cover calc(52% + var(--o) * 22%);
+    }
+    /* Unfurling is a rotation about the base plus a stretch along the blade — a phyllode opens
+       from where it attaches, not from its middle. */
+    @keyframes plate-unfurl {
+      from { opacity: 0; transform: rotate(-14deg) scale(0.55); }
+      to   { opacity: 0.42; transform: none; }
+    }
+
+    .plate-head {
+      animation: plate-bloom cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry calc(30% + var(--o) * 26%) cover calc(58% + var(--o) * 26%);
+    }
+    /* Opens slightly past full and settles — a head does not arrive at its size and stop. */
+    @keyframes plate-bloom {
+      0%   { opacity: 0; transform: scale(0.3); }
+      70%  { opacity: 1; transform: scale(1.06); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .plate-id > *,
+    .plate-label > div {
+      animation: plate-rise cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry 12% cover 34%;
+    }
+    @keyframes plate-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  }
+}
+
+/* The site's one Pause control governs this too. */
+[data-motion="paused"] .plate-stem,
+[data-motion="paused"] .plate-branch,
+[data-motion="paused"] .plate-phyllode,
+[data-motion="paused"] .plate-head { animation-play-state: paused; }
+
+/* --------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+
+.site-footer { background: var(--leaf-deep); color: var(--sage); }
+.site-footer-inner { padding-block: var(--gap-4); display: grid; gap: var(--gap-4); }
+@media (min-width: 820px) { .site-footer-inner { grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 0.6fr)); } }
+.site-footer .wordmark { color: var(--on-leaf); }
+.site-footer .wordmark:hover { color: var(--blossom); }
+.site-footer .wordmark-tail { color: var(--sage); }
+.site-footer h2 { margin: 0 0 0.9rem; font-size: 0.75rem; font-weight: 600; color: var(--on-leaf); }
+.site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.site-footer a { color: var(--sage); text-decoration: none; font-size: 0.9375rem; }
+.site-footer a:hover { color: var(--blossom); text-decoration: underline; }
+.site-footer-legal {
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+  padding-block: 1.4rem;
+  font-size: 0.8125rem; color: var(--sage);
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between;
+}
+.acknowledgement {
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+  padding-block: 1.6rem;
+}
+.acknowledgement p { margin: 0; font-size: 0.875rem; line-height: 1.7; color: var(--sage); max-width: 68ch; }
+
+/* Sheet + tooltip motion. Enters decelerating, exits accelerating — users care more about what
+   arrives than about what leaves, so the exit is the shorter of the two. */
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sheet-out { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes sheet-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* --------------------------------------------------------------------------
+   MOTION
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

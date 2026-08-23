@@ -1,0 +1,109 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+
+/**
+ * THE GATE.
+ *
+ * This is the load-bearing piece of the whole generative layer, and it is deliberately the
+ * boring one. Everything WebGL — three.js, the shaders, the field geometry — sits behind a
+ * dynamic import that only resolves once this component has decided the device should have it.
+ *
+ * SO THE BASELINE NEVER PAYS FOR IT. A visitor on a regional connection, an old phone, Data
+ * Saver, or with reduced motion configured downloads the same ~102 kB the site shipped before
+ * any of this existed, and sees the static SVG bloom that is already on screen. The generative
+ * field is enhancement in the strict sense: nothing is missing without it, and nothing waits for
+ * it. There is no intro animation gating the navigation and no loading state, because the page
+ * is complete before the decision is even made.
+ *
+ * THE CHECKS, AND WHY EACH ONE IS HERE
+ *  - prefers-reduced-motion: a stated preference. It is not overridden by capability.
+ *  - Data Saver / 2g / 3g: the reader has told the browser their connection is expensive. A
+ *    decorative megabyte is exactly what that setting exists to prevent.
+ *  - WebGL2: no context, no field. Checked by actually acquiring one, not by sniffing.
+ *  - hardwareConcurrency and deviceMemory: a coarse but honest proxy for whether a device will
+ *    hold 60fps. Absent values are treated as low, not high — an unknown device is assumed
+ *    modest, because the failure mode of guessing high is a hot phone.
+ *  - viewport width: below the tablet breakpoint the hero is a stacked layout where the field
+ *    would be a 12rem strip. Not worth a WebGL context.
+ *
+ * The tiers scale particle count rather than switching the effect off, so a mid device gets the
+ * same design language at a lower density.
+ */
+
+const WattleField = dynamic(() => import("./wattle-field").then((m) => m.WattleField), {
+  ssr: false,
+});
+
+interface Tier {
+  heads: number;
+  dustCount: number;
+  bokehCount: number;
+  stamensPerHead: number;
+  maxPixelRatio: number;
+}
+
+/* Layer counts, not one number. The dust is cheap per point and the bokeh is expensive per
+   pixel — a single "particle count" would have scaled the wrong things together. */
+const TIERS: Record<"high" | "mid", Tier> = {
+  high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 10, maxPixelRatio: 2 },
+  // Fewer heads and much less bokeh: overdraw from big soft discs is what actually costs on a
+  // mid device, more than the point count does.
+  mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 8, maxPixelRatio: 1.5 },
+};
+
+function chooseTier(): Tier | null {
+  if (typeof window === "undefined") return null;
+
+  /* QA OVERRIDE: `?field=force`.
+     Skips the HEURISTIC checks only — the connection estimate and the hardware proxy — because
+     both are noisy and neither can be reproduced on demand for a design review. It does NOT skip
+     reduced motion or the WebGL2 probe: a stated preference and a missing context are facts, not
+     estimates, and no query string overrides a fact.
+
+     This exists because the heuristics really do fire in normal use. `effectiveType` is a rolling
+     estimate that drifts between 4g and 3g on the same machine minute to minute, which is correct
+     behaviour for protecting a regional visitor and impossible to demo around. */
+  const forced = new URLSearchParams(window.location.search).get("field") === "force";
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+  if (window.innerWidth < 768) return null;
+
+  const nav = navigator as Navigator & {
+    connection?: { saveData?: boolean; effectiveType?: string };
+    deviceMemory?: number;
+  };
+
+  if (!forced) {
+    if (nav.connection?.saveData) return null;
+    const effective = nav.connection?.effectiveType;
+    if (effective === "slow-2g" || effective === "2g" || effective === "3g") return null;
+  }
+
+  // Acquire a real context rather than trusting a feature string.
+  const probe = document.createElement("canvas");
+  const gl = probe.getContext("webgl2");
+  if (!gl) return null;
+  gl.getExtension("WEBGL_lose_context")?.loseContext();
+
+  const cores = nav.hardwareConcurrency ?? 2;
+  const memory = nav.deviceMemory ?? 2;
+
+  if (cores >= 8 && memory >= 8) return TIERS.high;
+  if (cores >= 4) return TIERS.mid;
+  return forced ? TIERS.mid : null;
+}
+
+export function HeroCanvas() {
+  const [tier, setTier] = useState<Tier | null>(null);
+
+  useEffect(() => {
+    // Deferred past first paint so the decision itself never competes with rendering the page.
+    const id = window.setTimeout(() => setTier(chooseTier()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  if (!tier) return null;
+  return <WattleField {...tier} />;
+}

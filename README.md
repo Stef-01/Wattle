@@ -1,108 +1,140 @@
-# Wattle Technologies — WATL
+# Wattle Technologies
 
-Marketing site for **Wattle Technologies**, a modern futurism practice. Static HTML, CSS and vanilla JS — no build step, no dependencies, no framework.
+The corporate site for **Wattle Technologies**, the company behind [ADHD.ME](../ADHD).
 
-**Not currently hosted.** Run it locally, or see [Deployment](#deployment) to put it somewhere.
+It is a separate tree from the product on purpose: the product's public surfaces are governed
+by Australian health-advertising rules and a compliance suite that runs in its build, and a
+company page about hiring or partnerships has no business being routed through that. Same
+house, different door.
 
----
-
-## Run it locally
-
-Any static server works. From the repo root:
-
-```bash
-python -m http.server 4173
-```
-
-Then open `http://localhost:4173`. Opening `index.html` directly off the filesystem also works — nothing depends on a server except the `404.html` route.
-
----
-
-## Structure
-
-```
-index.html        Landing — poster hero, thesis, capabilities, method, fieldwork tease
-approach.html     Method — three horizons, six lenses, five movements, standing rules
-work.html         Fieldwork — featured engagements, engagement shapes, artefacts
-about.html        Practice — the wattle principle, structure, position, colophon
-contact.html      Brief form (mailto-composed) + what happens next
-404.html          Not-found poster
-
-css/wattle.css    The whole design system, in 18 numbered sections
-js/wattle.js      Theme toggle, nav, scroll reveal, marquee, form. ~120 lines.
-assets/           SVG motifs + generated social card
-tools/make-og.py  Regenerates the social card
-```
-
-Pages are intentionally self-contained: header and footer are duplicated in each file rather than templated. Five pages, no build tooling — the duplication is cheaper than the pipeline. If the site grows past ~10 pages, that trade flips.
-
----
-
-## Design system
-
-Quiet by construction. Soft violet grounds carry every panel, wattle gold is reserved for the letterforms, and the layout is mostly whitespace. The wordmark is the one loud element: WATL set enormous in a garalde serif and cropped by the lower edge of its panel.
-
-| Token | Value | Role |
-|---|---|---|
-| `--gold` | `#E9B44C` | Wattle gold. Letterforms and small accents only — never a background. |
-| `--gold-deep` | `#C8912E` | The same gold, darkened for small text on light grounds |
-| `--violet-deep` | `#2E2545` | Deep ground, dark-theme panels |
-| `--violet` / `--violet-soft` | `#6B5B95` / `#B9AAD6` | Mid and light ground stops |
-| `--ink` / `--paper` | `#221C33` / `#FAF8FC` | Violet-tinted neutral pair, both themes |
-
-**Type** — Cormorant Garamond (300/400) for display and the wordmark; Inter (400/500) for body and labels. Two families, both from Google Fonts.
-
-**Grounds** — `.soft` is a stack of four radial gradients over a linear base, with a grain overlay to stop the wide gradients banding. `.soft--deep` is the dark variant. Both are fixed violet in either theme; only the surrounding page flips.
-
-**Themes** — light by default, dark honoured from `prefers-color-scheme`, and an explicit toggle persisted to `localStorage` under `watl-theme`. A tiny inline script in each `<head>` sets the attribute before first paint so there is no flash.
-
-**Motion** — one easing curve (`--ease`), one duration (`--dur`). Scroll reveal via `IntersectionObserver`, staggered with `data-reveal-delay`. Everything collapses under `prefers-reduced-motion`.
-
-### Assets
-
-| File | Purpose |
-|---|---|
-| `assets/wattle-sprig.svg` | Wattle sprig, used once per page at most, on a plate |
-| `assets/bloom.svg` | Single bloom rosette in gold |
-| `assets/grain.svg` | `feTurbulence` noise, overlaid on every soft ground |
-| `assets/og.png` | 1200×630 social card |
-| `assets/favicon.svg`, `assets/apple-touch-icon.png` | Icons |
-
-The social card is generated, not hand-drawn — see `tools/make-og.py`. Re-render with:
+## Run it
 
 ```bash
-python tools/make-og.py
+export PATH="$HOME/.local/bin:$PATH"   # node + pnpm live here on this machine
+pnpm install
+pnpm dev                                # http://localhost:3200
 ```
 
-It uses Pillow and Arial Black from the Windows font directory; adjust `BLACK_TTF` on other platforms.
+Port **3200** is deliberate — ADHD.ME's dev server holds 3000 (and falls back to 3001), and its
+Playwright suite uses 3100. All three can run at once.
 
----
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Dev server on :3200 |
+| `pnpm build` | Production build (all routes prerender static) |
+| `pnpm start` | Serve the production build on :3200 |
+| `pnpm typecheck` | `tsc --noEmit`, strict, `noUncheckedIndexedAccess` on |
+| `pnpm contrast` | Recomputes every text pairing in `globals.css` against the 4.5:1 AA floor |
+| `pnpm verify` | typecheck + contrast + build — the gate before a commit |
 
-## Content status
+## Layout
 
-Copy is written and structurally final. Two things are placeholders and should be replaced before this is treated as a live commercial site:
+- `app/` — the routes: `/` (home), `/ventures`, `/approach`, `/company`, `/contact`, `/accessibility`
+- `app/globals.css` — the whole palette and every component class, tokens at the top
+- `src/content/company.ts` — **the company register.** Every fact about Wattle Technologies
+- `src/content/ventures.ts` — the venture register. ADHD.ME's entry
+- `src/content/team.ts` — the team gate and roster
+- `src/content/presence.ts` — where the company actually operates
+- `src/content/disclosures.ts` — **what it does not hold**, published rather than faked
+- `PRODUCT.md` / `DESIGN.md` — product truth and the visual world
+- `docs/BRIEF-GAPS.md` — **read before launch.** Every point needing a real fact or genuine consultation
 
-- **Featured fieldwork** on `work.html` and the fieldwork rows on `index.html` are illustrative engagement shapes, not real named clients.
-- **`hello@wattle.technology`** is used throughout as the contact address and in the `mailto:` the form composes. Change it in all five pages plus `js/wattle.js`.
+Three doors, one list: `DOORS` in `app/site.ts` feeds the header, the footer *and* the sitemap,
+so a page cannot be linked and unlisted at the same time.
 
-The contact form deliberately has no backend — it composes a `mailto:` in the visitor's own client, so the site stores and transmits nothing. Swap in a form endpoint if that changes.
+## What this site deliberately does not say
 
----
+The rule carried over from the ADHD.ME tree is that a sentence about a real company or a real
+person ships only if somebody actually said it. So there is no logo wall, no metrics strip, no
+testimonial row, no "founded in ____", and no ABN in the footer — not because a company site
+should not have them, but because **nobody has supplied them to this repository.**
 
-## Deployment
+`UNCONFIRMED` in `src/content/company.ts` is the list of exactly those gaps, with the reason
+each one matters. No page reads from it; it is a to-do for a human. **Before this goes public,
+close these:**
 
-There is no deployment configured. Every path in the site is relative, so the repo root can be dropped onto any static host as-is — Cloudflare Pages, Netlify, Vercel, S3, or GitHub Pages — with no build command and no output directory.
+1. ABN / ACN and the registered entity name — required on Australian commercial pages
+2. Date of incorporation
+3. Registered office (ADHD.ME names Beecroft NSW and the Gold Coast QLD as areas *served* — an
+   area served is not an address)
+4. A privacy policy and terms **for the company**; ADHD.ME's own do not cover the parent
+5. Insurance, clinical governance and a complaints route — every practice will ask
+6. A company email. `COMPANY.email` currently points at the address ADHD.ME already publishes
+   in its Organization JSON-LD, so it discloses nothing new — but it is a personal Gmail, and it
+   is the one constant to change once a domain exists.
 
-Two things to set once a host and domain are chosen:
+## The team
 
-- **`og:image`** is currently the relative `assets/og.png`. Social scrapers need an absolute URL, so change it to `https://<your-domain>/assets/og.png` in all five pages.
-- **The social card** bakes in a Windows Garamond as a stand-in for Cormorant. If you install Cormorant Garamond locally, point `SERIF` in `tools/make-og.py` at it and re-render for an exact match with the site.
-- **`sitemap.xml`, `robots.txt` and a `<link rel="canonical">`** were removed along with the old GitHub Pages setup, since they only make sense once a real origin exists. Re-add them pointing at the live domain.
+The team lives on `/company` and is **live**, carrying Vikram Ganeshalingam and Stefan Thottunkal — Vikram's direction,
+2026-08-22.
 
-If you go back to GitHub Pages, note that it only serves **public** repos on the free plan.
+`TEAM_PUBLIC` in `src/content/team.ts` is the single switch: flip it and the team section on
+`/company` disappears with it. Adding a person is one entry in `TEAM`.
 
----
+Both entries are **transcribed** from ADHD.ME's `app/about/team.ts`, where they were supplied by
+their subjects — not rewritten for a company page. `role` and `remit` render only when supplied,
+so somebody can be added the day their name arrives and gain a line later; a plate with nothing
+but a name is the honest intermediate state. Portraits are the founder-supplied photographs from
+the same tree, and `portrait: null` falls back to a monogram at the same size. Affiliation logos
+ship only where licensed to us — which is why Bond renders as a wordmark and NOURISH and the
+Health Systems Innovation Lab render as marks.
 
-## Licence
+**ADHD.ME's own `/about` stays gated.** Its 2026-08-21 direction ("we dont know who will be on it
+finally") covers five people, two of whom have not confirmed their entries. A narrower
+instruction here is not a wider one there, which is why the two gates are separate flags in
+separate trees.
 
-Code is MIT — see [LICENSE](LICENSE). The Wattle Technologies name, the WATL wordmark and the bloom motif are not.
+## Design
+
+See **[DESIGN.md](DESIGN.md)** for the full system. The short version: the site is set as a
+*company record* — label rail beside content, hairlines as the only chrome — behind one dark
+full-bleed front door carrying a living wattle spray. The dark hero earns attention; the register
+earns belief.
+
+### The golden wattle palette
+
+The palette is *Acacia pycnantha*: bright golden blossom, grey-green foliage, a warm bark-dark
+for the type. It started as ADHD.ME's tokens and was recoloured on 2026-08-23 — the product's
+brown-amber accent reads as spice rather than as wattle, and this is the parent company, which
+gets to look like the thing it is named after.
+
+**The flower colour is split in two, and that split is load-bearing.** Wattle gold is bright,
+and bright gold on paper is unreadable. So `--blossom` (`#f2c230`) is the real flower and is
+used on dark grounds and as decoration, while `--gold` (`#7c5e0b`) is the same hue taken down
+to a golden-olive that clears AA as text. **Anything carrying words uses `--gold`.**
+`--gold-mid` measures 2.49 on paper and carries nothing but the depth in the mark.
+
+Measured, not eyeballed — every ratio in the `:root` comments was verified in-browser:
+
+| pairing | ratio |
+| --- | --- |
+| `--ink` on `--paper` | 15.35 |
+| `--muted` on `--paper` / `--stone` | 5.19 / 4.70 |
+| `--gold` on `--paper` / `--gold-soft` | 5.81 / 5.38 |
+| `--on-leaf` / `--sage` / `--blossom` on `--leaf` | 11.12 / 5.27 / 6.93 |
+
+`--leaf` is the foliage green, and it is what makes this the *parent*: ADHD.ME has no green at
+all. Product surfaces are paper and gold; the company speaks on the green.
+
+The mark is a drawn wattle sprig (`app/wattle-mark.tsx`) — geometric, decorative,
+`aria-hidden`, and a placeholder that holds the brand's shape until a designer supplies a real
+one. `app/opengraph-image.tsx` hardcodes its palette because the OG renderer has no stylesheet
+to read tokens from, so **a `:root` change must be repeated there by hand.**
+
+## CI
+
+`.github/workflows/ci.yml` runs two jobs on push to `main` and on every PR: **verify**
+(install, typecheck, build) and **contrast**.
+
+The contrast job exists because `globals.css` documents a measured ratio beside nearly every
+token, and a documented ratio is the first casualty of a recolour — the numbers stay
+confidently in the comments while the colours move out from under them. That already happened
+once: `--gold-mid` shipped commented at 3.0 and measured 2.49. `scripts/contrast-gate.mjs`
+reads the tokens out of the stylesheet, recomputes all twelve text pairings and fails under
+4.5:1. Decorative tokens are exempt by *not appearing in the pairs list*, so exempting one is a
+diff somebody reviews.
+
+## Not in this tree yet
+
+No unit tests and no e2e. If this site grows a contact form or any dynamic route, it needs both
+a test layer and a privacy notice before that ships.

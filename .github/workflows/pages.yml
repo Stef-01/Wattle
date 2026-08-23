@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+# Replaces the static-site workflow this repo shipped with (5ebf11d). Same trigger, same
+# permissions, same concurrency — the difference is that the site is now a Next.js app, so
+# the artifact has to be BUILT rather than uploaded from the repo root.
+#
+# GITHUB_PAGES=true is what switches next.config.mjs into static-export mode with the
+# `/Wattle` base path this project page needs. Without it the export lands at the root and
+# the deployed site 404s on its own assets.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build the static export
+        env:
+          GITHUB_PAGES: "true"
+        run: pnpm build
+
+      # Pages serves through Jekyll unless told not to, and Jekyll drops any directory
+      # beginning with an underscore — which is exactly where Next puts its assets (_next).
+      - run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
