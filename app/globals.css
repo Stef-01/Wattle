@@ -460,3 +460,71 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    and is worth doing if this layout is reused. */
 @media (max-width:991px){ .cols-3{ grid-template-columns:1fr 1fr !important } }
 @media (max-width:767px){ .cols-3{ grid-template-columns:1fr !important } }
+
+/* ==========================================================================
+   SPECIMEN PLATE
+
+   A herbarium sheet closing /company: taxonomy beside a generated drawing of
+   Acacia pycnantha. The drawing comes from the same botany functions as the
+   hero's WebGL field, so the two are one plant described twice.
+
+   Written when the plate was the last thing on the site still asking for the
+   pre-poster class names, and rendering as raw text under the team. Tokens
+   only — nothing here introduces a colour outside the ten.
+   ========================================================================== */
+.plate{ background:var(--black); color:var(--white); padding:var(--space-4xl) 0 }
+.plate-grid{ display:grid; grid-template-columns:1fr 1.15fr .85fr;
+             column-gap:var(--space-2xl); row-gap:var(--space-xl); align-items:start }
+@media (max-width:991px){ .plate-grid{ grid-template-columns:1fr } }
+
+.plate-family{ font-family:var(--font-mono); font-size:.78em; text-transform:uppercase;
+               letter-spacing:.08em; opacity:.65; margin:0 }
+.plate-binomial{ font-style:italic; margin:var(--space-2xs) 0 0 }
+.plate-authority{ font-family:var(--font-mono); font-size:.78em; opacity:.65;
+                  margin:var(--space-2xs) 0 0 }
+.plate-note{ margin:var(--space-m) 0 0; max-width:38ch; opacity:.8; line-height:1.5 }
+
+.plate-figure{ display:block }
+.plate-svg{ width:100%; height:auto; display:block }
+
+/* The plant. Stems and phyllodes are the foliage green; the heads take their
+   colour from the radial gradient defined in the component. */
+.plate-stem,.plate-branch{ fill:none; stroke:var(--eucalypt); stroke-linecap:round;
+                           stroke-linejoin:round }
+.plate-stem{ stroke-width:5 }
+.plate-branch{ stroke-width:3 }
+.plate-blade{ fill:var(--eucalypt) }
+.plate-vein{ fill:none; stroke:var(--black); stroke-width:1; opacity:.4 }
+
+/* The determination label, set as a real two-column register. */
+.plate-label{ margin:0; border-top:var(--rule) solid currentColor }
+.plate-label > div{ display:grid; grid-template-columns:auto 1fr; gap:var(--space-s);
+                    padding:var(--space-xs) 0; border-bottom:var(--rule) solid currentColor }
+.plate-label dt{ font-family:var(--font-mono); font-size:.72em; text-transform:uppercase;
+                 letter-spacing:.08em; opacity:.65 }
+.plate-label dd{ margin:0; font-size:.95em }
+
+/* Structural hooks the plate's markup carries. plate-id is the taxonomy column;
+   the two <g> wrappers group the drawing so heads and phyllodes can be addressed
+   as sets rather than as ~900 individual circles. */
+.plate-id{ align-self:start }
+.plate-phyllode,.plate-head{ transform-box:fill-box }
+
+/* ==========================================================================
+   THE DRAWN SPRAY — the hero's fallback.
+
+   .hero-bloom is hidden whenever the WebGL field mounts, which means these
+   rules are only ever seen by a visitor who does NOT get the canvas: reduced
+   motion, Data Saver, a small screen, a low-powered device, or no WebGL2. That
+   is precisely the audience least well served by leaving them unstyled, which
+   is what was happening — the classes went with the old design system and the
+   fallback drew as unfilled paths.
+
+   No animation is attached to .bloom-drift. Everyone reaching this markup has
+   already been routed here by a capability or preference check, and several of
+   those checks are "this person asked for less motion".
+   ========================================================================== */
+.bloom-stem{ fill:none; stroke:var(--eucalypt); stroke-width:6;
+             stroke-linecap:round; stroke-linejoin:round }
+.bloom-spray .bloom-head{ fill:var(--wattle) }
+.bloom-drift{ transform-box:fill-box; transform-origin:center }

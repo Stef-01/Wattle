@@ -20,10 +20,10 @@ import { PLATE, LABEL } from "@/wattle/specimen";
 export function SpecimenPlate() {
   return (
     <section className="plate" aria-labelledby="plate-title">
-      <div className="shell plate-grid">
+      <div className="padding-global plate-grid">
         <div className="plate-id">
           <p className="plate-family">{LABEL.family}</p>
-          <h2 id="plate-title" className="display plate-binomial">
+          <h2 id="plate-title" className="heading-style-h3 plate-binomial">
             {LABEL.binomial}
           </h2>
           <p className="plate-authority">
@@ -46,8 +46,11 @@ export function SpecimenPlate() {
             <defs>
               <radialGradient id="plate-head" cx="36%" cy="30%" r="72%">
                 <stop offset="0%" stopColor="#ffe27a" />
-                <stop offset="58%" stopColor="var(--blossom)" />
-                <stop offset="100%" stopColor="var(--gold-mid)" />
+                {/* --blossom is soft PINK in the ten-hue palette and --gold-mid no longer
+                    exists at all, so this gradient was drawing a pink flower into a hole.
+                    --wattle is the gold the hero uses. */}
+                <stop offset="58%" stopColor="var(--wattle)" />
+                <stop offset="100%" stopColor="#c9992a" />
               </radialGradient>
             </defs>
 

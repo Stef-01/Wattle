@@ -60,12 +60,12 @@ export function WattleBloom({ className }: { className?: string }) {
             fill on sixteen circles looks like a dot pattern, not a flower. */}
         <radialGradient id="bloom-head" cx="35%" cy="30%" r="75%">
           <stop offset="0%" stopColor="#ffe27a" />
-          <stop offset="55%" stopColor="var(--blossom)" />
-          <stop offset="100%" stopColor="var(--gold-mid)" />
+          <stop offset="55%" stopColor="var(--wattle)" />
+          <stop offset="100%" stopColor="#c9992a" />
         </radialGradient>
         <linearGradient id="bloom-stem" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--sage)" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="var(--sage)" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="var(--eucalypt)" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="var(--eucalypt)" stopOpacity="0.25" />
         </linearGradient>
       </defs>
 
@@ -84,7 +84,7 @@ export function WattleBloom({ className }: { className?: string }) {
           />
 
           {/* Bipinnate foliage, suggested rather than drawn leaflet by leaflet. */}
-          <g fill="var(--sage)">
+          <g fill="var(--eucalypt)">
             <path d="M96 462c44-14 76-44 96-90-46 4-80 26-96 90Z" opacity="0.34" />
             <path d="M150 384c42-13 72-42 91-86-44 4-76 25-91 86Z" opacity="0.28" />
             <path d="M196 300c40-12 68-40 86-82-42 4-72 24-86 82Z" opacity="0.22" />

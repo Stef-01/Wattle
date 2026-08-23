@@ -33,13 +33,14 @@ const CSS = join(ROOT, "app/globals.css");
 /** Known-unmigrated, with the count as of the poster-brutalist rewrite. */
 const BASELINE = {
   // Components rendered by the pages above, and unmigrated with them.
-  "app/specimen-plate.tsx": 18,
-  "app/wattle-bloom.tsx": 3,
-  "app/wattle-mark.tsx": 2,
 };
 
 /** Not rendered by anything — kept out of the count rather than silently passed. */
-const UNREACHABLE = new Set(["app/site-header.tsx"]);
+const UNREACHABLE = new Set([
+  "app/site-header.tsx",
+  // Rendered only by site-header.tsx, so it is as unreachable as its consumer.
+  "app/wattle-mark.tsx",
+]);
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -84,8 +85,14 @@ function requestedClasses(src) {
   for (const m of src.matchAll(/className\s*=\s*\{`([^`]*)`\}/g)) {
     for (const c of m[1].replace(/\$\{[^}]*\}/g, " ").split(/\s+/)) if (c) set.add(c);
   }
-  for (const m of src.matchAll(/className\s*=\s*\{\s*"([^"]*)"/g)) {
-    for (const c of m[1].split(/\s+/)) if (c) set.add(c);
+  /* Any string literal inside a className EXPRESSION. Matching only expressions
+     that begin with a string missed the conditional form —
+     `className={breathes ? "bloom-head" : undefined}` — and `bloom-head` was in
+     fact undefined, so the gate reported a clean file that was not one. */
+  for (const m of src.matchAll(/className\s*=\s*\{([^}]*)\}/g)) {
+    for (const lit of m[1].matchAll(/["']([^"']*)["']/g)) {
+      for (const c of lit[1].split(/\s+/)) if (c) set.add(c);
+    }
   }
   return set;
 }
