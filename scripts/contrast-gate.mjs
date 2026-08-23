@@ -68,6 +68,33 @@ const PAIRS = [
   ["white", "jacaranda", "violet grounds"],
 ];
 
+/* --------------------------------------------------------------------------
+   THE PALETTE IS EXACTLY TEN HUES, PLUS BLACK AND WHITE.
+
+   The spec states it and says nothing outside the list, ever. It drifted once anyway — an
+   eleventh, --wattle-bud, was added in good faith to solve a real rendering problem, and the
+   honest fix turned out to be deriving that colour from two existing hues instead.
+
+   A rule nobody can enforce is a rule that drifts again, so this asserts it. Adding a hue now
+   means editing this list, which puts the decision in a diff somebody reviews rather than in a
+   file nobody re-reads.
+   -------------------------------------------------------------------------- */
+const ALLOWED = [
+  "black", "white",
+  "wattle", "bloom", "waratah", "boronia", "blossom",
+  "eucalypt", "lorikeet", "desertpea", "jacaranda", "ochre",
+];
+
+const declared = [...css.matchAll(/^\s*--([a-z-]+)\s*:\s*#[0-9a-fA-F]{3,6}/gm)].map((m) => m[1]);
+const extra = declared.filter((n) => !ALLOWED.includes(n));
+if (extra.length) {
+  console.error(`\nPALETTE: ${extra.length} colour token(s) outside the ten:`);
+  extra.forEach((n) => console.error(`  --${n}`));
+  console.error("Derive the colour from two existing hues, or add it to ALLOWED deliberately.");
+  process.exit(1);
+}
+console.log(`palette: ${ALLOWED.length - 2} hues + black/white — as specified\n`);
+
 const FLOOR = 4.5;
 let failed = 0;
 
