@@ -28,7 +28,7 @@ about.html        Practice — the wattle principle, structure, position, coloph
 contact.html      Brief form (mailto-composed) + what happens next
 404.html          Not-found poster
 
-css/wattle.css    The whole design system, in 20 numbered sections
+css/wattle.css    The whole design system, in 18 numbered sections
 js/wattle.js      Theme toggle, nav, scroll reveal, marquee, form. ~120 lines.
 assets/           SVG motifs + generated social card
 tools/make-og.py  Regenerates the social card
@@ -40,18 +40,19 @@ Pages are intentionally self-contained: header and footer are duplicated in each
 
 ## Design system
 
-Golden wattle (*Acacia pycnantha*) as the whole visual argument: gold pom-pom blooms as hard circles, duotone plates under a CSS halftone screen, oversized wide-grotesk type, and repeated stacked wordmarks used as texture.
+Quiet by construction. Soft violet grounds carry every panel, wattle gold is reserved for the letterforms, and the layout is mostly whitespace. The wordmark is the one loud element: WATL set enormous in a garalde serif and cropped by the lower edge of its panel.
 
 | Token | Value | Role |
 |---|---|---|
-| `--gold` | `#FFC300` | The only fixed brand colour. Accent, never ground — except the closing slab. |
-| `--violet` / `--violet-deep` | `#4B2FB8` / `#2B1A6B` | Primary duotone partner, sprig ink |
-| `--sky` | `#35B6E8` | Cool gradient terminus |
-| `--coral` / `--blush` | `#FF4A2B` / `#FF9DBB` | Warm poster gradient |
-| `--leaf` | `#1F6F5C` | Phyllode green, success states |
-| `--ink` / `--paper` | `#0A0912` / `#F7F4EC` | Ground pair, both themes |
+| `--gold` | `#E9B44C` | Wattle gold. Letterforms and small accents only — never a background. |
+| `--gold-deep` | `#C8912E` | The same gold, darkened for small text on light grounds |
+| `--violet-deep` | `#2E2545` | Deep ground, dark-theme panels |
+| `--violet` / `--violet-soft` | `#6B5B95` / `#B9AAD6` | Mid and light ground stops |
+| `--ink` / `--paper` | `#221C33` / `#FAF8FC` | Violet-tinted neutral pair, both themes |
 
-**Type** — Archivo (variable, `font-stretch: 125%` at weight 900) for display; Space Grotesk for body; JetBrains Mono for labels and micro-copy. All from Google Fonts.
+**Type** — Cormorant Garamond (300/400) for display and the wordmark; Inter (400/500) for body and labels. Two families, both from Google Fonts.
+
+**Grounds** — `.soft` is a stack of four radial gradients over a linear base, with a grain overlay to stop the wide gradients banding. `.soft--deep` is the dark variant. Both are fixed violet in either theme; only the surrounding page flips.
 
 **Themes** — light by default, dark honoured from `prefers-color-scheme`, and an explicit toggle persisted to `localStorage` under `watl-theme`. A tiny inline script in each `<head>` sets the attribute before first paint so there is no flash.
 
@@ -61,10 +62,9 @@ Golden wattle (*Acacia pycnantha*) as the whole visual argument: gold pom-pom bl
 
 | File | Purpose |
 |---|---|
-| `assets/mark.svg` | Brandmark — three blooms over a W-shaped stem |
-| `assets/wattle-sprig.svg` | Hero illustration — duotone sprig with an internal dot screen |
-| `assets/bloom.svg`, `assets/bloom-ink.svg` | Single bloom rosette in gold and in ink (an `<img>` cannot inherit `currentColor`, so each colourway is its own file) |
-| `assets/grain.svg` | `feTurbulence` noise, overlaid on poster gradients |
+| `assets/wattle-sprig.svg` | Wattle sprig, used once per page at most, on a plate |
+| `assets/bloom.svg` | Single bloom rosette in gold |
+| `assets/grain.svg` | `feTurbulence` noise, overlaid on every soft ground |
 | `assets/og.png` | 1200×630 social card |
 | `assets/favicon.svg`, `assets/apple-touch-icon.png` | Icons |
 
@@ -96,6 +96,7 @@ There is no deployment configured. Every path in the site is relative, so the re
 Two things to set once a host and domain are chosen:
 
 - **`og:image`** is currently the relative `assets/og.png`. Social scrapers need an absolute URL, so change it to `https://<your-domain>/assets/og.png` in all five pages.
+- **The social card** bakes in a Windows Garamond as a stand-in for Cormorant. If you install Cormorant Garamond locally, point `SERIF` in `tools/make-og.py` at it and re-render for an exact match with the site.
 - **`sitemap.xml`, `robots.txt` and a `<link rel="canonical">`** were removed along with the old GitHub Pages setup, since they only make sense once a real origin exists. Re-add them pointing at the live domain.
 
 If you go back to GitHub Pages, note that it only serves **public** repos on the free plan.
