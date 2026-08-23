@@ -5,42 +5,52 @@
 /* ===========================================================================
    WATTLE TECHNOLOGIES — the stylesheet.
 
-   A SIBLING PALETTE, NOT A SECOND ONE. Paper, warm-olive neutrals and the amber
-   accent are the exact tokens ADHD.ME ships, so the two sites read as one house.
-   What makes this the PARENT is the third token: a deep leaf green that ADHD.ME
-   does not use at all. Product surfaces are paper and gold; the company speaks
-   on the green.
+   THE PALETTE IS THE GOLDEN WATTLE ITSELF. Acacia pycnantha: bright golden
+   blossom, grey-green foliage, a warm bark-dark for the type. It is no longer
+   ADHD.ME's amber — the product's accent was a brown-amber that reads as spice
+   rather than as wattle, and this is the parent company, which gets to look
+   like the thing it is named after.
 
-   Contrast is computed, not eyeballed. Every pairing that carries text is noted
-   with its measured ratio against a 4.5 floor.
+   ONE CONSTRAINT SURVIVED THE RECOLOUR: the blossom gold is BRIGHT, and bright
+   gold on paper is unreadable. So the flower colour is split in two — --blossom
+   is the real thing and is used on dark grounds and as decoration, while --gold
+   is the same hue taken down to a golden-olive that clears AA as text. Anything
+   that carries words uses --gold. Every ratio below is computed, not eyeballed,
+   against a 4.5 floor.
    =========================================================================== */
 
 :root {
   color-scheme: light;
 
-  /* Ground and text — shared with ADHD.ME. */
-  --paper: #fbfaf7;
-  --stone: #eeece5;
-  --line: #dfddd6;
-  --ink: #171a14;
-  /* Carried over already-measured: 5.17 on paper, 4.56 on stone, 5.40 on white. */
-  --muted: #696b65;
+  /* Ground and type. Warmer than ADHD.ME's paper — cream rather than off-white. */
+  --paper: #fcfaf4;
+  --stone: #f2efe3;
+  --line: #e2decf;
+  /* Bark-dark, with the foliage green still in it rather than a neutral black. */
+  --ink: #1b2416;
+  /* 5.19 on paper, 4.70 on stone. The obvious #6b7061 measured 4.43 on stone and
+     was rejected for it — one step darker is the smallest change that clears both. */
+  --muted: #676c5d;
 
-  /* The accent — the same amber, at the same measured 5.66:1 on paper. */
-  --gold: #8a5a16;
-  --gold-soft: #f7efe3;
-  /* DECORATIVE ONLY. 3.1:1 on paper — blossom dots and rules, never text. */
-  --gold-mid: #b98436;
+  /* THE BLOSSOM, IN TWO PARTS. */
+  /* Text-safe: golden-olive, 5.81 on paper and 5.38 on --gold-soft. */
+  --gold: #7c5e0b;
+  --gold-soft: #fbf1d2;
+  /* DECORATIVE ONLY — measures 2.49 on paper, so it carries no text at all. Today its one
+     job is the depth in the wattle mark. The numbered card indices used to take it and were
+     moved to --gold: a numeral IS read, and 2.49 is not a colour you read anything at. */
+  --gold-mid: #c9992a;
+  /* The flower as it actually is. 6.9 on --leaf, so it carries words there. */
+  --blossom: #f2c230;
 
-  /* The parent register. Nothing in ADHD.ME uses these. */
-  --leaf: #22301f;
-  --leaf-deep: #1a2618;
-  /* On --leaf: paper 13.4:1, sage 7.4:1, blossom 6.4:1. All clear AA. */
-  --on-leaf: #fbfaf7;
-  --sage: #b8c0b2;
-  --blossom: #e0a458;
+  /* THE FOLIAGE. This is what makes the company the parent: ADHD.ME has no green. */
+  --leaf: #2e3d24;
+  --leaf-deep: #232f1b;
+  /* On --leaf: paper 11.1:1, sage 5.3:1, blossom 6.9:1. All clear AA. */
+  --on-leaf: #fcfaf4;
+  --sage: #a8b394;
 
-  --shadow-card: 0 1px 2px rgb(23 26 20 / 0.04), 0 8px 24px -12px rgb(23 26 20 / 0.12);
+  --shadow-card: 0 1px 2px rgb(27 36 22 / 0.04), 0 8px 24px -12px rgb(27 36 22 / 0.12);
 }
 
 * { box-sizing: border-box; }
@@ -237,120 +247,50 @@ body {
    figure in a book rather than as a step in a wizard. */
 .card-index {
   font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
-  font-size: 1.5rem; color: var(--gold-mid); line-height: 1; display: block; margin-bottom: 1.15rem;
+  font-size: 1.5rem; color: var(--gold); line-height: 1; display: block; margin-bottom: 1.15rem;
 }
 
-/* Blossom bullets — the wattle motif doing a job instead of decorating. */
-.blossom-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
-.blossom-list li {
-  position: relative; padding-left: 1.6rem;
-  font-size: 0.9375rem; line-height: 1.68; color: var(--muted);
-}
-.blossom-list li::before {
-  content: ""; position: absolute; left: 0; top: 0.6em;
-  width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--gold-mid);
-}
-.blossom-list.on-leaf li { color: var(--sage); }
-.blossom-list.on-leaf li::before { background: var(--blossom); }
 
 /* --------------------------------------------------------------------------
-   VENTURE ENTRY
+   VENTURE ENTRY — minimal.
+
+   No card, no tinted header block, no shadow, no pill. A venture here is a name,
+   two sentences and two short lists; boxing that made three lines of fact look
+   like a product tile and gave the page more chrome than content. The only rule
+   left is a hairline above each entry, which is all a list of one — soon two —
+   actually needs.
    -------------------------------------------------------------------------- */
 
-.venture {
-  border: 1px solid var(--line); border-radius: 1.5rem;
-  background: var(--paper); box-shadow: var(--shadow-card);
-  overflow: hidden;
+.entries { list-style: none; margin: 0; padding: 0; display: grid; gap: 4.5rem; }
+
+.entry { border-top: 1px solid var(--line); padding-top: 2rem; }
+
+/* Baseline-aligned so the status reads as an annotation on the name rather than
+   as a second heading. */
+.entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; }
+.entry-name { margin: 0; font-size: clamp(1.9rem, 4.2vw, 2.6rem); }
+.entry-status {
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--gold);
 }
-.venture-head { padding: 2rem; border-bottom: 1px solid var(--line); background: var(--stone); }
-@media (min-width: 760px) { .venture-head { padding: 2.5rem; } }
-.venture-name {
-  margin: 0.85rem 0 0; font-size: clamp(1.9rem, 4vw, 2.75rem);
-}
-.venture-summary { margin: 1rem 0 0; max-width: 52ch; color: var(--muted); font-size: 1.0625rem; line-height: 1.62; }
-.venture-body { padding: 2rem; display: grid; gap: 2.5rem; }
-@media (min-width: 760px) { .venture-body { padding: 2.5rem; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; } }
-.venture h4 {
-  margin: 0 0 0.9rem; font-size: 0.6875rem; font-weight: 600;
+
+.entry-summary { margin: 1.15rem 0 0; max-width: 56ch; font-size: 1.0625rem; line-height: 1.6; }
+.entry-problem { margin: 0.85rem 0 0; max-width: 56ch; font-size: 1.0625rem; line-height: 1.62; color: var(--muted); }
+
+.entry-areas { margin: 1.6rem 0 0; font-size: 0.875rem; color: var(--muted); }
+.entry-areas strong { color: var(--ink); font-weight: 500; }
+
+.entry-cols { margin-top: 2.5rem; display: grid; gap: 2rem; }
+@media (min-width: 760px) { .entry-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; } }
+
+.entry-label {
+  margin: 0 0 1rem; font-size: 0.6875rem; font-weight: 600;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
 }
-
-.pill {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  padding: 0.3rem 0.7rem; border-radius: 999px;
-  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-  background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-mid);
-}
-
-.meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
-.meta-row li { font-size: 0.875rem; color: var(--muted); }
-
-/* --------------------------------------------------------------------------
-   TEAM PLATES
-
-   The plates are capped at 320px rather than stretched to fill the column. With
-   two people on a 68rem shell, `1fr` columns would render two 490px portraits —
-   a size that reads as a photo gallery rather than as a team. The cap also means
-   a third and fourth plate flow in without the first two changing size.
-   -------------------------------------------------------------------------- */
-
-.team-plates {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; gap: 3.5rem 3rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 320px));
-  justify-content: start;
-}
-
-.team-portrait {
-  position: relative;
-  aspect-ratio: 3 / 4;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  background: var(--stone);
-  border: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-}
-.team-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* The fallback when no photograph has been handed over. Same footprint as a portrait, so a
-   plate without one does not collapse the row. */
-.team-monogram {
-  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
-  font-size: 3rem; color: var(--gold); letter-spacing: -0.02em;
-}
-
-.team-id { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 1.25rem; }
-.team-id strong {
-  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
-  font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2;
-}
-.team-role { font-size: 0.875rem; font-weight: 500; color: var(--gold); }
-
-.team-remit { margin: 0.7rem 0 0; font-size: 0.9375rem; line-height: 1.66; color: var(--muted); }
-
-.team-affiliations {
-  list-style: none; margin: 1.25rem 0 0; padding: 1.15rem 0 0;
-  border-top: 1px solid var(--line);
-  display: flex; flex-direction: column; gap: 0.9rem; align-items: flex-start;
-}
-.team-affiliations a {
-  display: inline-flex; align-items: center;
-  /* 44px of vertical room for a link that is often a small wordmark. */
-  min-height: 2.75rem;
-  text-decoration: none;
-}
-/* The wordmark fallback. It is the LABEL that renders, not the short name — "Final-year MD
-   candidate, Bond University" is the fact somebody supplied, and trimming it to "Bond
-   University" on the page would publish a different one. */
-.team-affiliations a span {
-  font-size: 0.8125rem; line-height: 1.5; color: var(--muted);
-}
-.team-affiliations a:hover span { color: var(--ink); }
-.team-affiliations img {
-  width: auto; height: 1.75rem; max-width: 100%; object-fit: contain;
-  opacity: 0.78; transition: opacity 140ms ease;
-}
-.team-affiliations a:hover img { opacity: 1; }
+/* NO BULLETS. At three lines each, a marker is decoration standing in for the
+   structure the spacing already provides. */
+.entry-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+.entry-list li { font-size: 0.9375rem; line-height: 1.62; color: var(--muted); }
 
 /* --------------------------------------------------------------------------
    THE LEAF BAND — where the company speaks in its own voice.

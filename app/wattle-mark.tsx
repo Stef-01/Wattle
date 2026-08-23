@@ -37,12 +37,13 @@ export function WattleMark({ size = 22, className }: { size?: number; className?
         fill="var(--leaf)"
         opacity="0.42"
       />
-      {/* The blossom cluster. */}
-      <circle cx="17.4" cy="5.1" r="2.5" fill="var(--gold-mid)" />
-      <circle cx="12.9" cy="6.4" r="1.9" fill="var(--gold)" />
-      <circle cx="16.6" cy="10.1" r="2.1" fill="var(--gold)" />
+      {/* The blossom cluster — --blossom, the flower's real colour, not the text-safe
+          olive. These carry no words, so the bright hue is legal here. */}
+      <circle cx="17.4" cy="5.1" r="2.5" fill="var(--blossom)" />
+      <circle cx="12.9" cy="6.4" r="1.9" fill="var(--gold-mid)" />
+      <circle cx="16.6" cy="10.1" r="2.1" fill="var(--blossom)" />
       <circle cx="20.6" cy="9.4" r="1.5" fill="var(--gold-mid)" />
-      <circle cx="13.4" cy="11.3" r="1.2" fill="var(--gold-mid)" opacity="0.8" />
+      <circle cx="13.4" cy="11.3" r="1.2" fill="var(--blossom)" opacity="0.75" />
     </svg>
   );
 }

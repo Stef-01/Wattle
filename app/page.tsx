@@ -39,35 +39,27 @@ export default function HomePage() {
         <section className="section" style={{ borderTop: "1px solid var(--line)" }}>
           <div className="shell">
             <p className="eyebrow">The work</p>
-            <h2 className="display prose-h2" style={{ marginTop: "1rem", maxWidth: "22ch" }}>
-              One venture, built end to end.
-            </h2>
 
-            <div className="venture" style={{ marginTop: "2.5rem" }}>
-              <div className="venture-head">
-                <span className="pill">{STATUS_LABEL[lead.status]}</span>
-                <h3 className="display venture-name">{lead.name}</h3>
-                <p className="venture-summary">{lead.summary}</p>
-              </div>
-              <div className="venture-body">
-                <div>
-                  <h4>The problem</h4>
-                  <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.72 }}>{lead.problem}</p>
+            {/* The same entry treatment /ventures uses, minus the two lists. One shape for a
+                venture across the site, so the home page cannot drift into being a second,
+                prettier description of the same thing. */}
+            <ul className="entries" style={{ marginTop: "2rem" }}>
+              <li className="entry">
+                <div className="entry-head">
+                  <h2 className="display entry-name">{lead.name}</h2>
+                  <span className="entry-status">{STATUS_LABEL[lead.status]}</span>
                 </div>
-                <div>
-                  <h4>What exists</h4>
-                  <ul className="blossom-list">
-                    {lead.built.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+                <p className="entry-summary">{lead.summary}</p>
+                <p className="entry-problem">{lead.problem}</p>
+                <p className="entry-areas">
+                  <strong>{lead.areas.join(" · ")}</strong> — {lead.areasNote}
+                </p>
+              </li>
+            </ul>
 
-            <p style={{ marginTop: "1.5rem" }}>
+            <p style={{ marginTop: "2rem" }}>
               <Link href="/ventures" style={{ color: "var(--gold)", fontWeight: 500 }}>
-                Read the full entry, including what is still open →
+                The full entry, including what is still open →
               </Link>
             </p>
           </div>

@@ -80,16 +80,35 @@ finally") covers five people, two of whom have not confirmed their entries. A na
 instruction here is not a wider one there, which is why the two gates are separate flags in
 separate trees.
 
-## Design
+## Design — the golden wattle palette
 
-A sibling palette, not a second one. `--paper`, `--ink`, `--muted`, `--line` and the amber
-`--gold` are ADHD.ME's exact tokens, with their measured contrast ratios carried across in the
-comments. What makes this the *parent* is `--leaf`, a deep green ADHD.ME does not use at all:
-product surfaces are paper and gold, the company speaks on the green.
+The palette is *Acacia pycnantha*: bright golden blossom, grey-green foliage, a warm bark-dark
+for the type. It started as ADHD.ME's tokens and was recoloured on 2026-08-23 — the product's
+brown-amber accent reads as spice rather than as wattle, and this is the parent company, which
+gets to look like the thing it is named after.
+
+**The flower colour is split in two, and that split is load-bearing.** Wattle gold is bright,
+and bright gold on paper is unreadable. So `--blossom` (`#f2c230`) is the real flower and is
+used on dark grounds and as decoration, while `--gold` (`#7c5e0b`) is the same hue taken down
+to a golden-olive that clears AA as text. **Anything carrying words uses `--gold`.**
+`--gold-mid` measures 2.49 on paper and carries nothing but the depth in the mark.
+
+Measured, not eyeballed — every ratio in the `:root` comments was verified in-browser:
+
+| pairing | ratio |
+| --- | --- |
+| `--ink` on `--paper` | 15.35 |
+| `--muted` on `--paper` / `--stone` | 5.19 / 4.70 |
+| `--gold` on `--paper` / `--gold-soft` | 5.81 / 5.38 |
+| `--on-leaf` / `--sage` / `--blossom` on `--leaf` | 11.12 / 5.27 / 6.93 |
+
+`--leaf` is the foliage green, and it is what makes this the *parent*: ADHD.ME has no green at
+all. Product surfaces are paper and gold; the company speaks on the green.
 
 The mark is a drawn wattle sprig (`app/wattle-mark.tsx`) — geometric, decorative,
 `aria-hidden`, and a placeholder that holds the brand's shape until a designer supplies a real
-one.
+one. `app/opengraph-image.tsx` hardcodes its palette because the OG renderer has no stylesheet
+to read tokens from, so **a `:root` change must be repeated there by hand.**
 
 ## Not in this tree yet
 

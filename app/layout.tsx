@@ -7,7 +7,7 @@ import { COMPANY } from "@/content/company";
 
 /** The browser chrome matches --paper, so there is no seam at the top of a phone screen. */
 export const viewport: Viewport = {
-  themeColor: "#fbfaf7",
+  themeColor: "#fcfaf4",
 };
 
 export const metadata: Metadata = {
