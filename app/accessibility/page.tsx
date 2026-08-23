@@ -59,6 +59,13 @@ export default function AccessibilityPage() {
                 drawn in their finished state rather than disappearing.
               </li>
               <li>
+                <strong style={{ color: "var(--ink)" }}>Motion you can stop.</strong> The home page
+                carries a <em>Pause motion</em> control. The wattle spray moves on its own and keeps
+                moving past five seconds, which under WCAG 2.2.2 needs a way to stop it — and a
+                system-level motion preference does not discharge that, because it only serves
+                readers who set one in advance.
+              </li>
+              <li>
                 <strong style={{ color: "var(--ink)" }}>Text resizing and zoom.</strong> Layouts use
                 relative units throughout and are checked down to a 320&nbsp;pixel viewport without
                 horizontal scrolling.

@@ -3,6 +3,7 @@ import { COMPANY, PRACTICE } from "@/content/company";
 import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
+import { MotionToggle } from "./motion-toggle";
 import { ArrowRight } from "./icons";
 
 /**
@@ -43,6 +44,7 @@ export default function HomePage() {
           </div>
           <WattleBloom className="hero-bloom" />
         </div>
+        <MotionToggle />
       </section>
 
       {lead ? (

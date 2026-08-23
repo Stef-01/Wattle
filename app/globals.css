@@ -175,7 +175,7 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   min-height: 2.875rem; padding: 0.75rem 1.4rem;
   border-radius: 999px; border: 1px solid transparent;
   font-size: 0.9375rem; font-weight: 500; text-decoration: none; cursor: pointer;
-  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
 }
 .btn-primary { background: var(--ink); color: var(--paper); }
 .btn-primary:hover { background: var(--leaf); box-shadow: var(--lift); }
@@ -192,7 +192,7 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   text-decoration-color: color-mix(in srgb, var(--gold) 35%, transparent);
 }
 .go:hover { text-decoration-color: var(--gold); }
-.go svg { transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+.go svg { transition: transform 140ms cubic-bezier(0.2, 0, 0, 1); }
 .go:hover svg { transform: translateX(3px); }
 
 /* --------------------------------------------------------------------------
@@ -287,29 +287,76 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   .hero-bloom { max-height: 12rem; }
 }
 
-/* THE LIVE PART. Two independent cycles — the spray drifts, the heads breathe —
-   at prime-ish periods so the pair never resolves into a single visible loop. */
+/* THE LIVE PART.
+
+   Three ambient cycles, and the numbers are the whole craft:
+
+   - The spray's ROTATION and its DRIFT are on separate cycles offset from each
+     other, not locked to the same keyframes. Locked together they read as one
+     mechanical rocker; offset, the spray turns slightly out of phase with its
+     rise the way a stem loaded at one end actually behaves.
+   - The heads breathe at 0.985–1.015. They were 0.94–1.06, which is past the
+     point where a pulse stops reading as life and starts demanding attention
+     from someone trying to read the sentence beside it.
+   - Sine-based easing on both, because a looping ambient cycle has to be
+     seamless at the wrap and any ease-out curve visibly stalls there. */
 @keyframes spray-drift {
-  0%, 100% { transform: rotate(-1.15deg) translateY(0); }
-  50%      { transform: rotate(1.35deg) translateY(-10px); }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+@keyframes spray-turn {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50%      { transform: rotate(1.3deg); }
 }
 @keyframes head-breathe {
-  0%, 100% { transform: scale(0.94); opacity: 0.9; }
-  50%      { transform: scale(1.06); opacity: 1; }
+  0%, 100% { transform: scale(0.985); opacity: 0.92; }
+  50%      { transform: scale(1.015); opacity: 1; }
 }
 
+/* Two elements so the two cycles can differ; one element cannot carry two
+   transform animations at different periods. */
 .bloom-spray {
   transform-origin: 52px 548px;
-  animation: spray-drift 11s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  animation: spray-turn 7s cubic-bezier(0.37, 0, 0.63, 1) infinite;
 }
-.bloom-head { animation: head-breathe 4.7s cubic-bezier(0.37, 0, 0.63, 1) infinite; }
+.bloom-drift {
+  animation: spray-drift 4.9s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  /* 30% of the turn cycle, so the two never peak together. */
+  animation-delay: -2.1s;
+}
+.bloom-head {
+  transform-box: fill-box;
+  animation: head-breathe 4.3s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
 
-/* The stem draws itself once, on arrival, then stays. The one entrance moment. */
+/* The stem draws itself once, on arrival. A dramatic reveal tops out around
+   1.2s; at 1700ms this was a reveal the viewer had time to get bored of. */
 @keyframes stem-draw { from { stroke-dashoffset: 620; } to { stroke-dashoffset: 0; } }
 .bloom-stem {
   stroke-dasharray: 620;
-  animation: stem-draw 1700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: stem-draw 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* PAUSE, BECAUSE WCAG 2.2.2 IS NOT SATISFIED BY prefers-reduced-motion ALONE.
+   Motion that starts on its own, runs past five seconds and sits alongside
+   other content needs a mechanism to stop it. Reduced-motion covers the reader
+   who configured it in advance; this covers the one who did not and is trying
+   to read. */
+[data-motion="paused"] .bloom-spray,
+[data-motion="paused"] .bloom-drift,
+[data-motion="paused"] .bloom-head { animation-play-state: paused; }
+
+.motion-toggle {
+  position: absolute; right: 1.5rem; bottom: 1.5rem; z-index: 2;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  min-height: 2.75rem; padding: 0.5rem 0.9rem;
+  border-radius: 999px; border: 1px solid rgb(252 250 244 / 0.28);
+  background: rgb(35 47 27 / 0.55); color: var(--sage);
+  font-size: 0.8125rem; cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.motion-toggle:hover { color: var(--on-leaf); border-color: var(--sage); }
+@media (prefers-reduced-motion: reduce) { .motion-toggle { display: none; } }
 
 /* The claim resolves from blur once. Nothing else on the site enters this way. */
 @keyframes resolve {
@@ -331,7 +378,10 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .lift-in {
-      animation: lift-in linear both;
+      /* NOT linear. A scroll-driven reveal still moves 22px through space, and
+         linear easing on spatial movement is the one thing that reliably reads
+         as machine-driven rather than physical. */
+      animation: lift-in cubic-bezier(0.2, 0, 0, 1) both;
       animation-timeline: view();
       animation-range: entry 8% cover 26%;
     }
