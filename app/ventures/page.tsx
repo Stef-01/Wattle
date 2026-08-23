@@ -1,79 +1,134 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { VENTURES, STATUS_LABEL } from "@/content/ventures";
+import { Ticker } from "../ticker";
 
 export const metadata: Metadata = {
   title: "Ventures",
-  description: "The companies and products Wattle Technologies builds, what exists in each, and what is not settled yet.",
+  description: "What Wattle Technologies has built, where it operates, and what is not settled yet.",
   alternates: { canonical: "/ventures" },
 };
 
+/**
+ * VENTURES — the Parable format, in this site's own scheme.
+ *
+ * What was borrowed is the STRUCTURE, not the look: a micro uppercase letterspaced label, a
+ * large headline set upper-left rather than centred, and one dominant full-bleed visual holding
+ * the viewport. Parable does that in serif over a calm blue illustration; this does it in the
+ * display face over a flat brand hue, because the spec allows one colour per section and a
+ * borrowed palette would put twelve hues on a ten-hue site.
+ *
+ * ONE VENTURE MEANS THE PAGE CAN BE GENEROUS. A portfolio of one does not need a grid — it needs
+ * a plate. Each venture gets a full band of its own, so a second entry extends the page rather
+ * than shrinking the first into a third of a row.
+ *
+ * "Still open" keeps the same weight as "What exists". That symmetry is the argument of the whole
+ * site, and it is the one thing about this page that is not a style decision.
+ */
 export default function VenturesPage() {
   return (
     <>
-      <section className="shell band-pad" style={{ paddingBottom: "var(--gap-4)" }}>
-        <h1 className="display claim">What we build.</h1>
-        <p className="lead" style={{ marginTop: "var(--gap-3)" }}>
-          Each entry says what exists today, where it operates, and what has not been settled — in
-          that order, and without softening the third.
-        </p>
+      {/* Upper-left headline over a full-bleed ground — the Parable move. */}
+      <section className="section grad-wattle-eucalypt" style={{ paddingTop: "12vw", paddingBottom: "8vw" }}>
+        <div className="padding-global">
+          <p className="text-style-tag">Ventures — {String(VENTURES.length).padStart(2, "0")}</p>
+          <h1 className="heading-style-h1" style={{ marginTop: "1.5vw" }}>What we build.</h1>
+          <p className="subheading-hero max-width-medium" style={{ marginTop: "2vw" }}>
+            Each entry says what exists today, where it operates, and what has not been settled —
+            in that order, and without softening the third
+          </p>
+        </div>
       </section>
 
-      <section className="shell" style={{ paddingBottom: "var(--gap-6)" }}>
-        <ul className="entries">
-          {VENTURES.map((venture) => (
-            <li key={venture.slug} id={venture.slug} className="lift-in">
-              <div className="reg">
-                <div className="reg-label" style={{ paddingTop: "0.6rem" }}>
-                  {STATUS_LABEL[venture.status]}
-                </div>
-                <div className="reg-body">
-                  <h2 className="display claim-sm">{venture.name}</h2>
-                  <p style={{ margin: "1rem 0 0", maxWidth: "58ch", fontSize: "1.0625rem", lineHeight: 1.6 }}>
-                    {venture.summary}
-                  </p>
-                  <p style={{ margin: "0.85rem 0 0", maxWidth: "62ch", color: "var(--muted)", lineHeight: 1.72 }}>
-                    {venture.problem}
-                  </p>
+      <Ticker
+        className="is-black text-colour-white"
+        items={["One venture", "In build", "Not yet at its own address", "Sydney and the Gold Coast"]}
+      />
 
-                  <p style={{ margin: "1.5rem 0 0", fontSize: "0.9375rem", color: "var(--muted)" }}>
-                    <strong style={{ color: "var(--ink)", fontWeight: 600 }}>
-                      {venture.areas.join(" · ")}
-                    </strong>{" "}
-                    — {venture.areasNote}
-                  </p>
+      {VENTURES.map((venture) => {
+        /* The summary is one sentence with a natural break at the em-dash: a claim, then the
+           mechanism. Set whole in an ultra-heavy display face it ran to seven lines and stopped
+           being a headline. The claim becomes the heading and the mechanism becomes body — no
+           copy is rewritten, it is split where the sentence already splits. */
+        const [claim, ...rest] = venture.summary.split(" — ");
+        const mechanism = rest.join(" — ");
+        return (
+        <div key={venture.slug} id={venture.slug}>
+          {/* The dominant visual: the venture's name at plate scale on a flat hue. */}
+          <section
+            className="is-wattle"
+            style={{ display: "grid", placeItems: "center", padding: "7vw var(--gutter)", containerType: "inline-size" }}
+          >
+            <p className="display-wordmark" style={{ fontSize: "min(12vw, 15cqw)" }}>{venture.name}</p>
+          </section>
 
-                  <div className="split">
-                    <div>
-                      <h3 className="reg-label" style={{ paddingTop: 0, marginBottom: "0.9rem" }}>
-                        What exists
-                      </h3>
-                      <ul className="stack">
-                        {venture.built.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="reg-label" style={{ paddingTop: 0, marginBottom: "0.9rem" }}>
-                        Still open
-                      </h3>
-                      <ul className="stack">
-                        {venture.open.map((line) => (
-                          <li key={line}>{line}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+          <section className="section is-black">
+            <div className="padding-global">
+              <div className="inner-section-wrapper">
+                <p className="text-style-tag">{STATUS_LABEL[venture.status]}</p>
+                <div>
+                  <h2 className="heading-style-h3">{claim}</h2>
+                  {mechanism ? (
+                    <p className="subheading-large max-width-medium" style={{ marginTop: "1.5vw" }}>
+                      {mechanism.charAt(0).toUpperCase() + mechanism.slice(1)}
+                    </p>
+                  ) : null}
+                  <p className="body-text max-width-medium" style={{ marginTop: "2vw" }}>{venture.problem}</p>
+                  <p className="text-style-mono" style={{ marginTop: "2vw" }}>
+                    {venture.areas.join("  /  ")}
+                  </p>
+                  <p className="body-text text-style-muted" style={{ marginTop: ".75vw", maxWidth: "52ch" }}>
+                    {venture.areasNote}
+                  </p>
                 </div>
               </div>
-            </li>
-          ))}
-        </ul>
 
-        <p style={{ marginTop: "var(--gap-3)", fontSize: "0.9375rem", color: "var(--muted)", maxWidth: "62ch" }}>
-          One venture. A parent company with a portfolio of one says so, rather than padding the
-          page with a roadmap and calling it a portfolio.
-        </p>
+              {/* Equal weight, deliberately. */}
+              <div className="card-grid two-up" style={{ marginTop: "2vw" }}>
+                <div>
+                  <p className="text-style-tag">What exists</p>
+                  <ul className="rule-list" style={{ marginTop: "1vw" }}>
+                    {venture.built.map((line) => (
+                      <li key={line} className="body-text">{line}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-style-tag">Still open</p>
+                  <ul className="rule-list" style={{ marginTop: "1vw" }}>
+                    {venture.open.map((line) => (
+                      <li key={line} className="body-text">{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {venture.href ? (
+                <p style={{ marginTop: "3vw" }}>
+                  <a className="button" href={venture.href}>Visit {venture.name}</a>
+                </p>
+              ) : (
+                /* No link while the product has no address of its own. A company site does not
+                   send visitors to a preview deployment. */
+                <p className="text-style-mono" style={{ marginTop: "3vw", opacity: 0.65 }}>
+                  Not yet published at its own address
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+        );
+      })}
+
+      <section className="section is-black">
+        <div className="padding-global">
+          <div className="cta-block is-eucalypt">
+            <h2 className="heading-style-h4">
+              A portfolio of one says so, rather than padding the page with a roadmap
+            </h2>
+            <Link href="/contact" className="button button-pressed">Ask what is live</Link>
+          </div>
+        </div>
       </section>
     </>
   );

@@ -136,7 +136,20 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
 .border-wattle{border:var(--rule) solid var(--wattle)}
 .border-eucalypt{border:var(--rule) solid var(--eucalypt)}
 
-/* The signature: full-bleed vertical two-stop gradients. Always `to bottom`. */
+/* The signature: full-bleed vertical two-stop gradients. Always `to bottom`.
+
+   THEY CARRY THEIR OWN TEXT COLOUR, and that is not cosmetic. Every stop in these pairs is a
+   LIGHT hue, so text on them must be black — but a gradient class that only sets a background
+   inherits white from `body`, and the result is white-on-gold, which is unreadable and shipped
+   that way on /ventures until it was caught by looking.
+
+   The `.is-*` surface utilities already pair ground and foreground for exactly this reason;
+   the gradients were the one family that set a ground and left the type behind. */
+.grad-eucalypt-lorikeet,
+.grad-blossom-wattle,
+.grad-wattle-eucalypt,
+.grad-waratah-wattle{ color:var(--black) }
+
 .grad-eucalypt-lorikeet{background-image:linear-gradient(to bottom,var(--eucalypt),var(--lorikeet))}
 .grad-blossom-wattle{background-image:linear-gradient(to bottom,var(--blossom),var(--wattle))}
 .grad-wattle-eucalypt{background-image:linear-gradient(to bottom,var(--wattle),var(--eucalypt))}
