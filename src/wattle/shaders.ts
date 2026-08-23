@@ -112,6 +112,14 @@ void main() {
 
   // Stamen tips lag their own core very slightly: the head opens outward.
   open = clamp(open - radial * 0.06 * (1.0 - open), 0.0, 1.0);
+
+  /* ---- THE CURSOR OPENS WHAT IT PASSES OVER --------------------------
+     Repulsion alone made the pointer a wind. Warmth opens a flower, so the
+     pointer also drives local bloom: heads near it run ahead of the raceme,
+     colouring up and swelling, and settle back when it leaves. This is the
+     one interaction that changes what the plant IS rather than where it is. */
+  float warmth = smoothstep(3.6, 0.0, length(position - uPointer)) * uPointerOn;
+  open = clamp(open + warmth * 0.42 * (1.0 - open), 0.0, 1.0);
   vOpen = open;
 
   vec3 pos = mix(aDispersed, position, open);
@@ -132,7 +140,7 @@ void main() {
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
 
   // Perspective attenuation, with the tips carrying more visual mass.
-  float sizeScale = mix(0.62, 1.0, radial) * (0.6 + 0.4 * open);
+  float sizeScale = mix(0.66, 1.12, radial) * (0.68 + 0.32 * open);
   gl_PointSize = uSize * sizeScale * uPixelRatio * (11.0 / -mv.z);
   gl_Position = projectionMatrix * mv;
 }
@@ -165,9 +173,13 @@ void main() {
   /* The subject is tightened and the halo pulled back, so a head reads as a cluster of
      discrete anthers rather than a haze. The far copy keeps its softness — it is the
      out-of-focus one, and its diffusion is what gives the frame depth. */
+  /* The core is tightened so a head reads as discrete anthers, but the halo is NOT cut back:
+     it is what gives a head its mass, and trimming it turned the raceme into a wisp that
+     disappeared against black during the dispersed half of the cycle. Definition comes from a
+     harder core, not from a thinner one. */
   float core = smoothstep(mix(0.34, 0.31, uMatte), 0.0, d);
-  float halo = smoothstep(0.5, mix(0.06, 0.14, uMatte), d);
-  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.06 + core * 1.0, uMatte), 0.0, 1.0);
+  float halo = smoothstep(0.5, 0.06, d);
+  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.22 + core * 1.0, uMatte), 0.0, 1.0);
 
   /* NEW GROWTH IS BRONZE AND MATURES GOLD. Straight from the plant: fresh
      growth carries a bronze tint before it colours up. So colour is a
@@ -195,7 +207,10 @@ void main() {
      summing to white and bleaching the gold out of the whole branch — the thing that made a
      saturated #ffc400 read as pale cream. */
   float o = mix(uOpacity * 0.5, mix(uOpacity, 1.0, 0.85), uMatte);
-  gl_FragColor = vec4(colour, alpha * o * (0.3 + 0.7 * vOpen));
+  /* Floor raised from 0.3: the cycle spends real time dispersed, and at 0.3 the plant was
+     effectively invisible for that half of it. */
+  gl_FragColor = vec4(colour, alpha * o * (0.5 + 0.5 * vOpen));
+  #include <colorspace_fragment>
 }
 `;
 
@@ -251,6 +266,7 @@ void main() {
   // Fades out toward the tip, the way a stem tapers into the raceme it carries.
   float a = uOpacity * (1.0 - smoothstep(0.55, 1.0, vAlong)) * 0.9;
   gl_FragColor = vec4(uStem, a);
+  #include <colorspace_fragment>
 }
 `;
 
@@ -295,6 +311,7 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
   gl_FragColor = vec4(uColour, smoothstep(0.5, 0.0, d) * vAlpha * uOpacity);
+  #include <colorspace_fragment>
 }
 `;
 
@@ -338,6 +355,7 @@ void main() {
   float rim = smoothstep(0.5, 0.44, d) - smoothstep(0.44, 0.30, d);
   float a = disc * 0.16 + rim * 0.2;
   gl_FragColor = vec4(uColour, a * uOpacity * (0.6 + vSeed * 0.4));
+  #include <colorspace_fragment>
 }
 `;
 
@@ -389,6 +407,7 @@ void main() {
   float anther = smoothstep(0.74, 1.0, vTip);
   float a = (shaft * 0.42 + anther * 0.85) * vOpen * uOpacity;
   gl_FragColor = vec4(uGold, a);
+  #include <colorspace_fragment>
 }
 `;
 
@@ -435,6 +454,7 @@ void main() {
   c *= 0.72 + vAlong * 0.42;
   float a = uOpacity * (0.55 + vDepth * 0.4);
   gl_FragColor = vec4(c, a);
+  #include <colorspace_fragment>
 }
 `;
 
@@ -464,5 +484,6 @@ uniform float uOpacity;
 varying float vT;
 void main() {
   gl_FragColor = vec4(uStem, uOpacity * 0.55);
+  #include <colorspace_fragment>
 }
 `;
