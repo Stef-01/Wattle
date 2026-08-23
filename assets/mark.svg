@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Wattle Technologies mark">
+  <title>Wattle Technologies</title>
+  <defs>
+    <clipPath id="tile"><rect width="120" height="120" rx="26"/></clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="120" height="120" fill="#0A0912"/>
+    <!-- three wattle blooms set in a W cadence -->
+    <g fill="#FFC300">
+      <!-- left bloom -->
+      <circle cx="30" cy="42" r="11"/>
+      <circle cx="18" cy="34" r="7.5"/>
+      <circle cx="42" cy="34" r="7.5"/>
+      <circle cx="19" cy="52" r="7"/>
+      <circle cx="41" cy="52" r="7"/>
+      <!-- centre bloom, raised -->
+      <circle cx="60" cy="34" r="11.5"/>
+      <circle cx="48" cy="25" r="7.5"/>
+      <circle cx="72" cy="25" r="7.5"/>
+      <circle cx="49" cy="44" r="7"/>
+      <circle cx="71" cy="44" r="7"/>
+      <!-- right bloom -->
+      <circle cx="90" cy="42" r="11"/>
+      <circle cx="78" cy="34" r="7.5"/>
+      <circle cx="102" cy="34" r="7.5"/>
+      <circle cx="79" cy="52" r="7"/>
+      <circle cx="101" cy="52" r="7"/>
+    </g>
+    <!-- stems tracing the W -->
+    <path d="M30 54 L44 92 L60 46 L76 92 L90 54"
+          fill="none" stroke="#FFC300" stroke-width="7"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- phyllode -->
+    <ellipse cx="60" cy="100" rx="20" ry="6" fill="#1F6F5C"/>
+  </g>
+</svg>
