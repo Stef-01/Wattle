@@ -1,5 +1,12 @@
 import { ImageResponse } from "next/og";
 
+/**
+ * Static export (GitHub Pages) needs this declared: with `output: "export"` Next refuses to
+ * collect a metadata route it cannot prove is static. This one is — it renders from module
+ * constants at build time — so declaring it costs nothing and Vercel is unaffected.
+ */
+export const dynamic = "force-static";
+
 export const alt = "Wattle Technologies — health software for the parts of the system people cannot reach";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
