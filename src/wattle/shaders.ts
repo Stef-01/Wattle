@@ -230,3 +230,136 @@ void main() {
   gl_FragColor = vec4(uStem, a);
 }
 `;
+
+/* ===========================================================================
+   THE SUPPORTING LAYERS
+
+   Depth is built from four cues at once — parallax, size, softness and opacity —
+   because any one alone reads as "big dots and small dots" rather than distance.
+   =========================================================================== */
+
+/** Layer 1 — pollen dust. Far behind, tiny, slow, twinkling out of phase. */
+export const DUST_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec4 aAttr;   // size, seed, depth, phase
+uniform float uTime;
+uniform float uPixelRatio;
+uniform vec3 uPointer;
+uniform float uPointerOn;
+varying float vAlpha;
+void main() {
+  vec3 pos = position;
+  // Barely moves: this is the layer that says "there is space behind the subject".
+  pos += wattleDrift(pos, aAttr.y, uTime * 0.35, 0.22);
+  // Parallax: the far field answers the pointer a tenth as much as the subject does.
+  pos += wattlePointer(pos, uPointer, uPointerOn, 0.09, 9.0);
+  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+  gl_PointSize = aAttr.x * uPixelRatio * (11.0 / -mv.z);
+  // Twinkle, each mote on its own cycle so the field never pulses together.
+  vAlpha = 0.30 + 0.34 * sin(uTime * (0.5 + aAttr.w * 0.9) + aAttr.z * 30.0);
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+export const DUST_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uColour;
+uniform float uOpacity;
+varying float vAlpha;
+void main() {
+  vec2 uv = gl_PointCoord - 0.5;
+  float d = length(uv);
+  if (d > 0.5) discard;
+  gl_FragColor = vec4(uColour, smoothstep(0.5, 0.0, d) * vAlpha * uOpacity);
+}
+`;
+
+/**
+ * Layer 6 — foreground bokeh. Large, very soft discs BETWEEN camera and subject.
+ * This is the layer that sells depth: nothing else in a scene can be in front of you.
+ */
+export const BOKEH_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec4 aAttr;
+uniform float uTime;
+uniform float uPixelRatio;
+uniform vec3 uPointer;
+uniform float uPointerOn;
+varying float vSeed;
+void main() {
+  vec3 pos = position;
+  pos += wattleDrift(pos, aAttr.y, uTime * 0.5, 0.85);
+  // Parallax OVER-responds in front of the subject — that inversion is the depth cue.
+  pos += wattlePointer(pos, uPointer, uPointerOn, 1.9, 14.0);
+  vSeed = aAttr.y;
+  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+  gl_PointSize = aAttr.x * uPixelRatio * (11.0 / max(0.4, -mv.z + 12.0));
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+export const BOKEH_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uColour;
+uniform float uOpacity;
+varying float vSeed;
+void main() {
+  vec2 uv = gl_PointCoord - 0.5;
+  float d = length(uv);
+  if (d > 0.5) discard;
+  /* A real out-of-focus highlight is a DISC with a bright rim, not a gaussian blob — the lens
+     iris projects an edge. That rim is the difference between bokeh and fog. */
+  float disc = smoothstep(0.5, 0.42, d);
+  float rim = smoothstep(0.5, 0.44, d) - smoothstep(0.44, 0.30, d);
+  float a = disc * 0.16 + rim * 0.2;
+  gl_FragColor = vec4(uColour, a * uOpacity * (0.6 + vSeed * 0.4));
+}
+`;
+
+/** Layer 5 — stamens. Filaments from each head's core outward; the species' signature. */
+export const STAMEN_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec3 aAttr;   // 0 at core / 1 at tip, cluster t, seed
+uniform float uTime;
+uniform float uBloom;
+uniform vec3 uPointer;
+uniform float uPointerOn;
+varying float vTip;
+varying float vOpen;
+void main() {
+  float tip = aAttr.x;
+  float cluster = aAttr.y;
+  vTip = tip;
+
+  // Filaments follow their own head's opening, so they emerge WITH it rather than before it.
+  float start = cluster * 0.55;
+  float open = smoothstep(start, start + 0.45, uBloom);
+  vOpen = open;
+
+  // The tip travels; the core stays put. Stamens extend, they do not slide.
+  vec3 pos = position;
+  pos = mix(position - vec3(0.0, 0.0, 0.0), position, 1.0);
+  vec3 core = position;
+  pos = mix(core, position, 1.0);
+  pos += wattleDrift(pos, aAttr.z, uTime, 0.3 * tip);
+  pos += wattlePointer(pos, uPointer, uPointerOn * open, 1.15 * tip, 3.1);
+
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+export const STAMEN_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uGold;
+uniform float uOpacity;
+varying float vTip;
+varying float vOpen;
+void main() {
+  // Fades toward the tip: a filament is anchored and thins out.
+  float a = (1.0 - vTip * 0.75) * vOpen * uOpacity * 0.5;
+  gl_FragColor = vec4(uGold, a);
+}
+`;

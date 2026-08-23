@@ -2,41 +2,45 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { buildField, spinePoints } from "@/wattle/botany";
-import { WATTLE_VERT, WATTLE_FRAG, SPINE_VERT, SPINE_FRAG } from "@/wattle/shaders";
+import { spray, dust, bokeh, stamens } from "@/wattle/layers";
+import {
+  WATTLE_VERT, WATTLE_FRAG,
+  DUST_VERT, DUST_FRAG,
+  BOKEH_VERT, BOKEH_FRAG,
+  STAMEN_VERT, STAMEN_FRAG,
+} from "@/wattle/shaders";
 
 /**
- * THE GENERATIVE FIELD.
+ * THE HERO SCENE — one subject, six layers, a bud that opens.
  *
- * Vanilla three.js rather than React Three Fiber: there is exactly one scene with one object in
- * it and no React state driving anything inside the canvas, so a reconciler between React and
- * the scene graph would add a dependency and a render path to manage nothing.
+ * THE NARRATIVE IS THE POINT. The reference is not a loop, it is a shot: a tight bud on a long
+ * stem, the camera pushing in as it opens, then pulling back once it is open, then holding. So
+ * this plays ONCE on arrival and then hands over to scroll. A hero that loops its own reveal
+ * teaches a visitor to stop watching it.
  *
- * NO GSAP / ScrollTrigger EITHER. The brief names it for choreographing the bloom against scroll,
- * and the whole of what this scene needs from scroll is a single 0–1 number read once per frame
- * inside a rAF loop that is already running. The DOM-side reveals are native scroll-driven CSS
- * (`animation-timeline: view()`), which cost nothing at all. Adding a scroll library here would
- * ship ~70 kB to compute a division.
+ * Wattle has no single flower, it has a raceme — so the equivalent of petals unfurling in shells
+ * is TWO nested sequences: heads opening base to tip, and each head's florets opening
+ * core-outward at the same time. More layered than the reference, not less.
  *
- * WHAT PAUSES IT. Three things, and it obeys all of them:
- *   1. `prefers-reduced-motion` — handled upstream, this component is never loaded.
- *   2. The site's own "Pause motion" control (`data-motion="paused"` on <html>), which must stop
- *      the field too. Two pause buttons for one page would be a bug.
- *   3. Off-screen or backgrounded — the loop stops entirely rather than rendering to nobody.
+ * THE SIX LAYERS, back to front:
+ *   1 dust      — far, tiny, twinkling, parallax 0.09
+ *   2 far spray — the same plant at depth, larger and softer: out of focus
+ *   3 stamens   — filaments radiating from each head's core
+ *   4 near spray— the sharp subject
+ *   5 bokeh     — huge soft discs IN FRONT, parallax 1.9 (the inversion is the depth cue)
+ *   6 sky       — a CSS gradient behind the canvas, not geometry
  */
 
 export interface WattleFieldProps {
-  /** Particle budget for this device, decided by the gate upstream. */
-  racemes: number;
-  headsPerRaceme: number;
+  heads: number;
+  dustCount: number;
+  bokehCount: number;
+  stamensPerHead: number;
   maxPixelRatio: number;
 }
 
-export function WattleField({ racemes, headsPerRaceme, maxPixelRatio }: WattleFieldProps) {
+export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxPixelRatio }: WattleFieldProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
-  /* If the context fails after mount, this component must UNRENDER its host — the SVG spray is
-     hidden by `:has(.wattle-field)`, so leaving an empty div behind would hide the fallback and
-     show nothing at all. A gate can be told a context is available and still be wrong. */
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -52,97 +56,103 @@ export function WattleField({ racemes, headsPerRaceme, maxPixelRatio }: WattleFi
     }
 
     const css = getComputedStyle(document.documentElement);
-    const token = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+    const token = (n: string, f: string) => css.getPropertyValue(n).trim() || f;
+    const dpr = Math.min(window.devicePixelRatio, maxPixelRatio);
 
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+    renderer.setPixelRatio(dpr);
     host.appendChild(renderer.domElement);
-    renderer.domElement.style.width = "100%";
-    renderer.domElement.style.height = "100%";
-    renderer.domElement.style.display = "block";
+    renderer.domElement.style.cssText = "width:100%;height:100%;display:block";
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 0.2, 11);
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
 
-    const field = buildField({ racemes, headsPerRaceme, seed: 7 });
+    /* ---- shared uniforms: one clock, one pointer, one bloom for every layer ---- */
+    const uTime = { value: 0 };
+    const uBloom = { value: 0 };
+    const uPointer = { value: new THREE.Vector3(999, 999, 999) };
+    const uPointerOn = { value: 0 };
+    const uOpacity = { value: 0 };
+    const uPixelRatio = { value: dpr };
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(field.home, 3));
-    geometry.setAttribute("aDispersed", new THREE.BufferAttribute(field.dispersed, 3));
-    geometry.setAttribute("aAttr", new THREE.BufferAttribute(field.attributes, 4));
+    const GOLD = new THREE.Color(token("--blossom", "#f2c230"));
+    const BRONZE = new THREE.Color(token("--bronze", "#5a5228"));
+    const SAGE = new THREE.Color(token("--sage", "#a8b394"));
 
-    const uniforms = {
-      uTime: { value: 0 },
-      uBloom: { value: 0 },
-      uPointer: { value: new THREE.Vector3(999, 999, 999) },
-      uPointerOn: { value: 0 },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, maxPixelRatio) },
-      uSize: { value: 15 },
-      uGold: { value: new THREE.Color(token("--blossom", "#f2c230")) },
-      uBronze: { value: new THREE.Color(token("--bronze", "#5a5228")) },
-      uOpacity: { value: 0 },
+    const plant = new THREE.Group();
+    /* COMPOSITION. The spray is authored around the origin because that is where a plant's
+       geometry belongs; where it sits in frame is a layout decision, and it belongs in the half
+       of the hero with nothing to read in it. Text contrast has to be a constant, not something
+       that varies with a drifting particle behind a sentence. */
+    plant.position.set(4.1, 0, 0);
+    scene.add(plant);
+    const disposables: { dispose(): void }[] = [];
+
+    const pointsLayer = (
+      pos: Float32Array, attr: Float32Array, itemSize: number,
+      vert: string, frag: string, extra: Record<string, { value: unknown }>,
+    ) => {
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute("aAttr", new THREE.BufferAttribute(attr, itemSize));
+      const mat = new THREE.ShaderMaterial({
+        vertexShader: vert, fragmentShader: frag,
+        uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uPixelRatio, ...extra },
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      });
+      disposables.push(geo, mat);
+      return { geo, mat };
     };
 
-    const material = new THREE.ShaderMaterial({
-      vertexShader: WATTLE_VERT,
-      fragmentShader: WATTLE_FRAG,
-      uniforms,
-      transparent: true,
-      depthWrite: false,
-      // Additive so overlapping florets build luminance the way a backlit head does.
-      blending: THREE.AdditiveBlending,
+    /* ---- 1. dust ---- */
+    const d = dust(dustCount);
+    const dustL = pointsLayer(d.position, d.attr, 4, DUST_VERT, DUST_FRAG, { uColour: { value: SAGE } });
+    plant.add(new THREE.Points(dustL.geo, dustL.mat));
+
+    /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
+    const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
+    const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 30 },
     });
+    farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
+    const farPoints = new THREE.Points(farL.geo, farL.mat);
+    /* The far copy sits BEHIND and slightly right, not left. At -1.4 it landed at world x 2.7
+       and — being deeper, so covering more world width per pixel — spilled across the headline
+       while the near spray sat safely clear. The layer that overlapped the text was never the
+       one that looked like it was. */
+    farPoints.position.set(0.9, 0.4, -7.5);
+    plant.add(farPoints);
 
-    const points = new THREE.Points(geometry, material);
-
-    /* THE STEM, IN THE SAME SCENE.
-       Previously the drawn SVG spray sat over the canvas and the two shared no motion — two
-       plants in one composition, which is exactly why it did not read as one animation. The stem
-       is now geometry in this scene, compiled with the same motion chunk as the florets, so a
-       cursor move perturbs the whole plant at once and there is no DOM-to-canvas alignment to
-       maintain across breakpoints. */
-    const curve = new THREE.CatmullRomCurve3(
-      spinePoints(48).map(([x, y, z]) => new THREE.Vector3(x, y, z)),
-    );
-    const stemGeo = new THREE.TubeGeometry(curve, 96, 0.035, 6, false);
-    // TubeGeometry's u runs along the path, which is exactly "how far down the stem am I".
-    const uvAttr = stemGeo.getAttribute("uv");
-    const along = new Float32Array(uvAttr.count);
-    for (let i = 0; i < uvAttr.count; i++) along[i] = uvAttr.getX(i);
-    stemGeo.setAttribute("aAlong", new THREE.BufferAttribute(along, 1));
-
-    const stemMat = new THREE.ShaderMaterial({
-      vertexShader: SPINE_VERT,
-      fragmentShader: SPINE_FRAG,
-      // Shares the very same uniform objects as the florets — not copies. One clock, one pointer,
-      // one bloom value; they cannot drift out of step because there is nothing to keep in sync.
-      uniforms: {
-        uTime: uniforms.uTime,
-        uBloom: uniforms.uBloom,
-        uPointer: uniforms.uPointer,
-        uPointerOn: uniforms.uPointerOn,
-        uStem: { value: new THREE.Color(token("--sage", "#a8b394")) },
-        uOpacity: uniforms.uOpacity,
-      },
-      transparent: true,
-      depthWrite: false,
+    /* ---- 3 + 4. the subject, and its filaments ---- */
+    const near = spray({ heads, height: 6.4, lean: 0.9, scale: 1, seed: 7 });
+    const nearL = pointsLayer(near.home, near.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 15 },
     });
-    const stem = new THREE.Mesh(stemGeo, stemMat);
+    nearL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(near.dispersed, 3));
 
-    /* ONE GROUP. The parallax tilt is applied to the plant as a body, so the stem and its
-       florets can never shear apart from one another. */
-    const plant = new THREE.Group();
-    plant.add(stem);
-    plant.add(points);
-    /* COMPOSITION LIVES HERE, NOT IN THE BOTANY.
-       The spine is authored around the origin because that is where a plant's geometry belongs;
-       where it sits in the frame is a layout decision. Pushed right so the mass falls in the half
-       of the hero with nothing to read in it — the headline must never have moving gold behind
-       it, because text contrast has to be a constant rather than something that varies with a
-       drifting particle. */
-    plant.position.set(2.5, -0.3, 0);
-    scene.add(plant);
+    /* STAMENS ARE SHORT. At 0.62 they rendered as starbursts — fireworks, not wattle. A real head
+       is a dense fuzzy BALL whose stamens give it its fuzz; they are barely longer than the head
+       itself. 0.26 puts them just past the floret shell, which is where they actually sit. */
+    const st = stamens(near.centres, stamensPerHead, 0.26);
+    const stGeo = new THREE.BufferGeometry();
+    stGeo.setAttribute("position", new THREE.BufferAttribute(st.position, 3));
+    stGeo.setAttribute("aAttr", new THREE.BufferAttribute(st.attr, 3));
+    const stMat = new THREE.ShaderMaterial({
+      vertexShader: STAMEN_VERT, fragmentShader: STAMEN_FRAG,
+      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uGold: { value: GOLD } },
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    });
+    disposables.push(stGeo, stMat);
+
+    const subject = new THREE.Group();
+    subject.add(new THREE.LineSegments(stGeo, stMat));
+    subject.add(new THREE.Points(nearL.geo, nearL.mat));
+    plant.add(subject);
+
+    /* ---- 5. bokeh, in front ---- */
+    const b = bokeh(bokehCount);
+    const bokehL = pointsLayer(b.position, b.attr, 4, BOKEH_VERT, BOKEH_FRAG, { uColour: { value: GOLD } });
+    plant.add(new THREE.Points(bokehL.geo, bokehL.mat));
 
     /* ---- sizing ---- */
     const resize = () => {
@@ -156,116 +166,82 @@ export function WattleField({ racemes, headsPerRaceme, maxPixelRatio }: WattleFi
     const ro = new ResizeObserver(resize);
     ro.observe(host);
 
-    /* ---- pointer: gentle, and only when there is a real one ---- */
+    /* ---- pointer ---- */
     const pointerTarget = new THREE.Vector3(999, 999, 999);
     let pointerOnTarget = 0;
     const tiltTarget = { x: 0, y: 0 };
     const tiltVel = { x: 0, y: 0 };
 
     const onPointerMove = (e: PointerEvent) => {
-      // Coarse pointers (touch) get no perturbation: a finger is not a breeze, and following it
-      // turns an ambient field into a toy.
       if (e.pointerType !== "mouse") return;
       const r = host.getBoundingClientRect();
       const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
       const ny = -(((e.clientY - r.top) / r.height) * 2 - 1);
-      // Unproject onto the plane the field occupies.
       const v = new THREE.Vector3(nx, ny, 0.5).unproject(camera);
       const dir = v.sub(camera.position).normalize();
-      const dist = -camera.position.z / dir.z;
-      pointerTarget.copy(camera.position).add(dir.multiplyScalar(dist));
+      pointerTarget.copy(camera.position).add(dir.multiplyScalar(-camera.position.z / dir.z));
       pointerOnTarget = 1;
-
-      // Whole-plant lean. Small on purpose: past a few degrees a parallax tilt stops reading as
-      // depth and starts reading as the page being dragged around.
       tiltTarget.y = nx * 0.17;
       tiltTarget.x = -ny * 0.11;
     };
-    const onPointerLeave = () => {
-      pointerOnTarget = 0;
-      // The plant returns to rest rather than holding its last lean.
-      tiltTarget.x = 0;
-      tiltTarget.y = 0;
-    };
-
+    const onPointerLeave = () => { pointerOnTarget = 0; tiltTarget.x = 0; tiltTarget.y = 0; };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     host.addEventListener("pointerleave", onPointerLeave);
 
-    /* ---- run only when it can be seen ---- */
     let onScreen = true;
-    const io = new IntersectionObserver(([entry]) => { onScreen = entry?.isIntersecting ?? true; }, { threshold: 0 });
+    const io = new IntersectionObserver(([e]) => { onScreen = e?.isIntersecting ?? true; }, { threshold: 0 });
     io.observe(host);
 
-    /* ---- the loop ---- */
-    // performance.now() rather than THREE.Clock, which is deprecated as of r185 — and the clock
-    // was only ever wrapping this. Held separately from wall time so the Pause control can stop
-    // it without the geometry going stale.
+    /* ---- the shot ---- */
+    const REST = 0.86;
+    const INTRO_MS = 3200;
     const started = performance.now();
     let elapsedAtPause = 0;
     let pausedSince: number | null = null;
     let raf = 0;
-    let bloom = 0.62;
+    let bloom = 0;
+
+    // easeOutCubic: fast open, gentle landing. An entrance decelerates.
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
     const frame = () => {
       raf = requestAnimationFrame(frame);
-
       const paused = document.documentElement.dataset["motion"] === "paused";
       if (!onScreen || document.hidden) return;
 
-      // Bloom is driven by how far the hero has travelled up the viewport. Reading it every
-      // frame (rather than integrating) is what makes it correct on a mid-page load and on a
-      // backward scroll.
+      const now = performance.now();
+      if (paused) { if (pausedSince === null) pausedSince = now; }
+      else {
+        if (pausedSince !== null) { elapsedAtPause += now - pausedSince; pausedSince = null; }
+        uTime.value = (now - started - elapsedAtPause) / 1000;
+      }
+
+      const clock = now - started - elapsedAtPause;
+      const intro = Math.min(1, clock / INTRO_MS);
+
+      // Scroll takes over once the shot has played.
       const r = host.getBoundingClientRect();
       const travelled = 1 - Math.min(1, Math.max(0, (r.bottom - r.height * 0.15) / (r.height * 0.85)));
-      /* THE HERO RESTS ASSEMBLED, IT DOES NOT REST EMPTY.
-         An earlier version started at 0.18, which is botanically tidy — bud before bloom — and
-         a design failure: at rest the hero showed dispersed bronze specks reading as dust on a
-         lens rather than as wattle. The plant's bud stage is not the company's front door. So
-         the field opens at 0.72, already clustered and gold, and the remaining 0.28 of travel
-         is what the scroll spends: heads finishing, tips reaching. The dispersal logic still
-         drives everything, it just starts most of the way through. */
-      const target = 0.72 + travelled * 0.28;
-      bloom += (target - bloom) * 0.05;
+      const target = intro < 1 ? easeOut(intro) * REST : REST + travelled * (1 - REST);
+      bloom += (target - bloom) * (intro < 1 ? 0.2 : 0.05);
+      uBloom.value = bloom;
 
-      uniforms.uBloom.value = bloom;
+      /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
+         reference's camera move, which is what turns a state change into a shot. */
+      const push = Math.sin(Math.min(1, bloom / REST) * Math.PI);
+      camera.position.z = 13.4 - push * 4.2;
+      camera.position.y = 0.3 + push * 0.35;
+      camera.lookAt(1.9, 0.1, 0);
 
-      /* CAPPED AT 0.5, NOT 1.
-         At full opacity with additive blending the field bloomed across the whole hero and the
-         headline had to compete with it — which is precisely the failure the restraint rule
-         exists to prevent. The generative layer is atmosphere. If a visitor notices it before
-         they read the sentence, it is turned up too far. */
-      uniforms.uOpacity.value = Math.min(0.5, uniforms.uOpacity.value + 0.012);
-      uniforms.uPointer.value.lerp(pointerTarget, 0.08);
-      uniforms.uPointerOn.value += (pointerOnTarget - uniforms.uPointerOn.value) * 0.06;
+      uOpacity.value = Math.min(0.62, uOpacity.value + 0.008);
+      uPointer.value.lerp(pointerTarget, 0.08);
+      uPointerOn.value += (pointerOnTarget - uPointerOn.value) * 0.06;
 
-      /* PARALLAX TILT, ON A SPRING RATHER THAN A LERP.
-         A lerp toward a target arrives and stops dead. A spring overshoots slightly and settles,
-         which is what a mass on a stem actually does — and it is the whole difference between
-         the plant TRACKING the cursor and the plant RESPONDING to it. Tuned just under critical
-         damping: enough overshoot to read as physical, not enough to wobble. */
-      const stiffness = 0.016;
-      const damping = 0.85;
-      tiltVel.x += (tiltTarget.x - plant.rotation.x) * stiffness;
-      tiltVel.y += (tiltTarget.y - plant.rotation.y) * stiffness;
-      tiltVel.x *= damping;
-      tiltVel.y *= damping;
+      tiltVel.x += (tiltTarget.x - plant.rotation.x) * 0.016;
+      tiltVel.y += (tiltTarget.y - plant.rotation.y) * 0.016;
+      tiltVel.x *= 0.85; tiltVel.y *= 0.85;
       plant.rotation.x += tiltVel.x;
       plant.rotation.y += tiltVel.y;
-
-      /* THE CLOCK IS WHAT STOPS, NOT THE RENDER.
-         Geometry, colour and scroll response keep updating while paused, so a paused field stays
-         CORRECT for the current scroll position instead of frozen mid-drift and wrong. Elapsed
-         time is banked on pause and resumed from, so releasing pause continues the drift rather
-         than jumping it forward by however long the reader was paused. */
-      if (paused) {
-        if (pausedSince === null) pausedSince = performance.now();
-      } else {
-        if (pausedSince !== null) {
-          elapsedAtPause += performance.now() - pausedSince;
-          pausedSince = null;
-        }
-        uniforms.uTime.value = (performance.now() - started - elapsedAtPause) / 1000;
-      }
 
       renderer.render(scene, camera);
     };
@@ -273,18 +249,14 @@ export function WattleField({ racemes, headsPerRaceme, maxPixelRatio }: WattleFi
 
     return () => {
       cancelAnimationFrame(raf);
-      io.disconnect();
-      ro.disconnect();
+      io.disconnect(); ro.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       host.removeEventListener("pointerleave", onPointerLeave);
-      geometry.dispose();
-      material.dispose();
-      stemGeo.dispose();
-      stemMat.dispose();
+      disposables.forEach((x) => x.dispose());
       renderer.dispose();
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement);
     };
-  }, [racemes, headsPerRaceme, maxPixelRatio]);
+  }, [heads, dustCount, bokehCount, stamensPerHead, maxPixelRatio]);
 
   if (failed) return null;
   return <div ref={hostRef} className="wattle-field" aria-hidden="true" />;

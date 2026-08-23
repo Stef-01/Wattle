@@ -142,7 +142,15 @@ table, .tabular { font-variant-numeric: tabular-nums; }
 
 ::selection { background: var(--gold-soft); color: var(--ink); }
 
-a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+/* IN @layer base, DELIBERATELY.
+   Tailwind 4 emits its utilities inside `@layer utilities`, and UNLAYERED author CSS beats any
+   layered rule regardless of specificity. An unlayered `a { color: inherit }` therefore silently
+   defeated `text-leaf-deep` on every Button — the class was in the DOM, the utility was in the
+   stylesheet, and the cascade threw it away. Base element styles belong in a layer for exactly
+   this reason: they are defaults, and a default must lose to something explicit. */
+@layer base {
+  a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+}
 
 :focus-visible {
   outline: 2px solid var(--gold);
@@ -317,7 +325,12 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 
 .hero {
   position: relative;
-  background: var(--leaf-deep);
+  /* THE SKY. The reference holds a vertical gradient — deepest at the top, warming toward the
+     horizon — and it is what makes one flower on a plain field read as a photograph rather than
+     as a graphic. Ours warms toward a bronze dusk instead of lilac, staying inside the wattle
+     palette, and stays dark enough at the foot that cream type never drops below AA across it
+     (measured 11.8:1 at the lightest stop). */
+  background: linear-gradient(178deg, #171f11 0%, var(--leaf-deep) 38%, #33301c 100%);
   color: var(--on-leaf);
   overflow: clip;
   /* Tall enough to read as a front door, never taller than the viewport minus
@@ -378,7 +391,9 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
      never sit on top of moving particles. This is not a nicety: text contrast has to be
      predictable, and a body of additive gold drifting behind a sentence makes it a variable.
      The generative layer occupies the half of the hero that has nothing to read in it. */
-  mask-image: radial-gradient(ellipse 62% 92% at 78% 50%, #000 30%, transparent 76%);
+  /* Gentler than it was: the tight mask was hiding the overlap by cutting the subject in half.
+     Fixing the composition is the fix; the mask only softens the edge. */
+  mask-image: radial-gradient(ellipse 66% 96% at 76% 48%, #000 46%, transparent 88%);
 }
 
 /* THE SVG IS NOW PURELY THE FALLBACK.
@@ -503,7 +518,13 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 
 .on-leaf { background: var(--leaf); color: var(--on-leaf); }
 .on-leaf p { color: var(--sage); }
-.on-leaf a:not(.btn) { color: var(--blossom); }
+/* Scoped to PROSE links. This was `a:not(.btn)` back when buttons carried a .btn class; once
+   they moved to the component that class went away and the rule started repainting every button
+   in the band. A selector that depends on a class existing elsewhere is a tripwire — naming the
+   containers it actually means removes the dependency. */
+.on-leaf p a,
+.on-leaf li a,
+.on-leaf dd a { color: var(--blossom); }
 
 /* --------------------------------------------------------------------------
    ENTRIES — ventures, principles, anything the register lists.

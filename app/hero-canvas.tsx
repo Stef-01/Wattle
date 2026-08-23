@@ -37,16 +37,20 @@ const WattleField = dynamic(() => import("./wattle-field").then((m) => m.WattleF
 });
 
 interface Tier {
-  racemes: number;
-  headsPerRaceme: number;
+  heads: number;
+  dustCount: number;
+  bokehCount: number;
+  stamensPerHead: number;
   maxPixelRatio: number;
 }
 
+/* Layer counts, not one number. The dust is cheap per point and the bokeh is expensive per
+   pixel — a single "particle count" would have scaled the wrong things together. */
 const TIERS: Record<"high" | "mid", Tier> = {
-  // ~14 racemes x 5 heads x 40-80 florets ≈ 4,200 points.
-  high: { racemes: 14, headsPerRaceme: 5, maxPixelRatio: 2 },
-  // ~7 x 4 ≈ 1,700 points, and a capped DPR, which is the bigger saving of the two.
-  mid: { racemes: 7, headsPerRaceme: 4, maxPixelRatio: 1.5 },
+  high: { heads: 15, dustCount: 1400, bokehCount: 22, stamensPerHead: 18, maxPixelRatio: 2 },
+  // Fewer heads and much less bokeh: overdraw from big soft discs is what actually costs on a
+  // mid device, more than the point count does.
+  mid: { heads: 9, dustCount: 600, bokehCount: 8, stamensPerHead: 16, maxPixelRatio: 1.5 },
 };
 
 function chooseTier(): Tier | null {

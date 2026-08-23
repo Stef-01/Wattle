@@ -6,6 +6,45 @@ visual result is what falls out of that.
 
 ---
 
+## 0. The shot
+
+**The hero is a shot, not a loop.** The reference (a board pin, 8.3s) is a narrative: a tight bud
+on a long slender stem → the camera pushes in as it opens → extreme close-up, petals layered →
+the camera pulls back, fully bloomed → settles and holds.
+
+That is reproduced literally. The bloom plays **once** on arrival over 3.2s on an `easeOutCubic`,
+then hands over to scroll. A hero that loops its own reveal teaches a visitor to stop watching it.
+
+**Wattle has no single flower**, it has a raceme — so the equivalent of a dahlia's petals unfurling
+in shells is **two nested sequences**: heads opening base-to-tip, and each head's 40–80 florets
+opening core-outward at the same time. More layered than the reference, not less.
+
+The closed state is a **bud**, not a scatter: `dispersed` pulls every floret back toward its own
+head's core and tucks it down the stem, so frame one reads as a tight bud on a stem — which is
+what the reference's frame one actually is.
+
+**The dolly** — `camera.z` runs `13.4 − sin(bloom·π)·4.2`, so the camera is wide on the bud,
+closest mid-open, and back out once open. That single line is what turns a state change into a
+shot.
+
+## The six layers
+
+Depth is built from **four cues at once** — parallax rate, point size, softness, opacity — because
+any one alone reads as "big dots and small dots" rather than distance.
+
+| # | Layer | Parallax | Role |
+| --- | --- | --- | --- |
+| 1 | Pollen dust | 0.09 | Far starfield, tiny, twinkling out of phase |
+| 2 | Far spray | ~0.5 | The same plant at depth: larger, softer, dimmer — out of focus |
+| 3 | Stamens | 1.0 | Filaments radiating from each head's core |
+| 4 | Near spray | 1.0 | The sharp subject |
+| 5 | Bokeh | **1.9** | Huge soft discs *in front*. The over-response is the depth cue |
+| 6 | Sky | — | CSS gradient, not geometry |
+
+The bokeh is drawn as a **disc with a bright rim**, not a gaussian blob — a real out-of-focus
+highlight has an edge, because the lens iris projects one. That rim is the difference between
+bokeh and fog.
+
 ## 1. Design system
 
 ### Palette — wattle-derived only
