@@ -25,7 +25,8 @@ Playwright suite uses 3100. All three can run at once.
 | `pnpm start` | Serve the production build on :3200 |
 | `pnpm typecheck` | `tsc --noEmit`, strict, `noUncheckedIndexedAccess` on |
 | `pnpm contrast` | Recomputes every text pairing in `globals.css` against the 4.5:1 AA floor |
-| `pnpm verify` | typecheck + contrast + build — the gate before a commit |
+| `pnpm classes` | Fails if any component asks for a CSS class or `var()` that does not exist |
+| `pnpm verify` | typecheck + contrast + classes + build — the gate before a commit |
 
 ## Layout
 
@@ -123,8 +124,8 @@ to read tokens from, so **a `:root` change must be repeated there by hand.**
 
 ## CI
 
-`.github/workflows/ci.yml` runs two jobs on push to `main` and on every PR: **verify**
-(install, typecheck, build) and **contrast**.
+`.github/workflows/ci.yml` runs three jobs on push to `main` and on every PR: **verify**
+(install, typecheck, build), **contrast**, and **classes**.
 
 The contrast job exists because `globals.css` documents a measured ratio beside nearly every
 token, and a documented ratio is the first casualty of a recolour — the numbers stay
@@ -133,6 +134,30 @@ once: `--gold-mid` shipped commented at 3.0 and measured 2.49. `scripts/contrast
 reads the tokens out of the stylesheet, recomputes all twelve text pairings and fails under
 4.5:1. Decorative tokens are exempt by *not appearing in the pairs list*, so exempting one is a
 diff somebody reviews.
+
+### The class gate
+
+`scripts/class-gate.mjs` exists because a design system lives in one file, and what breaks when
+one is replaced is not a rule — it is a page still asking for the old names. That is not
+hypothetical either. The poster-brutalist rewrite migrated `/`, `/ventures` and `/approach`;
+`/company`, `/contact`, `/accessibility` and the 404 kept their old class names and shipped to
+production as **unstyled markup** — default bullet markers, portraits at intrinsic size,
+affiliation logos at full width — with the build green and typecheck silent the whole time.
+
+It checks two things, and the second matters more:
+
+1. Every class in a `className` resolves to a selector in `globals.css`.
+2. Every `var(--x)` resolves to a property defined there.
+
+A missing class is at least visible. A missing **custom property** fails silently and partially:
+`fill: var(--gold-mid)` with no `--gold-mid` is an invalid declaration, not a fallback. The
+specimen plate and the hero's no-WebGL spray were both painting *Acacia pycnantha* with
+`--blossom` — which is soft pink in the ten-hue palette — plus `--gold-mid` and `--sage`, neither
+of which exists. A pink national floral emblem with two dead gradient stops, and nothing in CI
+had an opinion. It was found by looking at a screenshot.
+
+It carries a `BASELINE` for known-unmigrated files so a half-finished migration does not paint CI
+red and block the person doing it. The baseline is empty now; leave it that way.
 
 ## Not in this tree yet
 

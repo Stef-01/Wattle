@@ -42,6 +42,35 @@ const UNREACHABLE = new Set([
   "app/wattle-mark.tsx",
 ]);
 
+function runVarPass() {
+  /* Locally-scoped properties: set on an element by inline style or by a rule
+     the gate cannot see, and read by a descendant. Declared here rather than
+     guessed at. */
+  const LOCAL = new Set(["--i", "--o"]);
+  const bad = [];
+
+  const check = (label, src) => {
+    for (const v of requestedVars(src)) {
+      if (!definedVarNames.has(v) && !LOCAL.has(v)) bad.push(`${label}  ${v}`);
+    }
+  };
+
+  for (const file of walk(join(ROOT, "app"))) {
+    const rel = relative(ROOT, file).replaceAll("\\", "/");
+    if (UNREACHABLE.has(rel)) continue;
+    check(rel, readFileSync(file, "utf8"));
+  }
+  check("app/globals.css", cssText);
+
+  if (!bad.length) {
+    console.log("Every var() resolves too.");
+    return;
+  }
+  console.error("\nUndefined custom properties — these fail silently:");
+  for (const b of [...new Set(bad)].sort()) console.error(`  ${b}`);
+  process.exit(1);
+}
+
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
@@ -97,7 +126,34 @@ function requestedClasses(src) {
   return set;
 }
 
-const defined = definedClasses(readFileSync(CSS, "utf8"));
+/**
+ * Custom properties defined on any selector in the stylesheet.
+ *
+ * A missing custom property is worse than a missing class, because it fails
+ * *silently and partially*: `fill: var(--gold-mid)` with no --gold-mid does not
+ * fall back to the old value, it produces an invalid declaration, and the
+ * element keeps whatever it had. The plate and the hero's fallback spray were
+ * both painting Acacia pycnantha with --blossom (soft PINK in the ten-hue
+ * palette), --gold-mid and --sage (neither of which exists), and every gate in
+ * this repo was green. It was found by looking at a screenshot.
+ */
+function definedVars(css) {
+  const set = new Set();
+  const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  for (const m of withoutComments.matchAll(/(--[\w-]+)\s*:/g)) set.add(m[1]);
+  return set;
+}
+
+/** Custom properties a file reads via var(). */
+function requestedVars(src) {
+  const set = new Set();
+  for (const m of src.matchAll(/var\(\s*(--[\w-]+)/g)) set.add(m[1]);
+  return set;
+}
+
+const cssText = readFileSync(CSS, "utf8");
+const definedVarNames = definedVars(cssText);
+const defined = definedClasses(cssText);
 const rows = [];
 let failed = false;
 
@@ -120,6 +176,7 @@ for (const file of walk(join(ROOT, "app"))) {
 
 if (!rows.length) {
   console.log("Every class resolves. No page is asking for a name the stylesheet does not have.");
+  runVarPass();
   process.exit(0);
 }
 
