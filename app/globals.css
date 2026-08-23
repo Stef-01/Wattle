@@ -76,6 +76,42 @@
   --font-text: "Schibsted Grotesk Variable", "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* --------------------------------------------------------------------------
+   THE TAILWIND BRIDGE
+
+   COLOUR THEORY, STATED ONCE. The palette is ANALOGOUS — gold, olive and green
+   are neighbours on the wheel, which is why the site reads calm rather than
+   energetic. That is the correct harmony for a company asking to be believed
+   rather than to be exciting, and it is why no complementary accent (a violet
+   or a blue) has been introduced: it would create chromatic tension the message
+   does not want. The one contrast that IS strong is VALUE, not hue — near-black
+   type on cream, cream type on foliage — which is what carries hierarchy here.
+
+   `@theme inline` re-exports the tokens as Tailwind utilities, so shadcn
+   components can be written against `bg-paper` / `text-ink` and inherit the real
+   design system. Deliberately NOT shadcn's generic --background/--foreground
+   names: a second vocabulary for the same colours is how two design systems end
+   up in one codebase, each half-true.
+   -------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-blossom: var(--blossom);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-on-leaf: var(--on-leaf);
+  --color-sage: var(--sage);
+
+  --font-display: var(--font-display);
+  --font-text: var(--font-text);
+}
+
 * { box-sizing: border-box; }
 
 button, a, input, textarea, select, label, [role="button"] { touch-action: manipulation; }
@@ -187,22 +223,11 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 .on-leaf .reg-label { color: var(--sage); }
 
 /* --------------------------------------------------------------------------
-   BUTTONS
+   BUTTONS live in src/components/ui/button.tsx now — cva variants over the
+   tokens above. The hand-written .btn rules are deleted rather than left in
+   place: a second, unused definition of the same control is the thing that
+   makes a later reader guess which one is live.
    -------------------------------------------------------------------------- */
-
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-  min-height: 2.875rem; padding: 0.75rem 1.4rem;
-  border-radius: 999px; border: 1px solid transparent;
-  font-size: 0.9375rem; font-weight: 500; text-decoration: none; cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
-}
-.btn-primary { background: var(--ink); color: var(--paper); }
-.btn-primary:hover { background: var(--leaf); box-shadow: var(--lift); }
-.btn-quiet { border-color: var(--line); color: var(--ink); }
-.btn-quiet:hover { border-color: var(--ink); }
-.btn-on-leaf { background: var(--paper); color: var(--leaf-deep); }
-.btn-on-leaf:hover { background: var(--blossom); }
 
 /* The inline forward link. Underline is the affordance; the arrow is drawn, not
    a unicode glyph standing in for an icon. */
@@ -243,13 +268,42 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 .site-nav a:hover { color: var(--ink); }
 .site-nav a[data-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--gold); }
 
-/* Two rows below 640px: one row clips the last door at 375px, and shrinking type
-   only moves the failure to 320px or to the first reader who zooms. */
+/* THE TWO PRESENTATIONS.
+   Below 640px the inline nav goes and the panel trigger appears; above it, the reverse. Only one
+   is ever in the accessibility tree, so a screen reader is never offered the same four doors
+   twice. */
+.site-nav-trigger { display: none; }
 @media (max-width: 639px) {
-  .site-header-inner { flex-direction: column; align-items: stretch; gap: 0.55rem; padding-block: 0.7rem; }
+  .site-nav { display: none; }
+  .site-nav-trigger { display: inline-flex; }
   .wordmark { white-space: nowrap; }
-  .site-nav ul { justify-content: space-between; gap: 0.6rem; }
 }
+
+/* --- the panel --- */
+
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.sheet-title { margin: 0; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage); }
+
+.sheet-nav { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgb(252 250 244 / 0.14); }
+.sheet-nav li { border-bottom: 1px solid rgb(252 250 244 / 0.14); }
+.sheet-nav a {
+  display: flex; align-items: center;
+  /* 56px. Fitts's law is the whole reason this panel exists — undersizing the targets inside it
+     would give up the only thing it was built to buy. */
+  min-height: 3.5rem;
+  font-size: 1.0625rem; color: var(--on-leaf); text-decoration: none;
+}
+.sheet-nav a:hover { color: var(--blossom); }
+.sheet-nav a[aria-current="page"] { color: var(--blossom); }
+/* The current page is not only colour: colour alone fails for a reader who cannot distinguish it. */
+.sheet-nav a[aria-current="page"]::after { content: "Current"; margin-left: auto; font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); }
+
+/* No border-top on the second group: the primary list already ends in a rule, and adding another
+   after a gap drew what read as an empty row. Proximity alone separates the two groups — which is
+   the cheaper Gestalt cue and the one that does not add a line the eye has to explain. */
+.sheet-nav-secondary { margin-top: 1.75rem; border-top: 0; }
+.sheet-nav-secondary a { min-height: 3rem; font-size: 0.9375rem; color: var(--sage); }
+
 
 /* --------------------------------------------------------------------------
    THE HERO — one enormous living subject on a dark ground.
@@ -785,6 +839,13 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   padding-block: 1.6rem;
 }
 .acknowledgement p { margin: 0; font-size: 0.875rem; line-height: 1.7; color: var(--sage); max-width: 68ch; }
+
+/* Sheet + tooltip motion. Enters decelerating, exits accelerating — users care more about what
+   arrives than about what leaves, so the exit is the shorter of the two. */
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sheet-out { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes sheet-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
 /* --------------------------------------------------------------------------
    MOTION

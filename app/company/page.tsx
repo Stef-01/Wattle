@@ -3,6 +3,7 @@ import Image from "next/image";
 import { COMPANY } from "@/content/company";
 import { TEAM, TEAM_PUBLIC, monogram } from "@/content/team";
 import { SpecimenPlate } from "../specimen-plate";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Company",
@@ -121,9 +122,9 @@ export default function CompanyPage() {
                 One address, read by the people building it.
               </p>
               <p style={{ marginTop: "1.25rem" }}>
-                <a href={`mailto:${COMPANY.email}`} className="btn btn-on-leaf">
-                  {COMPANY.email}
-                </a>
+                <Button asChild variant="onLeaf" size="lg">
+                  <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+                </Button>
               </p>
             </div>
           </div>

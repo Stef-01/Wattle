@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -10,12 +11,12 @@ export default function NotFound() {
           The page may have moved, or it may not be public yet. Both happen here.
         </p>
         <div className="hero-actions">
-          <Link href="/" className="btn btn-primary">
-            Back to the start
-          </Link>
-          <Link href="/ventures" className="btn btn-secondary">
-            What we build
-          </Link>
+          <Button asChild>
+            <Link href="/">Back to the start</Link>
+          </Button>
+          <Button asChild variant="quiet">
+            <Link href="/ventures">What we build</Link>
+          </Button>
         </div>
       </div>
     </section>

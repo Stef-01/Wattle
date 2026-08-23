@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { COMPANY } from "@/content/company";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -24,9 +25,9 @@ export default function ContactPage() {
           post yet, and we would rather say so than collect your details into a void.
         </p>
         <p style={{ marginTop: "var(--gap-4)" }}>
-          <a href={`mailto:${COMPANY.email}`} className="btn btn-primary">
-            {COMPANY.email}
-          </a>
+          <Button asChild size="lg">
+            <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+          </Button>
         </p>
         <p style={{ marginTop: "1.25rem", fontSize: "0.9375rem", color: "var(--muted)" }}>
           Replies Monday to Friday, Australian Eastern time (AEST/AEDT). We are a small team, so

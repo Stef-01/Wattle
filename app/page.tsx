@@ -6,6 +6,7 @@ import { WattleBloom } from "./wattle-bloom";
 import { MotionToggle } from "./motion-toggle";
 import { HeroCanvas } from "./hero-canvas";
 import { ArrowRight } from "./icons";
+import { Button } from "@/components/ui/button";
 
 /**
  * THE HOME PAGE SHOWS, THE INNER PAGES ARGUE.
@@ -32,16 +33,12 @@ export default function HomePage() {
               a clinician ever reaches one.
             </p>
             <div className="hero-actions resolve resolve-3">
-              <Link href="/ventures" className="btn btn-on-leaf">
-                What we build
-              </Link>
-              <Link
-                href="/approach"
-                className="btn btn-quiet"
-                style={{ borderColor: "var(--sage)", color: "var(--on-leaf)" }}
-              >
-                How we work
-              </Link>
+              <Button asChild variant="onLeaf" size="lg">
+                <Link href="/ventures">What we build</Link>
+              </Button>
+              <Button asChild variant="ghostOnLeaf" size="lg">
+                <Link href="/approach">How we work</Link>
+              </Button>
             </div>
           </div>
           <WattleBloom className="hero-bloom" />
@@ -130,9 +127,9 @@ export default function HomePage() {
                 A practice, a service, or a question about the work.
               </p>
               <div className="hero-actions">
-                <Link href="/contact" className="btn btn-on-leaf">
-                  Get in touch
-                </Link>
+                <Button asChild variant="onLeaf" size="lg">
+                  <Link href="/contact">Get in touch</Link>
+                </Button>
               </div>
             </div>
           </div>
