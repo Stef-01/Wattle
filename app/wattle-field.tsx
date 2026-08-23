@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { spray, dust, bokeh, stamens } from "@/wattle/layers";
+import { spray, dust, bokeh, stamens, foliage, branchlets } from "@/wattle/layers";
 import {
   WATTLE_VERT, WATTLE_FRAG,
   DUST_VERT, DUST_FRAG,
   BOKEH_VERT, BOKEH_FRAG,
   STAMEN_VERT, STAMEN_FRAG,
+  FOLIAGE_VERT, FOLIAGE_FRAG,
+  BRANCH_VERT, BRANCH_FRAG,
 } from "@/wattle/shaders";
 
 /**
@@ -84,7 +86,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        geometry belongs; where it sits in frame is a layout decision, and it belongs in the half
        of the hero with nothing to read in it. Text contrast has to be a constant, not something
        that varies with a drifting particle behind a sentence. */
-    plant.position.set(4.1, 0, 0);
+    plant.position.set(4.9, -0.25, 0);
     scene.add(plant);
     const disposables: { dispose(): void }[] = [];
 
@@ -113,6 +115,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
     const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
       uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 30 },
+      uMatte: { value: 0 },
     });
     farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
     const farPoints = new THREE.Points(farL.geo, farL.mat);
@@ -126,7 +129,9 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 3 + 4. the subject, and its filaments ---- */
     const near = spray({ heads, height: 6.4, lean: 0.9, scale: 1, seed: 7 });
     const nearL = pointsLayer(near.home, near.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 15 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 17 },
+      // The subject is matte; only the far, out-of-focus copy glows.
+      uMatte: { value: 1 },
     });
     nearL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(near.dispersed, 3));
 
@@ -144,7 +149,46 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     });
     disposables.push(stGeo, stMat);
 
+    nearL.mat.blending = THREE.NormalBlending;
+
+    /* ---- FOLIAGE. Half the picture in the reference, and absent here until now. ---- */
+    const fol = foliage({ count: Math.round(heads * 1.6), height: 6.4, lean: 0.9, seed: 61 });
+    const folGeo = new THREE.BufferGeometry();
+    folGeo.setAttribute("position", new THREE.BufferAttribute(fol.position, 3));
+    folGeo.setAttribute("aBlade", new THREE.BufferAttribute(fol.attr, 3));
+    const folMat = new THREE.ShaderMaterial({
+      vertexShader: FOLIAGE_VERT, fragmentShader: FOLIAGE_FRAG,
+      uniforms: {
+        uTime, uBloom, uPointer, uPointerOn, uOpacity,
+        uLeaf: { value: new THREE.Color("#2b3a2c") },
+        uLeafLit: { value: new THREE.Color(token("--sage", "#a8b394")) },
+      },
+      transparent: true, side: THREE.DoubleSide,
+      /* NO DEPTH WRITE. Writing depth made the blades punch holes through the flowers in front
+         of them — the gold is the subject and the foliage is its setting, so the canopy sits
+         behind and the heads stay unbroken. Occlusion was the more literal reading of the
+         photograph and the wrong one for a composition whose point is the blossom. */
+      depthWrite: false, blending: THREE.NormalBlending,
+    });
+    disposables.push(folGeo, folMat);
+
+    /* ---- BRANCHLETS. Without them the heads float instead of hanging. ---- */
+    const br = branchlets(near.centres, 0.9, 6.4);
+    const brGeo = new THREE.BufferGeometry();
+    brGeo.setAttribute("position", new THREE.BufferAttribute(br.position, 3));
+    brGeo.setAttribute("aAttr", new THREE.BufferAttribute(br.attr, 4));
+    const brMat = new THREE.ShaderMaterial({
+      vertexShader: BRANCH_VERT, fragmentShader: BRANCH_FRAG,
+      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uStem: { value: new THREE.Color("#5c6b45") } },
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
+    });
+    disposables.push(brGeo, brMat);
+
     const subject = new THREE.Group();
+    const folMesh = new THREE.Mesh(folGeo, folMat);
+    folMesh.renderOrder = -1;
+    subject.add(folMesh);
+    subject.add(new THREE.LineSegments(brGeo, brMat));
     subject.add(new THREE.LineSegments(stGeo, stMat));
     subject.add(new THREE.Points(nearL.geo, nearL.mat));
     plant.add(subject);

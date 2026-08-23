@@ -144,6 +144,12 @@ precision highp float;
 uniform vec3 uGold;      // mature bloom
 uniform vec3 uBronze;    // new growth
 uniform float uOpacity;
+/* MATTE MODE. The reference's heads are opaque, textured pom-poms that occlude what is behind
+   them — not light. Additive stacking turned them into glowing sparkle clusters, which is the
+   single biggest reason the hero did not read as wattle. At uMatte=1 the halo shrinks and the
+   core carries almost all the alpha, so overlapping florets build a SOLID ball instead of a
+   brighter one. */
+uniform float uMatte;
 
 varying float vRadial;
 varying float vOpen;
@@ -156,9 +162,9 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
 
-  float core = smoothstep(0.34, 0.0, d);
+  float core = smoothstep(mix(0.34, 0.46, uMatte), 0.0, d);
   float halo = smoothstep(0.5, 0.06, d);
-  float alpha = clamp(halo * 0.3 + core * 0.55, 0.0, 1.0);
+  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.1 + core * 0.95, uMatte), 0.0, 1.0);
 
   /* NEW GROWTH IS BRONZE AND MATURES GOLD. Straight from the plant: fresh
      growth carries a bronze tint before it colours up. So colour is a
@@ -172,7 +178,9 @@ void main() {
   // A little per-floret variance so the cluster is not one flat gold.
   colour *= 0.9 + vSeed * 0.2;
 
-  gl_FragColor = vec4(colour, alpha * uOpacity * (0.3 + 0.7 * vOpen));
+  // Matte heads reach full opacity; the glowing far copy stays translucent.
+  float o = mix(uOpacity, mix(uOpacity, 1.0, 0.8), uMatte);
+  gl_FragColor = vec4(colour, alpha * o * (0.3 + 0.7 * vOpen));
 }
 `;
 
@@ -361,5 +369,80 @@ void main() {
   // Fades toward the tip: a filament is anchored and thins out.
   float a = (1.0 - vTip * 0.75) * vOpen * uOpacity * 0.5;
   gl_FragColor = vec4(uGold, a);
+}
+`;
+
+/**
+ * FOLIAGE — matte blue-grey-green sickle blades.
+ *
+ * NOT additive. The phyllodes in the reference are opaque objects that OCCLUDE what is behind
+ * them; rendering them additively would make them glow like the flowers and destroy the very
+ * contrast that makes the flowers read as flowers.
+ */
+export const FOLIAGE_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec3 aBlade;   // along 0..1, seed, depth
+uniform float uTime;
+uniform float uBloom;
+uniform vec3 uPointer;
+uniform float uPointerOn;
+varying float vAlong;
+varying float vDepth;
+varying float vSeed;
+void main() {
+  vAlong = aBlade.x; vSeed = aBlade.y; vDepth = aBlade.z;
+  vec3 pos = position;
+  // A leaf bends most at its tip and not at all where it attaches.
+  pos += wattleDrift(pos, aBlade.y, uTime * 0.7, 0.34 * aBlade.x);
+  pos += wattlePointer(pos, uPointer, uPointerOn, 0.7 * aBlade.x, 3.4);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+export const FOLIAGE_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uLeaf;
+uniform vec3 uLeafLit;
+uniform float uOpacity;
+varying float vAlong;
+varying float vDepth;
+varying float vSeed;
+void main() {
+  // Blades further back sit darker and cooler: depth by value, the way the photograph does it.
+  vec3 c = mix(uLeaf, uLeafLit, vDepth * 0.85 + vSeed * 0.15);
+  // Tips catch light, bases sit in shadow.
+  c *= 0.72 + vAlong * 0.42;
+  float a = uOpacity * (0.55 + vDepth * 0.4);
+  gl_FragColor = vec4(c, a);
+}
+`;
+
+/** BRANCHLETS — thin olive stems. */
+export const BRANCH_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec4 aAttr;   // isHead, t, reserved, reserved
+uniform float uTime;
+uniform float uBloom;
+uniform vec3 uPointer;
+uniform float uPointerOn;
+varying float vT;
+void main() {
+  vT = aAttr.y;
+  vec3 pos = position;
+  pos += wattleDrift(pos, aAttr.y, uTime, 0.26 * aAttr.x);
+  pos += wattlePointer(pos, uPointer, uPointerOn, 0.9 * aAttr.x, 3.1);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+}
+`;
+
+export const BRANCH_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uStem;
+uniform float uOpacity;
+varying float vT;
+void main() {
+  gl_FragColor = vec4(uStem, uOpacity * 0.55);
 }
 `;

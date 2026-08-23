@@ -17,7 +17,7 @@
  * object; it is the same flower head at a different z with a different focus.
  */
 
-import { mulberry32, flowerHead } from "./botany";
+import { mulberry32, flowerHead, phyllode, phyllodeRibbon } from "./botany";
 
 export interface Population {
   count: number;
@@ -25,6 +25,41 @@ export interface Population {
   position: Float32Array;
   /** per-point: size, seed, depth 0..1, extra */
   attr: Float32Array;
+}
+
+
+/* ===========================================================================
+   THE BRANCH AXIS — the thing all three generators hang off.
+
+   The reference photograph is a BRANCH running diagonally across the frame, with
+   phyllodes fanning outward-downward along its length and ball clusters hanging
+   below it the whole way. Earlier versions modelled a vertical spray with the
+   heads crowded at the crown, which is a different plant — and no amount of
+   tuning blade width or head count was ever going to fix a wrong skeleton.
+
+   One axis, consumed by the heads, the foliage and the branchlets, so all three
+   are attached to the same branch instead of three things near each other.
+   =========================================================================== */
+
+const AXIS_A: [number, number, number] = [-2.9, 2.9, -0.4];
+const AXIS_B: [number, number, number] = [1.4, 0.4, 0.3];
+const AXIS_C: [number, number, number] = [2.9, -2.9, 0.2];
+
+/** Quadratic through A, B, C. Position and unit tangent at t. */
+export function axisAt(t: number): { p: [number, number, number]; tan: [number, number, number] } {
+  const u = 1 - t;
+  const p: [number, number, number] = [
+    u * u * AXIS_A[0] + 2 * u * t * AXIS_B[0] + t * t * AXIS_C[0],
+    u * u * AXIS_A[1] + 2 * u * t * AXIS_B[1] + t * t * AXIS_C[1],
+    u * u * AXIS_A[2] + 2 * u * t * AXIS_B[2] + t * t * AXIS_C[2],
+  ];
+  const d: [number, number, number] = [
+    2 * u * (AXIS_B[0] - AXIS_A[0]) + 2 * t * (AXIS_C[0] - AXIS_B[0]),
+    2 * u * (AXIS_B[1] - AXIS_A[1]) + 2 * t * (AXIS_C[1] - AXIS_B[1]),
+    2 * u * (AXIS_B[2] - AXIS_A[2]) + 2 * t * (AXIS_C[2] - AXIS_B[2]),
+  ];
+  const len = Math.hypot(d[0], d[1], d[2]) || 1;
+  return { p, tan: [d[0] / len, d[1] / len, d[2] / len] };
 }
 
 /** Layer 1 — POLLEN DUST. Thousands of tiny motes, far back, barely moving. The starfield. */
@@ -87,7 +122,7 @@ export interface BloomLayer {
  * Heads mass toward the top of the stem, as they do on a real spray, with a few stragglers lower.
  */
 export function spray(opts: { heads: number; height: number; lean: number; scale: number; seed: number }): BloomLayer {
-  const { heads, height, lean, scale, seed } = opts;
+  const { heads, scale, seed } = opts;
   const rand = mulberry32(seed);
   const home: number[] = [];
   const dispersed: number[] = [];
@@ -95,20 +130,19 @@ export function spray(opts: { heads: number; height: number; lean: number; scale
   const centres: [number, number, number][] = [];
 
   for (let h = 0; h < heads; h++) {
-    // Biased toward the tip: t^0.55 crowds the samples high on the stem.
-    const t = Math.pow(h / Math.max(1, heads - 1), 0.55);
-    const stemX = lean * Math.pow(t, 1.7);
-    const y = -height * 0.5 + t * height;
+    // Spread evenly ALONG the branch, not crowded at one end.
+    const t = 0.06 + (h / Math.max(1, heads - 1)) * 0.9 + (rand() - 0.5) * 0.03;
+    const { p, tan } = axisAt(Math.min(1, Math.max(0, t)));
 
-    // Heads spray outward from the axis, more so near the crown.
-    /* TIGHTER THAN IT WAS. At 1.5 the heads scattered across the frame and stopped reading as
-       one spray — the reference holds a SINGLE subject, and a scatter is a different picture. */
-    const splay = 0.3 + t * 0.85;
-    const ang = rand() * Math.PI * 2;
+    // Perpendicular in the view plane, biased downward: clusters HANG off the branch.
+    const nx = tan[1], ny = -tan[0];
+    const drop = 0.12 + rand() * 0.72;
+    const side = rand() < 0.62 ? 1 : -1;
+
     const centre: [number, number, number] = [
-      stemX + Math.cos(ang) * splay * (0.35 + rand() * 0.8),
-      y + (rand() - 0.5) * 0.5,
-      Math.sin(ang) * splay * (0.5 + rand() * 0.8),
+      p[0] + nx * drop * side + (rand() - 0.5) * 0.3,
+      p[1] + ny * drop * side - rand() * 0.34,
+      p[2] + (rand() - 0.5) * 0.75,
     ];
     centres.push(centre);
 
@@ -118,14 +152,11 @@ export function spray(opts: { heads: number; height: number; lean: number; scale
       const z = centre[2] + f.offset[2] * scale;
       home.push(x, yy, z);
 
-      /* THE BUD STATE, not a scatter. Dispersed pulls every floret back toward its own head's
-         core and tucks it down the stem — so "closed" reads as a tight bud on a stem, which is
-         what frame one of the reference actually is. A cloud of far-flung points would be a
-         different story entirely. */
+      // Closed state is a tight bud tucked against the branch, not a scatter.
       dispersed.push(
-        centre[0] * 0.25 + f.offset[0] * scale * 0.16,
-        centre[1] - 0.55 - t * 0.9 + f.offset[1] * scale * 0.16,
-        centre[2] * 0.25 + f.offset[2] * scale * 0.16,
+        p[0] + f.offset[0] * scale * 0.18,
+        p[1] + f.offset[1] * scale * 0.18 - 0.1,
+        p[2] + f.offset[2] * scale * 0.18,
       );
 
       attr.push(f.radial, t, rand(), h);
@@ -237,4 +268,90 @@ export function stamens(centres: [number, number, number][], perHead: number, re
     }
   }
   return { count: centres.length * perHead * 2, position, attr };
+}
+
+
+/**
+ * FOLIAGE — the half of the plant that was missing.
+ *
+ * In the reference the phyllodes are long, broad, blue-grey-green sickles that occupy as much of
+ * the frame as the flowers. Without them the hero was a handful of yellow dots; they are what
+ * makes the thing read as *wattle* rather than as generic golden particles.
+ *
+ * Built as one merged triangle ribbon per blade so the whole canopy is a single draw call. Each
+ * blade carries `aBlade`: along-length 0..1, a per-blade seed, and a depth cue for shading.
+ */
+export function foliage(opts: { count: number; height: number; lean: number; seed: number }) {
+  const { count, seed } = opts;
+  const rand = mulberry32(seed);
+  const pos: number[] = [];
+  const attr: number[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const t = 0.04 + rand() * 0.94;
+    const { p, tan } = axisAt(t);
+
+    // The blade leaves the branch roughly perpendicular, then droops. Both sides, so the branch
+    // is clothed rather than combed one way.
+    const side = rand() < 0.5 ? 1 : -1;
+    const perp = Math.atan2(-tan[0], tan[1]);
+    const ang = perp + side * (0.15 + rand() * 0.75) - 0.55;
+
+    const ca = Math.cos(ang), sa = Math.sin(ang);
+    const c = phyllode(rand);
+    const { upper, lower } = phyllodeRibbon(c, 12, 0.07);
+    const k = 0.13 + rand() * 0.085;
+    const seedV = rand();
+    const depth = rand();
+    const oz = p[2] + (rand() - 0.5) * 1.1;
+
+    const place = (pt: [number, number]): [number, number, number] => [
+      p[0] + (pt[0] * ca - pt[1] * sa) * k,
+      p[1] + (pt[0] * sa + pt[1] * ca) * k,
+      oz + pt[0] * k * 0.1,
+    ];
+
+    for (let sIdx = 0; sIdx < upper.length - 1; sIdx++) {
+      const a = place(upper[sIdx]!), b = place(upper[sIdx + 1]!);
+      const cc = place(lower[sIdx]!), d = place(lower[sIdx + 1]!);
+      const a0 = sIdx / (upper.length - 1);
+      const a1 = (sIdx + 1) / (upper.length - 1);
+      pos.push(...a, ...cc, ...b);
+      attr.push(a0, seedV, depth, a0, seedV, depth, a1, seedV, depth);
+      pos.push(...b, ...cc, ...d);
+      attr.push(a1, seedV, depth, a0, seedV, depth, a1, seedV, depth);
+    }
+  }
+
+  return { count: pos.length / 3, position: new Float32Array(pos), attr: new Float32Array(attr) };
+}
+
+/** BRANCHLETS — the axis itself, plus the short stalk each cluster hangs from. */
+export function branchlets(centres: [number, number, number][], _lean: number, _height: number) {
+  const pos: number[] = [];
+  const attr: number[] = [];
+
+  // The branch, as a run of segments.
+  const SEG = 26;
+  for (let i = 0; i < SEG; i++) {
+    const a = axisAt(i / SEG).p;
+    const b = axisAt((i + 1) / SEG).p;
+    pos.push(...a, ...b);
+    attr.push(0, i / SEG, 1, 0, 0, (i + 1) / SEG, 1, 0);
+  }
+
+  // A stalk from the nearest point on the branch to each cluster, so nothing floats.
+  for (const c of centres) {
+    let bestT = 0, bestD = Infinity;
+    for (let i = 0; i <= 24; i++) {
+      const q = axisAt(i / 24).p;
+      const d = (q[0] - c[0]) ** 2 + (q[1] - c[1]) ** 2;
+      if (d < bestD) { bestD = d; bestT = i / 24; }
+    }
+    const anchor = axisAt(bestT).p;
+    pos.push(...anchor, ...c);
+    attr.push(0, bestT, 0, 0, 1, bestT, 0, 0);
+  }
+
+  return { count: pos.length / 3, position: new Float32Array(pos), attr: new Float32Array(attr) };
 }

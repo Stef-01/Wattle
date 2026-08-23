@@ -223,6 +223,53 @@ export function phyllodeBlade(c: PhyllodeCurve, samples = 26): { outline: string
   };
 }
 
+/**
+ * THE PHYLLODE AS 3D GEOMETRY.
+ *
+ * `phyllodeBlade` closes the midrib into an SVG outline, which is what the flat plate needs.
+ * The hero needs the same silhouette as triangles, so this returns the two edges as sample
+ * arrays the scene can strip into a ribbon.
+ *
+ * This matters more than it sounds: in the reference photograph the phyllodes occupy as much of
+ * the frame as the flowers do. A wattle without its foliage is a handful of yellow dots — the
+ * blue-green sickle blades are half of what makes the plant recognisable.
+ */
+export function phyllodeRibbon(
+  c: PhyllodeCurve,
+  samples = 14,
+  /* Width as a fraction of length. The flat plate reads at 0.16; the hero needs ~0.07, because
+     a blade wide enough to read on a static illustration renders as an angular SHARD once it is
+     small, in perspective and lit from one side. */
+  widthRatio = 0.16,
+): { upper: [number, number][]; lower: [number, number][] } {
+  const [p0, p1, p2, p3] = c.points as [
+    [number, number], [number, number], [number, number], [number, number],
+  ];
+  const at = (t: number): [number, number] => {
+    const u = 1 - t;
+    return [
+      p0[0] * u * u * u + p1[0] * 3 * u * u * t + p2[0] * 3 * u * t * t + p3[0] * t * t * t,
+      p0[1] * u * u * u + p1[1] * 3 * u * u * t + p2[1] * 3 * u * t * t + p3[1] * t * t * t,
+    ];
+  };
+
+  const maxWidth = c.length * widthRatio;
+  const upper: [number, number][] = [];
+  const lower: [number, number][] = [];
+
+  for (let i = 0; i <= samples; i++) {
+    const t = i / samples;
+    const [x, y] = at(t);
+    const [nx, ny] = at(Math.min(1, t + 0.01));
+    const dx = nx - x, dy = ny - y;
+    const len = Math.hypot(dx, dy) || 1;
+    const w = maxWidth * Math.pow(Math.sin(Math.PI * t), 0.75);
+    upper.push([x + (-dy / len) * w, y + (dx / len) * w]);
+    lower.push([x - (-dy / len) * w, y - (dx / len) * w]);
+  }
+  return { upper, lower };
+}
+
 /* --------------------------------------------------------------------------
    THE SPINE, AND WHY THE FIELD IS BUILT ON IT
 
