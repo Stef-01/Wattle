@@ -89,6 +89,7 @@ uniform vec3  uPointer;      // pointer in world space
 uniform float uPointerOn;    // 0 when there is no pointer (touch, or off-canvas)
 uniform float uPixelRatio;
 uniform float uSize;
+uniform float uViewH;   // canvas height in CSS px; 900 is the size uSize was tuned at
 
 varying float vRadial;
 varying float vOpen;         // this floret's own bloom progress
@@ -139,8 +140,16 @@ void main() {
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
 
   // Perspective attenuation, with the tips carrying more visual mass.
-  float sizeScale = mix(0.62, 1.0, radial) * (0.6 + 0.4 * open);
-  gl_PointSize = uSize * sizeScale * uPixelRatio * (11.0 / -mv.z);
+  /* Tips carry more mass than cores, and the floor is lifted: with the florets packed onto a
+     shell, a sprite that is too small leaves the shell reading as a ring of separate dots
+     rather than as a solid fuzzy ball. */
+  float sizeScale = mix(0.70, 1.16, radial) * (0.70 + 0.30 * open);
+  /* RESOLUTION-INDEPENDENT. 11.0 / -mv.z is a hand-tuned stand-in for the projection's own
+     pixels-per-world-unit, and it silently assumed one viewport height. On a tall canvas the
+     plant covers more pixels while the sprites stayed the same size, so a head that read as
+     dense fuzz at 1440x900 fell apart into separate dots. Scaling by the height ratio keeps a
+     floret the same size *relative to the plant* at any viewport. */
+  gl_PointSize = uSize * sizeScale * uPixelRatio * (11.0 / -mv.z) * (uViewH / 900.0);
   gl_Position = projectionMatrix * mv;
 }
 `;
@@ -434,7 +443,7 @@ void main() {
   /* Lifted from 0.55. The phyllodes occupy as much of the reference as the flowers do, and at
      the old floor the near blades were sitting close enough to black that the plant read as
      flowers suspended in nothing. They are the half of the plant that says *acacia*. */
-  float a = uOpacity * (0.78 + vDepth * 0.22);
+  float a = uOpacity * (0.9 + vDepth * 0.1);
   gl_FragColor = vec4(c, a);
 }
 `;

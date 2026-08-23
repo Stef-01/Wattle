@@ -76,6 +76,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const uPointerOn = { value: 0 };
     const uOpacity = { value: 0 };
     const uPixelRatio = { value: dpr };
+    const uViewH = { value: 900 };
 
     /* REMAPPED ONTO THE TEN-HUE SYSTEM. The old palette's --blossom/--bronze/--sage are gone;
        --blossom now means soft PINK, which would have quietly turned the wattle into a
@@ -106,7 +107,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       geo.setAttribute("aAttr", new THREE.BufferAttribute(attr, itemSize));
       const mat = new THREE.ShaderMaterial({
         vertexShader: vert, fragmentShader: frag,
-        uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uPixelRatio, ...extra },
+        uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uPixelRatio, uViewH, ...extra },
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
       });
       disposables.push(geo, mat);
@@ -121,7 +122,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
     const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
     const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 30 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 35 },
       uMatte: { value: 0 },
     });
     farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
@@ -136,7 +137,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 3 + 4. the subject, and its filaments ---- */
     const near = spray({ heads, height: 6.4, lean: 0.9, scale: 1, seed: 7 });
     const nearL = pointsLayer(near.home, near.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 17 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 23 },
       // The subject is matte; only the far, out-of-focus copy glows.
       uMatte: { value: 1 },
     });
@@ -167,7 +168,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       vertexShader: FOLIAGE_VERT, fragmentShader: FOLIAGE_FRAG,
       uniforms: {
         uTime, uBloom, uPointer, uPointerOn, uOpacity,
-        uLeaf: { value: new THREE.Color("#075f47") },
+        uLeaf: { value: new THREE.Color("#0c7d5c") },
         uLeafLit: { value: new THREE.Color(token("--eucalypt", "#00a878")) },
       },
       transparent: true, side: THREE.DoubleSide,
@@ -209,6 +210,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const resize = () => {
       const { clientWidth: w, clientHeight: h } = host;
       if (!w || !h) return;
+      uViewH.value = h;
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
