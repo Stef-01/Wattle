@@ -74,8 +74,11 @@ export default function HomePage() {
         <section className="section is-black">
           <div className="padding-global">
             <article className="card card-featured reveal">
-              <div className="card-media is-wattle" style={{ display: "grid", placeItems: "center", padding: "2vw" }}>
-                <p className="display-wordmark" style={{ fontSize: "5.5vw", color: "var(--black)" }}>
+              {/* NOT .card-media — that class absolutely positions every child to fill a fixed-ratio
+                  image box, which is right for a photo and wrong for type. A plain panel keeps
+                  the wordmark in normal flow where it can actually be seen. */}
+              <div className="is-wattle" style={{ display: "grid", placeItems: "center", padding: "2vw", containerType: "inline-size", minHeight: "18vw" }}>
+                <p className="display-wordmark" style={{ color: "var(--black)" }}>
                   {lead.name}
                 </p>
               </div>

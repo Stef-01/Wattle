@@ -304,6 +304,18 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 .card-body{ padding:var(--space-s); display:flex; flex-direction:column;
             justify-content:space-between; flex:1; gap:var(--space-2xs) }
 
+/* .card.card-featured, NOT .card-featured.
+   Both classes sit on the element. `.card` sets display:flex and is defined later in this file,
+   so at equal specificity it won and the 50/50 split silently collapsed into a stack. Raising
+   the specificity fixes it for good; reordering the file would work today and break the next
+   time somebody moves a block. */
+.card.card-featured{ display:grid; grid-template-columns:1fr 1fr; align-items:stretch }
+.card.card-featured .card-media{ padding-top:0; min-height:20vw }
+/* The venture wordmark scales to its own panel rather than to the viewport — at 5.5vw it was
+   sized for a full-width box and overflowed a half-width one. */
+.card-featured .display-wordmark{ font-size:min(5.5vw,9cqw); }
+@media (max-width:767px){ .card.card-featured{ grid-template-columns:1fr } }
+
 /* --------------------------------------------------------------------------
    9. TICKER
    -------------------------------------------------------------------------- */
