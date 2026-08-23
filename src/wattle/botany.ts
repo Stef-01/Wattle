@@ -174,6 +174,55 @@ export function phyllodePath(c: PhyllodeCurve): string {
   return `M${p0[0].toFixed(2)} ${p0[1].toFixed(2)} C${p1[0].toFixed(2)} ${p1[1].toFixed(2)}, ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}, ${p3[0].toFixed(2)} ${p3[1].toFixed(2)}`;
 }
 
+/**
+ * THE PHYLLODE AS A BLADE, not a midrib.
+ *
+ * `phyllodePath` returns the CURVE — the midrib, which is the right primitive for a motion path
+ * or a divider rule. Drawn as a leaf it is a hairline, because a leaf is not a line.
+ *
+ * This closes it into a silhouette by offsetting the midrib perpendicular by a width profile.
+ * The profile peaks past the middle (`^0.75` biases it toward the tip) because a falcate
+ * phyllode is widest above its midpoint, and it returns to zero at both ends so the blade comes
+ * to a point rather than a stump. The asymmetric base survives because it is a property of the
+ * midrib being offset, not something added afterwards.
+ */
+export function phyllodeBlade(c: PhyllodeCurve, samples = 26): { outline: string; midrib: string } {
+  const [p0, p1, p2, p3] = c.points as [
+    [number, number], [number, number], [number, number], [number, number],
+  ];
+  const at = (t: number): [number, number] => {
+    const u = 1 - t;
+    return [
+      p0[0] * u * u * u + p1[0] * 3 * u * u * t + p2[0] * 3 * u * t * t + p3[0] * t * t * t,
+      p0[1] * u * u * u + p1[1] * 3 * u * u * t + p2[1] * 3 * u * t * t + p3[1] * t * t * t,
+    ];
+  };
+
+  // 0.16 of length. A real phyllode is a blade — at 0.085 this drew a reed.
+  const maxWidth = c.length * 0.16;
+  const upper: string[] = [];
+  const lower: [number, number][] = [];
+
+  for (let i = 0; i <= samples; i++) {
+    const t = i / samples;
+    const [x, y] = at(t);
+    const [nx, ny] = at(Math.min(1, t + 0.01));
+    const dx = nx - x, dy = ny - y;
+    const len = Math.hypot(dx, dy) || 1;
+    const w = maxWidth * Math.pow(Math.sin(Math.PI * t), 0.75);
+    const ox = (-dy / len) * w, oy = (dx / len) * w;
+
+    upper.push(`${(x + ox).toFixed(2)} ${(y + oy).toFixed(2)}`);
+    lower.push([x - ox, y - oy]);
+  }
+
+  const back = lower.reverse().map(([x, y]) => `${x.toFixed(2)} ${y.toFixed(2)}`);
+  return {
+    outline: `M${upper.join(" L")} L${back.join(" L")} Z`,
+    midrib: phyllodePath(c),
+  };
+}
+
 /* --------------------------------------------------------------------------
    THE SPINE, AND WHY THE FIELD IS BUILT ON IT
 

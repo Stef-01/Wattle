@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { COMPANY } from "@/content/company";
 import { TEAM, TEAM_PUBLIC, monogram } from "@/content/team";
+import { SpecimenPlate } from "../specimen-plate";
 
 export const metadata: Metadata = {
   title: "Company",
@@ -108,6 +109,8 @@ export default function CompanyPage() {
           </section>
         </>
       ) : null}
+
+      <SpecimenPlate />
 
       <section className="on-leaf">
         <div className="shell band-pad">

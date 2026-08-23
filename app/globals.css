@@ -580,6 +580,187 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
 .notice p { color: color-mix(in srgb, var(--ink) 82%, var(--gold)); max-width: 66ch; }
 
 /* --------------------------------------------------------------------------
+   THE SPECIMEN PLATE
+
+   A herbarium sheet: near-black ground, one specimen, taxonomy beside it. The
+   ground is darker than --leaf-deep because a plate is not the company speaking
+   — it is an object being looked at, and the extra darkness is what separates a
+   presented thing from a branded surface.
+   -------------------------------------------------------------------------- */
+
+.plate {
+  background: #14180f;
+  color: var(--on-leaf);
+  overflow: clip;
+  position: relative;
+}
+
+/* A single low pool of light behind the specimen. Offset and very soft — the sheet
+   is lit, not glowing. */
+.plate::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 46%;
+  width: min(76vw, 44rem); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgb(242 194 48 / 0.07), transparent 66%);
+  pointer-events: none;
+}
+
+.plate-grid {
+  position: relative;
+  display: grid;
+  gap: var(--gap-4);
+  padding-block: var(--gap-5);
+  align-items: center;
+}
+@media (min-width: 1000px) {
+  .plate-grid {
+    /* The figure gets the middle and the most of it — a specimen plate that does not lead with
+       the specimen is a table with a picture next to it. */
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.45fr) minmax(0, 0.74fr);
+    gap: var(--gap-4);
+    padding-block: var(--gap-6);
+  }
+}
+
+/* --- the identification --- */
+
+.plate-family {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blossom);
+}
+.plate-binomial {
+  margin: 0.75rem 0 0;
+  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+  font-style: italic;
+  color: var(--on-leaf);
+}
+.plate-authority { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--sage); }
+.plate-note {
+  margin: 1.5rem 0 0;
+  max-width: 40ch;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--sage);
+}
+
+/* --- the label --- */
+
+.plate-label { margin: 0; display: grid; gap: 0; align-content: start; }
+.plate-label > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 0.85rem;
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+}
+.plate-label > div:last-child { border-bottom: 1px solid rgb(252 250 244 / 0.14); }
+.plate-label dt { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage); }
+.plate-label dd { margin: 0; font-size: 0.9375rem; color: var(--on-leaf); }
+
+/* --- the figure --- */
+
+.plate-figure { display: flex; justify-content: center; }
+.plate-svg { width: 100%; max-width: 42rem; height: auto; }
+@media (max-width: 999px) { .plate-svg { max-width: 22rem; } }
+
+.plate-stem,
+.plate-branch { fill: none; stroke: var(--sage); stroke-linecap: round; }
+.plate-stem { stroke-width: 5; opacity: 0.75; }
+.plate-branch { stroke-width: 2.6; opacity: 0.55; }
+/* The blade is filled and the vein is drawn on it. A phyllode rendered as a stroked midrib is a
+   hairline — botanically the wrong object, and visually invisible at plate scale. */
+/* OPACITY MULTIPLIES. Group 0.5 x fill 0.34 left the blades at 17% of sage over a near-black
+   ground — present in the DOM at 90px and invisible to a reader. Foliage should sit behind the
+   blossom, not vanish behind it. */
+.plate-phyllode { opacity: 0.9; }
+.plate-blade { fill: var(--sage); fill-opacity: 0.5; stroke: var(--sage); stroke-width: 0.14; stroke-opacity: 0.85; }
+.plate-vein { fill: none; stroke: #14180f; stroke-width: 0.16; opacity: 0.55; }
+
+/* --------------------------------------------------------------------------
+   THE PLATE'S ANIMATION
+
+   A specimen assembling itself: the stem draws, the laterals follow it out, the
+   phyllodes unfurl, and the heads open BASE TO TIP — the plant's own flowering
+   order, which is the same law the hero's particle field runs on.
+
+   Everything is keyed off `--o`, each element's position along the stem, so the
+   sequence is a property of the drawing rather than a list of hand-written
+   delays that would rot the moment the geometry changed.
+
+   THE DEFAULT STATE IS FULLY DRAWN. These only animate where scroll-driven
+   timelines exist and motion is welcome; everywhere else the plate is simply a
+   finished botanical illustration, which is what it should be anyway.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .plate-stem {
+      stroke-dasharray: 700;
+      /* NOT linear. A stroke draw-on is movement through space just as much as a translate is,
+         and linear is the curve that reads as machine-driven rather than as growth. */
+      animation: plate-draw cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    @keyframes plate-draw { from { stroke-dashoffset: 700; } to { stroke-dashoffset: 0; } }
+
+    .plate-branch {
+      animation: plate-branch cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      /* Each lateral leaves the stem a little after the one below it. */
+      animation-range: entry calc(18% + var(--i) * 4%) cover calc(42% + var(--i) * 4%);
+      transform-box: fill-box;
+      transform-origin: 0% 100%;
+    }
+    @keyframes plate-branch { from { opacity: 0; transform: scaleX(0.15); } to { opacity: 0.55; transform: none; } }
+
+        .plate-phyllode {
+      animation: plate-unfurl cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry calc(24% + var(--o) * 22%) cover calc(52% + var(--o) * 22%);
+    }
+    /* Unfurling is a rotation about the base plus a stretch along the blade — a phyllode opens
+       from where it attaches, not from its middle. */
+    @keyframes plate-unfurl {
+      from { opacity: 0; transform: rotate(-14deg) scale(0.55); }
+      to   { opacity: 0.42; transform: none; }
+    }
+
+    .plate-head {
+      animation: plate-bloom cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry calc(30% + var(--o) * 26%) cover calc(58% + var(--o) * 26%);
+    }
+    /* Opens slightly past full and settles — a head does not arrive at its size and stop. */
+    @keyframes plate-bloom {
+      0%   { opacity: 0; transform: scale(0.3); }
+      70%  { opacity: 1; transform: scale(1.06); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .plate-id > *,
+    .plate-label > div {
+      animation: plate-rise cubic-bezier(0.2, 0, 0, 1) both;
+      animation-timeline: view();
+      animation-range: entry 12% cover 34%;
+    }
+    @keyframes plate-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  }
+}
+
+/* The site's one Pause control governs this too. */
+[data-motion="paused"] .plate-stem,
+[data-motion="paused"] .plate-branch,
+[data-motion="paused"] .plate-phyllode,
+[data-motion="paused"] .plate-head { animation-play-state: paused; }
+
+/* --------------------------------------------------------------------------
    FOOTER
    -------------------------------------------------------------------------- */
 

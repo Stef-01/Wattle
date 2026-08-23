@@ -28,6 +28,33 @@ and a hand-authored SVG spray is the fallback *and* the thing already on screen.
 Full spec, architecture, accessibility fallback and performance plan:
 **[docs/GENERATIVE-SYSTEM.md](docs/GENERATIVE-SYSTEM.md)**.
 
+## The specimen plate
+
+`/company` closes on a herbarium sheet: near-black ground, one specimen centred, taxonomy set
+beside it. Reference concept: "Flora" by Sandhill Studio — a dark botanical plate with the flower
+dominant and taxonomic framing. **The concept was taken, not the layout**, and it is expressed in
+this site's own palette, type and generated geometry.
+
+It earns its place editorially rather than decoratively: this is the page that answers *why is the
+company called Wattle*, and the answer is a plate of *Acacia pycnantha* with its real measurements
+on it.
+
+**The drawing is generated, not illustrated.** Every phyllode is a falcate curve from `phyllode()`
+closed into a blade by `phyllodeBlade()`, with its single prominent central vein drawn — the
+species' diagnostic feature. Every head is a real 40–80 floret cluster from `flowerHead()`. These
+are the same functions that build the WebGL field in the hero, so **the plate and the hero are one
+plant described twice**, not two drawings that share a palette.
+
+The plate assembles on scroll: stem draws, laterals follow it out, phyllodes unfurl about their
+base, heads open **base to tip** — the plant's own flowering order, the same law the particle
+field runs on. Every delay is keyed off `--o`, each element's position along the stem, so the
+sequence is a property of the drawing rather than hand-written delays that rot when the geometry
+changes.
+
+**Budget:** heads animate as *groups*, not as ~1,000 individual florets. Identical visual read,
+36 animated elements instead of a thousand. Default state is fully drawn, so no-JS, unsupported
+browsers and reduced motion all get a finished botanical illustration.
+
 ## Information architecture
 
 Four doors, one per job somebody arrives with — the quadrant model large health-tech companies use,
