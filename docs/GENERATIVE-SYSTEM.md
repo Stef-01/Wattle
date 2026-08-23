@@ -24,6 +24,15 @@ Nothing outside this set exists in the stylesheet. The one gradient in the syste
 
 ### Primitives
 
+**The spine** (`SPINE`, `spinePoints`). A single master axis as a cubic bezier in world space —
+a sickle sweep echoing the falcate language of the phyllode. **Everything hangs off it:** lateral
+racemes emerge along it as they do in a leaf axil, heads sit along those laterals, and the stem
+itself is drawn from the same curve in the same scene.
+
+Until this existed the hero carried **two plants** — a drawn SVG spray with sixteen blossom
+circles and a particle field of several thousand florets, overlapping and sharing no motion. Two
+flower systems in one composition is precisely why it did not read as one animation.
+
 **The flower head** (`src/wattle/botany.ts` → `flowerHead`). A globular cluster of **40–80
 florets**, drawn per head from the real range — one point per floret, not a round number chosen
 for the GPU. Distribution is a Fibonacci sphere (the cheap analogue of phyllotaxis) at an
@@ -89,6 +98,28 @@ appear at high octave counts. At two octaves of slow ambient drift there is noth
 and this implementation is short enough to be verified by reading it — which a transcribed simplex
 kernel is not.
 
+### One motion law
+
+`MOTION_CHUNK` in `src/wattle/shaders.ts` holds the noise field and the pointer response, and is
+concatenated into **both** the floret shader and the stem shader. Same frequencies, same
+amplitudes, same falloff — so when the cursor moves, the whole plant answers as one body. The two
+materials also share the *same uniform objects*, not copies: one clock, one pointer, one bloom
+value, with nothing to keep in sync because there is only one of each.
+
+The stem is WebGL geometry rather than the SVG sitting over the canvas. That removes any
+DOM-to-canvas alignment to maintain across breakpoints, and it is the other half of making this
+one animation rather than a drawing with particles near it.
+
+**Pointer response, on a spring.** A lerp toward a target arrives and stops dead. The whole-plant
+parallax tilt runs a spring (stiffness 0.016, damping 0.85) so it overshoots slightly and settles
+— which is what a mass on a stem does, and is the difference between the plant *tracking* the
+cursor and *responding* to it. The lean is capped at a few degrees: past that a parallax tilt
+stops reading as depth and starts reading as the page being dragged. On pointer-leave the plant
+returns to rest rather than holding its last lean.
+
+The stem is anchored at its base — pointer influence scales with distance along it, so the tip
+moves and the foot does not.
+
 ### Shader approach
 
 *Vertex* (`WATTLE_VERT`): per-floret axial bloom window → `mix(dispersed, home, open)` → fbm drift
@@ -142,6 +173,18 @@ One control, all motion.
 | Frame rate | 60fps desktop; field absent below tablet |
 | LCP / INP / CLS | < 2.5s / < 200ms / < 0.1 |
 
+### The gate fires in normal use — a note
+
+`effectiveType` is a **rolling estimate** and drifts between `4g` and `3g` on the same machine
+minute to minute. During development the field stopped loading on a fast local connection because
+the browser had downgraded its own estimate to `3g`. That is the gate working correctly — it is
+protecting exactly the visitor the brief prioritises — but it means the field cannot be reliably
+demonstrated on demand.
+
+`?field=force` skips the **heuristic** checks only: the connection estimate and the hardware
+proxy. It does **not** skip reduced motion or the WebGL2 probe, because a stated preference and a
+missing context are facts rather than estimates, and no query string overrides a fact.
+
 ### Verified
 
 - [x] Home first-load JS **108 kB**; three.js resolves to a separate lazy chunk
@@ -152,6 +195,10 @@ One control, all motion.
 - [x] Canvas is `pointer-events: none` and cannot intercept a control
 - [x] Field masked clear of the text column, so text contrast stays a constant
 - [x] Loop halts entirely when off-screen or when the tab is hidden
+- [x] Pause banks elapsed time and resumes from it, so releasing pause continues the drift rather
+      than jumping it forward by the length of the pause
+- [x] A failed WebGL context unrenders the field element, which restores the SVG fallback via
+      `:has()` rather than leaving an empty hero
 - [x] Full teardown on unmount (geometry, material, renderer, observers, listeners)
 
 ### Not yet run — needs a deployed URL and real devices

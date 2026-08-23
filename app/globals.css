@@ -312,11 +312,16 @@ a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1p
   mask-image: radial-gradient(ellipse 62% 92% at 78% 50%, #000 30%, transparent 76%);
 }
 
-/* The static SVG bloom is the fallback AND the baseline. When the field loads it would sit on
-   top of the particles, so it steps back to a faint structural trace — the stem and foliage the
-   particles do not draw — rather than disappearing, which would leave the composition without
-   its spine. */
-.hero:has(.wattle-field) .hero-bloom { opacity: 0.28; }
+/* THE SVG IS NOW PURELY THE FALLBACK.
+   It used to stay on at 0.28 as a structural spine under the particles, which meant the hero
+   carried TWO plants — a drawn one and a simulated one — overlapping, on unrelated motion. The
+   stem is now geometry inside the WebGL scene running the same motion law as the florets, so
+   the drawn spray has no job left when the field is live and steps out entirely.
+
+   `:has()` is doing real work here: the SVG hides only when the field element is actually in the
+   DOM, and WattleField unrenders itself if its context fails — so a failed WebGL init restores
+   the drawn spray rather than leaving an empty hero. */
+.hero:has(.wattle-field) .hero-bloom { display: none; }
 
 /* THE LIVE PART.
 

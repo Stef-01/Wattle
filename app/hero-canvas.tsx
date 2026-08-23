@@ -52,6 +52,17 @@ const TIERS: Record<"high" | "mid", Tier> = {
 function chooseTier(): Tier | null {
   if (typeof window === "undefined") return null;
 
+  /* QA OVERRIDE: `?field=force`.
+     Skips the HEURISTIC checks only — the connection estimate and the hardware proxy — because
+     both are noisy and neither can be reproduced on demand for a design review. It does NOT skip
+     reduced motion or the WebGL2 probe: a stated preference and a missing context are facts, not
+     estimates, and no query string overrides a fact.
+
+     This exists because the heuristics really do fire in normal use. `effectiveType` is a rolling
+     estimate that drifts between 4g and 3g on the same machine minute to minute, which is correct
+     behaviour for protecting a regional visitor and impossible to demo around. */
+  const forced = new URLSearchParams(window.location.search).get("field") === "force";
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
   if (window.innerWidth < 768) return null;
 
@@ -60,9 +71,11 @@ function chooseTier(): Tier | null {
     deviceMemory?: number;
   };
 
-  if (nav.connection?.saveData) return null;
-  const effective = nav.connection?.effectiveType;
-  if (effective === "slow-2g" || effective === "2g" || effective === "3g") return null;
+  if (!forced) {
+    if (nav.connection?.saveData) return null;
+    const effective = nav.connection?.effectiveType;
+    if (effective === "slow-2g" || effective === "2g" || effective === "3g") return null;
+  }
 
   // Acquire a real context rather than trusting a feature string.
   const probe = document.createElement("canvas");
@@ -75,7 +88,7 @@ function chooseTier(): Tier | null {
 
   if (cores >= 8 && memory >= 8) return TIERS.high;
   if (cores >= 4) return TIERS.mid;
-  return null;
+  return forced ? TIERS.mid : null;
 }
 
 export function HeroCanvas() {

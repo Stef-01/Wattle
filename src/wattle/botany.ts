@@ -175,60 +175,114 @@ export function phyllodePath(c: PhyllodeCurve): string {
 }
 
 /* --------------------------------------------------------------------------
-   THE FIELD
+   THE SPINE, AND WHY THE FIELD IS BUILT ON IT
 
-   Racemes arranged across the hero. Two buffers per particle: where it belongs
-   (assembled) and where it starts (dispersed). The dispersed state is not
-   random scatter — it is the same point pushed outward along its own axis and
-   sunk, so the assembly reads as growth toward the light rather than as
-   confetti converging.
+   Until now the hero carried TWO plants: a drawn SVG spray with sixteen blossom
+   circles, and a particle field of several thousand florets, overlapping and
+   sharing no motion. Two flower systems in one composition is exactly why it
+   did not read as one animation.
+
+   So there is now a single master axis — the spine — and everything hangs off
+   it. Lateral racemes emerge along it the way they do in a leaf axil, heads sit
+   along those laterals, and the stem itself is drawn from the same curve in the
+   same coordinate system. One plant, one motion law, no alignment to maintain
+   between a DOM element and a canvas.
    -------------------------------------------------------------------------- */
+
+/** The master axis as a cubic bezier in world space: a sickle sweep, base lower-left to tip
+ *  upper-right, echoing the falcate language of the phyllode. */
+export const SPINE: [number, number, number][] = [
+  [-3.6, -3.9, 0.2],
+  [-1.9, -1.2, 0.9],
+  [0.4, 0.7, -0.6],
+  [2.9, 3.2, 0.1],
+];
+
+function bezier3(p: [number, number, number][], t: number): [number, number, number] {
+  const u = 1 - t;
+  const [a, b, c, d] = p as [
+    [number, number, number], [number, number, number], [number, number, number], [number, number, number],
+  ];
+  const w0 = u * u * u, w1 = 3 * u * u * t, w2 = 3 * u * t * t, w3 = t * t * t;
+  return [
+    a[0] * w0 + b[0] * w1 + c[0] * w2 + d[0] * w3,
+    a[1] * w0 + b[1] * w1 + c[1] * w2 + d[1] * w3,
+    a[2] * w0 + b[2] * w1 + c[2] * w2 + d[2] * w3,
+  ];
+}
+
+/** Points along the spine, for the stem geometry and for siting the laterals. */
+export function spinePoints(segments: number): [number, number, number][] {
+  const out: [number, number, number][] = [];
+  for (let i = 0; i <= segments; i++) out.push(bezier3(SPINE, i / segments));
+  return out;
+}
 
 export interface FieldBuffers {
   count: number;
   home: Float32Array;
   dispersed: Float32Array;
-  /** radial (0–1), axial (0–1), seed (0–1), headSize */
+  /** radial (0–1), axial (0–1), seed (0–1), reserved */
   attributes: Float32Array;
 }
 
 export interface FieldOptions {
+  /** Lateral racemes along the spine. */
   racemes: number;
   headsPerRaceme: number;
-  spread: number;
   seed?: number;
 }
 
-export function buildField({ racemes: racemeCount, headsPerRaceme, spread, seed = 7 }: FieldOptions): FieldBuffers {
+export function buildField({ racemes: lateralCount, headsPerRaceme, seed = 7 }: FieldOptions): FieldBuffers {
   const rand = mulberry32(seed);
   const homes: number[] = [];
   const dispersed: number[] = [];
   const attrs: number[] = [];
 
-  for (let r = 0; r < racemeCount; r++) {
-    const origin: [number, number, number] = [
-      (rand() - 0.5) * spread,
-      -2.4 + rand() * 1.1,
-      (rand() - 0.5) * spread * 0.5,
-    ];
-    const stem = raceme(rand, origin, 2.2 + rand() * 2.4, headsPerRaceme);
+  for (let i = 0; i < lateralCount; i++) {
+    // Laterals sit between 12% and 96% along the spine — a bare base is what a branch has.
+    const t = 0.12 + (i / Math.max(1, lateralCount - 1)) * 0.84;
+    const at = bezier3(SPINE, t);
+    const ahead = bezier3(SPINE, Math.min(1, t + 0.02));
 
-    for (const head of stem.heads) {
-      for (const f of head.florets) {
-        const hx = head.centre[0] + f.offset[0];
-        const hy = head.centre[1] + f.offset[1];
-        const hz = head.centre[2] + f.offset[2];
+    // Tangent, so a lateral leaves the spine rather than crossing it.
+    const tan: [number, number, number] = [ahead[0] - at[0], ahead[1] - at[1], ahead[2] - at[2]];
+    const tl = Math.hypot(tan[0], tan[1], tan[2]) || 1;
+
+    // Alternate sides, as a raceme-bearing branch does.
+    const side = i % 2 === 0 ? 1 : -1;
+    const nx = (-tan[1] / tl) * side;
+    const ny = (tan[0] / tl) * side;
+
+    const reach = 0.5 + rand() * 1.15;
+
+    for (let h = 0; h < headsPerRaceme; h++) {
+      const along = headsPerRaceme === 1 ? 1 : h / (headsPerRaceme - 1);
+      const centre: [number, number, number] = [
+        at[0] + nx * reach * along + (rand() - 0.5) * 0.28,
+        at[1] + ny * reach * along + (rand() - 0.5) * 0.28,
+        at[2] + (rand() - 0.5) * 0.9,
+      ];
+
+      // BLOOM ORDER IS THE SPINE'S ORDER. A head's delay is where its lateral meets the main
+      // axis, so the whole branch opens base to tip as one movement rather than each lateral
+      // running its own independent sequence.
+      const axial = t * 0.82 + along * 0.18;
+
+      for (const f of flowerHead(rand)) {
+        const hx = centre[0] + f.offset[0];
+        const hy = centre[1] + f.offset[1];
+        const hz = centre[2] + f.offset[2];
         homes.push(hx, hy, hz);
 
-        // Dispersed: pushed out along its own radius and dropped. Growth, not confetti.
-        const push = 2.6 + rand() * 3.4;
+        const push = 2.2 + rand() * 3.0;
         dispersed.push(
-          hx + f.offset[0] * push * 3.2 + (rand() - 0.5) * 1.4,
-          hy - 1.2 - rand() * 2.2,
-          hz + f.offset[2] * push * 3.2 + (rand() - 0.5) * 1.4,
+          hx + f.offset[0] * push * 3.0 + nx * 1.6 + (rand() - 0.5) * 1.2,
+          hy - 1.0 - rand() * 1.9,
+          hz + f.offset[2] * push * 3.0 + (rand() - 0.5) * 1.2,
         );
 
-        attrs.push(f.radial, head.axial, rand(), 1);
+        attrs.push(f.radial, axial, rand(), 1);
       }
     }
   }

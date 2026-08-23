@@ -21,8 +21,60 @@
  * is short enough to be verified by reading it, which a transcribed simplex kernel is not.
  */
 
+/**
+ * ONE MOTION LAW, COMPILED INTO BOTH SHADERS.
+ *
+ * This is what makes the hero read as a single animation rather than as a stem and some
+ * particles that happen to share a colour. The stem and every floret run the identical noise
+ * field and the identical pointer response — same frequencies, same amplitudes, same falloff —
+ * so when the cursor moves, the whole plant answers as one body.
+ *
+ * Duplicating this into two shaders by hand is how the two halves silently drift apart on the
+ * next edit, so it exists once and is concatenated in.
+ */
+export const MOTION_CHUNK = /* glsl */ `
+float hash13(vec3 p) {
+  p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
+  p *= 17.0;
+  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+
+float vnoise(vec3 x) {
+  vec3 i = floor(x);
+  vec3 f = fract(x);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(
+    mix(mix(hash13(i + vec3(0,0,0)), hash13(i + vec3(1,0,0)), f.x),
+        mix(hash13(i + vec3(0,1,0)), hash13(i + vec3(1,1,0)), f.x), f.y),
+    mix(mix(hash13(i + vec3(0,0,1)), hash13(i + vec3(1,0,1)), f.x),
+        mix(hash13(i + vec3(0,1,1)), hash13(i + vec3(1,1,1)), f.x), f.y),
+    f.z);
+}
+
+float fbm(vec3 p) {
+  return 0.65 * vnoise(p) + 0.35 * vnoise(p * 2.17 + 11.3);
+}
+
+/* Ambient drift. Sampled in space AND time with a per-element phase, so nothing shares a cycle
+   and there is no loop to notice. */
+vec3 wattleDrift(vec3 pos, float seed, float time, float amount) {
+  vec3 np = pos * 0.28 + vec3(0.0, 0.0, time * 0.055) + seed * 3.1;
+  return vec3(fbm(np) - 0.5, fbm(np + 19.7) - 0.5, fbm(np + 41.3) - 0.5) * amount;
+}
+
+/* The pointer is a breeze: smooth-falloff repulsion that returns, never a follow-trail.
+   The reach is in world units; beyond it the plant does not know the cursor exists. */
+vec3 wattlePointer(vec3 pos, vec3 pointer, float on, float strength, float reach) {
+  vec3 away = pos - pointer;
+  float d = length(away);
+  float influence = smoothstep(reach, 0.0, d) * on;
+  return normalize(away + 1e-4) * influence * strength;
+}
+`;
+
 export const WATTLE_VERT = /* glsl */ `
 precision highp float;
+${MOTION_CHUNK}
 
 attribute vec3 aDispersed;
 // x: radial position in its head (0 core, 1 stamen tip)
@@ -41,29 +93,6 @@ uniform float uSize;
 varying float vRadial;
 varying float vOpen;         // this floret's own bloom progress
 varying float vSeed;
-
-/* ---- value noise ---------------------------------------------------- */
-float hash13(vec3 p) {
-  p = fract(p * 0.3183099 + vec3(0.71, 0.113, 0.419));
-  p *= 17.0;
-  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-}
-
-float vnoise(vec3 x) {
-  vec3 i = floor(x);
-  vec3 f = fract(x);
-  f = f * f * (3.0 - 2.0 * f);          // smoothstep interpolation
-  return mix(
-    mix(mix(hash13(i + vec3(0,0,0)), hash13(i + vec3(1,0,0)), f.x),
-        mix(hash13(i + vec3(0,1,0)), hash13(i + vec3(1,1,0)), f.x), f.y),
-    mix(mix(hash13(i + vec3(0,0,1)), hash13(i + vec3(1,0,1)), f.x),
-        mix(hash13(i + vec3(0,1,1)), hash13(i + vec3(1,1,1)), f.x), f.y),
-    f.z);
-}
-
-float fbm(vec3 p) {
-  return 0.65 * vnoise(p) + 0.35 * vnoise(p * 2.17 + 11.3);
-}
 
 void main() {
   float radial = aAttr.x;
@@ -92,22 +121,13 @@ void main() {
      per-floret phase, so no two florets share a cycle and there is no loop
      to notice. Amplitude falls as the head closes, because a dispersed
      particle is already moving. */
-  vec3 np = pos * 0.28 + vec3(0.0, 0.0, uTime * 0.055) + seed * 3.1;
-  vec3 drift = vec3(
-    fbm(np) - 0.5,
-    fbm(np + 19.7) - 0.5,
-    fbm(np + 41.3) - 0.5
-  );
-  pos += drift * (0.42 + 0.5 * (1.0 - open));
+  pos += wattleDrift(pos, seed, uTime, 0.42 + 0.5 * (1.0 - open));
 
   /* ---- POINTER --------------------------------------------------------
      Gentle repulsion with a smooth falloff, not a follow-trail. Stamens
      catch a breeze and return; they do not chase. Strength is scaled by
      openness so a half-assembled field is not blown apart. */
-  vec3 toPointer = pos - uPointer;
-  float d = length(toPointer);
-  float influence = smoothstep(2.6, 0.0, d) * uPointerOn * open;
-  pos += normalize(toPointer + 1e-4) * influence * 0.85;
+  pos += wattlePointer(pos, uPointer, uPointerOn * open, 1.15, 3.1);
 
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
 
@@ -153,5 +173,60 @@ void main() {
   colour *= 0.9 + vSeed * 0.2;
 
   gl_FragColor = vec4(colour, alpha * uOpacity * (0.3 + 0.7 * vOpen));
+}
+`;
+
+/**
+ * THE STEM.
+ *
+ * Drawn in WebGL rather than as the SVG sitting over the canvas, which is the other half of
+ * making this one animation: same scene, same coordinate system, same motion law. There is no
+ * alignment to maintain between a DOM element and a canvas across breakpoints, because there is
+ * no DOM element.
+ *
+ * `aAlong` is position down the stem, so it can grow with the bloom rather than being simply
+ * present, and so the tip answers the cursor more than the base does — a stem is anchored.
+ */
+export const SPINE_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+
+attribute float aAlong;
+
+uniform float uTime;
+uniform float uBloom;
+uniform vec3  uPointer;
+uniform float uPointerOn;
+
+varying float vAlong;
+
+void main() {
+  vAlong = aAlong;
+  vec3 pos = position;
+
+  // The stem is drawn in before the florets open on it.
+  float grown = smoothstep(aAlong * 0.5, aAlong * 0.5 + 0.5, uBloom + 0.35);
+
+  pos += wattleDrift(pos, 0.42, uTime, 0.30 * aAlong);
+  // Anchored at the base: the tip moves, the foot does not.
+  pos += wattlePointer(pos, uPointer, uPointerOn, 0.85 * aAlong, 3.1);
+
+  vec4 mv = modelViewMatrix * vec4(mix(position, pos, grown), 1.0);
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+export const SPINE_FRAG = /* glsl */ `
+precision highp float;
+
+uniform vec3 uStem;
+uniform float uOpacity;
+
+varying float vAlong;
+
+void main() {
+  // Fades out toward the tip, the way a stem tapers into the raceme it carries.
+  float a = uOpacity * (1.0 - smoothstep(0.55, 1.0, vAlong)) * 0.9;
+  gl_FragColor = vec4(uStem, a);
 }
 `;
