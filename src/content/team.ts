@@ -16,8 +16,11 @@
  * says that ADHD.ME's does not is the section heading above the plates, and that is a sentence
  * about the company rather than about a person.
  *
- * PORTRAITS ARE SUPPLIED, NEVER GENERATED. `public/vikram.png` and `public/stefan.png` are the
- * founder-supplied photographs from the ADHD.ME tree, copied across at the same 3:4 framing.
+ * PORTRAITS ARE SUPPLIED, NEVER GENERATED. `public/vikram.jpg` and `public/stefan.jpg` are the
+ * founder-supplied photographs from the ADHD.ME tree, copied across at the same 3:4 framing and
+ * re-encoded to 960px JPEG — they were 1MB PNGs rendering into a 300px plate, which is a real
+ * cost on the regional connections this site is meant to work on. The ADHD.ME originals are
+ * untouched.
  * Nothing here generates a face for a real person; `portrait: null` renders a monogram at the
  * same size, because the next person added will not have handed one over on the day they are
  * added.
@@ -52,7 +55,7 @@ export const TEAM: ReadonlyArray<Member> = [
   {
     name: "Vikram Ganeshalingam",
     remit: "What a person meets when they first look for help.",
-    portrait: "/vikram.png",
+    portrait: "/vikram.jpg",
     affiliations: [
       {
         name: "Bond University",
@@ -65,7 +68,7 @@ export const TEAM: ReadonlyArray<Member> = [
   {
     name: "Stefan Thottunkal",
     remit: "Physician-in-training and health-systems researcher, Stanford Medicine.",
-    portrait: "/stefan.png",
+    portrait: "/stefan.jpg",
     affiliations: [
       {
         name: "NOURISH, Stanford Medicine",

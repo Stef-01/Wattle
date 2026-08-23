@@ -1,15 +1,14 @@
 import Link from "next/link";
-import { DOORS, SITE_URL } from "./site";
+import { DOORS, FOOTER_DOORS } from "./site";
 import { COMPANY } from "@/content/company";
 import { WattleMark } from "./wattle-mark";
+import { Acknowledgement } from "./acknowledgement";
 
 /**
- * The footer states two things and no more: who this is, and how to reach them.
- *
- * WHAT IS DELIBERATELY ABSENT: an ABN, a registered office, a copyright year tied to an
- * incorporation date, and a "© 2019–2026" range. Each of those is a fact about a legal entity,
- * and none has been supplied to this repository — see UNCONFIRMED in src/content/company.ts.
- * The year below is the current year only, which asserts nothing about when the company began.
+ * WHAT IS DELIBERATELY ABSENT: an ABN, a registered office, certification badges, and a
+ * copyright range implying a founding year. Each is a fact about a legal entity and none has
+ * been supplied. The year is the current one only, which asserts nothing about when the company
+ * began. See UNCONFIRMED in src/content/company.ts.
  */
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -24,39 +23,50 @@ export function SiteFooter() {
               {COMPANY.shortName} <span className="wordmark-tail">Technologies</span>
             </span>
           </Link>
-          <p style={{ margin: "1rem 0 0", maxWidth: "34ch", fontSize: "0.9375rem", lineHeight: 1.65 }}>
+          <p style={{ margin: "1rem 0 0", maxWidth: "36ch", fontSize: "0.9375rem", lineHeight: 1.7, color: "var(--sage)" }}>
             {COMPANY.tagline}
           </p>
         </div>
 
-        <nav aria-label="Footer">
+        <nav aria-labelledby="footer-site">
+          <h2 id="footer-site">Site</h2>
           <ul>
             {DOORS.map((door) => (
               <li key={door.href}>
                 <Link href={door.href}>{door.label}</Link>
               </li>
             ))}
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-reach">
+          <h2 id="footer-reach">Reach us</h2>
+          <ul>
             <li>
               <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+            </li>
+            {FOOTER_DOORS.map((door) => (
+              <li key={door.href}>
+                <Link href={door.href}>{door.label}</Link>
+              </li>
+            ))}
+            <li style={{ color: "var(--sage)", fontSize: "0.875rem" }}>
+              Replies Mon–Fri, AEST/AEDT
             </li>
           </ul>
         </nav>
       </div>
+
+      <Acknowledgement />
 
       <div className="shell">
         <div className="site-footer-legal">
           <span>
             © {year} {COMPANY.name}. {COMPANY.country}.
           </span>
-          <span>
-            {/* The product's own site, once it has an address of its own. */}
-            ADHD.ME is a {COMPANY.name} product.
-          </span>
+          <span>ADHD.ME is a {COMPANY.name} product.</span>
         </div>
       </div>
     </footer>
   );
 }
-
-/** Exported so the sitemap and metadata cannot drift from the footer's idea of the origin. */
-export { SITE_URL };

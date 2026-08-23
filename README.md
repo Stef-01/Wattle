@@ -29,11 +29,15 @@ Playwright suite uses 3100. All three can run at once.
 
 ## Layout
 
-- `app/` — the routes: `/` (home), `/ventures`, `/approach`, `/team`, `/contact`
+- `app/` — the routes: `/` (home), `/ventures`, `/approach`, `/company`, `/contact`, `/accessibility`
 - `app/globals.css` — the whole palette and every component class, tokens at the top
 - `src/content/company.ts` — **the company register.** Every fact about Wattle Technologies
 - `src/content/ventures.ts` — the venture register. ADHD.ME's entry
 - `src/content/team.ts` — the team gate and roster
+- `src/content/presence.ts` — where the company actually operates
+- `src/content/disclosures.ts` — **what it does not hold**, published rather than faked
+- `PRODUCT.md` / `DESIGN.md` — product truth and the visual world
+- `docs/BRIEF-GAPS.md` — **read before launch.** Every point needing a real fact or genuine consultation
 
 Three doors, one list: `DOORS` in `app/site.ts` feeds the header, the footer *and* the sitemap,
 so a page cannot be linked and unlisted at the same time.
@@ -59,14 +63,13 @@ close these:**
    in its Organization JSON-LD, so it discloses nothing new — but it is a personal Gmail, and it
    is the one constant to change once a domain exists.
 
-## The team tab
+## The team
 
-`/team` is **live**, carrying Vikram Ganeshalingam and Stefan Thottunkal — Vikram's direction,
+The team lives on `/company` and is **live**, carrying Vikram Ganeshalingam and Stefan Thottunkal — Vikram's direction,
 2026-08-22.
 
-`TEAM_PUBLIC` in `src/content/team.ts` is the single switch: the route, the header door, the
-footer door, the sitemap entry *and* the `robots.txt` disallow all read it, so the page cannot
-end up live-but-noindexed or linked-but-404. Adding a person is one entry in `TEAM`.
+`TEAM_PUBLIC` in `src/content/team.ts` is the single switch: flip it and the team section on
+`/company` disappears with it. Adding a person is one entry in `TEAM`.
 
 Both entries are **transcribed** from ADHD.ME's `app/about/team.ts`, where they were supplied by
 their subjects — not rewritten for a company page. `role` and `remit` render only when supplied,
@@ -81,7 +84,14 @@ finally") covers five people, two of whom have not confirmed their entries. A na
 instruction here is not a wider one there, which is why the two gates are separate flags in
 separate trees.
 
-## Design — the golden wattle palette
+## Design
+
+See **[DESIGN.md](DESIGN.md)** for the full system. The short version: the site is set as a
+*company record* — label rail beside content, hairlines as the only chrome — behind one dark
+full-bleed front door carrying a living wattle spray. The dark hero earns attention; the register
+earns belief.
+
+### The golden wattle palette
 
 The palette is *Acacia pycnantha*: bright golden blossom, grey-green foliage, a warm bark-dark
 for the type. It started as ADHD.ME's tokens and was recoloured on 2026-08-23 — the product's

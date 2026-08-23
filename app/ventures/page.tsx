@@ -3,64 +3,77 @@ import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 
 export const metadata: Metadata = {
   title: "Ventures",
-  description: "What Wattle Technologies has built, and what is not settled yet.",
+  description: "The companies and products Wattle Technologies builds, what exists in each, and what is not settled yet.",
   alternates: { canonical: "/ventures" },
 };
 
-/**
- * The register, rendered as plainly as it is written.
- *
- * "Open" sits in the same size and colour as "Built" rather than shrinking into a footnote.
- * That symmetry IS the page: a company that publishes only what works is asking to be believed
- * about the rest.
- */
 export default function VenturesPage() {
   return (
     <>
-      <section className="section" style={{ paddingBottom: "2.5rem" }}>
-        <div className="shell">
-          <p className="eyebrow">Ventures</p>
-          <h1 className="display prose-h1">What we build.</h1>
-        </div>
+      <section className="shell band-pad" style={{ paddingBottom: "var(--gap-4)" }}>
+        <h1 className="display claim">What we build.</h1>
+        <p className="lead" style={{ marginTop: "var(--gap-3)" }}>
+          Each entry says what exists today, where it operates, and what has not been settled — in
+          that order, and without softening the third.
+        </p>
       </section>
 
-      <section className="shell" style={{ paddingBottom: "6rem" }}>
+      <section className="shell" style={{ paddingBottom: "var(--gap-6)" }}>
         <ul className="entries">
           {VENTURES.map((venture) => (
-            <li key={venture.slug} id={venture.slug} className="entry">
-              <div className="entry-head">
-                <h2 className="display entry-name">{venture.name}</h2>
-                <span className="entry-status">{STATUS_LABEL[venture.status]}</span>
-              </div>
-
-              <p className="entry-summary">{venture.summary}</p>
-              <p className="entry-problem">{venture.problem}</p>
-
-              <p className="entry-areas">
-                <strong>{venture.areas.join(" · ")}</strong> — {venture.areasNote}
-              </p>
-
-              <div className="entry-cols">
-                <div>
-                  <p className="entry-label">Built</p>
-                  <ul className="entry-list">
-                    {venture.built.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
+            <li key={venture.slug} id={venture.slug} className="lift-in">
+              <div className="reg">
+                <div className="reg-label" style={{ paddingTop: "0.6rem" }}>
+                  {STATUS_LABEL[venture.status]}
                 </div>
-                <div>
-                  <p className="entry-label">Open</p>
-                  <ul className="entry-list">
-                    {venture.open.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
+                <div className="reg-body">
+                  <h2 className="display claim-sm">{venture.name}</h2>
+                  <p style={{ margin: "1rem 0 0", maxWidth: "58ch", fontSize: "1.0625rem", lineHeight: 1.6 }}>
+                    {venture.summary}
+                  </p>
+                  <p style={{ margin: "0.85rem 0 0", maxWidth: "62ch", color: "var(--muted)", lineHeight: 1.72 }}>
+                    {venture.problem}
+                  </p>
+
+                  <p style={{ margin: "1.5rem 0 0", fontSize: "0.9375rem", color: "var(--muted)" }}>
+                    <strong style={{ color: "var(--ink)", fontWeight: 600 }}>
+                      {venture.areas.join(" · ")}
+                    </strong>{" "}
+                    — {venture.areasNote}
+                  </p>
+
+                  <div className="split">
+                    <div>
+                      <h3 className="reg-label" style={{ paddingTop: 0, marginBottom: "0.9rem" }}>
+                        What exists
+                      </h3>
+                      <ul className="stack">
+                        {venture.built.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3 className="reg-label" style={{ paddingTop: 0, marginBottom: "0.9rem" }}>
+                        Still open
+                      </h3>
+                      <ul className="stack">
+                        {venture.open.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </li>
           ))}
         </ul>
+
+        <p style={{ marginTop: "var(--gap-3)", fontSize: "0.9375rem", color: "var(--muted)", maxWidth: "62ch" }}>
+          One venture. A parent company with a portfolio of one says so, rather than padding the
+          page with a roadmap and calling it a portfolio.
+        </p>
       </section>
     </>
   );

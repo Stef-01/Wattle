@@ -3,62 +3,73 @@
 @import "@fontsource-variable/newsreader";
 
 /* ===========================================================================
-   WATTLE TECHNOLOGIES — the stylesheet.
+   WATTLE TECHNOLOGIES — the design system.
 
-   THE PALETTE IS THE GOLDEN WATTLE ITSELF. Acacia pycnantha: bright golden
-   blossom, grey-green foliage, a warm bark-dark for the type. It is no longer
-   ADHD.ME's amber — the product's accent was a brown-amber that reads as spice
-   rather than as wattle, and this is the parent company, which gets to look
-   like the thing it is named after.
+   THE WORLD: A COMPANY RECORD. Not a marketing site with a hero and a card
+   grid. The visitor is a commissioner, a practice, a partner or a future
+   colleague who arrived from a meeting to check the company is real, and the
+   thing that answers that question is a document that looks like it was kept
+   rather than written. So the page is set as a register: a label rail beside a
+   content column, hairlines as the only chrome, one large serif voice for
+   claims, and the foliage green reserved for where the company speaks in the
+   first person.
 
-   ONE CONSTRAINT SURVIVED THE RECOLOUR: the blossom gold is BRIGHT, and bright
-   gold on paper is unreadable. So the flower colour is split in two — --blossom
-   is the real thing and is used on dark grounds and as decoration, while --gold
-   is the same hue taken down to a golden-olive that clears AA as text. Anything
-   that carries words uses --gold. Every ratio below is computed, not eyeballed,
-   against a 4.5 floor.
+   That choice does the arguing. A page that publishes what is unresolved at
+   the same weight as what works cannot be laid out as a sales deck without
+   lying about its own posture.
+
+   THE PALETTE IS THE GOLDEN WATTLE — Acacia pycnantha, founder-pinned and
+   binding. Blossom gold, foliage green, bark-dark type. The flower colour is
+   split in two because wattle gold is bright and bright gold on paper is
+   unreadable: --blossom is the real thing and lives on dark grounds, --gold is
+   its AA-safe form and is the only gold that may carry words. Every ratio here
+   is recomputed by scripts/contrast-gate.mjs on every build, so these comments
+   cannot quietly go stale.
    =========================================================================== */
 
 :root {
   color-scheme: light;
 
-  /* Ground and type. Warmer than ADHD.ME's paper — cream rather than off-white. */
   --paper: #fcfaf4;
   --stone: #f2efe3;
   --line: #e2decf;
-  /* Bark-dark, with the foliage green still in it rather than a neutral black. */
   --ink: #1b2416;
-  /* 5.19 on paper, 4.70 on stone. The obvious #6b7061 measured 4.43 on stone and
-     was rejected for it — one step darker is the smallest change that clears both. */
   --muted: #676c5d;
 
-  /* THE BLOSSOM, IN TWO PARTS. */
-  /* Text-safe: golden-olive, 5.81 on paper and 5.38 on --gold-soft. */
   --gold: #7c5e0b;
   --gold-soft: #fbf1d2;
-  /* DECORATIVE ONLY — measures 2.49 on paper, so it carries no text at all. Today its one
-     job is the depth in the wattle mark. The numbered card indices used to take it and were
-     moved to --gold: a numeral IS read, and 2.49 is not a colour you read anything at. */
+  /* DECORATIVE ONLY — 2.49 on paper. The mark's depth, and nothing that is read. */
   --gold-mid: #c9992a;
-  /* The flower as it actually is. 6.9 on --leaf, so it carries words there. */
   --blossom: #f2c230;
 
-  /* THE FOLIAGE. This is what makes the company the parent: ADHD.ME has no green. */
   --leaf: #2e3d24;
   --leaf-deep: #232f1b;
-  /* On --leaf: paper 11.1:1, sage 5.3:1, blossom 6.9:1. All clear AA. */
   --on-leaf: #fcfaf4;
   --sage: #a8b394;
 
-  --shadow-card: 0 1px 2px rgb(27 36 22 / 0.04), 0 8px 24px -12px rgb(27 36 22 / 0.12);
+  /* Depth carries an offset and a soft blur. A zero-offset halo is decoration. */
+  --lift: 0 1px 2px rgb(27 36 22 / 0.05), 0 12px 28px -14px rgb(27 36 22 / 0.18);
+
+  /* The register's rhythm. One scale, so spacing is chosen rather than guessed. */
+  --gap-1: 0.5rem;
+  --gap-2: 0.875rem;
+  --gap-3: 1.5rem;
+  --gap-4: 2.5rem;
+  --gap-5: 4rem;
+  --gap-6: 6.5rem;
 }
 
 * { box-sizing: border-box; }
 
-/* Kill the 300ms double-tap delay on controls; pinch zoom is untouched. */
 button, a, input, textarea, select, label, [role="button"] { touch-action: manipulation; }
 
-html { background: var(--paper); }
+html {
+  background: var(--paper);
+  /* The scrollbar is part of the page. Left alone it ships in a grey that
+     belongs to no design system — the cheapest tell that a page was assembled. */
+  scrollbar-color: var(--gold-mid) var(--stone);
+  scrollbar-width: thin;
+}
 
 body {
   margin: 0;
@@ -66,19 +77,24 @@ body {
   background: var(--paper);
   font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* The caret is a browser surface too. */
+  caret-color: var(--gold);
 }
+
+/* Figures in a register line up. */
+table, .tabular { font-variant-numeric: tabular-nums; }
 
 ::selection { background: var(--gold-soft); color: var(--ink); }
 
-/* Focus is one ring everywhere. A control that invents its own is a control a
-   keyboard user has to learn twice. */
+a { color: inherit; text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
+
 :focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .sr-only {
@@ -86,53 +102,98 @@ body {
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-/* The skip link: invisible until it is the thing you are on. */
 .skip-link {
   position: absolute; left: 1rem; top: -4rem; z-index: 60;
   background: var(--ink); color: var(--paper);
-  padding: 0.65rem 1rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500;
-  transition: top 140ms ease;
+  padding: 0.7rem 1.1rem; border-radius: 0.4rem; font-size: 0.875rem; font-weight: 500;
+  transition: top 160ms ease;
 }
 .skip-link:focus { top: 1rem; }
 
 /* --------------------------------------------------------------------------
-   TYPE. Newsreader carries every display line; Inter carries everything you
-   read at length. The tight tracking is what keeps a large serif from looking
-   like a default.
+   TYPE
    -------------------------------------------------------------------------- */
 
 .display {
   font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
   font-weight: 400;
-  letter-spacing: -0.032em;
-  line-height: 1.04;
+  letter-spacing: -0.035em;
+  line-height: 1.03;
+  text-wrap: balance;
 }
 
-.eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-/* TWO CLASSES, DELIBERATELY. `.band p` is (0,1,1) and would beat a lone `.eyebrow-on-leaf`
-   at (0,1,0) — the eyebrow rendered sage instead of blossom until this was doubled up to
-   (0,2,0). Do not simplify it back to one class. */
-.eyebrow.eyebrow-on-leaf { color: var(--blossom); }
+/* The one voice that makes a claim. Capped well under the 6rem ceiling because
+   the copy is sentences, not slogans. */
+.claim { font-size: clamp(2.35rem, 5.6vw, 4.25rem); margin: 0; }
+.claim-sm { font-size: clamp(1.85rem, 3.6vw, 2.9rem); margin: 0; }
 
-.lede { font-size: 1.1875rem; line-height: 1.65; color: var(--muted); }
-@media (min-width: 640px) { .lede { font-size: 1.3125rem; } }
+/* Body measure sits in the 65–75ch band. */
+.prose p { max-width: 68ch; color: var(--muted); line-height: 1.72; }
+.lead { font-size: clamp(1.125rem, 1.9vw, 1.375rem); line-height: 1.6; color: var(--muted); max-width: 60ch; }
 
 /* --------------------------------------------------------------------------
-   SHELL
+   SHELL AND THE REGISTER GRID
+
+   The label rail is a definition list, not a decorative kicker: the label names
+   what the column holds, sits BESIDE it rather than above a heading, and is
+   read by a screen reader as the term it is.
    -------------------------------------------------------------------------- */
 
-.shell { margin-inline: auto; width: 100%; max-width: 68rem; padding-inline: 1.5rem; }
-@media (min-width: 900px) { .shell { padding-inline: 2.5rem; } }
+.shell { margin-inline: auto; width: 100%; max-width: 72rem; padding-inline: 1.5rem; }
+@media (min-width: 900px) { .shell { padding-inline: 3rem; } }
 
-.section { padding-block: 4.5rem; }
-@media (min-width: 900px) { .section { padding-block: 6.5rem; } }
-.section + .section { border-top: 1px solid var(--line); }
+.band-pad { padding-block: var(--gap-5); }
+@media (min-width: 900px) { .band-pad { padding-block: var(--gap-6); } }
+
+.rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+.reg { display: grid; gap: var(--gap-3); }
+@media (min-width: 860px) {
+  .reg { grid-template-columns: 12rem minmax(0, 1fr); gap: var(--gap-4); align-items: start; }
+}
+
+.reg-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  /* Aligns to the cap-height of the column it labels rather than floating. */
+  padding-top: 0.35rem;
+}
+.reg-body { margin: 0; min-width: 0; }
+
+/* On the green, labels take the foliage tint rather than a grey. */
+.on-leaf .reg-label { color: var(--sage); }
+
+/* --------------------------------------------------------------------------
+   BUTTONS
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 2.875rem; padding: 0.75rem 1.4rem;
+  border-radius: 999px; border: 1px solid transparent;
+  font-size: 0.9375rem; font-weight: 500; text-decoration: none; cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--leaf); box-shadow: var(--lift); }
+.btn-quiet { border-color: var(--line); color: var(--ink); }
+.btn-quiet:hover { border-color: var(--ink); }
+.btn-on-leaf { background: var(--paper); color: var(--leaf-deep); }
+.btn-on-leaf:hover { background: var(--blossom); }
+
+/* The inline forward link. Underline is the affordance; the arrow is drawn, not
+   a unicode glyph standing in for an icon. */
+.go {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  color: var(--gold); font-weight: 500; text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--gold) 35%, transparent);
+}
+.go:hover { text-decoration-color: var(--gold); }
+.go svg { transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1); }
+.go:hover svg { transform: translateX(3px); }
 
 /* --------------------------------------------------------------------------
    HEADER
@@ -140,15 +201,14 @@ body {
 
 .site-header {
   position: sticky; top: 0; z-index: 50;
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
 .site-header-inner {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1.5rem; padding-block: 0.9rem;
+  gap: 1.5rem; padding-block: 0.85rem;
 }
-
 .wordmark {
   display: inline-flex; align-items: center; gap: 0.6rem;
   font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
@@ -158,206 +218,254 @@ body {
 .wordmark-mark { flex: none; }
 .wordmark-tail { color: var(--muted); }
 
-.site-nav ul { display: flex; align-items: center; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
-.site-nav a {
-  font-size: 0.9375rem; color: var(--muted); text-decoration: none;
-  padding-block: 0.35rem;
-}
+.site-nav ul { display: flex; align-items: center; gap: 1.75rem; margin: 0; padding: 0; list-style: none; }
+.site-nav a { font-size: 0.9375rem; color: var(--muted); text-decoration: none; padding-block: 0.35rem; }
 .site-nav a:hover { color: var(--ink); }
 .site-nav a[data-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--gold); }
-/* THE HEADER STACKS RATHER THAN SHRINKS.
-   At 375px the single row does not fit: the wordmark wraps onto two lines and the last door
-   ("Contact") is clipped off the right edge — found in a 375x812 capture, invisible at desktop.
-   Shrinking type until it fits only moves the failure to 320px, or to the first reader who
-   raises their font size. Two rows cannot clip, and the doors spread across the full width
-   instead of crowding one end. */
-@media (max-width: 599px) {
-  .site-header-inner {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.6rem;
-    padding-block: 0.7rem;
-  }
+
+/* Two rows below 640px: one row clips the last door at 375px, and shrinking type
+   only moves the failure to 320px or to the first reader who zooms. */
+@media (max-width: 639px) {
+  .site-header-inner { flex-direction: column; align-items: stretch; gap: 0.55rem; padding-block: 0.7rem; }
   .wordmark { white-space: nowrap; }
-  .site-nav ul { justify-content: space-between; gap: 0.75rem; }
-  .site-nav a { font-size: 0.9375rem; }
+  .site-nav ul { justify-content: space-between; gap: 0.6rem; }
 }
 
 /* --------------------------------------------------------------------------
-   BUTTONS. Two, and they are told apart by weight rather than by colour, so the
-   pair survives a palette change.
+   THE HERO — one enormous living subject on a dark ground.
+
+   The model is a venture firm's front door: the brand's organism owns the first
+   viewport and is ALIVE rather than entering once. What follows it is paper and
+   is a register, and that switch is deliberate — the dark hero earns attention
+   from a visitor who arrived curious, the register earns belief from one who
+   arrived to check. A commissioner gets both in that order.
    -------------------------------------------------------------------------- */
 
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
-  /* 44px min target — this site is read on phones by people who zoom. */
-  min-height: 2.75rem;
-  padding: 0.7rem 1.35rem; border-radius: 999px;
-  font-size: 0.9375rem; font-weight: 500; text-decoration: none;
-  border: 1px solid transparent; cursor: pointer;
-  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+.hero {
+  position: relative;
+  background: var(--leaf-deep);
+  color: var(--on-leaf);
+  overflow: clip;
+  /* Tall enough to read as a front door, never taller than the viewport minus
+     the header — a hero you must scroll to finish is a hero that hid its point. */
+  min-height: min(88svh, 54rem);
+  display: flex;
+  align-items: center;
+  padding-block: var(--gap-5);
 }
-.btn:active { transform: translateY(1px); }
 
-.btn-primary { background: var(--ink); color: var(--paper); }
-.btn-primary:hover { background: var(--leaf); }
+/* A soft ground-light behind the bloom so the subject sits IN the dark rather
+   than on it. Offset and blurred, not a zero-offset halo. */
+.hero::before {
+  content: "";
+  position: absolute;
+  right: 4%; top: 6%;
+  width: min(70vw, 46rem); aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 45%, rgb(242 194 48 / 0.16), transparent 62%);
+  pointer-events: none;
+}
 
-.btn-secondary { border-color: var(--line); color: var(--ink); background: transparent; }
-.btn-secondary:hover { border-color: var(--ink); }
+.hero-grid { position: relative; z-index: 1; display: grid; gap: var(--gap-4); align-items: center; }
+@media (min-width: 940px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); gap: var(--gap-5); }
+}
 
-.btn-on-leaf { background: var(--paper); color: var(--leaf-deep); }
-.btn-on-leaf:hover { background: var(--blossom); color: var(--leaf-deep); }
+.hero h1 { max-width: 15ch; }
+.hero .lead { color: var(--sage); margin-top: var(--gap-3); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: var(--gap-4); }
+
+.hero-bloom { width: 100%; height: auto; max-height: 30rem; justify-self: center; }
+
+/* MOBILE: THE SUBJECT HAS TO SURVIVE THE FOLD.
+   Stacked at 375px the hero measured 854px against an 812px viewport, which put the bloom —
+   the one thing this hero is built around — entirely below the fold. Trimming the block padding
+   and the bloom's ceiling brings the whole composition back inside one screen. Measured, not
+   guessed: 854 -> ~700. */
+@media (max-width: 939px) {
+  .hero { padding-block: var(--gap-4); min-height: 0; }
+  .hero-grid { gap: var(--gap-3); }
+  .hero-bloom { max-height: 12rem; }
+}
+
+/* THE LIVE PART. Two independent cycles — the spray drifts, the heads breathe —
+   at prime-ish periods so the pair never resolves into a single visible loop. */
+@keyframes spray-drift {
+  0%, 100% { transform: rotate(-1.15deg) translateY(0); }
+  50%      { transform: rotate(1.35deg) translateY(-10px); }
+}
+@keyframes head-breathe {
+  0%, 100% { transform: scale(0.94); opacity: 0.9; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+
+.bloom-spray {
+  transform-origin: 52px 548px;
+  animation: spray-drift 11s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+.bloom-head { animation: head-breathe 4.7s cubic-bezier(0.37, 0, 0.63, 1) infinite; }
+
+/* The stem draws itself once, on arrival, then stays. The one entrance moment. */
+@keyframes stem-draw { from { stroke-dashoffset: 620; } to { stroke-dashoffset: 0; } }
+.bloom-stem {
+  stroke-dasharray: 620;
+  animation: stem-draw 1700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* The claim resolves from blur once. Nothing else on the site enters this way. */
+@keyframes resolve {
+  from { opacity: 0; transform: translateY(16px); filter: blur(12px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+.resolve { animation: resolve 950ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.resolve-2 { animation-delay: 140ms; }
+.resolve-3 { animation-delay: 260ms; }
+
+/* SCROLL-DRIVEN REVEALS, natively.
+
+   `animation-timeline: view()` runs these off the scroller rather than off a
+   JS observer, so the "live" feel costs no bundle — which is what keeps this
+   compatible with the regional-bandwidth requirement. The default state is
+   ALREADY VISIBLE: browsers without scroll-driven animation, and readers with
+   reduced motion, get the finished page rather than a blank one waiting for a
+   script that will never run. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lift-in {
+      animation: lift-in linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+    @keyframes lift-in {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+  }
+}
 
 /* --------------------------------------------------------------------------
-   HERO
+   THE GREEN — where the company speaks in the first person.
    -------------------------------------------------------------------------- */
 
-.hero { padding-block: 5rem 4.5rem; position: relative; overflow: hidden; }
-@media (min-width: 900px) { .hero { padding-block: 7.5rem 6.5rem; } }
-
-.hero h1 { margin: 1.5rem 0 0; font-size: clamp(2.5rem, 6.4vw, 4.5rem); max-width: 17ch; }
-.hero .lede { margin: 1.75rem 0 0; max-width: 46ch; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
-
-/* The sprig sits behind the type at low opacity. `aria-hidden` in the markup;
-   decorative, and it never carries meaning the words do not. */
-.hero-sprig {
-  position: absolute; right: -3rem; top: 50%; transform: translateY(-50%);
-  opacity: 0.5; pointer-events: none;
-}
-@media (max-width: 1023px) { .hero-sprig { display: none; } }
+.on-leaf { background: var(--leaf); color: var(--on-leaf); }
+.on-leaf p { color: var(--sage); }
+.on-leaf a:not(.btn) { color: var(--blossom); }
 
 /* --------------------------------------------------------------------------
-   CARDS AND LISTS
+   ENTRIES — ventures, principles, anything the register lists.
    -------------------------------------------------------------------------- */
 
-.grid-2 { display: grid; gap: 1.25rem; }
-@media (min-width: 760px) { .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.entries { list-style: none; margin: 0; padding: 0; }
+.entries > li { border-top: 1px solid var(--line); padding-block: var(--gap-4); }
+.entries > li:last-child { border-bottom: 1px solid var(--line); }
 
-.card {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.25rem;
-  padding: 1.75rem;
+.entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; }
+.entry-status { font-size: 0.8125rem; font-weight: 500; color: var(--gold); }
+
+.stack { display: grid; gap: 0.85rem; margin: 0; padding: 0; list-style: none; }
+.stack li { color: var(--muted); line-height: 1.7; max-width: 62ch; }
+
+/* A two-column split for what-exists versus what-is-open. Equal weight is the
+   argument: the open column is not a footnote. */
+.split { display: grid; gap: var(--gap-3); margin-top: var(--gap-3); }
+@media (min-width: 760px) { .split { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4); } }
+
+/* --------------------------------------------------------------------------
+   PRESENCE — where the company actually operates.
+   -------------------------------------------------------------------------- */
+
+.presence { display: grid; gap: var(--gap-3); }
+@media (min-width: 700px) { .presence { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gap-4); } }
+
+.place { border-top: 2px solid var(--gold-mid); padding-top: 1rem; }
+.place h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+.place p { margin: 0.5rem 0 0; font-size: 0.9375rem; color: var(--muted); line-height: 1.65; max-width: 44ch; }
+
+/* --------------------------------------------------------------------------
+   TEAM
+   -------------------------------------------------------------------------- */
+
+.team-plates {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--gap-5) var(--gap-4);
+  grid-template-columns: repeat(auto-fit, minmax(210px, 300px));
+  justify-content: start;
 }
-.card h3 { margin: 0; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
-.card p { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.9375rem; line-height: 1.68; }
-
-/* The numbered principle card. The index is set in the serif so it reads as a
-   figure in a book rather than as a step in a wizard. */
-.card-index {
+.team-portrait {
+  position: relative; aspect-ratio: 3 / 4; overflow: hidden;
+  border-radius: 0.75rem; background: var(--stone); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+}
+.team-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.team-monogram {
   font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
-  font-size: 1.5rem; color: var(--gold); line-height: 1; display: block; margin-bottom: 1.15rem;
+  font-size: 3rem; color: var(--gold);
 }
-
+.team-id { margin-top: 1.15rem; }
+.team-id strong {
+  display: block;
+  font-family: "Newsreader Variable", Newsreader, ui-serif, Georgia, serif;
+  font-size: 1.375rem; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2;
+}
+.team-role { display: block; margin-top: 0.2rem; font-size: 0.875rem; font-weight: 500; color: var(--gold); }
+.team-remit { margin: 0.65rem 0 0; font-size: 0.9375rem; line-height: 1.65; color: var(--muted); }
+.team-affiliations {
+  list-style: none; margin: 1.15rem 0 0; padding: 1.1rem 0 0;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start;
+}
+.team-affiliations a { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration: none; }
+.team-affiliations a span { font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.team-affiliations a:hover span { color: var(--ink); }
+.team-affiliations img { width: auto; height: 1.6rem; max-width: 100%; object-fit: contain; opacity: 0.8; transition: opacity 160ms ease; }
+.team-affiliations a:hover img { opacity: 1; }
 
 /* --------------------------------------------------------------------------
-   VENTURE ENTRY — minimal.
+   NOTICE — the standing disclosure block.
 
-   No card, no tinted header block, no shadow, no pill. A venture here is a name,
-   two sentences and two short lists; boxing that made three lines of fact look
-   like a product tile and gave the page more chrome than content. The only rule
-   left is a hairline above each entry, which is all a list of one — soon two —
-   actually needs.
+   Used where the site has to say what it does NOT have. It is deliberately not
+   a tinted "callout card": a 1px hairline and the blossom tint, so a disclosure
+   reads as part of the record rather than as an alert bolted onto it.
    -------------------------------------------------------------------------- */
 
-.entries { list-style: none; margin: 0; padding: 0; display: grid; gap: 4.5rem; }
-
-.entry { border-top: 1px solid var(--line); padding-top: 2rem; }
-
-/* Baseline-aligned so the status reads as an annotation on the name rather than
-   as a second heading. */
-.entry-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.25rem; }
-.entry-name { margin: 0; font-size: clamp(1.9rem, 4.2vw, 2.6rem); }
-.entry-status {
-  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--gold);
+.notice {
+  border: 1px solid var(--gold-mid);
+  background: var(--gold-soft);
+  border-radius: 0.6rem;
+  padding: 1.35rem 1.5rem;
 }
-
-.entry-summary { margin: 1.15rem 0 0; max-width: 56ch; font-size: 1.0625rem; line-height: 1.6; }
-.entry-problem { margin: 0.85rem 0 0; max-width: 56ch; font-size: 1.0625rem; line-height: 1.62; color: var(--muted); }
-
-.entry-areas { margin: 1.6rem 0 0; font-size: 0.875rem; color: var(--muted); }
-.entry-areas strong { color: var(--ink); font-weight: 500; }
-
-.entry-cols { margin-top: 2.5rem; display: grid; gap: 2rem; }
-@media (min-width: 760px) { .entry-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; } }
-
-.entry-label {
-  margin: 0 0 1rem; font-size: 0.6875rem; font-weight: 600;
-  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
-}
-/* NO BULLETS. At three lines each, a marker is decoration standing in for the
-   structure the spacing already provides. */
-.entry-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
-.entry-list li { font-size: 0.9375rem; line-height: 1.62; color: var(--muted); }
-
-/* --------------------------------------------------------------------------
-   THE LEAF BAND — where the company speaks in its own voice.
-   -------------------------------------------------------------------------- */
-
-.band { background: var(--leaf); color: var(--on-leaf); }
-.band-inner { padding-block: 4.5rem; }
-@media (min-width: 900px) { .band-inner { padding-block: 6rem; } }
-.band h2 { margin: 1.25rem 0 0; font-size: clamp(1.9rem, 4.4vw, 3rem); max-width: 20ch; }
-.band p { color: var(--sage); max-width: 48ch; margin: 1.35rem 0 0; font-size: 1.0625rem; line-height: 1.66; }
-.band a:not(.btn) { color: var(--blossom); }
+.notice > :first-child { margin-top: 0; }
+.notice > :last-child { margin-bottom: 0; }
+.notice p { color: color-mix(in srgb, var(--ink) 82%, var(--gold)); max-width: 66ch; }
 
 /* --------------------------------------------------------------------------
    FOOTER
    -------------------------------------------------------------------------- */
 
 .site-footer { background: var(--leaf-deep); color: var(--sage); }
-.site-footer-inner {
-  padding-block: 3rem;
-  display: grid; gap: 2rem;
-}
-@media (min-width: 760px) {
-  .site-footer-inner { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
-}
-/* THE MARK SURVIVES THE INVERSION. The sprig's stem and foliage are drawn in --leaf, which
-   is this footer's own ground — on the dark band they disappear and the mark degrades to
-   three floating gold dots. Repainting them in sage keeps the sprig a sprig. The blossoms
-   are already gold and stay put. */
-.site-footer .wordmark-mark .mark-stem { stroke: var(--sage); opacity: 0.55; }
-.site-footer .wordmark-mark .mark-leaf { fill: var(--sage); opacity: 0.4; }
-
+.site-footer-inner { padding-block: var(--gap-4); display: grid; gap: var(--gap-4); }
+@media (min-width: 820px) { .site-footer-inner { grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 0.6fr)); } }
 .site-footer .wordmark { color: var(--on-leaf); }
 .site-footer .wordmark:hover { color: var(--blossom); }
 .site-footer .wordmark-tail { color: var(--sage); }
-.site-footer nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
-.site-footer nav a { color: var(--sage); text-decoration: none; font-size: 0.9375rem; }
-.site-footer nav a:hover { color: var(--blossom); }
+.site-footer h2 { margin: 0 0 0.9rem; font-size: 0.75rem; font-weight: 600; color: var(--on-leaf); }
+.site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.site-footer a { color: var(--sage); text-decoration: none; font-size: 0.9375rem; }
+.site-footer a:hover { color: var(--blossom); text-decoration: underline; }
 .site-footer-legal {
-  border-top: 1px solid rgb(251 250 247 / 0.12);
-  padding-block: 1.5rem;
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+  padding-block: 1.4rem;
   font-size: 0.8125rem; color: var(--sage);
   display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between;
 }
-
-/* --------------------------------------------------------------------------
-   PROSE — the long-form pages.
-   -------------------------------------------------------------------------- */
-
-.prose-h1 { font-size: clamp(2.25rem, 5.4vw, 3.5rem); margin: 0.9rem 0 0; max-width: 18ch; }
-.prose-h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 1rem; letter-spacing: -0.022em; }
-.prose p { color: var(--muted); line-height: 1.72; max-width: 62ch; }
-/* The long-form sections read one step up from body copy — 16px under a 3rem serif heading
-   looks like a caption. Scoped to `> section` so it cannot reach the cards on /contact, whose
-   own `.card p` rule is the same specificity and would lose on source order. */
-.prose > section p { font-size: 1.0625rem; }
-
-.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
-
-/* --------------------------------------------------------------------------
-   MOTION. One reveal, and it is off for anybody who asked for it to be off.
-   -------------------------------------------------------------------------- */
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: none; }
+.acknowledgement {
+  border-top: 1px solid rgb(252 250 244 / 0.14);
+  padding-block: 1.6rem;
 }
-.rise { animation: rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.acknowledgement p { margin: 0; font-size: 0.875rem; line-height: 1.7; color: var(--sage); max-width: 68ch; }
+
+/* --------------------------------------------------------------------------
+   MOTION
+   -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
