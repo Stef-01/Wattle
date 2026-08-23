@@ -32,7 +32,6 @@ const CSS = join(ROOT, "app/globals.css");
 
 /** Known-unmigrated, with the count as of the poster-brutalist rewrite. */
 const BASELINE = {
-  "app/company/page.tsx": 21,
   "app/contact/page.tsx": 10,
   "app/accessibility/page.tsx": 11,
   // Components rendered by the pages above, and unmigrated with them.
