@@ -2,7 +2,7 @@
 
 Marketing site for **Wattle Technologies**, a modern futurism practice. Static HTML, CSS and vanilla JS — no build step, no dependencies, no framework.
 
-**Live:** https://stef-01.github.io/Wattle/ (GitHub Pages, deployed on push to `main`)
+**Not currently hosted.** Run it locally, or see [Deployment](#deployment) to put it somewhere.
 
 ---
 
@@ -26,12 +26,12 @@ approach.html     Method — three horizons, six lenses, five movements, standin
 work.html         Fieldwork — featured engagements, engagement shapes, artefacts
 about.html        Practice — the wattle principle, structure, position, colophon
 contact.html      Brief form (mailto-composed) + what happens next
-404.html          Not-found poster (absolute paths, for the Pages sub-path)
+404.html          Not-found poster
 
 css/wattle.css    The whole design system, in 20 numbered sections
 js/wattle.js      Theme toggle, nav, scroll reveal, marquee, form. ~120 lines.
 assets/           SVG motifs + generated social card
-.github/workflows/pages.yml   Deploy to GitHub Pages
+tools/make-og.py  Regenerates the social card
 ```
 
 Pages are intentionally self-contained: header and footer are duplicated in each file rather than templated. Five pages, no build tooling — the duplication is cheaper than the pipeline. If the site grows past ~10 pages, that trade flips.
@@ -91,11 +91,14 @@ The contact form deliberately has no backend — it composes a `mailto:` in the 
 
 ## Deployment
 
-`.github/workflows/pages.yml` publishes the repo root to GitHub Pages on every push to `main`. Enable it once under **Settings → Pages → Source: GitHub Actions**.
+There is no deployment configured. Every path in the site is relative, so the repo root can be dropped onto any static host as-is — Cloudflare Pages, Netlify, Vercel, S3, or GitHub Pages — with no build command and no output directory.
 
-`.nojekyll` is present so Pages serves the files as-is.
+Two things to set once a host and domain are chosen:
 
-For a custom domain, add a `CNAME` file at the root and update the absolute URLs in `sitemap.xml`, `robots.txt`, the `og:image` tags, and the `/Wattle/`-prefixed paths in `404.html`.
+- **`og:image`** is currently the relative `assets/og.png`. Social scrapers need an absolute URL, so change it to `https://<your-domain>/assets/og.png` in all five pages.
+- **`sitemap.xml`, `robots.txt` and a `<link rel="canonical">`** were removed along with the old GitHub Pages setup, since they only make sense once a real origin exists. Re-add them pointing at the live domain.
+
+If you go back to GitHub Pages, note that it only serves **public** repos on the free plan.
 
 ---
 

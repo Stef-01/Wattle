@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://stef-01.github.io/Wattle/sitemap.xml
