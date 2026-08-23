@@ -47,10 +47,10 @@ interface Tier {
 /* Layer counts, not one number. The dust is cheap per point and the bokeh is expensive per
    pixel — a single "particle count" would have scaled the wrong things together. */
 const TIERS: Record<"high" | "mid", Tier> = {
-  high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 10, maxPixelRatio: 2 },
+  high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 26, maxPixelRatio: 2 },
   // Fewer heads and much less bokeh: overdraw from big soft discs is what actually costs on a
   // mid device, more than the point count does.
-  mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 8, maxPixelRatio: 1.5 },
+  mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 16, maxPixelRatio: 1.5 },
 };
 
 function chooseTier(): Tier | null {

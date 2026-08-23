@@ -82,10 +82,12 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        cherry blossom. Gold is the signature hue, new growth takes the warm neutral, and the
        foliage takes the green. Nothing outside the ten. */
     const GOLD = new THREE.Color(token("--wattle", "#ffc400"));
-    /* --waratah, not --ochre. Ochre is the palette's warm NEUTRAL — a pale grey-beige — and
-       using it as the new-growth end of the floret gradient bleached the whole branch to cream.
-       Waratah red-orange is both saturated and botanically right for a bud before it colours up. */
-    const BRONZE = new THREE.Color(token("--waratah", "#ff2e17"));
+    /* Not --ochre, which is the palette's warm NEUTRAL and bleached the branch to cream; and no
+       longer --waratah either. Waratah is a saturated RED, and because the gradient below spent
+       most of its range near this end, the whole field read red rather than gold. --wattle-bud
+       is the amber a head actually carries before it colours up: still saturated, still warm,
+       but unmistakably on the yellow side of the wheel. */
+    const BRONZE = new THREE.Color(token("--wattle-bud", "#e2a018"));
     const SAGE = new THREE.Color(token("--eucalypt", "#00a878"));
 
     const plant = new THREE.Group();

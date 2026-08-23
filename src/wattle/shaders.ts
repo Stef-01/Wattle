@@ -162,18 +162,30 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
 
-  float core = smoothstep(mix(0.34, 0.46, uMatte), 0.0, d);
-  float halo = smoothstep(0.5, 0.06, d);
-  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.1 + core * 0.95, uMatte), 0.0, 1.0);
+  /* The subject is tightened and the halo pulled back, so a head reads as a cluster of
+     discrete anthers rather than a haze. The far copy keeps its softness — it is the
+     out-of-focus one, and its diffusion is what gives the frame depth. */
+  float core = smoothstep(mix(0.34, 0.31, uMatte), 0.0, d);
+  float halo = smoothstep(0.5, mix(0.06, 0.14, uMatte), d);
+  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.06 + core * 1.0, uMatte), 0.0, 1.0);
 
   /* NEW GROWTH IS BRONZE AND MATURES GOLD. Straight from the plant: fresh
      growth carries a bronze tint before it colours up. So colour is a
      function of this floret's own openness, which means the field is
      literally bronze while dispersed and golden once assembled. */
-  vec3 colour = mix(uBronze, uGold, smoothstep(0.15, 0.95, vOpen));
+  /* Gold arrives EARLY. Ending the ramp at 0.95 meant a head was still mostly bud-coloured
+     for almost its whole life, and the field read as its warm end rather than its gold one.
+     Closing at 0.40 leaves the amber where it belongs — on genuinely new growth. */
+  /* Gold arrives EARLY, and the amber never gets the field to itself. Ending the ramp at 0.95
+     meant a head was bud-coloured for almost its whole life; worse, the bloom cycle spends real
+     time dispersed, where every head sits at vOpen 0. So the mix starts a third of the way to
+     gold and closes at 0.40 — the amber survives as the warmth inside a head, and stops being
+     the colour of the plant. */
+  vec3 colour = mix(uBronze, uGold, 0.34 + 0.66 * smoothstep(0.0, 0.40, vOpen));
 
-  // Tips read brighter than cores, the way stamens catch light.
-  colour += vRadial * 0.16 * vOpen;
+  /* Tips read brighter than cores, the way stamens catch light. Lifted, because the shell of
+     a head is where the reference's yellow actually lives — the interior is shadow. */
+  colour += vRadial * 0.30 * vOpen;
 
   // A little per-floret variance so the cluster is not one flat gold.
   colour *= 0.9 + vSeed * 0.2;
@@ -369,8 +381,13 @@ uniform float uOpacity;
 varying float vTip;
 varying float vOpen;
 void main() {
-  // Fades toward the tip: a filament is anchored and thins out.
-  float a = (1.0 - vTip * 0.75) * vOpen * uOpacity * 0.5;
+  /* A filament is a pale shaft carrying a bright ANTHER at its end, and the anthers are what
+     the eye actually reads as a wattle head — the reference is hundreds of fine lines, each
+     dotted at the tip. Fading to nothing at the tip threw that away, so the shaft stays
+     anchored and dims only gently, then brightens sharply over the last quarter. */
+  float shaft  = 1.0 - vTip * 0.5;
+  float anther = smoothstep(0.74, 1.0, vTip);
+  float a = (shaft * 0.42 + anther * 0.85) * vOpen * uOpacity;
   gl_FragColor = vec4(uGold, a);
 }
 `;
