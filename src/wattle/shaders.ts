@@ -114,10 +114,9 @@ void main() {
   open = clamp(open - radial * 0.06 * (1.0 - open), 0.0, 1.0);
 
   /* ---- THE CURSOR OPENS WHAT IT PASSES OVER --------------------------
-     Repulsion alone made the pointer a wind. Warmth opens a flower, so the
-     pointer also drives local bloom: heads near it run ahead of the raceme,
-     colouring up and swelling, and settle back when it leaves. This is the
-     one interaction that changes what the plant IS rather than where it is. */
+     Repulsion alone made the pointer a wind. Warmth opens a flower, so the pointer also drives
+     local bloom: heads near it run ahead of the raceme and settle back when it leaves. It moves
+     a head ALONG the existing bronze-to-gold ramp rather than introducing any new colour. */
   float warmth = smoothstep(3.6, 0.0, length(position - uPointer)) * uPointerOn;
   open = clamp(open + warmth * 0.42 * (1.0 - open), 0.0, 1.0);
   vOpen = open;
@@ -140,7 +139,7 @@ void main() {
   vec4 mv = modelViewMatrix * vec4(pos, 1.0);
 
   // Perspective attenuation, with the tips carrying more visual mass.
-  float sizeScale = mix(0.66, 1.12, radial) * (0.68 + 0.32 * open);
+  float sizeScale = mix(0.62, 1.0, radial) * (0.6 + 0.4 * open);
   gl_PointSize = uSize * sizeScale * uPixelRatio * (11.0 / -mv.z);
   gl_Position = projectionMatrix * mv;
 }
@@ -170,34 +169,18 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
 
-  /* The subject is tightened and the halo pulled back, so a head reads as a cluster of
-     discrete anthers rather than a haze. The far copy keeps its softness — it is the
-     out-of-focus one, and its diffusion is what gives the frame depth. */
-  /* The core is tightened so a head reads as discrete anthers, but the halo is NOT cut back:
-     it is what gives a head its mass, and trimming it turned the raceme into a wisp that
-     disappeared against black during the dispersed half of the cycle. Definition comes from a
-     harder core, not from a thinner one. */
-  float core = smoothstep(mix(0.34, 0.31, uMatte), 0.0, d);
+  float core = smoothstep(mix(0.34, 0.46, uMatte), 0.0, d);
   float halo = smoothstep(0.5, 0.06, d);
-  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.22 + core * 1.0, uMatte), 0.0, 1.0);
+  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.1 + core * 0.95, uMatte), 0.0, 1.0);
 
   /* NEW GROWTH IS BRONZE AND MATURES GOLD. Straight from the plant: fresh
      growth carries a bronze tint before it colours up. So colour is a
      function of this floret's own openness, which means the field is
      literally bronze while dispersed and golden once assembled. */
-  /* Gold arrives EARLY. Ending the ramp at 0.95 meant a head was still mostly bud-coloured
-     for almost its whole life, and the field read as its warm end rather than its gold one.
-     Closing at 0.40 leaves the amber where it belongs — on genuinely new growth. */
-  /* Gold arrives EARLY, and the amber never gets the field to itself. Ending the ramp at 0.95
-     meant a head was bud-coloured for almost its whole life; worse, the bloom cycle spends real
-     time dispersed, where every head sits at vOpen 0. So the mix starts a third of the way to
-     gold and closes at 0.40 — the amber survives as the warmth inside a head, and stops being
-     the colour of the plant. */
-  vec3 colour = mix(uBronze, uGold, 0.34 + 0.66 * smoothstep(0.0, 0.40, vOpen));
+  vec3 colour = mix(uBronze, uGold, smoothstep(0.15, 0.95, vOpen));
 
-  /* Tips read brighter than cores, the way stamens catch light. Lifted, because the shell of
-     a head is where the reference's yellow actually lives — the interior is shadow. */
-  colour += vRadial * 0.30 * vOpen;
+  // Tips read brighter than cores, the way stamens catch light.
+  colour += vRadial * 0.16 * vOpen;
 
   // A little per-floret variance so the cluster is not one flat gold.
   colour *= 0.9 + vSeed * 0.2;
@@ -207,10 +190,7 @@ void main() {
      summing to white and bleaching the gold out of the whole branch — the thing that made a
      saturated #ffc400 read as pale cream. */
   float o = mix(uOpacity * 0.5, mix(uOpacity, 1.0, 0.85), uMatte);
-  /* Floor raised from 0.3: the cycle spends real time dispersed, and at 0.3 the plant was
-     effectively invisible for that half of it. */
-  gl_FragColor = vec4(colour, alpha * o * (0.5 + 0.5 * vOpen));
-  #include <colorspace_fragment>
+  gl_FragColor = vec4(colour, alpha * o * (0.3 + 0.7 * vOpen));
 }
 `;
 
@@ -266,7 +246,6 @@ void main() {
   // Fades out toward the tip, the way a stem tapers into the raceme it carries.
   float a = uOpacity * (1.0 - smoothstep(0.55, 1.0, vAlong)) * 0.9;
   gl_FragColor = vec4(uStem, a);
-  #include <colorspace_fragment>
 }
 `;
 
@@ -311,7 +290,6 @@ void main() {
   float d = length(uv);
   if (d > 0.5) discard;
   gl_FragColor = vec4(uColour, smoothstep(0.5, 0.0, d) * vAlpha * uOpacity);
-  #include <colorspace_fragment>
 }
 `;
 
@@ -355,7 +333,6 @@ void main() {
   float rim = smoothstep(0.5, 0.44, d) - smoothstep(0.44, 0.30, d);
   float a = disc * 0.16 + rim * 0.2;
   gl_FragColor = vec4(uColour, a * uOpacity * (0.6 + vSeed * 0.4));
-  #include <colorspace_fragment>
 }
 `;
 
@@ -400,14 +377,13 @@ varying float vTip;
 varying float vOpen;
 void main() {
   /* A filament is a pale shaft carrying a bright ANTHER at its end, and the anthers are what
-     the eye actually reads as a wattle head — the reference is hundreds of fine lines, each
-     dotted at the tip. Fading to nothing at the tip threw that away, so the shaft stays
-     anchored and dims only gently, then brightens sharply over the last quarter. */
+     the eye reads as a wattle head. Fading to nothing at the tip threw that away, so the shaft
+     dims only gently and then brightens sharply over the last quarter. Definition only — the
+     colour is still uGold, untouched. */
   float shaft  = 1.0 - vTip * 0.5;
   float anther = smoothstep(0.74, 1.0, vTip);
   float a = (shaft * 0.42 + anther * 0.85) * vOpen * uOpacity;
   gl_FragColor = vec4(uGold, a);
-  #include <colorspace_fragment>
 }
 `;
 
@@ -454,7 +430,6 @@ void main() {
   c *= 0.72 + vAlong * 0.42;
   float a = uOpacity * (0.55 + vDepth * 0.4);
   gl_FragColor = vec4(c, a);
-  #include <colorspace_fragment>
 }
 `;
 
@@ -484,6 +459,5 @@ uniform float uOpacity;
 varying float vT;
 void main() {
   gl_FragColor = vec4(uStem, uOpacity * 0.55);
-  #include <colorspace_fragment>
 }
 `;

@@ -82,12 +82,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        cherry blossom. Gold is the signature hue, new growth takes the warm neutral, and the
        foliage takes the green. Nothing outside the ten. */
     const GOLD = new THREE.Color(token("--wattle", "#ffc400"));
-    /* Not --ochre, which is the palette's warm NEUTRAL and bleached the branch to cream; and no
-       longer --waratah either. Waratah is a saturated RED, and because the gradient below spent
-       most of its range near this end, the whole field read red rather than gold. --wattle-bud
-       is the amber a head actually carries before it colours up: still saturated, still warm,
-       but unmistakably on the yellow side of the wheel. */
-    const BRONZE = new THREE.Color(token("--wattle-bud", "#d98f1a"));
+    /* --waratah, not --ochre. Ochre is the palette's warm NEUTRAL — a pale grey-beige — and
+       using it as the new-growth end of the floret gradient bleached the whole branch to cream.
+       Waratah red-orange is both saturated and botanically right for a bud before it colours up. */
+    const BRONZE = new THREE.Color(token("--waratah", "#ff2e17"));
     const SAGE = new THREE.Color(token("--eucalypt", "#00a878"));
 
     const plant = new THREE.Group();
@@ -123,7 +121,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
     const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
     const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 34 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 30 },
       uMatte: { value: 0 },
     });
     farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
@@ -138,7 +136,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 3 + 4. the subject, and its filaments ---- */
     const near = spray({ heads, height: 6.4, lean: 0.9, scale: 1, seed: 7 });
     const nearL = pointsLayer(near.home, near.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 21 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 17 },
       // The subject is matte; only the far, out-of-focus copy glows.
       uMatte: { value: 1 },
     });
@@ -286,18 +284,16 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       camera.position.y = 0.3 + push * 0.35;
       camera.lookAt(0, 0.1, 0);
 
-      /* BREATH. A plant is never quite still, and the drift noise moves florets against each
-         other without ever moving the plant as a whole. A slow scale pulse — well under a
-         percent and a half — gives the raceme a body. Two periods that do not divide, so it
-         never lands on the same pose twice. */
-      const breath = 1 + Math.sin(uTime.value * 0.42) * 0.009 + Math.sin(uTime.value * 0.27) * 0.005;
-      plant.scale.setScalar(breath);
+      /* BREATH. The drift noise moves florets against each other but never moves the plant as a
+         whole. A scale pulse well under a percent and a half gives the raceme a body; two
+         periods that do not divide, so it never lands on the same pose twice. */
+      plant.scale.setScalar(1 + Math.sin(uTime.value * 0.42) * 0.009 + Math.sin(uTime.value * 0.27) * 0.005);
 
       /* 0.95, not 0.62. The cap was set when the subject sat behind a headline on a dark-green
          ground and had to stay out of the type's way. On a pure-black gate with nothing behind
          it but a pill, holding it at 0.62 just made the poster's subject look underexposed. */
       uOpacity.value = Math.min(0.95, uOpacity.value + 0.01);
-      uPointer.value.lerp(pointerTarget, 0.11);
+      uPointer.value.lerp(pointerTarget, 0.08);
       uPointerOn.value += (pointerOnTarget - uPointerOn.value) * 0.06;
 
       tiltVel.x += (tiltTarget.x - plant.rotation.x) * 0.016;
