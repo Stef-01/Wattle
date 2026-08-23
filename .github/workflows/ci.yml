@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 10 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build
+
+  # THE PALETTE'S CONTRAST CLAIMS, ASSERTED RATHER THAN COMMENTED.
+  #
+  # `app/globals.css` states a measured ratio beside almost every token, and those numbers were
+  # right when they were written and are the first thing a recolour makes wrong. One of them was
+  # already wrong once — --gold-mid shipped commented at 3.0 and measured 2.49 — and a comment
+  # is not a gate. This job recomputes each pairing from the stylesheet itself and fails if a
+  # token that carries text drops under 4.5.
+  contrast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/contrast-gate.mjs

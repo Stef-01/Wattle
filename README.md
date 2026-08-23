@@ -24,7 +24,8 @@ Playwright suite uses 3100. All three can run at once.
 | `pnpm build` | Production build (all routes prerender static) |
 | `pnpm start` | Serve the production build on :3200 |
 | `pnpm typecheck` | `tsc --noEmit`, strict, `noUncheckedIndexedAccess` on |
-| `pnpm verify` | typecheck + build — the gate before a commit |
+| `pnpm contrast` | Recomputes every text pairing in `globals.css` against the 4.5:1 AA floor |
+| `pnpm verify` | typecheck + contrast + build — the gate before a commit |
 
 ## Layout
 
@@ -110,7 +111,20 @@ The mark is a drawn wattle sprig (`app/wattle-mark.tsx`) — geometric, decorati
 one. `app/opengraph-image.tsx` hardcodes its palette because the OG renderer has no stylesheet
 to read tokens from, so **a `:root` change must be repeated there by hand.**
 
+## CI
+
+`.github/workflows/ci.yml` runs two jobs on push to `main` and on every PR: **verify**
+(install, typecheck, build) and **contrast**.
+
+The contrast job exists because `globals.css` documents a measured ratio beside nearly every
+token, and a documented ratio is the first casualty of a recolour — the numbers stay
+confidently in the comments while the colours move out from under them. That already happened
+once: `--gold-mid` shipped commented at 3.0 and measured 2.49. `scripts/contrast-gate.mjs`
+reads the tokens out of the stylesheet, recomputes all twelve text pairings and fails under
+4.5:1. Decorative tokens are exempt by *not appearing in the pairs list*, so exempting one is a
+diff somebody reviews.
+
 ## Not in this tree yet
 
-No tests, no e2e, no CI. `pnpm verify` is typecheck + build only. If this site grows a contact
-form or any dynamic route, it needs both a test layer and a privacy notice before that ships.
+No unit tests and no e2e. If this site grows a contact form or any dynamic route, it needs both
+a test layer and a privacy notice before that ships.
