@@ -535,3 +535,70 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
              stroke-linecap:round; stroke-linejoin:round }
 .bloom-spray .bloom-head{ fill:var(--wattle) }
 .bloom-drift{ transform-box:fill-box; transform-origin:center }
+
+
+/* --------------------------------------------------------------------------
+   15. DIRECTORS
+
+   Black and white, with the accent used only where something must be emphasised.
+
+   THE PORTRAITS ARE GREYSCALED, and that is the whole difference between a team
+   page and a row of holiday photos. Two headshots taken by different people,
+   under different light, against different backgrounds will never sit together
+   in colour — one reads warm, one cool, and the eye reads the inconsistency
+   before it reads either face. Desaturating both makes them one set. Colour
+   returns on hover, which is where a person's attention already is.
+   -------------------------------------------------------------------------- */
+
+/* A CAPPED TRACK, NOT 1fr. With auto-fit and a 1fr maximum, two directors stretched to fill the
+   full width — 589px portraits, 736px tall, on a team of two. A team row should not change card
+   size with headcount: the third director should join the row, not shrink the first two. Capping
+   the track at 19vw and starting the row left keeps every card the same size whether there are
+   two or six. */
+.directors{ display:grid; grid-template-columns:repeat(auto-fit,minmax(13vw,19vw));
+            justify-content:start; gap:var(--space-l);
+            list-style:none; margin:0; padding:0 }
+@media (max-width:767px){ .directors{ grid-template-columns:1fr 1fr; gap:var(--space-m) } }
+
+.director{ display:flex; flex-direction:column }
+.director-portrait{
+  position:relative; aspect-ratio:4/5; overflow:hidden;
+  border-radius:var(--radius); background:#111;
+  border:var(--rule) solid var(--white);
+}
+.director-portrait img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  /* Slight lift in contrast alongside the desaturation: greyscale alone tends to read flat. */
+  filter:grayscale(1) contrast(1.08);
+  transition:filter var(--dur-slow) var(--ease-quart), transform var(--dur-mid) var(--ease-quart);
+}
+.director:hover .director-portrait img{ filter:grayscale(0) contrast(1); transform:scale(1.03) }
+/* THE ONE ACCENT ON THE CARD. Neither director supplied a role, so the yellow role line never
+   renders and the cards are otherwise pure monochrome — which is right. The border taking the
+   accent on hover puts the emphasis exactly where attention already is, and pairs with the
+   colour returning to the photograph rather than competing with it. */
+.director-portrait{ transition:border-color var(--dur-slow) var(--ease-quart) }
+.director:hover .director-portrait{ border-color:var(--wattle) }
+
+/* The monogram fallback, same footprint, so a director without a photograph does not
+   collapse the row. */
+.director-monogram{
+  position:absolute; inset:0; display:grid; place-items:center;
+  font-family:var(--font-display); font-size:3em; color:var(--wattle);
+}
+
+.director-role{ margin:var(--space-2xs) 0 0; font-family:var(--font-mono);
+                font-size:.78em; letter-spacing:.08em; text-transform:uppercase; color:var(--wattle) }
+.director-name{ margin:.35em 0 0; font-size:1.5em; font-weight:700; letter-spacing:-.02em; line-height:1.1 }
+.director-remit{ margin:.5em 0 0; font-size:1.05em; line-height:1.35; opacity:.7 }
+
+.director-affiliations{ list-style:none; margin:auto 0 0; padding:var(--space-2xs) 0 0; display:grid; gap:.35em }
+.director-affiliations a{ display:inline-flex; align-items:center; min-height:2.2em;
+                          font-family:var(--font-mono); font-size:.78em; letter-spacing:.05em;
+                          opacity:.6; transition:opacity var(--dur-fast) var(--ease-cubic),
+                                                 color var(--dur-fast) var(--ease-cubic) }
+.director-affiliations a:hover{ opacity:1; color:var(--eucalypt) }
+
+/* A counted label: "Directors" with the number set small and raised, as the reference does. */
+.count{ font-family:var(--font-mono); font-size:.7em; vertical-align:super;
+        margin-left:.4em; color:var(--wattle); letter-spacing:.04em }

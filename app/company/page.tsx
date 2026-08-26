@@ -68,104 +68,71 @@ export default function CompanyPage() {
       </section>
 
       {TEAM_PUBLIC && TEAM.length > 0 ? (
-        <section className="section" id="team" style={{ paddingTop: 0 }}>
+        <section className="section is-black" id="team">
           <div className="padding-global">
-            <div className="inner-section-wrapper">
-              <h2 className="text-style-tag">Team</h2>
-              <div>
-                <ul className="card-grid two-up" style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {TEAM.map((member) => (
-                    <li key={member.name} className="card">
-                      {member.portrait ? (
-                        <Image
-                          src={member.portrait}
-                          alt={member.name}
-                          width={260}
-                          height={347}
-                          sizes="(max-width: 767px) 90vw, 300px"
-                          style={{ width: "100%", height: "auto", display: "block" }}
-                        />
-                      ) : (
-                        <span
-                          aria-hidden="true"
-                          style={{
-                            display: "grid",
-                            placeItems: "center",
-                            aspectRatio: "260 / 347",
-                            fontSize: "3rem",
-                          }}
-                        >
-                          {monogram(member.name)}
-                        </span>
-                      )}
-                      <div className="card-body">
-                        <div>
-                          <h3 className="heading-style-h5">{member.name}</h3>
-                          {member.role ? (
-                            <p className="text-style-mono" style={{ marginTop: "0.4rem" }}>
-                              {member.role}
-                            </p>
-                          ) : null}
-                          {member.remit ? (
-                            <p className="body-text" style={{ marginTop: "0.75rem" }}>
-                              {member.remit}
-                            </p>
-                          ) : null}
-                        </div>
-                        {member.affiliations.length > 0 ? (
-                          <ul
-                            style={{
-                              listStyle: "none",
-                              margin: "1rem 0 0",
-                              padding: 0,
-                              display: "flex",
-                              flexWrap: "wrap",
-                              alignItems: "center",
-                              gap: "1rem",
-                            }}
-                          >
-                            {member.affiliations.map((a) => (
-                              <li key={a.name}>
-                                <a
-                                  href={a.href}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  aria-label={a.label}
-                                >
-                                  {a.logo ? (
-                                    <Image
-                                      src={a.logo}
-                                      alt={a.label}
-                                      width={446}
-                                      height={80}
-                                      style={{ width: "auto", height: "1.75rem", display: "block" }}
-                                    />
-                                  ) : (
-                                    <span className="text-style-mono">{a.label}</span>
-                                  )}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : null}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* The advisory board a company like this is expected to list does not exist.
-                    Saying so here, where a visitor looks for it, beats letting them conclude we
-                    forgot. */}
-                <p
-                  className="body-text text-style-muted max-width-medium"
-                  style={{ marginTop: "2rem" }}
-                >
-                  There is no clinical or scientific advisory board. Clinicians are involved in
-                  building the product, which is not the same thing, and we will not describe it as
-                  one until it is constituted.
-                </p>
-              </div>
+            {/* Counted label, headline left, supporting copy right — the reference's structure.
+                A count belongs on a team of two: it says the number is deliberate rather than
+                a page that has not been filled in yet. */}
+            <p className="text-style-tag">
+              Directors<span className="count">{String(TEAM.length).padStart(2, "0")}</span>
+            </p>
+            <div className="inner-section-wrapper" style={{ marginTop: "1vw" }}>
+              <h2 className="heading-style-h3">The people behind it.</h2>
+              <p className="subheading-large" style={{ maxWidth: "44ch" }}>
+                Named here because you should know who is behind software that decides where a
+                person looking for care gets sent.
+              </p>
             </div>
+
+            <ul className="directors">
+              {TEAM.map((member) => (
+                <li className="director" key={member.name}>
+                  <div className="director-portrait">
+                    {member.portrait ? (
+                      <Image
+                        src={member.portrait}
+                        /* The name alone is the accurate alt for a portrait. A role is a
+                           characterisation and sits beside it in the markup, not inside the alt. */
+                        alt={member.name}
+                        width={520}
+                        height={650}
+                        sizes="(max-width:767px) 45vw, 20vw"
+                      />
+                    ) : (
+                      <span className="director-monogram" aria-hidden="true">
+                        {monogram(member.name)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* role and remit render only when supplied — an entry with just a name is the
+                      honest intermediate state, not a plate with an invented title. */}
+                  {member.role ? <p className="director-role">{member.role}</p> : null}
+                  <p className="director-name">{member.name}</p>
+                  {member.remit ? <p className="director-remit">{member.remit}</p> : null}
+
+                  {member.affiliations.length > 0 ? (
+                    <ul className="director-affiliations">
+                      {member.affiliations.map((a) => (
+                        <li key={a.name}>
+                          <a href={a.href} target="_blank" rel="noreferrer" aria-label={a.label}>
+                            {a.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+
+            {/* The advisory board a company like this is expected to list does not exist.
+                Saying so where a visitor looks for it beats letting them conclude we forgot. */}
+            <p className="body-text text-style-muted" style={{ marginTop: "var(--space-l)", maxWidth: "62ch" }}>
+              There is no clinical or scientific advisory board. Clinicians are involved in
+              building the product, which is not the same thing, and we will not describe it as one
+              until it is constituted.
+            </p>
           </div>
         </section>
       ) : null}
