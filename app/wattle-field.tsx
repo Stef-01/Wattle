@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { spray, dust, bokeh, stamens, foliage, branchlets } from "@/wattle/layers";
+import { createSpawnBuffers, writeSpawn, MAX_SPAWNS } from "@/wattle/spawn";
 import {
   WATTLE_VERT, WATTLE_FRAG,
   DUST_VERT, DUST_FRAG,
@@ -10,6 +11,7 @@ import {
   STAMEN_VERT, STAMEN_FRAG,
   FOLIAGE_VERT, FOLIAGE_FRAG,
   BRANCH_VERT, BRANCH_FRAG,
+  SPAWN_VERT, SPAWN_FRAG,
 } from "@/wattle/shaders";
 
 /**
@@ -261,6 +263,83 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const bokehL = pointsLayer(b.position, b.attr, 4, BOKEH_VERT, BOKEH_FRAG, { uColour: { value: GOLD } });
     plant.add(new THREE.Points(bokehL.geo, bokehL.mat));
 
+    /* ---- CLICK SPAWNS A HEAD ------------------------------------------------
+       Pre-allocated ring, uploaded once. See src/wattle/spawn.ts for why every slot exists
+       before the first click rather than being built on the gesture. */
+    const sb = createSpawnBuffers();
+    const spawnGeo = new THREE.BufferGeometry();
+    const spawnPos = new THREE.BufferAttribute(sb.position, 3);
+    const spawnOff = new THREE.BufferAttribute(sb.offset, 3);
+    const spawnAttr = new THREE.BufferAttribute(sb.attr, 4);
+    spawnPos.setUsage(THREE.DynamicDrawUsage);
+    spawnOff.setUsage(THREE.DynamicDrawUsage);
+    spawnAttr.setUsage(THREE.DynamicDrawUsage);
+    spawnGeo.setAttribute("position", spawnPos);
+    spawnGeo.setAttribute("aOffset", spawnOff);
+    spawnGeo.setAttribute("aAttr", spawnAttr);
+    /* An explicit bound: the buffer starts full of far-past births at the origin, so a computed
+       bounding sphere would be a point and three.js would cull the layer entirely. */
+    spawnGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 20);
+    const spawnMat = new THREE.ShaderMaterial({
+      vertexShader: SPAWN_VERT, fragmentShader: SPAWN_FRAG,
+      uniforms: { uTime, uPixelRatio, uViewH, uGold: { value: GOLD }, uBronze: { value: BRONZE } },
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
+    });
+    disposables.push(spawnGeo, spawnMat);
+    const spawnPoints = new THREE.Points(spawnGeo, spawnMat);
+    spawnPoints.frustumCulled = false;
+    scene.add(spawnPoints);
+
+    let spawnSlot = 0;
+    const spawnAt = (clientX: number, clientY: number) => {
+      const r = host.getBoundingClientRect();
+      const nx = ((clientX - r.left) / r.width) * 2 - 1;
+      const ny = -(((clientY - r.top) / r.height) * 2 - 1);
+      /* UNPROJECT ONTO THE PLANT'S OWN PLANE, not an arbitrary depth. A ray cast into the scene
+         has nothing solid to hit — the subject is a point cloud — so the intersection is taken
+         analytically against z = 0, which is where the raceme is authored. Landing a spawn at
+         the wrong depth is not subtle: perspective would put it visibly in front of or behind
+         everything else. */
+      const v = new THREE.Vector3(nx, ny, 0.5).unproject(camera);
+      const dir = v.sub(camera.position).normalize();
+      const p = camera.position.clone().add(dir.multiplyScalar(-camera.position.z / dir.z));
+
+      const { offset, count } = writeSpawn(sb, spawnSlot++, p.x, p.y, p.z, uTime.value, 0.34 + Math.random() * 0.2);
+      /* UPDATE ONLY THE SLICE THAT CHANGED. Re-uploading the whole ring on every click would be
+         MAX_SPAWNS times the necessary traffic, on the frame least able to afford it. */
+      spawnPos.updateRanges = [{ start: offset * 3, count: count * 3 }];
+      spawnOff.updateRanges = [{ start: offset * 3, count: count * 3 }];
+      spawnAttr.updateRanges = [{ start: offset * 4, count: count * 4 }];
+      spawnPos.needsUpdate = true; spawnOff.needsUpdate = true; spawnAttr.needsUpdate = true;
+    };
+
+    const onClick = (e: PointerEvent) => spawnAt(e.clientX, e.clientY);
+    /* On the HOST, not the canvas: the canvas is pointer-events:none so it never intercepts the
+       gate's own controls, and the host is the box that actually receives the gesture. */
+    const stage = host.parentElement ?? host;
+    stage.addEventListener("pointerdown", onClick);
+
+    /* AMBIENT BLOOMS AS SECTIONS ARRIVE. One head per section crossing the fold, placed off to
+       the side of the raceme so it reads as the field answering the scroll rather than as
+       something landing on the subject. Fires once per element. */
+    const sectionIO = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        sectionIO.unobserve(entry.target);
+        const side = Math.random() < 0.5 ? -1 : 1;
+        const { offset, count } = writeSpawn(
+          sb, spawnSlot++,
+          side * (2.4 + Math.random() * 1.6), -1.6 + Math.random() * 3.2, -1 + Math.random() * 2,
+          uTime.value, 0.3 + Math.random() * 0.16,
+        );
+        spawnPos.updateRanges = [{ start: offset * 3, count: count * 3 }];
+        spawnOff.updateRanges = [{ start: offset * 3, count: count * 3 }];
+        spawnAttr.updateRanges = [{ start: offset * 4, count: count * 4 }];
+        spawnPos.needsUpdate = true; spawnOff.needsUpdate = true; spawnAttr.needsUpdate = true;
+      }
+    }, { threshold: 0.4 });
+    document.querySelectorAll(".gate-beat").forEach((el) => sectionIO.observe(el));
+
     /* ---- sizing ---- */
     const resize = () => {
       const { clientWidth: w, clientHeight: h } = host;
@@ -448,7 +527,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
     return () => {
       renderer.setAnimationLoop(null);
-      io.disconnect(); ro.disconnect();
+      io.disconnect(); ro.disconnect(); sectionIO.disconnect();
+      stage.removeEventListener("pointerdown", onClick);
       window.removeEventListener("pointermove", onPointerMove);
       host.removeEventListener("pointerleave", onPointerLeave);
       disposables.forEach((x) => x.dispose());

@@ -163,3 +163,9 @@ red and block the person doing it. The baseline is empty now; leave it that way.
 
 No unit tests and no e2e. If this site grows a contact form or any dynamic route, it needs both
 a test layer and a privacy notice before that ships.
+
+## The wattle animation
+
+Two tiers — a Canvas2D base that runs everywhere and an instanced WebGL layer that enhances it
+on capable devices. Skill attribution, the phyllotaxis and shader maths, and the things
+deliberately left out are in **[docs/BLOOM-SYSTEM.md](docs/BLOOM-SYSTEM.md)**.

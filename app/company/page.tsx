@@ -4,6 +4,7 @@ import { COMPANY } from "@/content/company";
 import Link from "next/link";
 import { TEAM, TEAM_PUBLIC, monogram, given } from "@/content/team";
 import { SpecimenPlate } from "../specimen-plate";
+import { PhyllodeDivider } from "../phyllode-divider";
 
 export const metadata: Metadata = {
   title: "Company",
@@ -52,9 +53,10 @@ export default function CompanyPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" style={{ paddingTop: 0 }}>
         <div className="padding-global centre-axis">
-          <div>
+          <PhyllodeDivider seed={91} />
+          <div style={{ marginTop: "var(--space-xl)" }}>
             <h2 className="text-style-tag">What we are</h2>
             <div>
               <p className="heading-style-h3" style={{ maxWidth: "24ch", margin: "0.6em auto 0" }}>
@@ -92,7 +94,8 @@ export default function CompanyPage() {
                 one centre line, one name either side of it, mirrored. The names are the graphic
                 — set large in tracked caps and given nothing to compete with — which is the
                 whole device of the reference poster. Everything else waits for the pointer. */}
-            <div className="roster-head">
+            <PhyllodeDivider seed={44} count={9} />
+            <div className="roster-head" style={{ marginTop: "var(--space-2xl)" }}>
               <p className="text-style-tag">
                 Directors<span className="count">{String(TEAM.length).padStart(2, "0")}</span>
               </p>

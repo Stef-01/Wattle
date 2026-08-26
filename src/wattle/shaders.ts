@@ -541,3 +541,74 @@ void main() {
   gl_FragColor = vec4(uStem, uOpacity * 0.55);
 }
 `;
+
+/* --------------------------------------------------------------------------
+   SPAWNED BLOOMS — the heads a click leaves behind.
+
+   Everything is derived from `uTime - birth` so the CPU writes a slot once and
+   never touches it again. Three overlapping curves on that one age:
+     - OPEN, 0 -> 1 over ~1.2s: the floret travels out from its core, so a young
+       head is a tight bud rather than a faded open one. That difference is what
+       separates a bloom from a cross-fade.
+     - COLOUR, the same ramp the raceme uses: bronze at the bud, gold mature.
+     - FADE, back to nothing after a hold, so the gate returns to its composition.
+   -------------------------------------------------------------------------- */
+export const SPAWN_VERT = /* glsl */ `
+precision highp float;
+${MOTION_CHUNK}
+attribute vec4 aAttr;    // radial, seed, birth, radius
+attribute vec3 aOffset;  // this floret's displacement from its head's centre, at full bloom
+uniform float uTime;
+uniform float uPixelRatio;
+uniform float uViewH;
+varying float vRadial;
+varying float vOpen;
+varying float vAlive;
+
+void main() {
+  float age = uTime - aAttr.z;
+  vRadial = aAttr.x;
+
+  // easeOutCubic over 1.2s. An entrance decelerates.
+  float t = clamp(age / 1.2, 0.0, 1.0);
+  float open = 1.0 - pow(1.0 - t, 3.0);
+  vOpen = open;
+  // Holds, then clears. Negative ages (unused slots) fall out here at zero.
+  vAlive = step(0.0, age) * (1.0 - smoothstep(3.4, 5.2, age));
+
+  /* THE FLORET TRAVELS OUT FROM ITS CORE, which is why the centre and the displacement are
+     two attributes rather than one baked world position. A young head is a tight bud, not a
+     faded open one — the radius itself is what opens. */
+  vec3 pos = position + aOffset * open;
+  pos += wattleDrift(pos, aAttr.y, uTime, 0.5);
+
+  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+  float sizeScale = mix(0.7, 1.16, aAttr.x) * (0.25 + 0.75 * open);
+  gl_PointSize = 23.0 * sizeScale * uPixelRatio * (11.0 / -mv.z) * (uViewH / 900.0);
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+export const SPAWN_FRAG = /* glsl */ `
+precision highp float;
+uniform vec3 uGold;
+uniform vec3 uBronze;
+varying float vRadial;
+varying float vOpen;
+varying float vAlive;
+
+void main() {
+  if (vAlive <= 0.001) discard;
+  vec2 uv = gl_PointCoord - 0.5;
+  float d = length(uv);
+  if (d > 0.5) discard;
+
+  float core = smoothstep(0.46, 0.0, d);
+  float halo = smoothstep(0.5, 0.06, d);
+  float alpha = clamp(halo * 0.1 + core * 0.95, 0.0, 1.0);
+
+  vec3 colour = mix(uBronze, uGold, smoothstep(0.15, 0.95, vOpen));
+  colour += vRadial * 0.16 * vOpen;
+  gl_FragColor = vec4(colour, alpha * vAlive * (0.3 + 0.7 * vOpen));
+}
+`;

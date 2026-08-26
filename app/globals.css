@@ -846,6 +846,49 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
   .roster-portrait img,.roster-remit,.roster-more{ transition:opacity var(--dur-fast) linear }
 }
 
+/* --------------------------------------------------------------------------
+   THE PHYLLODE DIVIDER — a section rule drawn as leaves, not as a line.
+   -------------------------------------------------------------------------- */
+.phyllode-divider{ width:100%; padding:var(--space-xl) 0; line-height:0 }
+/* A CENTRED ORNAMENT, NOT AN EDGE-TO-EDGE RULE. The viewBox is 320x34 and keeps its aspect,
+   so stretched to the full column width it letterboxed and the leaves bunched into the middle
+   third anyway. Making that explicit is better than fighting it: a small botanical motif on the
+   page's centre line reads as deliberate, and it matches the axis the rest of this page uses.
+   `preserveAspectRatio:none` was the alternative and it would have flattened every sickle. */
+.phyllode-divider svg{ display:block; width:min(100%,22em); height:auto; margin:0 auto;
+                       overflow:visible }
+.phyllode-divider path{
+  fill:none; stroke:currentColor; stroke-width:.6; stroke-linejoin:round; opacity:.5;
+  /* pathLength="1" on the element normalises every curve to a length of one, so this hides it
+     and an offset of zero draws it — at any size, with nothing measured in JavaScript. */
+  stroke-dasharray:1;
+  stroke-dashoffset:0;
+}
+
+/* THE RESTING STATE IS DRAWN, and the animation only takes it away and gives it back.
+   `animation-timeline: view()` is unsupported in Firefox as of early 2026; a browser without
+   it simply never runs this rule, and what it shows is the finished divider. Ship the visible
+   state and let the timeline be enhancement — the alternative is content sitting at
+   stroke-dashoffset:1 forever, waiting for a timeline that does not exist. */
+@supports (animation-timeline: view()){
+  .phyllode-divider path{
+    animation:phyllode-draw linear both;
+    animation-timeline:view();
+    animation-range:entry 8% cover 34%;
+    /* Each leaf trails the one before it. Negative delay on a scroll timeline shifts the leaf's
+       position within the range rather than delaying it in time, which is what gives the row a
+       left-to-right sweep as the divider crosses the fold. */
+    animation-delay:calc(var(--i) * -0.06s);
+  }
+}
+@keyframes phyllode-draw{ from{ stroke-dashoffset:1 } to{ stroke-dashoffset:0 } }
+
+@media (prefers-reduced-motion:reduce){
+  /* TIER 1 REMOVAL: this is a scroll-linked draw, which is exactly the scroll-coupled motion the
+     preference is about. It resolves to the drawn state, which is the content. */
+  .phyllode-divider path{ animation:none; stroke-dashoffset:0 }
+}
+
 /* A counted label: "Directors" with the number set small and raised, as the reference does. */
 .count{ font-family:var(--font-mono); font-size:.7em; vertical-align:super;
         margin-left:.4em; color:var(--wattle); letter-spacing:.04em }
