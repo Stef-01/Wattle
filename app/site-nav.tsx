@@ -6,6 +6,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { DOORS, FOOTER_DOORS } from "./site";
 import { COMPANY } from "@/content/company";
 import { VENTURES } from "@/content/ventures";
+import { MotionToggle } from "./motion-toggle";
 
 /**
  * NAVIGATION — three cells: menu toggle, wordmark, one CTA.
@@ -65,7 +66,23 @@ export function SiteNav() {
               </div>
             ))}
 
-            <ul className="menu-links">
+            {/* THE PAUSE CONTROL LIVES HERE NOW.
+
+              It was a pill sitting on the gate itself and was removed from there by direction —
+              it read as chrome on top of the artwork. Deleting the capability was not an option:
+              WCAG 2.2.2 asks for a mechanism to stop content that starts on its own, runs past
+              five seconds and sits alongside other content, and the bloom does all three.
+              `prefers-reduced-motion` does not discharge that — it serves the reader who set a
+              preference in advance, and says nothing to the one who did not and is simply
+              finding it hard to read next to a moving object.
+
+              In the menu it is off every tile, reachable from every page, and in the one place a
+              visitor already goes looking for site-wide controls. */}
+          <div className="menu-group menu-motion">
+            <MotionToggle />
+          </div>
+
+          <ul className="menu-links">
               {FOOTER_DOORS.map((d) => (
                 <li key={d.href}>
                   <Dialog.Close asChild>

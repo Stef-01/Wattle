@@ -8,9 +8,10 @@
     "build": "next build",
     "start": "next start -p 3200",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm typecheck && pnpm contrast && pnpm classes && pnpm build",
+    "verify": "pnpm typecheck && pnpm shaders && pnpm contrast && pnpm classes && pnpm build",
     "contrast": "node scripts/contrast-gate.mjs",
-    "classes": "node scripts/class-gate.mjs"
+    "classes": "node scripts/class-gate.mjs",
+    "shaders": "node scripts/shader-gate.mjs"
   },
   "dependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.3.0",

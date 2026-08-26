@@ -513,9 +513,66 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
      eleventh colour — the palette guard only reads token declarations, so keeping to ten was
      a matter of not writing the hex, not of not being caught. */
   background:var(--black);
-  background-image:radial-gradient(ellipse 90% 70% at 50% 40%,
-                    rgb(255 196 0 / .07) 0%, rgb(255 196 0 / 0) 70%);
+
+  /* THE STARFIELD, IN CSS, ON THE GATE ONLY.
+
+     Three tiled layers of tiny radial gradients, at 179 / 283 / 419 pixels. Those are primes, so
+     the three tiles only realign every few hundred thousand pixels and the field never visibly
+     repeats — the giveaway with a tiled starfield is always a rhythm the eye catches, and
+     co-prime tile sizes are what removes it. Different star sizes and alphas per layer give the
+     depth a single layer cannot.
+
+     CSS RATHER THAN MORE WEBGL, deliberately. It costs nothing to composite, it is identical on
+     both tiers, and it is still there under `prefers-reduced-motion` and on the devices that
+     never get a GPU context at all — where a starfield built into the field would simply be
+     absent. The one thing the gate should never do is look emptier on a weaker device.
+
+     The Milky Way band is one wide ellipse of --lorikeet at 6%, rotated across the frame, plus
+     the gold pool the plant is lit by. No eleventh colour: white stars, the palette's blue, the
+     palette's gold. */
+  background-image:
+    /* the warm pool the plant sits in */
+    radial-gradient(ellipse 90% 70% at 50% 40%, rgb(255 196 0 / .07) 0%, rgb(255 196 0 / 0) 70%),
+    /* the galactic band */
+    radial-gradient(ellipse 26% 120% at 38% 46%, rgb(46 155 224 / .075) 0%, rgb(46 155 224 / 0) 68%),
+    radial-gradient(ellipse 40% 90% at 62% 30%, rgb(46 155 224 / .045) 0%, rgb(46 155 224 / 0) 70%),
+    /* three star layers */
+    radial-gradient(1.6px 1.6px at 34px 51px, rgb(255 255 255 / .95) 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 121px 19px, rgb(255 255 255 / .7) 50%, transparent 52%),
+    radial-gradient(1.1px 1.1px at 68px 142px, rgb(255 255 255 / .8) 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 158px 96px, rgb(255 255 255 / .6) 50%, transparent 52%),
+    radial-gradient(1px 1px at 210px 63px, rgb(255 255 255 / .55) 50%, transparent 52%),
+    radial-gradient(1.3px 1.3px at 47px 231px, rgb(255 255 255 / .75) 50%, transparent 52%),
+    radial-gradient(1px 1px at 264px 187px, rgb(255 255 255 / .5) 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 189px 268px, rgb(255 255 255 / .65) 50%, transparent 52%),
+    radial-gradient(.9px .9px at 356px 88px, rgb(255 255 255 / .5) 50%, transparent 52%),
+    radial-gradient(1.2px 1.2px at 92px 344px, rgb(255 255 255 / .6) 50%, transparent 52%),
+    radial-gradient(1px 1px at 301px 402px, rgb(255 255 255 / .45) 50%, transparent 52%),
+    radial-gradient(1.1px 1.1px at 401px 218px, rgb(255 255 255 / .55) 50%, transparent 52%);
+  background-size:
+    100% 100%, 100% 100%, 100% 100%,
+    179px 179px, 179px 179px, 179px 179px,
+    283px 283px, 283px 283px, 283px 283px,
+    419px 419px, 419px 419px, 419px 419px, 419px 419px;
+  background-repeat:no-repeat, no-repeat, no-repeat, repeat, repeat, repeat,
+                    repeat, repeat, repeat, repeat, repeat, repeat, repeat;
 }
+
+/* A SLOW TWINKLE ON ONE LAYER ONLY. Animating background-position would repaint the whole
+   stage every frame; this drifts a separate overlay on transform instead, which is
+   compositor-only. Opacity carries the twinkle, transform carries the parallax. */
+.gate-stage::before{
+  content:""; position:absolute; inset:-6%; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(1.7px 1.7px at 77px 41px, rgb(255 255 255 / .9) 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 233px 164px, rgb(255 255 255 / .8) 50%, transparent 52%),
+    radial-gradient(1.9px 1.9px at 141px 292px, rgb(255 255 255 / .85) 50%, transparent 52%);
+  background-size:347px 347px;
+  animation:star-drift 34s linear infinite, star-twinkle 6.5s ease-in-out infinite;
+  will-change:transform, opacity;
+}
+@keyframes star-drift{ from{ transform:translate3d(0,0,0) } to{ transform:translate3d(-347px,0,0) } }
+@keyframes star-twinkle{ 0%,100%{ opacity:.5 } 50%{ opacity:1 } }
 
 /* The spill. A wide, shallow pool of warm light along the bottom edge, as though the
    filaments are lit from beneath the frame. On the old white ground this was gold at 55%
@@ -543,11 +600,16 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 .gate-track a,.gate-track button,.gate-copy{ pointer-events:auto }
 .gate-beat{ min-height:100vh; min-height:100dvh; display:grid; align-items:center;
             padding:0 var(--gutter) }
-/* The first screen stays bare — the plant and a cue, nothing else. That is the minimalism
-   that was asked for; it is kept by moving the words down, not by deleting them. */
-/* The first beat carries only the scroll cue, which is decoration — nothing on it should take
-   a pointer even though the copy rule above would otherwise give it one. */
-.gate-beat-first,.gate-beat-first .gate-copy{ pointer-events:none }
+/* THE FIRST BEAT SITS AT THE TOP, NOT THE MIDDLE, and it now carries the first heading.
+
+   The screen it replaces held the plant and a scroll cue and nothing else. That bought a bare
+   opening shot at the price of a viewport with no information in it and a cue floating in a
+   corner with nothing to explain — a visitor had to travel a whole screen before the gate said
+   anything at all. Every other beat is vertically centred, which is right when the only job is
+   one paragraph; centring this one left dead space above the heading and pushed the cue into
+   the middle of the frame where it read as body copy rather than as an instruction. */
+.gate-beat-open{ align-items:start; padding-top:22vh }
+.gate-beat-open .gate-cue{ margin:2.6em 0 0 }
 .gate-beat-last{ align-items:center }
 .gate-copy{ max-width:min(46ch,78vw); pointer-events:auto }
 
@@ -600,14 +662,16 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    mount at all. */
 .hero:has(.wattle-field) .hero-bloom,
 .hero:has(.wattle-canvas) .hero-bloom{ display:none }
-.motion-toggle{ position:absolute; right:var(--gutter); bottom:var(--space-l); z-index:4;
-                display:inline-flex; align-items:center; gap:.5vw; min-height:2.75em;
+/* IN THE MENU NOW, not pinned over the artwork. Static rather than absolute: it sits in the
+   nav's own flow, where it needs no z-index and cannot land on anything. */
+.motion-toggle{ display:inline-flex; align-items:center; gap:.5vw; min-height:44px;
                 padding:.6vw 1.2vw; border:var(--rule) solid var(--white);
                 border-radius:var(--radius-pill); background:var(--black); color:var(--white);
                 font-size:1em; font-weight:700; text-transform:uppercase;
                 transition:background-color var(--dur-ui) var(--ease-cubic),
                            color var(--dur-ui) var(--ease-cubic) }
 .motion-toggle:hover{ background:var(--wattle); color:var(--black); border-color:var(--wattle) }
+.menu-motion{ margin-top:var(--space-m) }
 
 /* THE THREE-COLUMN SLIDE COLLAPSES.
    Three columns of ruled rows at 767px gives each about 240px, which breaks every line of body
@@ -934,17 +998,25 @@ body:has(main .hero):not(.entered) footer { display:none }
 /* Bottom LEFT, on the same axis as every other word on the gate — not centred. Centred it sat
    directly behind the base of the raceme, which is the densest part of the plant, and a cue
    nobody can read is the whole complaint this gate was rebuilt to answer. */
-.gate-cue{ font-family:var(--font-ui); font-size:.75em; font-weight:700; text-transform:uppercase;
-           letter-spacing:.28em; color:rgb(255 255 255 / .62); align-self:end;
-           justify-self:start; margin-bottom:6vh;
+/* IN FLOW UNDER THE HEADING, not pinned to the bottom of the screen. Pinned, it sat a whole
+   viewport away from the words it belongs to, over the base of the raceme, which is the densest
+   part of the plant and the worst place on the gate to put small type. */
+.gate-cue{ display:block; font-family:var(--font-ui); font-size:.75em; font-weight:700;
+           text-transform:uppercase; letter-spacing:.28em; color:rgb(255 255 255 / .62);
            animation:gate-cue-drift 2.6s var(--ease-cubic) infinite }
 @keyframes gate-cue-drift{ 0%,100%{ transform:translateY(0); opacity:.45 }
                            50%{ transform:translateY(.7em); opacity:1 } }
 
 .gate-tag{ font-family:var(--font-ui); font-size:.75em; font-weight:700; text-transform:uppercase;
            letter-spacing:.22em; color:var(--wattle); margin:0 0 1.2em }
-.gate-line{ font-family:var(--font-editorial); font-size:1.55em; line-height:1.45;
-            letter-spacing:-.01em; color:var(--white); margin:0 }
+/* THE LEAD IS THE SENTENCE SOMEBODY STOPS ON. Set large in the editorial serif, with the
+   grounding detail beneath it at body size — one beat, two weights, so the eye has somewhere to
+   land before it decides whether to read the rest. A single block of even-weight serif over an
+   animation is a paragraph nobody finishes. */
+.gate-lead{ font-family:var(--font-editorial); font-size:2em; line-height:1.22;
+            letter-spacing:-.02em; color:var(--white); margin:0 0 .8em; text-wrap:balance }
+.gate-line{ font-family:var(--font-editorial); font-size:1.12em; line-height:1.55;
+            letter-spacing:-.005em; color:rgb(255 255 255 / .74); margin:0 }
 
 .gate-binomial{ font-family:var(--font-editorial); font-style:italic; font-size:2.6em;
                 line-height:1; letter-spacing:-.02em; color:var(--wattle); margin:0 }
@@ -1012,18 +1084,24 @@ body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) bot
               /* Clears the motion toggle, which is pinned bottom-right and was landing on top
                  of the last line of the longest beat. */
               padding-bottom:9vh }
-  .gate-line{ font-size:1.12em; line-height:1.45 }
+  .gate-lead{ font-size:1.5em }
+  .gate-line{ font-size:1em; line-height:1.5 }
   .gate-binomial{ font-size:2em }
   .gate-copy{ max-width:none; background:rgb(0 0 0 / .66); backdrop-filter:blur(10px);
               border-radius:var(--radius); padding:1.4em 1.2em }
   /* The first beat carries only the scroll cue, so there is nothing to protect and a panel
      there would just be a grey box over the opening shot. */
-  .gate-beat-first .gate-copy{ background:none; backdrop-filter:none; padding:0 }
+  /* The opening beat now carries real copy over the plant like every other one, so it keeps
+     its panel. It used to hold only a cue, where a panel would have been a grey box over the
+     opening shot. */
 }
 
 @media (prefers-reduced-motion:reduce){
   .hero,.gate-enter,.nav-block{ transition:none }
   .gate-cue{ animation:none; opacity:.7 }
+  /* Drifting stars are exactly the large-area, depth-implying motion the preference is about.
+     The field itself stays — it is a background, not an animation. */
+  .gate-stage::before{ animation:none; opacity:.75 }
   body.entered main > *:not(.hero), body.entered footer{ animation:none }
   /* No field mounts under reduced motion, so there is nothing to scroll through. The beats
      collapse to their content and the whole gate fits a screen or two. */

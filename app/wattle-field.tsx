@@ -77,6 +77,13 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const uPointer = { value: new THREE.Vector3(999, 999, 999) };
     const uPointerOn = { value: 0 };
     const uOpacity = { value: 0 };
+    /* The foliage's own arrival, driven by the intro rather than by scroll — the branch is
+       clothed before it flowers, and scroll is left to do one job.
+
+       NAMED uLeafIn, not uLeaf: the foliage material already has a uLeaf, and it is a COLOUR.
+       Two uniforms of different types under one name in the same object is a silent collision
+       in JavaScript and a compile error in GLSL. */
+    const uLeafIn = { value: 0 };
     const uPixelRatio = { value: dpr };
     const uViewH = { value: 900 };
     /* Extra camera distance for narrow frames, set on resize and applied in the dolly. */
@@ -100,6 +107,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        happened to be warm. Still no eleventh colour: it is two existing hues and a multiply. */
     const BRONZE = new THREE.Color(token("--eucalypt", "#00a878")).multiplyScalar(0.62).lerp(GOLD, 0.3);
     const SAGE = new THREE.Color(token("--eucalypt", "#00a878"));
+    /* --waratah, restored to the one job it is right for. It was the bud colour of EVERY head
+       once, which opened the gate on a red plume — a bottlebrush. Held to the growing tip at
+       the end of the bloom it reads as the youngest buds on a branch still growing. */
+    const RED = new THREE.Color(token("--waratah", "#ff2e17"));
 
     const plant = new THREE.Group();
     /* COMPOSITION. The spray is authored around the origin because that is where a plant's
@@ -147,8 +158,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
     const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
     const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 35 },
-      uMatte: { value: 0 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uRed: { value: RED },
+      uSize: { value: 35 }, uMatte: { value: 0 },
     });
     farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
     const farPoints = new THREE.Points(farL.geo, farL.mat);
@@ -162,7 +173,13 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* ---- 3 + 4. the subject, and its filaments ---- */
     const near = spray({ heads, height: 6.4, lean: 0.9, scale: 1, seed: 7 });
     const nearL = pointsLayer(near.home, near.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
-      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 23 },
+      uGold: { value: GOLD }, uBronze: { value: BRONZE }, uRed: { value: RED },
+      /* SMALLER FLORETS, 23 -> 14. Once each one became a lit sphere with a hard edge, its size
+         started to matter in a way it never did as a soft blob: at 23 a head resolved into
+         about a dozen visible balls, which is a bunch of grapes. A real head is 40 to 80
+         florets and reads as fine grain — the individual floret should be legible when you
+         look for it and not countable at a glance. */
+      uSize: { value: 14 },
       // The subject is matte; only the far, out-of-focus copy glows.
       uMatte: { value: 1 },
     }, THREE.NormalBlending);
@@ -174,7 +191,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     /* REACH IS UP FROM 0.13, because the filaments curve now. It was cut to almost nothing
        when they were straight radial spikes and any real length turned a head into an
        asterisk — the length was never the problem, the straightness was. */
-    const st = stamens(near.centres, stamensPerHead, 0.27, 303, 0.32);
+    /* REACH UP AGAIN, to 0.36. The filaments have to travel PAST the shell of florets for the
+       corona to break the head's outline — at 0.27 they finished inside the ball and the
+       silhouette stayed a circle, which is the whole complaint. */
+    const st = stamens(near.centres, stamensPerHead, 0.36, 303, 0.32);
 
     /* INSTANCED. One filament template, `st.count` copies, eleven floats each. The old buffer
        baked every filament's curve into ~24 vertices of flat position data; this uploads the
@@ -213,7 +233,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const folMat = new THREE.ShaderMaterial({
       vertexShader: FOLIAGE_VERT, fragmentShader: FOLIAGE_FRAG,
       uniforms: {
-        uTime, uBloom, uPointer, uPointerOn, uOpacity,
+        uTime, uBloom, uPointer, uPointerOn, uOpacity, uLeafIn,
         /* PHYLLODES ARE GREY-GREEN, NOT EMERALD. Both leaf colours were straight eucalypt —
            a vivid #00a878 teal — which against a field of gold produced a Christmas palette
            and made the foliage compete with the subject instead of setting it. Acacia
@@ -325,11 +345,18 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const sectionIO = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
+        /* NOT BEFORE THE PLANT ITSELF HAS OPENED. The gate now runs a strict sequence — leaves,
+           then gold, then red at the tip — and an ambient head arriving fully golden beside a
+           branch that is still entirely green contradicts the whole thing. Held until the
+           raceme is past halfway, which is also when there is something for it to echo. */
+        if (bloom < 0.55) continue;
         sectionIO.unobserve(entry.target);
         const side = Math.random() < 0.5 ? -1 : 1;
         const { offset, count } = writeSpawn(
           sb, spawnSlot++,
-          side * (2.4 + Math.random() * 1.6), -1.6 + Math.random() * 3.2, -1 + Math.random() * 2,
+          /* Biased to the RIGHT of frame, where the raceme is. The left is where the gate's type
+             lives, and a bloom opening behind a paragraph is a contrast problem, not a flourish. */
+          (side < 0 ? 1.6 : 3.4) + Math.random() * 1.4, -1.6 + Math.random() * 3.2, -1 + Math.random() * 2,
           uTime.value, 0.3 + Math.random() * 0.16,
         );
         spawnPos.updateRanges = [{ start: offset * 3, count: count * 3 }];
@@ -377,17 +404,29 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const tiltTarget = { x: 0, y: 0 };
     const tiltVel = { x: 0, y: 0 };
 
+    /* THE SAME RULE THE SCROLL READ ALREADY FOLLOWS, APPLIED TO THE POINTER.
+       This handler used to call getBoundingClientRect() and allocate a Vector3 on every event.
+       `pointermove` fires at INPUT frequency — 120Hz+ on a modern trackpad, and faster than the
+       display during a flick — so that was a forced synchronous layout and a fresh vector per
+       event, feeding the collector on the one path guaranteed to run while somebody is
+       interacting. The note further down explains exactly this hazard for `scroll` and reads
+       the gate's rect inside the frame loop instead; the pointer had the same property and had
+       not been given the same treatment.
+
+       So the event does the least it can: record where the cursor was. The projection happens
+       once per RENDERED frame, from a scratch vector, and is skipped entirely when the field is
+       off screen or the tab is hidden — which the old form was not, because the listener is on
+       `window` and kept unprojecting into a canvas nobody could see. */
+    let pointerClientX = 0;
+    let pointerClientY = 0;
+    let pointerDirty = false;
+    const scratch = new THREE.Vector3();
+
     const onPointerMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
-      const r = host.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const ny = -(((e.clientY - r.top) / r.height) * 2 - 1);
-      const v = new THREE.Vector3(nx, ny, 0.5).unproject(camera);
-      const dir = v.sub(camera.position).normalize();
-      pointerTarget.copy(camera.position).add(dir.multiplyScalar(-camera.position.z / dir.z));
-      pointerOnTarget = 1;
-      tiltTarget.y = nx * 0.17;
-      tiltTarget.x = -ny * 0.11;
+      pointerClientX = e.clientX;
+      pointerClientY = e.clientY;
+      pointerDirty = true;
     };
     const onPointerLeave = () => { pointerOnTarget = 0; tiltTarget.x = 0; tiltTarget.y = 0; };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -409,8 +448,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        across the gate's full four-viewport track. That is the reference's behaviour — the art
        grows as you travel down it — and it is also the only arrangement in which the whole
        animation is reachable. */
-    const BUD = 0.3;
+    /* THE GATE OPENS ON GREEN. BUD was 0.3, which is a third of the way into the bloom — enough
+       that the base of the raceme was already carrying gold before anybody had scrolled, so the
+       first screen showed a half-flowered branch and the scroll had nothing left to reveal at
+       that end. At 0.04 the heads are shut: leaves, stems, and the suggestion of buds. */
+    const BUD = 0.04;
     const INTRO_MS = 2200;
+    /* The foliage's own entrance, slower than the flowers' would be. A canopy fills in. */
+    const LEAF_MS = 2600;
 
     /* The gate, not the canvas. The canvas host is inside a `position:sticky` stage, so its
        own rect is pinned to the viewport for the entire scroll and reports no travel
@@ -462,6 +507,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
       const clock = now - started - elapsedAtPause;
       const intro = Math.min(1, clock / INTRO_MS);
+      // The leaves arrive on the intro's clock and stay; scroll never takes them away again.
+      uLeafIn.value = pinned !== null ? 1 : easeOut(Math.min(1, clock / LEAF_MS));
 
       /* Read in the frame loop, not in a scroll listener. A `scroll` handler fires at input
          frequency and forces layout on every read; this rect is measured once per rendered
@@ -511,6 +558,20 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
          ground and had to stay out of the type's way. On a pure-black gate with nothing behind
          it but a pill, holding it at 0.62 just made the poster's subject look underexposed. */
       uOpacity.value = Math.min(0.95, uOpacity.value + 0.6 * dt);
+      /* One layout read per rendered frame at most, and only while the cursor has actually
+         moved since the last one. */
+      if (pointerDirty) {
+        pointerDirty = false;
+        const r = host.getBoundingClientRect();
+        const nx = ((pointerClientX - r.left) / r.width) * 2 - 1;
+        const ny = -(((pointerClientY - r.top) / r.height) * 2 - 1);
+        scratch.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
+        pointerTarget.copy(camera.position).add(scratch.multiplyScalar(-camera.position.z / scratch.z));
+        pointerOnTarget = 1;
+        tiltTarget.y = nx * 0.17;
+        tiltTarget.x = -ny * 0.11;
+      }
+
       uPointer.value.lerp(pointerTarget, approach(5));
       uPointerOn.value += (pointerOnTarget - uPointerOn.value) * approach(3.6);
 

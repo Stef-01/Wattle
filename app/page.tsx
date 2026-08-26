@@ -4,7 +4,6 @@ import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
-import { MotionToggle } from "./motion-toggle";
 import { EnterGate } from "./enter-gate";
 import { BEATS, EMBLEM } from "@/content/emblem";
 import { Ticker } from "./ticker";
@@ -39,21 +38,27 @@ export default function HomePage() {
           <div className="hero-inner">
             <WattleBloom className="hero-bloom" />
           </div>
-          <MotionToggle />
         </div>
 
         {/* Pulled up under the sticky stage so the two occupy the same screens. The hero's total
-            height is this track's height — three viewports of scroll to open one flower. */}
-        <div className="gate-track">
-          <div className="gate-beat gate-beat-first">
-            <p className="gate-cue" aria-hidden="true">Scroll</p>
-          </div>
+            height is this track's height — three viewports of scroll to open one flower.
 
-          {BEATS.map((beat) => (
-            <div className="gate-beat" key={beat.tag}>
+            THE FIRST SCREEN CARRIES THE FIRST HEADING, and the empty beat that used to hold the
+            plant alone is gone. It bought a bare opening shot at the cost of a screen with
+            nothing on it and a scroll cue floating in the corner with nothing to explain — a
+            visitor had to scroll a whole viewport before the gate told them anything at all.
+            Heading at the top, cue directly beneath it: the cue now sits under something that
+            gives it a reason. */}
+        <div className="gate-track">
+          {BEATS.map((beat, i) => (
+            <div className={`gate-beat${i === 0 ? " gate-beat-open" : ""}`} key={beat.tag}>
               <div className="gate-copy">
                 <p className="gate-tag">{beat.tag}</p>
+                <p className="gate-lead">{beat.lead}</p>
                 <p className="gate-line">{beat.body}</p>
+                {/* The cue belongs to the first beat only — after that the reader has already
+                    demonstrated they know how to get to the next one. */}
+                {i === 0 ? <p className="gate-cue" aria-hidden="true">Scroll</p> : null}
               </div>
             </div>
           ))}

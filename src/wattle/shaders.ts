@@ -128,6 +128,7 @@ uniform float uViewH;   // canvas height in CSS px; 900 is the size uSize was tu
 varying float vRadial;
 varying float vOpen;         // this floret's own bloom progress
 varying float vSeed;
+varying float vLate;
 
 void main() {
   float radial = aAttr.x;
@@ -148,6 +149,16 @@ void main() {
      within the head refines that, so a head opens core-outward rather than
      all at once — the second of the two nested sequences this plant runs. */
   float open = racemeOpen(uBloom, axial, 0.35 + radial * 0.4);
+
+  /* Two gates multiplied: how far up the raceme this floret sits, and how late in the bloom we
+     are. Both have to be true, so the red never appears at the base and never appears early. */
+  /* A NARROW BAND AND A PARTIAL MIX. At 0.52 the red claimed the whole top third of the raceme
+     and resolved into one solid crimson mass — which is the bottlebrush failure again, just
+     confined to the tip. Buds are a scatter at the growing point, not a second flower. The band
+     is the last quarter of the stem, the seed term leaves some heads gold at any height, and
+     the mix tops out well short of 1 so even the reddest bud keeps gold underneath it. */
+  vLate = smoothstep(0.74, 1.0, axial) * smoothstep(0.72, 1.0, uBloom)
+        * smoothstep(0.35, 0.9, seed) * 0.82;
 
   /* ---- THE CURSOR OPENS WHAT IT PASSES OVER --------------------------
      Repulsion alone made the pointer a wind. Warmth opens a flower, so the pointer also drives
@@ -194,6 +205,7 @@ precision highp float;
 
 uniform vec3 uGold;      // mature bloom
 uniform vec3 uBronze;    // new growth
+uniform vec3 uRed;       // the last buds, at the growing tip
 uniform float uOpacity;
 /* MATTE MODE. The reference's heads are opaque, textured pom-poms that occlude what is behind
    them — not light. Additive stacking turned them into glowing sparkle clusters, which is the
@@ -205,17 +217,45 @@ uniform float uMatte;
 varying float vRadial;
 varying float vOpen;
 varying float vSeed;
+varying float vLate;     // 0 anywhere but the tip late in the bloom, 1 at the last buds
 
 void main() {
-  // Round sprite with a soft shoulder. Two stops, so each floret has a hot
-  // core and a diffuse halo — that halo is what makes a cluster read fuzzy.
+  /* EACH FLORET IS A LIT SPHERE, NOT A SOFT DISC.
+
+     It was two overlapping smoothsteps — a hot core inside a wide diffuse halo — which is a
+     gaussian blob by another name. Forty of them stacked make a cloud, and a cloud is exactly
+     the blurry circle this was told not to be. In the reference every floret in a head is a
+     distinct little ball with its own lit side and its own shadow, and that per-floret
+     legibility is the entire difference between a photograph of wattle and a yellow smudge.
+
+     So the sprite is treated as a hemisphere. z from the circle equation gives a surface
+     normal, one directional light gives it a lit side, and a tight power term gives it a
+     specular point. The rim is a two-texel smoothstep instead of a long falloff, so the ball
+     has an EDGE — which is what the eye actually uses to count objects. */
   vec2 uv = gl_PointCoord - 0.5;
   float d = length(uv);
   if (d > 0.5) discard;
 
-  float core = smoothstep(mix(0.34, 0.46, uMatte), 0.0, d);
-  float halo = smoothstep(0.5, 0.06, d);
-  float alpha = clamp(mix(halo * 0.3 + core * 0.55, halo * 0.1 + core * 0.95, uMatte), 0.0, 1.0);
+  // Hemisphere normal. 0.25 is r^2 for a sprite of radius 0.5.
+  float z = sqrt(max(0.0, 0.25 - d * d)) * 2.0;
+  vec3 n = normalize(vec3(uv * 2.0, z));
+  vec3 L = normalize(vec3(-0.42, 0.56, 0.72));
+  float lam = clamp(dot(n, L), 0.0, 1.0);
+  /* Wrapped rather than clamped at the terminator: a floret is translucent, so its dark side
+     is still lit through. A hard terminator would read as plastic. */
+  float wrap = clamp(dot(n, L) * 0.5 + 0.5, 0.0, 1.0);
+  float shade = 0.46 + 0.62 * wrap * wrap;
+  /* RESTRAINED. At 0.55 every floret carried a hard white catchlight and a head read as a
+     bunch of polished beads — a wattle floret is a fuzzy, translucent thing, not a bauble.
+     Enough to say "this is a sphere", not enough to say "this is glass". */
+  float spec = pow(lam, 20.0) * 0.22;
+
+  /* A CRISP RIM. The old halo ran from 0.5 all the way in to 0.06 — most of the sprite was
+     falloff. This is a two-texel edge, with a small outer bloom kept only for the far,
+     out-of-focus copy, which is the one layer that SHOULD be soft. */
+  float disc = smoothstep(0.5, 0.455, d);
+  float glow = smoothstep(0.5, 0.16, d);
+  float alpha = clamp(mix(glow * 0.42, disc * 0.98, uMatte), 0.0, 1.0);
 
   /* NEW GROWTH IS BRONZE AND MATURES GOLD. Straight from the plant: fresh
      growth carries a bronze tint before it colours up. So colour is a
@@ -223,11 +263,26 @@ void main() {
      literally bronze while dispersed and golden once assembled. */
   vec3 colour = mix(uBronze, uGold, smoothstep(0.15, 0.95, vOpen));
 
+  /* THE RED BUDS COME LAST, AND ONLY AT THE TIP.
+
+     Red was the bud colour of EVERY head once, and it opened the gate on a dense red plume —
+     a bottlebrush, which is the one plant a golden wattle must not be mistaken for. Held to the
+     growing point and to the end of the bloom it does the opposite: a raceme opens base to tip,
+     so the tip is where the youngest, least-developed buds are, and they are the last thing on
+     the branch to change. A few red buds above a fully open golden spray is a plant still
+     growing. A whole branch of them is a different species. */
+  colour = mix(colour, uRed, vLate);
+
   // Tips read brighter than cores, the way stamens catch light.
   colour += vRadial * 0.16 * vOpen;
 
   // A little per-floret variance so the cluster is not one flat gold.
   colour *= 0.9 + vSeed * 0.2;
+
+  /* THE SHADING IS APPLIED ONLY TO THE MATTE SUBJECT. The far copy is additive and
+     out-of-focus: giving depth to something whose whole job is to be a soft wash would just
+     make the background busy. */
+  colour = mix(colour, colour * shade + spec, uMatte);
 
   // Matte heads reach full opacity; the glowing far copy stays translucent.
   /* The additive far copy is halved. Stacked over the matte subject on pure black it was
@@ -452,13 +507,24 @@ void main() {
      the eye reads as a wattle head. Fading to nothing at the tip threw that away, so the shaft
      dims only gently and then brightens sharply over the last quarter. Definition only — the
      colour is still uGold, untouched. */
-  /* Each filament is nearly invisible on its own. A head's fuzz is the SUM of a few dozen of
-     them at the shell; when any single one is legible as a line, the head reads as an asterisk.
-     The anther is kept but small, so the rim gets its dotted texture without drawing spokes. */
-  float shaft  = 1.0 - vTip * 0.35;
-  float anther = smoothstep(0.82, 1.0, vTip);
-  float a = (shaft * 0.13 + anther * 0.28) * vOpen * uOpacity;
-  gl_FragColor = vec4(uGold, a);
+  /* THE ANTHERS ARE THE DEFINITION.
+
+     These were held down to almost nothing on the reasoning that a legible filament turns a
+     head into an asterisk. That was true when there were 26 of them per head and each ran
+     straight out from the centre. There are 90 now, they arc, and they start at the shell — at
+     that density the corona is a rim of fine bright POINTS, which is precisely what both
+     references show and what the old soft ball was missing.
+
+     The shaft stays faint; the anther is what comes up. A bright dot at the end of a barely
+     visible thread is how a real wattle head breaks its own silhouette. */
+  float shaft  = 1.0 - vTip * 0.3;
+  float anther = smoothstep(0.88, 1.0, vTip);
+  float a = (shaft * 0.11 + anther * 0.62) * vOpen * uOpacity;
+
+  /* Anthers run paler than the head they sit on — they are catching light, not reflecting the
+     mass behind them, and a rim the same colour as the ball does not read as a rim. */
+  vec3 c = mix(uGold, vec3(1.0, 0.94, 0.72), anther * 0.55);
+  gl_FragColor = vec4(c, a);
 }
 `;
 
@@ -475,14 +541,29 @@ ${MOTION_CHUNK}
 attribute vec3 aBlade;   // along 0..1, seed, depth
 uniform float uTime;
 uniform float uBloom;
+uniform float uLeafIn;   // 0..1, the foliage's own arrival — see below. NOT uLeaf, which is a colour.
 uniform vec3 uPointer;
 uniform float uPointerOn;
 varying float vAlong;
 varying float vDepth;
 varying float vSeed;
+varying float vLeaf;
 void main() {
   vAlong = aBlade.x; vSeed = aBlade.y; vDepth = aBlade.z;
-  vec3 pos = position;
+
+  /* THE LEAVES ARRIVE BEFORE THE FLOWERS, ON THEIR OWN CLOCK.
+
+     Foliage used to be at full strength from the first frame while the flowers were already a
+     third open, so the gate opened on a branch that was simultaneously bare and blooming. A
+     branch is clothed first and flowers afterwards; that is the order in the field and it is
+     also the better reveal, because it gives the gold somewhere to arrive.
+
+     uLeafIn is driven by the intro, not by scroll: the leaves come in on their own as the page
+     settles, and scroll is left to do one job — open the flowers. Each blade unfurls from its
+     own attachment point, so the canopy grows rather than fading up. */
+  vLeaf = uLeafIn;
+  float grow = smoothstep(0.0, 1.0, clamp(uLeafIn * 1.35 - aBlade.z * 0.3, 0.0, 1.0));
+  vec3 pos = mix(position * vec3(0.35, 0.35, 1.0), position, grow);
   // A leaf bends most at its tip and not at all where it attaches.
   pos += wattleDrift(pos, aBlade.y, uTime * 0.7, 0.34 * aBlade.x);
   pos += wattlePointer(pos, uPointer, uPointerOn, 0.7 * aBlade.x, 3.4);
@@ -498,6 +579,7 @@ uniform float uOpacity;
 varying float vAlong;
 varying float vDepth;
 varying float vSeed;
+varying float vLeaf;
 void main() {
   // Blades further back sit darker and cooler: depth by value, the way the photograph does it.
   vec3 c = mix(uLeaf, uLeafLit, vDepth * 0.85 + vSeed * 0.15);
@@ -508,7 +590,7 @@ void main() {
      foliage and become green SHARDS — hard-edged cut-outs with more visual weight than the
      flowers they are supposed to be setting off. Depth now drives alpha hard, so the back of
      the canopy dissolves and only the nearest blades hold an edge. */
-  float a = uOpacity * (0.28 + vDepth * 0.36);
+  float a = uOpacity * (0.28 + vDepth * 0.36) * smoothstep(0.0, 0.55, vLeaf);
   gl_FragColor = vec4(c, a);
 }
 `;

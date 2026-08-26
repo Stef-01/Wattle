@@ -129,21 +129,37 @@ for the regional-bandwidth requirement.
 **Not measured:** real Core Web Vitals against the LCP < 2.5s / INP < 200ms / CLS < 0.1 targets.
 That needs a deployed URL and field data, and there is no deployment.
 
-## Cultural content on the gate — NOT REVIEWED BY THE PEOPLE IT CONCERNS
+## Cultural content on the gate — SOURCED, STILL NOT REVIEWED BY THE PEOPLE IT CONCERNS
 
-`src/content/emblem.ts` carries a paragraph on Aboriginal and Torres Strait Islander use of
-acacias: seed as food, gum and bark in medicine, hardwood for implements, flowering read as a
-seasonal marker. It was written to a deliberate constraint — state broadly documented practical
-use, name the plurality, and decline to offer a symbolism.
+`src/content/emblem.ts` carries one documented reading, attributed to one named nation.
+
+**What it says.** That Wiradjuri read the blooming of the Gold-Dust Wattle as the time to collect
+emu eggs, and the falling of the blossom — when the westerlies come in late winter — as the end
+of it, because by then the chick has formed inside the egg. That Gadigal read the Sydney Golden
+Wattle for the mullet run. That there are close to a thousand acacias and hundreds of nations
+reading them differently, that there is no single account, and that this is not the place that
+would give you one. That Australians since wear a sprig on days of mourning.
+
+**Sources.** Wiradjuri and Gadigal readings: Botanic Gardens of Sydney, Aboriginal seasons
+teaching resource. National emblem, national colours, the sprig worn on days of mourning:
+Department of the Prime Minister and Cabinet, and the National Museum of Australia. Fire
+regeneration: CSIRO. Every factual clause traces to one of those.
+
+**One claim was checked and dropped.** A search result asserted that in Bundjalung Country the
+falling of wattle blossom into water signals to stop hunting the Eastern Long-necked Turtle. It
+could not be traced to the primary source it was attributed to — the Wattle Day Association page
+turned out not to contain it — so it is not on the site. The Wiradjuri emu-egg reading says the
+same thing and is properly sourced.
 
 **What was avoided, and why.** The obvious sentence is "to Aboriginal people the wattle
-symbolises X". There are hundreds of distinct First Nations on this continent and roughly a
-thousand Acacia species; there is no shared meaning to report. A single symbolic claim would be
-the pan-Indigenous flattening the Australian Indigenous Design Charter names as harm, and it
-would be a healthcare company asserting cultural authority nobody granted it.
+symbolises X". There are hundreds of distinct First Nations and roughly a thousand Acacia
+species; there is no shared meaning to report. A single symbolic claim would be the
+pan-Indigenous flattening the Australian Indigenous Design Charter names as harm. Naming
+Wiradjuri and then saying plainly that accounts differ is the opposite move: it credits a
+specific people with a specific knowledge instead of averaging everyone into a symbol.
 
-**What is still outstanding.** Nothing here has been read by an Aboriginal or Torres Strait
-Islander reviewer. Broadly documented is not the same as appropriate to publish, and the judgement
-about whether a company that sells health software should be narrating this at all is not ours to
-make alone. Before launch this needs Indigenous-led review, and if that review says cut it, it is
-cut rather than softened.
+**What is still outstanding.** Sourced to a reputable institution is not the same as cleared to
+publish. Nothing here has been read by an Aboriginal or Torres Strait Islander reviewer, and the
+question of whether a health-software company should be narrating this at all is not ours to
+settle alone. Before launch this needs Indigenous-led review, and if that review says cut it, it
+is cut rather than softened.

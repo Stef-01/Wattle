@@ -52,6 +52,8 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** easeOutCubic. An entrance decelerates. */
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
+const PHYLLODE_FILL = `rgb(${CONFIG.colour.leaf[0]} ${CONFIG.colour.leaf[1]} ${CONFIG.colour.leaf[2]} / 0.55)`;
+
 interface Head {
   /** 0 at the base of the raceme, 1 at the tip. Both the stagger key and the size key. */
   axial: number;
@@ -165,28 +167,36 @@ export class WattleFlower {
     const L = len * open;
     if (L < 0.5) return;
     const ca = Math.cos(ang), sa = Math.sin(ang);
-    const at = (u: number, w: number): [number, number] => {
-      const bx = u * L;
-      const by = curve * L * Math.sin(u * Math.PI) + w;
-      return [px + bx * ca - by * sa, py + bx * sa + by * ca];
-    };
+
+    /* THE ARITHMETIC IS INLINE BECAUSE THIS IS THE TIER THAT RUNS EVERYWHERE.
+       This used to build an `at(u, w)` closure per call and return a fresh `[x, y]` from it 26
+       times — so a raceme of twenty phyllodes shed some five hundred arrays and twenty function
+       objects EVERY FRAME, multiplied again by each raceme the reader spawns. Nothing here is
+       kept, so it all lands on the collector, and the pauses arrive as a stutter in the one
+       path the weakest machines are on: Canvas2D is the fallback for hardware with no WebGL.
+       Same curve, same output, no garbage. */
     ctx.beginPath();
     const SEG = 12;
     for (let i = 0; i <= SEG; i++) {
       const u = i / SEG;
       const w = Math.sin(Math.pow(u, 0.75) * Math.PI) * L * 0.085;
-      const [x, y] = at(u, w);
+      const bx = u * L;
+      const by = curve * L * Math.sin(u * Math.PI) + w;
+      const x = px + bx * ca - by * sa;
+      const y = py + bx * sa + by * ca;
       i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
     for (let i = SEG; i >= 0; i--) {
       const u = i / SEG;
       const w = -Math.sin(Math.pow(u, 0.75) * Math.PI) * L * 0.085;
-      const [x, y] = at(u, w);
-      ctx.lineTo(x, y);
+      const bx = u * L;
+      const by = curve * L * Math.sin(u * Math.PI) + w;
+      ctx.lineTo(px + bx * ca - by * sa, py + bx * sa + by * ca);
     }
     ctx.closePath();
-    const [r, g, b] = CONFIG.colour.leaf;
-    ctx.fillStyle = `rgb(${r} ${g} ${b} / 0.55)`;
+    // Constant, so it is built once at module load rather than re-serialised and re-parsed by
+    // the canvas on every phyllode of every frame.
+    ctx.fillStyle = PHYLLODE_FILL;
     ctx.fill();
   }
 
