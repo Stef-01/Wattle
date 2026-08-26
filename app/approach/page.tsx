@@ -4,6 +4,7 @@ import { PRACTICE } from "@/content/company";
 import { PENDING, PENDING_PROMISE } from "@/content/disclosures";
 import { REACH_GAP } from "@/content/presence";
 import { Ticker } from "../ticker";
+import { DisclosureList } from "../disclosure-list";
 
 export const metadata: Metadata = {
   title: "Approach",
@@ -42,7 +43,9 @@ export default function ApproachPage() {
         </div>
       </section>
 
-      {/* The band. Three panels, one hue each — the slide's image strip, in flat colour. */}
+      {/* THE BAND STAYS. Three flat hues rather than a photograph, because there is no
+          photography in this tree and a stock image would be the one dishonest thing on a page
+          about honesty. */}
       <div className="cols-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
         {bands.map((b) => (
           <div
@@ -55,45 +58,46 @@ export default function ApproachPage() {
         ))}
       </div>
 
-      {/* Three columns: statement, then the two ruled lists. */}
+      {/* THE TWO LISTS, AS HEADINGS YOU CAN OPEN.
+
+          They used to be three parallel columns of fully-expanded prose — an argument, four
+          commitments and seven absences, roughly six hundred words all on screen at once, with
+          the same four commitments repeated in long form further down the page. Every word was
+          worth saying and none of it was getting read: a visitor scanning for "what does this
+          company actually hold" met a wall.
+
+          Same two lists, same order, same words. The headings are the page and the detail is one
+          click away. The long-form repeat below is gone — it is what these now open into. */}
       <section className="section is-black">
-        <div className="padding-global cols-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "3vw" }}>
-          <div>
-            <p className="heading-style-h6">
-              Four commitments, each enforced somewhere in a build pipeline rather than promised on
-              a page — which is the only version of a commitment worth publishing.
+        <div className="padding-global">
+          <p className="approach-lede">
+            Four commitments, each enforced somewhere in a build pipeline rather than promised on
+            a page — which is the only version of a commitment worth publishing.
+          </p>
+
+          <div className="approach-list">
+            <p className="text-style-tag">
+              What we hold to<span className="count">{String(PRACTICE.length).padStart(2, "0")}</span>
             </p>
-            <p className="body-text text-style-muted" style={{ marginTop: "2vw" }}>
-              {REACH_GAP.rural}
-            </p>
+            <DisclosureList
+              items={PRACTICE.map((p) => ({ title: p.title, body: p.short, more: p.body }))}
+            />
           </div>
 
-          <div>
-            <p className="text-style-tag">What we hold to</p>
-            <ul className="rule-list" style={{ marginTop: "1vw" }}>
-              {PRACTICE.map((p) => (
-                <li key={p.title}>
-                  <p className="heading-style-h6">{p.title}</p>
-                  <p className="body-text text-style-muted" style={{ marginTop: ".4vw" }}>{p.short}</p>
-                </li>
-              ))}
-            </ul>
+          {/* THE TRUST SPINE, INVERTED. A large health-technology company front-loads its
+              certifications here. This one holds none of them, so it front-loads the absence at
+              the weight the badges would have had. */}
+          <div className="approach-list">
+            <p className="text-style-tag">
+              What we do not have<span className="count">{String(PENDING.length).padStart(2, "0")}</span>
+            </p>
+            <DisclosureList
+              tone="absent"
+              items={PENDING.map((d) => ({ title: d.item, body: d.state }))}
+            />
           </div>
 
-          <div>
-            {/* THE TRUST SPINE, INVERTED. A large health-technology company front-loads its
-                certifications here. This one holds none of them, so it front-loads the absence
-                at the weight the badges would have had. */}
-            <p className="text-style-tag">What we do not have</p>
-            <ul className="rule-list" style={{ marginTop: "1vw" }}>
-              {PENDING.map((d) => (
-                <li key={d.item}>
-                  <p className="heading-style-h6">{d.item}</p>
-                  <p className="body-text text-style-muted" style={{ marginTop: ".4vw" }}>{d.state}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className="body-text text-style-muted approach-rural">{REACH_GAP.rural}</p>
         </div>
       </section>
 
@@ -109,20 +113,6 @@ export default function ApproachPage() {
             <p className="text-style-tag">Why we publish that</p>
             <p className="subheading-large max-width-medium">{PENDING_PROMISE}</p>
           </div>
-        </div>
-      </section>
-
-      {/* The commitments argued out, for anybody who wants the long form. */}
-      <section className="section is-black">
-        <div className="padding-global">
-          <ul className="rule-list">
-            {PRACTICE.map((item) => (
-              <li key={item.title} className="inner-section-wrapper" style={{ marginBottom: 0 }}>
-                <p className="heading-style-h5">{item.title}</p>
-                <p className="body-text max-width-medium">{item.body}</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 

@@ -913,6 +913,91 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
   .phyllode-divider path{ animation:none; stroke-dashoffset:0 }
 }
 
+/* The one sentence that frames both lists. Set large, sitting alone above them. */
+.approach-lede{ font-family:var(--font-editorial); font-size:1.7em; line-height:1.32;
+                letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
+.approach-list{ margin-bottom:var(--space-3xl) }
+.approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+.approach-rural{ max-width:62ch; opacity:.62 }
+@media (max-width:767px){ .approach-lede{ font-size:1.3em } }
+
+/* --------------------------------------------------------------------------
+   THE DISCLOSURE LIST — headings that open. See app/disclosure-list.tsx.
+   -------------------------------------------------------------------------- */
+.disclosure{ list-style:none; margin:0; padding:0;
+             border-top:var(--rule) solid rgb(255 255 255 / .18) }
+.disclosure > li{ border-bottom:var(--rule) solid rgb(255 255 255 / .18) }
+
+.disclosure-head{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:var(--space-m);
+  width:100%; min-height:64px; padding:var(--space-m) 0;
+  background:none; border:0; color:inherit; text-align:left; cursor:pointer;
+  font-family:var(--font-ui);
+  transition:color var(--dur-ui) var(--ease-cubic);
+}
+.disclosure-head:hover{ color:var(--wattle) }
+
+.disclosure-n{ font-family:var(--font-mono); font-size:.72em; letter-spacing:.1em;
+               color:var(--wattle); opacity:.75 }
+.disclosure-title{ font-size:1.35em; font-weight:700; line-height:1.2; letter-spacing:-.02em }
+
+/* THE MARK: two crossed rules that become one. Not a glyph — a character would depend on a font
+   that may not have loaded yet, and rotating type rotates its hinting with it. */
+.disclosure-mark{ position:relative; width:14px; height:14px; flex:none }
+.disclosure-mark i{ position:absolute; inset:50% 0 auto 0; height:var(--rule);
+                    background:currentColor; transform:translateY(-50%);
+                    transition:transform var(--dur-mid) var(--ease-quart),
+                               opacity var(--dur-mid) var(--ease-quart) }
+.disclosure-mark i:last-child{ transform:translateY(-50%) rotate(90deg) }
+.is-open .disclosure-mark i:last-child{ transform:translateY(-50%) rotate(0deg); opacity:0 }
+
+/* HEIGHT, WITHOUT MEASURING ANYTHING.
+
+   `height` cannot animate from `auto`, which is why this is normally done by measuring the panel
+   in JavaScript and writing a pixel height back — a number that goes stale on every font load,
+   every resize and every reflow. A grid TRACK interpolates natively between 0fr and 1fr, so the
+   row grows to exactly its content's height with nothing measured and nothing to go stale.
+
+   The inner element needs min-height:0 and overflow:hidden or it refuses to be compressed below
+   its own content, which is the one non-obvious part of the technique. */
+.disclosure-panel{ display:grid; grid-template-rows:0fr;
+                   transition:grid-template-rows var(--dur-mid) var(--ease-quart) }
+.disclosure-panel > div{
+  min-height:0; overflow:hidden;
+  /* Delayed by the length of the collapse, so the panel leaves the accessibility tree only
+     after it has finished closing. Instant on the way in. */
+  visibility:hidden; opacity:0;
+  transition:visibility 0s linear var(--dur-mid), opacity var(--dur-fast) var(--ease-cubic);
+}
+.disclosure > li.is-open .disclosure-panel{ grid-template-rows:1fr }
+.disclosure > li.is-open .disclosure-panel > div{
+  visibility:visible; opacity:1;
+  transition:visibility 0s linear 0s, opacity var(--dur-mid) var(--ease-quart) .06s;
+}
+/* THE PADDING BELONGS TO THE PANEL, NOT TO EACH PARAGRAPH. On the paragraph it applied to
+   every one of them, so an item with two paragraphs got a gap between them the size of the
+   space meant to sit under the whole thing. */
+.disclosure-panel .body-text{ max-width:62ch; opacity:.78 }
+.disclosure-panel > div > *:last-child{ padding-bottom:var(--space-l) }
+
+/* The absences take the red accent on their numeral — the one place on the site where a colour
+   is doing the work a badge would do, in reverse. */
+.disclosure-absent .disclosure-n{ color:var(--waratah) }
+.disclosure-absent .disclosure-head:hover{ color:var(--waratah) }
+
+@media (max-width:767px){
+  .disclosure-head{ gap:var(--space-s) }
+  .disclosure-title{ font-size:1.1em }
+}
+@media (prefers-reduced-motion:reduce){
+  /* Tier 2: keep the fact of the transition, strip the movement. The height still has to change
+     or the panel cannot open at all — it is shortened rather than removed. */
+  .disclosure-panel{ transition-duration:.01ms }
+  .disclosure-panel > div{ transition:opacity .12s linear, visibility 0s linear .01ms }
+  .disclosure > li.is-open .disclosure-panel > div{ transition:opacity .12s linear, visibility 0s }
+  .disclosure-mark i{ transition:none }
+}
+
 /* A counted label: "Directors" with the number set small and raised, as the reference does. */
 .count{ font-family:var(--font-mono); font-size:.7em; vertical-align:super;
         margin-left:.4em; color:var(--wattle); letter-spacing:.04em }
@@ -946,11 +1031,20 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    `:has(.hero)` makes the gate's own presence the condition, so a page without one is
    untouched. The lesson is narrower than "test every route": a rule whose selector describes
    what a page does NOT contain will match hardest on the pages never considered. */
-body:has(main .hero):not(.entered) .nav-block { opacity:0; pointer-events:none }
+/* THE WORDMARK STAYS ON THE GATE. The whole header used to fade out, on the reasoning that the
+   gate should carry the plant and one control and nothing else — but a landing page with no name
+   on it is not minimal, it is anonymous. A visitor arriving from a link has no way to tell whose
+   site this is until they have clicked through a gate to find out.
+
+   So the mark stays, in exactly the format it has on every other page — same element, same
+   display face, same position — and the two things that are genuinely navigation, the menu and
+   the contact CTA, are what wait behind the click. */
+body:has(main .hero):not(.entered) .menu-toggle,
+body:has(main .hero):not(.entered) .nav-cta { opacity:0; pointer-events:none }
 body:has(main .hero):not(.entered) main > *:not(.hero),
 body:has(main .hero):not(.entered) footer { display:none }
 
-.nav-block{ transition:opacity var(--dur-slow) var(--ease-quart) }
+.nav-block,.menu-toggle,.nav-cta{ transition:opacity var(--dur-slow) var(--ease-quart) }
 
 /* ---- the words on the way down ---------------------------------------------------------
    Three sizes only, and the smallest carries the label. The gate is the one place on the
