@@ -23,6 +23,19 @@ export function EnterGate() {
   useEffect(() => {
     if (!entering) return;
     document.body.classList.add("entering");
+
+    /* BACK TO THE TOP, AND NOT OPTIONALLY.
+       The gate is four viewports of scroll, so by the time this button is reachable the
+       visitor is roughly 300vh down the document. Entry deletes that track, the document
+       collapses to a fraction of its former height, and the browser clamps the scroll offset
+       to whatever still exists — which lands somewhere arbitrary in the middle of the page.
+       The site would open on its third section with no explanation.
+
+       `instant`, not `smooth`: this happens under the gate's own fade, so a visible 300vh
+       glide would be a second, competing piece of motion during a transition whose whole job
+       is to be one. Reduced-motion users get the same jump, which is the outcome that query
+       asks for anyway. */
+    window.scrollTo({ top: 0, behavior: "instant" });
     // Matches --dur-slow. The gate is still on screen for this whole window; `entered` is what
     // finally releases the page.
     const t = window.setTimeout(() => {

@@ -70,6 +70,40 @@ vec3 wattlePointer(vec3 pos, vec3 pointer, float on, float strength, float reach
   float influence = smoothstep(reach, 0.0, d) * on;
   return normalize(away + 1e-4) * influence * strength;
 }
+
+/* --------------------------------------------------------------------------
+   THE BLOOM SCHEDULE, PARTITIONED BY THE GOLDEN RATIO.
+
+   The old numbers were 0.55 for the axial spread and 0.45 for each floret's
+   own opening — picked because they add to one. So does every other pair, and
+   nothing else recommended them.
+
+   1/PHI + 1/PHI^2 = 1 exactly. It is the only split of the timeline where the
+   part and the whole stand in the same relation as the two parts do to each
+   other, and it is the same constant already placing florets within a head
+   (the golden angle, botany.ts) and now placing heads along the stem (the
+   golden spiral, layers.ts). One ratio governing structure at three scales.
+
+   THE DRAG TERM IS THE SECOND HALF OF THIS, and it comes from follow-through:
+   a body is a system of connected parts and nothing in it stops at once, so
+   motion cascades outward from the root with each tier lagging the last.
+   Applied to a raceme the hierarchy is literal — stem, then head, then floret,
+   then filament — and each tier lags by 1/PHI^3 of a floret's own window.
+
+   Before this, every part of the plant opened on one uniform value. A whole
+   plant moving as a single object is the definition of mechanical.
+   -------------------------------------------------------------------------- */
+const float INV_PHI  = 0.6180339887;  // the axial spread: base to tip
+const float INV_PHI2 = 0.3819660113;  // one element's own opening
+const float INV_PHI3 = 0.2360679775;  // the lag between tiers of the hierarchy
+
+/* axial: 0 at the base of the raceme, 1 at the tip.
+   drag:  0 at the root of the motion (the stem), 1 at its extremity (the filament tips). */
+float racemeOpen(float bloom, float axial, float drag) {
+  float start = axial * INV_PHI + drag * INV_PHI3 * INV_PHI2;
+  return smoothstep(start, start + INV_PHI2, bloom);
+}
+
 `;
 
 export const WATTLE_VERT = /* glsl */ `
@@ -103,16 +137,17 @@ void main() {
   vRadial = radial;
   vSeed = seed;
 
-  /* ---- BLOOM ORDER IS AXIAL ----------------------------------------
+  /* ---- BLOOM ORDER IS AXIAL, AND THE SCHEDULE IS GOLDEN ----------------
      A raceme opens base to tip. Each floret's window is offset by its own
-     axial position, so the field unfurls along the stem instead of fading
-     up as one object. The 0.55 leaves 45% of the scroll as overlap — with
-     no overlap it reads as a queue rather than as a plant. */
-  float start = axial * 0.55;
-  float open = smoothstep(start, start + 0.45, uBloom);
+     axial position, so the field unfurls along the stem instead of fading up
+     as one object. The spread and the opening are 1/PHI and 1/PHI^2 — see the
+     note above racemeOpen.
 
-  // Stamen tips lag their own core very slightly: the head opens outward.
-  open = clamp(open - radial * 0.06 * (1.0 - open), 0.0, 1.0);
+     A floret sits in the middle of the drag hierarchy: behind the stem that
+     carries it, ahead of the filaments it throws. Its own radial position
+     within the head refines that, so a head opens core-outward rather than
+     all at once — the second of the two nested sequences this plant runs. */
+  float open = racemeOpen(uBloom, axial, 0.35 + radial * 0.4);
 
   /* ---- THE CURSOR OPENS WHAT IT PASSES OVER --------------------------
      Repulsion alone made the pointer a wind. Warmth opens a flower, so the pointer also drives
@@ -340,7 +375,11 @@ void main() {
      iris projects an edge. That rim is the difference between bokeh and fog. */
   float disc = smoothstep(0.5, 0.42, d);
   float rim = smoothstep(0.5, 0.44, d) - smoothstep(0.44, 0.30, d);
-  float a = disc * 0.16 + rim * 0.2;
+  /* HALVED, AND THE RIM MOST OF ALL. Against white these discs were barely there; against
+     black, additive, they resolved into distinct brown-gold rings scattered over the frame —
+     reading as smudges on a lens rather than as light in front of it. Out-of-focus highlights
+     should be felt before they are noticed. */
+  float a = disc * 0.075 + rim * 0.085;
   gl_FragColor = vec4(uColour, a * uOpacity * (0.6 + vSeed * 0.4));
 }
 `;
@@ -350,6 +389,7 @@ export const STAMEN_VERT = /* glsl */ `
 precision highp float;
 ${MOTION_CHUNK}
 attribute vec3 aAttr;   // 0 at core / 1 at tip, cluster t, seed
+attribute vec3 aAnchor; // where this filament meets the head's shell
 uniform float uTime;
 uniform float uBloom;
 uniform vec3 uPointer;
@@ -361,16 +401,29 @@ void main() {
   float cluster = aAttr.y;
   vTip = tip;
 
-  // Filaments follow their own head's opening, so they emerge WITH it rather than before it.
-  float start = cluster * 0.55;
-  float open = smoothstep(start, start + 0.45, uBloom);
+  /* Filaments are the far end of the drag hierarchy — drag 1.0, the last thing on the plant
+     to move, following the head that carries them. */
+  float open = racemeOpen(uBloom, cluster, 1.0);
   vOpen = open;
 
-  // The tip travels; the core stays put. Stamens extend, they do not slide.
-  vec3 pos = position;
-  pos = mix(position - vec3(0.0, 0.0, 0.0), position, 1.0);
-  vec3 core = position;
-  pos = mix(core, position, 1.0);
+  /* THE FILAMENT GROWS OUT OF THE HEAD.
+
+     THIS WAS THREE NO-OPS. The previous version read:
+
+         pos = mix(position - vec3(0.0, 0.0, 0.0), position, 1.0);
+         vec3 core = position;
+         pos = mix(core, position, 1.0);
+
+     mix(a, a, 1.0) is a, subtracting a zero vector is a, and so all three lines resolved to
+     "pos = position". The comment above them promised that the tip travelled while the core
+     stayed put; the code did nothing at all, so every filament was at full extension from the
+     first frame and only its alpha ever changed. The stamens — the whole visual mass of a
+     wattle head — sat outside the bloom entirely.
+
+     Interpolating from the anchor is what the comment always described: the base stays welded
+     to the shell and the tip sweeps out along its arc as the head opens. */
+  vec3 pos = mix(aAnchor, position, open);
+
   pos += wattleDrift(pos, aAttr.z, uTime, 0.3 * tip);
   pos += wattlePointer(pos, uPointer, uPointerOn * open, 1.15 * tip, 3.1);
 
@@ -440,10 +493,12 @@ void main() {
   vec3 c = mix(uLeaf, uLeafLit, vDepth * 0.85 + vSeed * 0.15);
   // Tips catch light, bases sit in shadow.
   c *= 0.94 + vAlong * 0.5;
-  /* Lifted from 0.55. The phyllodes occupy as much of the reference as the flowers do, and at
-     the old floor the near blades were sitting close enough to black that the plant read as
-     flowers suspended in nothing. They are the half of the plant that says *acacia*. */
-  float a = uOpacity * (0.9 + vDepth * 0.1);
+  /* BACK DOWN, AND FURTHER THAN IT STARTED. 0.9 was chosen against a white ground, where a
+     near-opaque blade still read as a light shape. On black, opaque flat polygons stop being
+     foliage and become green SHARDS — hard-edged cut-outs with more visual weight than the
+     flowers they are supposed to be setting off. Depth now drives alpha hard, so the back of
+     the canopy dissolves and only the nearest blades hold an edge. */
+  float a = uOpacity * (0.28 + vDepth * 0.36);
   gl_FragColor = vec4(c, a);
 }
 `;

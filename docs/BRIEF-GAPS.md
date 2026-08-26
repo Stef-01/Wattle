@@ -128,3 +128,22 @@ for the regional-bandwidth requirement.
 
 **Not measured:** real Core Web Vitals against the LCP < 2.5s / INP < 200ms / CLS < 0.1 targets.
 That needs a deployed URL and field data, and there is no deployment.
+
+## Cultural content on the gate — NOT REVIEWED BY THE PEOPLE IT CONCERNS
+
+`src/content/emblem.ts` carries a paragraph on Aboriginal and Torres Strait Islander use of
+acacias: seed as food, gum and bark in medicine, hardwood for implements, flowering read as a
+seasonal marker. It was written to a deliberate constraint — state broadly documented practical
+use, name the plurality, and decline to offer a symbolism.
+
+**What was avoided, and why.** The obvious sentence is "to Aboriginal people the wattle
+symbolises X". There are hundreds of distinct First Nations on this continent and roughly a
+thousand Acacia species; there is no shared meaning to report. A single symbolic claim would be
+the pan-Indigenous flattening the Australian Indigenous Design Charter names as harm, and it
+would be a healthcare company asserting cultural authority nobody granted it.
+
+**What is still outstanding.** Nothing here has been read by an Aboriginal or Torres Strait
+Islander reviewer. Broadly documented is not the same as appropriate to publish, and the judgement
+about whether a company that sells health software should be narrating this at all is not ours to
+make alone. Before launch this needs Indigenous-led review, and if that review says cut it, it is
+cut rather than softened.

@@ -422,31 +422,65 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* --------------------------------------------------------------------------
    14. PAGE PIECES
    -------------------------------------------------------------------------- */
-/* THE GATE — light ground, warm spill, dark filaments with gold tips.
+/* THE GATE — dark ground, warm spill, gold that finally reads as light.
 
-   The reference hangs a bundle of dark fibres with glowing tips against a pale
-   ground, lit from below. A wattle branch already IS that: near-black stems and
-   grey-green phyllodes carrying golden heads. The only thing that had to change
-   was the ground it hangs against.
+   THE GROUND WENT BLACK FOR A MEASURABLE REASON, not a mood. #ffc400 on white
+   is about 1.7:1 in relative luminance; on black it is near 13:1. The subject
+   of the poster was sitting at the lowest contrast the palette can produce
+   against the one background that guaranteed it.
 
-   White to ochre rather than white to grey — ochre is the palette's warm
-   neutral, so the wash stays inside the ten hues and warms toward the spill
-   instead of going cold. */
-.hero{ min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center;
-       padding:10vw var(--gutter) var(--space-3xl); position:relative; overflow:clip;
-       background:linear-gradient(to bottom, var(--white) 0%, var(--white) 42%, var(--ochre) 100%);
-       color:var(--black) }
+   AND IT UNDOES A COMPROMISE. Every layer in the field was switched from
+   additive to normal blending because of the white ground — adding gold to
+   white produces white, so the glow had to go. On black, additive is correct
+   again, and emissive tips over a dark field is the entire look being aimed
+   at. The darker ground is not a repaint, it is what lets the animation be
+   the thing it was drawn to be.
+
+   No new token: black is already in the ten-plus-two, so the palette gate
+   stays satisfied. The warmth comes from the spill, not from the ground. */
+.hero{ position:relative; background:var(--black); color:var(--white) }
+
+/* THE STAGE. Sticky and exactly one viewport, so the plant holds frame while
+   the words go past it. This is the reference's structure and the reason it
+   reads as a shot rather than a background: the art is what you are watching,
+   the text is what moves. */
+.gate-stage{
+  position:sticky; top:0; height:100vh; height:100dvh; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  overflow:clip;
+  /* Black, lifted very slightly toward the signature gold in the centre so the frame is not
+     a flat void. Derived from an existing hue at low alpha rather than declared as an
+     eleventh colour — the palette guard only reads token declarations, so keeping to ten was
+     a matter of not writing the hex, not of not being caught. */
+  background:var(--black);
+  background-image:radial-gradient(ellipse 90% 70% at 50% 40%,
+                    rgb(255 196 0 / .07) 0%, rgb(255 196 0 / 0) 70%);
+}
 
 /* The spill. A wide, shallow pool of warm light along the bottom edge, as though the
-   filaments are lit from beneath the frame. Sits above the ground and below everything
-   else, and never intercepts a click. */
-.hero::after{
-  content:""; position:absolute; left:50%; bottom:-14vh; transform:translateX(-50%);
-  width:120%; height:34vh; pointer-events:none; z-index:1;
+   filaments are lit from beneath the frame. On the old white ground this was gold at 55%
+   over near-white and effectively invisible; on black it is the strongest single device
+   in the reference. Sits above the ground, below everything else, never takes a click. */
+.gate-stage::after{
+  content:""; position:absolute; left:50%; bottom:-16vh; transform:translateX(-50%);
+  width:130%; height:40vh; pointer-events:none; z-index:1;
   background:radial-gradient(ellipse at 50% 100%,
-              rgb(255 196 0 / .55) 0%, rgb(255 196 0 / .22) 38%, transparent 70%);
-  filter:blur(1vw);
+              rgb(255 196 0 / .40) 0%, rgb(255 196 0 / .15) 40%, transparent 72%);
+  filter:blur(1.4vw);
 }
+
+/* THE TRACK, pulled up under the stage so both occupy the same screens. The hero's height
+   IS this track's height — four beats of one viewport each, which is the scroll budget the
+   bloom is mapped across. */
+.gate-track{ position:relative; z-index:2; margin-top:-100vh; margin-top:-100dvh }
+.gate-beat{ min-height:100vh; min-height:100dvh; display:grid; align-items:center;
+            padding:0 var(--gutter) }
+/* The first screen stays bare — the plant and a cue, nothing else. That is the minimalism
+   that was asked for; it is kept by moving the words down, not by deleting them. */
+.gate-beat-first{ pointer-events:none }
+.gate-beat-last{ align-items:center }
+.gate-copy{ max-width:min(46ch,78vw); pointer-events:auto }
+
 .hero-inner{ position:relative; display:flex; align-items:center; justify-content:center;
              width:100%; max-width:58vw;
              /* AN EXPLICIT HEIGHT, because the field is absolutely positioned and the SVG it
@@ -641,47 +675,90 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    first screen is the plant and a way in.
    -------------------------------------------------------------------------- */
 
-/* Nothing but the gate until it is opened: no scroll, no header, no content.
+/* Nothing but the gate until it is opened: no header, no content — but SCROLL STAYS.
 
-   SCOPED TO PAGES THAT ACTUALLY HAVE A GATE. These rules were written unscoped and shipped that
-   way, and the consequence was total: only the home page has a `.hero`, so on every other route
-   `main > *:not(.hero)` matched EVERY section. /ventures, /approach, /company, /contact and
-   /accessibility all rendered blank, with the footer hidden and scroll locked, and there was no
-   gate on them to click to get out of it.
+   THE LOCK IS GONE, AND IT WAS A BUG, NOT A CHOICE. `overflow:hidden` sat here while the
+   field mapped the last stage of its bloom (0.86 -> 1.0) onto scroll position. Those two
+   rules contradicted each other and the stylesheet won, so the closing stage of the
+   animation had never rendered for anybody. Hiding the rest of the page is what makes the
+   gate a gate; hiding the scrollbar was just stopping the animation from finishing.
 
-   `:has(.hero)` makes the gate's own presence the condition, so a page without one is untouched.
-   The lesson is narrower than "test every route": a rule whose selector describes what a page
-   does NOT contain will match hardest on the pages that were never considered. */
-body:has(main .hero):not(.entered) { overflow:hidden }
+   Nothing is reachable past the gate anyway — the sections below are `display:none`, so the
+   document is exactly as tall as the gate itself and there is nowhere to scroll TO.
+
+   SCOPED TO PAGES THAT ACTUALLY HAVE A GATE. These rules were written unscoped and shipped
+   that way, and the consequence was total: only the home page has a `.hero`, so on every
+   other route `main > *:not(.hero)` matched EVERY section. /ventures, /approach, /company,
+   /contact and /accessibility all rendered blank, with the footer hidden and scroll locked,
+   and there was no gate on them to click to get out of it.
+
+   `:has(.hero)` makes the gate's own presence the condition, so a page without one is
+   untouched. The lesson is narrower than "test every route": a rule whose selector describes
+   what a page does NOT contain will match hardest on the pages never considered. */
 body:has(main .hero):not(.entered) .nav-block { opacity:0; pointer-events:none }
 body:has(main .hero):not(.entered) main > *:not(.hero),
 body:has(main .hero):not(.entered) footer { display:none }
 
 .nav-block{ transition:opacity var(--dur-slow) var(--ease-quart) }
 
+/* ---- the words on the way down ---------------------------------------------------------
+   Three sizes only, and the smallest carries the label. The gate is the one place on the
+   site with no nav, no rules and no cards, so hierarchy has to come from type alone. */
+/* Bottom LEFT, on the same axis as every other word on the gate — not centred. Centred it sat
+   directly behind the base of the raceme, which is the densest part of the plant, and a cue
+   nobody can read is the whole complaint this gate was rebuilt to answer. */
+.gate-cue{ font-family:var(--font-ui); font-size:.75em; font-weight:700; text-transform:uppercase;
+           letter-spacing:.28em; color:rgb(255 255 255 / .62); align-self:end;
+           justify-self:start; margin-bottom:6vh;
+           animation:gate-cue-drift 2.6s var(--ease-cubic) infinite }
+@keyframes gate-cue-drift{ 0%,100%{ transform:translateY(0); opacity:.45 }
+                           50%{ transform:translateY(.7em); opacity:1 } }
+
+.gate-tag{ font-family:var(--font-ui); font-size:.75em; font-weight:700; text-transform:uppercase;
+           letter-spacing:.22em; color:var(--wattle); margin:0 0 1.2em }
+.gate-line{ font-family:var(--font-editorial); font-size:1.55em; line-height:1.45;
+            letter-spacing:-.01em; color:var(--white); margin:0 }
+
+.gate-binomial{ font-family:var(--font-editorial); font-style:italic; font-size:2.6em;
+                line-height:1; letter-spacing:-.02em; color:var(--wattle); margin:0 }
+.gate-common{ font-family:var(--font-display); font-size:1.5em; line-height:1.05;
+              text-transform:uppercase; letter-spacing:.02em; color:var(--white);
+              margin:.35em 0 0 }
+.gate-emblem{ font-family:var(--font-ui); font-size:.8em; letter-spacing:.06em;
+              color:rgb(255 255 255 / .6); margin:.9em 0 2.4em }
+
+/* THE ONE CONTROL. Ghost-outlined on black so it reads as a control and not as a headline,
+   filling with gold on hover — the only interactive colour on the whole gate. */
 .gate-enter{
-  position:absolute; left:50%; bottom:14vh; transform:translateX(-50%); z-index:4;
   display:inline-flex; align-items:center; justify-content:center;
   min-height:44px; padding:1em 2.4em;
-  border:var(--rule) solid var(--black); border-radius:var(--radius-pill);
-  background:transparent; color:var(--black);
+  border:var(--rule) solid var(--white); border-radius:var(--radius-pill);
+  background:transparent; color:var(--white);
   font-family:var(--font-ui); font-size:1.05em; font-weight:700;
   text-transform:uppercase; letter-spacing:.12em; cursor:pointer;
   transition:background-color var(--dur-slow) var(--ease-quart),
              color var(--dur-slow) var(--ease-quart),
+             border-color var(--dur-slow) var(--ease-quart),
              opacity var(--dur-mid) var(--ease-quart);
 }
-.gate-enter:hover{ background:var(--black); color:var(--white) }
+.gate-enter:hover{ background:var(--wattle); border-color:var(--wattle); color:var(--black) }
 
 /* THE EXIT. The control leaves first, then the page is released — so the art is never
    interrupted, it simply stops being the only thing on screen. */
 body.entering .gate-enter{ opacity:0; pointer-events:none }
-/* The hero shrinks on entry, but the change is NOT transitioned. min-height is a layout
-   property: animating it forces layout on every frame of the transition, which is the one
-   thing that reliably drops frames on a mid-range device. The motion the eye actually reads
-   is the content rising underneath on transform and opacity — both compositor-only. */
-body.entering .hero,
-body.entered .hero{ min-height:82vh }
+
+/* WHAT ENTRY COLLAPSES. The track is four viewports of scroll that exist only to drive the
+   bloom; once the site is open it is dead weight above the ticker, so it goes. The stage
+   stops being sticky and becomes an ordinary hero holding the fully-open plant.
+
+   NOT TRANSITIONED. height is a layout property: animating it forces layout on every frame,
+   which is the one thing that reliably drops frames on a mid-range device. The motion the
+   eye actually reads is the content rising underneath on transform and opacity — both
+   compositor-only. */
+body.entering .gate-track,
+body.entered .gate-track{ display:none }
+body.entering .gate-stage,
+body.entered .gate-stage{ position:relative; height:82vh }
 
 /* What the click reveals. Entrance decelerates; the sections rise as one body rather than
    each animating separately, which would read as a queue. */
@@ -689,7 +766,23 @@ body.entered main > *:not(.hero),
 body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) both }
 @keyframes gate-reveal{ from{ opacity:0; transform:translateY(3vh) } to{ opacity:1; transform:none } }
 
+/* SMALL SCREENS. Four full viewports of scroll is a long way on a phone where each swipe
+   covers less ground, so the beats shorten — the bloom is mapped across whatever the track
+   turns out to be, not across a fixed number, so shortening it costs nothing. */
+@media (max-width:767px){
+  .gate-beat{ min-height:82vh; min-height:82dvh }
+  .gate-line{ font-size:1.25em; line-height:1.4 }
+  .gate-binomial{ font-size:2em }
+  .gate-copy{ max-width:none }
+}
+
 @media (prefers-reduced-motion:reduce){
   .hero,.gate-enter,.nav-block{ transition:none }
+  .gate-cue{ animation:none; opacity:.7 }
   body.entered main > *:not(.hero), body.entered footer{ animation:none }
+  /* No field mounts under reduced motion, so there is nothing to scroll through. The beats
+     collapse to their content and the whole gate fits a screen or two. */
+  .gate-beat{ min-height:auto; padding-top:8vh; padding-bottom:8vh }
+  .gate-track{ margin-top:0 }
+  .gate-stage{ position:relative; height:70vh }
 }

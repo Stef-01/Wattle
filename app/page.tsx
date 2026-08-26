@@ -6,6 +6,7 @@ import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
 import { MotionToggle } from "./motion-toggle";
 import { EnterGate } from "./enter-gate";
+import { BEATS, EMBLEM } from "@/content/emblem";
 import { Ticker } from "./ticker";
 
 /**
@@ -21,15 +22,51 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 1. THE GATE. Full viewport, black, one subject, one pill CTA on top of it. */}
-      {/* THE GATE. The animation, and one way in. Everything else waits behind the click. */}
+      {/* 1. THE GATE — a scrollable shot, not a single screen.
+
+          THE FIRST SCREEN IS STILL BARE: the plant, and a cue to keep going. Everything else
+          arrives on the way down. That keeps the minimalism that was asked for while giving the
+          animation somewhere to happen, because the previous gate had a contradiction in it —
+          the bloom ran 0 -> 0.86 on a timer and 0.86 -> 1.0 on SCROLL, while the same stylesheet
+          locked scroll until entry. The last stage of the animation could never run.
+
+          The stage is sticky and the beats scroll past it, so the plant is pinned in frame and
+          opening while the words move. That is the reference's structure: the art is not a
+          backdrop the text sits on, it is the thing being watched, and the text is what passes. */}
       <section className="hero">
-        <HeroCanvas />
-        <div className="hero-inner">
-          <WattleBloom className="hero-bloom" />
+        <div className="gate-stage">
+          <HeroCanvas />
+          <div className="hero-inner">
+            <WattleBloom className="hero-bloom" />
+          </div>
+          <MotionToggle />
         </div>
-        <EnterGate />
-        <MotionToggle />
+
+        {/* Pulled up under the sticky stage so the two occupy the same screens. The hero's total
+            height is this track's height — three viewports of scroll to open one flower. */}
+        <div className="gate-track">
+          <div className="gate-beat gate-beat-first">
+            <p className="gate-cue" aria-hidden="true">Scroll</p>
+          </div>
+
+          {BEATS.map((beat) => (
+            <div className="gate-beat" key={beat.tag}>
+              <div className="gate-copy">
+                <p className="gate-tag">{beat.tag}</p>
+                <p className="gate-line">{beat.body}</p>
+              </div>
+            </div>
+          ))}
+
+          <div className="gate-beat gate-beat-last">
+            <div className="gate-copy">
+              <p className="gate-binomial">{EMBLEM.botanical}</p>
+              <p className="gate-common">{EMBLEM.common}</p>
+              <p className="gate-emblem">{EMBLEM.emblem}</p>
+              <EnterGate />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* 2. TICKER */}

@@ -46,11 +46,15 @@ interface Tier {
 
 /* Layer counts, not one number. The dust is cheap per point and the bokeh is expensive per
    pixel — a single "particle count" would have scaled the wrong things together. */
-const TIERS: Record<"high" | "mid", Tier> = {
+const TIERS: Record<"high" | "mid" | "low", Tier> = {
   high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 26, maxPixelRatio: 2 },
   // Fewer heads and much less bokeh: overdraw from big soft discs is what actually costs on a
   // mid device, more than the point count does.
   mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 16, maxPixelRatio: 1.5 },
+  /* PHONES. Bokeh drops to two and the pixel ratio is capped at 1.25 — a 3x phone screen
+     rendering full-resolution soft discs is the single most reliable way to make a handset
+     hot. The heads are what the plant IS, so they are cut least. */
+  low: { heads: 12, dustCount: 260, bokehCount: 2, stamensPerHead: 12, maxPixelRatio: 1.25 },
 };
 
 function chooseTier(): Tier | null {
@@ -68,7 +72,15 @@ function chooseTier(): Tier | null {
   const forced = new URLSearchParams(window.location.search).get("field") === "force";
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
-  if (window.innerWidth < 768) return null;
+
+  /* THE 768px FLOOR IS GONE, because the layout that justified it is gone. It was there
+     because the hero used to stack on small screens and the field would have been a 12rem
+     strip — not worth a WebGL context. The gate is now a full-viewport sticky stage at every
+     width, so on a phone the plant is the whole screen, which is the one place it is most
+     worth having. Phones get the `low` tier instead of nothing.
+
+     320px stays excluded: below that the stage is too small to resolve a raceme at all. */
+  if (window.innerWidth < 360) return null;
 
   const nav = navigator as Navigator & {
     connection?: { saveData?: boolean; effectiveType?: string };
@@ -90,9 +102,15 @@ function chooseTier(): Tier | null {
   const cores = nav.hardwareConcurrency ?? 2;
   const memory = nav.deviceMemory ?? 2;
 
-  if (cores >= 8 && memory >= 8) return TIERS.high;
-  if (cores >= 4) return TIERS.mid;
-  return forced ? TIERS.mid : null;
+  const phone = window.innerWidth < 768;
+
+  if (!phone && cores >= 8 && memory >= 8) return TIERS.high;
+  if (!phone && cores >= 4) return TIERS.mid;
+  /* A phone never gets more than `low` however many cores it reports — a modern handset can
+     claim eight and still throttle inside a minute. Sustained frame rate on a thermally
+     limited device is not predicted by core count. */
+  if (phone && cores >= 4) return TIERS.low;
+  return forced ? TIERS.low : null;
 }
 
 export function HeroCanvas() {

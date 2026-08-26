@@ -83,10 +83,18 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        cherry blossom. Gold is the signature hue, new growth takes the warm neutral, and the
        foliage takes the green. Nothing outside the ten. */
     const GOLD = new THREE.Color(token("--wattle", "#ffc400"));
-    /* --waratah, not --ochre. Ochre is the palette's warm NEUTRAL — a pale grey-beige — and
-       using it as the new-growth end of the floret gradient bleached the whole branch to cream.
-       Waratah red-orange is both saturated and botanically right for a bud before it colours up. */
-    const BRONZE = new THREE.Color(token("--waratah", "#ff2e17"));
+    /* THE BUD IS NOT RED, AND THIS IS THE BIGGEST CORRECTION IN THE FILE.
+       --waratah was chosen as the new-growth colour on the reasoning that it is "saturated and
+       botanically right for a bud". It is neither. Waratah is a #ff2e17 red-orange, and with
+       the bloom held at its opening value nearly every floret sits at the bronze end of the
+       gradient — so the whole gate opened on a dense red raceme. That is a bottlebrush.
+       Callistemon, not Acacia: the one plant a golden wattle must not be mistaken for.
+
+       An unopened Acacia head is a small tight sphere of pale olive-gold, greener and much
+       duller than the flower it becomes. So the bud colour is now DERIVED — eucalypt darkened
+       and pulled a quarter of the way to gold — rather than picked from the ten as a hue that
+       happened to be warm. Still no eleventh colour: it is two existing hues and a multiply. */
+    const BRONZE = new THREE.Color(token("--eucalypt", "#00a878")).multiplyScalar(0.62).lerp(GOLD, 0.3);
     const SAGE = new THREE.Color(token("--eucalypt", "#00a878"));
 
     const plant = new THREE.Group();
@@ -101,6 +109,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const pointsLayer = (
       pos: Float32Array, attr: Float32Array, itemSize: number,
       vert: string, frag: string, extra: Record<string, { value: unknown }>,
+      blending: THREE.Blending = THREE.AdditiveBlending,
     ) => {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
@@ -109,10 +118,15 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
         vertexShader: vert, fragmentShader: frag,
         uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uPixelRatio, uViewH, ...extra },
         transparent: true, depthWrite: false,
-        /* NORMAL, NOT ADDITIVE. Additive blending adds light to what is behind it, which is why
-           it worked on the black gate and why it cannot work on this one: adding gold to white
-           produces white. Every layer now composites as an object over the ground. */
-        blending: THREE.NormalBlending,
+        /* ADDITIVE BY DEFAULT AGAIN, BECAUSE THE GROUND WENT BACK TO BLACK.
+           Every layer here was forced to NormalBlending when the gate was repainted white —
+           correctly, since adding gold to white produces white and the glow vanished. That was
+           a compromise the ground imposed, not a design decision, and it cost the reference's
+           defining quality: tips that emit rather than tips that are merely coloured. On black
+           additive is right again and the light comes back.
+
+           The SUBJECT is the exception and passes NormalBlending explicitly — see below. */
+        blending,
       });
       disposables.push(geo, mat);
       return { geo, mat };
@@ -120,9 +134,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
     /* ---- 1. dust ---- */
     const d = dust(dustCount);
-    /* On a light ground the far motes read as dark specks, not as sparks — so they take the
-       foliage green rather than the sage highlight. */
-    const dustL = pointsLayer(d.position, d.attr, 4, DUST_VERT, DUST_FRAG, { uColour: { value: new THREE.Color("#2f3a24") } });
+    /* Back to sparks. The dark green was chosen so the motes would read AGAINST white; on black
+       a dark mote is simply invisible. Pale blossom rather than the signature gold, so the
+       far field twinkles a half-step cooler than the heads and does not compete with them. */
+    const dustL = pointsLayer(d.position, d.attr, 4, DUST_VERT, DUST_FRAG, { uColour: { value: new THREE.Color(token("--bloom", "#ffe14d")) } });
     plant.add(new THREE.Points(dustL.geo, dustL.mat));
 
     /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
@@ -146,28 +161,34 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       uGold: { value: GOLD }, uBronze: { value: BRONZE }, uSize: { value: 23 },
       // The subject is matte; only the far, out-of-focus copy glows.
       uMatte: { value: 1 },
-    });
+    }, THREE.NormalBlending);
     nearL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(near.dispersed, 3));
 
     /* STAMENS ARE SHORT. At 0.62 they rendered as starbursts — fireworks, not wattle. A real head
        is a dense fuzzy BALL whose stamens give it its fuzz; they are barely longer than the head
        itself. 0.26 puts them just past the floret shell, which is where they actually sit. */
-    const st = stamens(near.centres, stamensPerHead, 0.13, 303, 0.32);
+    /* REACH IS UP FROM 0.13, because the filaments curve now. It was cut to almost nothing
+       when they were straight radial spikes and any real length turned a head into an
+       asterisk — the length was never the problem, the straightness was. An arced filament
+       reads as fuzz at a length a straight one could not survive. */
+    const st = stamens(near.centres, stamensPerHead, 0.27, 303, 0.32);
     const stGeo = new THREE.BufferGeometry();
     stGeo.setAttribute("position", new THREE.BufferAttribute(st.position, 3));
+    stGeo.setAttribute("aAnchor", new THREE.BufferAttribute(st.anchor, 3));
     stGeo.setAttribute("aAttr", new THREE.BufferAttribute(st.attr, 3));
     const stMat = new THREE.ShaderMaterial({
       vertexShader: STAMEN_VERT, fragmentShader: STAMEN_FRAG,
       uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uGold: { value: GOLD } },
-      /* The stamens were the last additive layer. On white they were adding gold to white and
-         disappearing entirely — the filament tips are the whole point of the reference. */
-      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
+      /* ADDITIVE. The filament tips are the whole point of the reference and they are the one
+         thing in the scene that should read as emitted light rather than as a lit surface.
+         Over a matte head on a black ground that is exactly what additive gives. */
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     });
     disposables.push(stGeo, stMat);
 
 
     /* ---- FOLIAGE. Half the picture in the reference, and absent here until now. ---- */
-    const fol = foliage({ count: Math.round(heads * 1.6), height: 6.4, lean: 0.9, seed: 61 });
+    const fol = foliage({ count: Math.round(heads * 3.4), height: 6.4, lean: 0.9, seed: 61 });
     const folGeo = new THREE.BufferGeometry();
     folGeo.setAttribute("position", new THREE.BufferAttribute(fol.position, 3));
     folGeo.setAttribute("aBlade", new THREE.BufferAttribute(fol.attr, 3));
@@ -175,8 +196,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       vertexShader: FOLIAGE_VERT, fragmentShader: FOLIAGE_FRAG,
       uniforms: {
         uTime, uBloom, uPointer, uPointerOn, uOpacity,
-        uLeaf: { value: new THREE.Color("#0c7d5c") },
-        uLeafLit: { value: new THREE.Color(token("--eucalypt", "#00a878")) },
+        /* PHYLLODES ARE GREY-GREEN, NOT EMERALD. Both leaf colours were straight eucalypt —
+           a vivid #00a878 teal — which against a field of gold produced a Christmas palette
+           and made the foliage compete with the subject instead of setting it. Acacia
+           pycnantha's phyllodes are a dull sage; these are eucalypt pulled toward the ochre
+           neutral and darkened, so the canopy recedes and the blossom is the only saturated
+           thing in frame. */
+        uLeaf: { value: new THREE.Color(token("--eucalypt", "#00a878")).lerp(new THREE.Color(token("--ochre", "#cbbfa6")), 0.3).multiplyScalar(0.3) },
+        uLeafLit: { value: new THREE.Color(token("--eucalypt", "#00a878")).lerp(new THREE.Color(token("--ochre", "#cbbfa6")), 0.42).multiplyScalar(0.62) },
       },
       transparent: true, side: THREE.DoubleSide,
       /* NO DEPTH WRITE. Writing depth made the blades punch holes through the flowers in front
@@ -194,7 +221,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     brGeo.setAttribute("aAttr", new THREE.BufferAttribute(br.attr, 4));
     const brMat = new THREE.ShaderMaterial({
       vertexShader: BRANCH_VERT, fragmentShader: BRANCH_FRAG,
-      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uStem: { value: new THREE.Color("#0a7a5c") } },
+      uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uStem: { value: new THREE.Color(token("--eucalypt", "#00a878")).lerp(new THREE.Color(token("--ochre", "#cbbfa6")), 0.35).multiplyScalar(0.45) } },
       transparent: true, depthWrite: false, blending: THREE.NormalBlending,
     });
     disposables.push(brGeo, brMat);
@@ -252,9 +279,26 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const io = new IntersectionObserver(([e]) => { onScreen = e?.isIntersecting ?? true; }, { threshold: 0 });
     io.observe(host);
 
-    /* ---- the shot ---- */
-    const REST = 0.86;
-    const INTRO_MS = 3200;
+    /* ---- the shot ----
+
+       THE SCROLL IS THE ANIMATION NOW, and this is the fix to a contradiction rather than a
+       new feature. The old code mapped 0 -> 0.86 onto a timer and 0.86 -> 1.0 onto scroll
+       position, while the stylesheet held `overflow:hidden` on the body until entry. Scroll
+       could not happen, so the closing stage never ran: nobody had ever seen this plant fully
+       open. Two correct-looking halves that were never true at the same time.
+
+       So: the intro opens it to a BUD and stops. Everything past that is earned by scrolling,
+       across the gate's full four-viewport track. That is the reference's behaviour — the art
+       grows as you travel down it — and it is also the only arrangement in which the whole
+       animation is reachable. */
+    const BUD = 0.3;
+    const INTRO_MS = 2200;
+
+    /* The gate, not the canvas. The canvas host is inside a `position:sticky` stage, so its
+       own rect is pinned to the viewport for the entire scroll and reports no travel
+       whatsoever — measuring it would read zero forever. The element that actually moves is
+       the section that contains the track. */
+    const gate = host.closest(".hero") as HTMLElement | null;
     const started = performance.now();
     let elapsedAtPause = 0;
     let pausedSince: number | null = null;
@@ -298,18 +342,43 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       const clock = now - started - elapsedAtPause;
       const intro = Math.min(1, clock / INTRO_MS);
 
-      // Scroll takes over once the shot has played.
-      const r = host.getBoundingClientRect();
-      const travelled = 1 - Math.min(1, Math.max(0, (r.bottom - r.height * 0.15) / (r.height * 0.85)));
-      const target = pinned ?? (intro < 1 ? easeOut(intro) * REST : REST + travelled * (1 - REST));
-      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : 3);
+      /* Read in the frame loop, not in a scroll listener. A `scroll` handler fires at input
+         frequency and forces layout on every read; this rect is measured once per rendered
+         frame inside a loop that was already running, and is skipped entirely when the gate
+         is off screen or the tab is hidden. */
+      let travelled = 0;
+      if (document.body.classList.contains("entered")) {
+        /* Past the gate the track is display:none, so the section is shorter than the viewport
+           and the measurement below would return 0 — snapping a fully open plant shut at the
+           exact moment the visitor commits. Entry means finished, permanently. */
+        travelled = 1;
+      } else if (gate) {
+        const r = gate.getBoundingClientRect();
+        const range = r.height - window.innerHeight;
+        travelled = range > 0 ? Math.min(1, Math.max(0, -r.top / range)) : 0;
+      }
+
+      /* max(), not a handover. The bud must never shut because someone scrolled back up past
+         the intro's own progress, and the scroll must be able to run ahead of the intro if a
+         visitor starts moving immediately. Whichever is further open, wins. */
+      const target = pinned ?? Math.max(easeOut(intro) * BUD, BUD + travelled * (1 - BUD));
+      /* Scroll-linked motion is smoothed but never lagged far enough to feel disconnected from
+         the wheel — 9 per second is roughly a 110ms tail. */
+      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : 9);
       uBloom.value = bloom;
 
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
          reference's camera move, which is what turns a state change into a shot. */
-      const push = Math.sin(Math.min(1, bloom / REST) * Math.PI);
-      camera.position.z = 10.2 - push * 3.4;
-      camera.position.y = 0.3 + push * 0.35;
+      /* PULLED BACK, because the shot had no frame left in it. At z 10.2 minus a 3.4 push the
+         camera sat about seven units from a plant six and a half units tall: the raceme ran
+         corner to corner and bled off all four edges, so there was no negative space, no
+         silhouette, and nothing for the type to sit in. A poster needs the subject to END
+         somewhere. This keeps the same dolly — wide on the bud, in through the opening, back
+         out once open — over a range that leaves the plant inside the frame at every point of
+         it. */
+      const push = Math.sin(Math.min(1, bloom) * Math.PI);
+      camera.position.z = 15.4 - push * 2.4;
+      camera.position.y = 0.3 + push * 0.3;
       camera.lookAt(0, 0.1, 0);
 
       /* BREATH. The drift noise moves florets against each other but never moves the plant as a

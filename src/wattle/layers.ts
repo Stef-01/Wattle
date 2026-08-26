@@ -41,23 +41,93 @@ export interface Population {
    are attached to the same branch instead of three things near each other.
    =========================================================================== */
 
-const AXIS_A: [number, number, number] = [-2.9, 2.9, -0.4];
-const AXIS_B: [number, number, number] = [1.4, 0.4, 0.3];
-const AXIS_C: [number, number, number] = [2.9, -2.9, 0.2];
+/* --------------------------------------------------------------------------
+   THE SPINE IS A GOLDEN SPIRAL.
 
-/** Quadratic through A, B, C. Position and unit tangent at t. */
+   IT USED TO BE A QUADRATIC BEZIER from [-2.9, 2.9] to [2.9, -2.9] — a straight
+   corner-to-corner diagonal with a single bow in it. That is the reason the
+   raceme rendered as one rigid streak: a curve with one bend has one direction,
+   so every head hung off it at the same angle and the phyllodes combed the same
+   way down its whole length. It read as a fish bone.
+
+   A logarithmic spiral r = e^(b·theta), with b chosen so the radius multiplies
+   by PHI every quarter turn, is the golden spiral. Sampled across a turn and a
+   third it does four things at once, and each one was a separate defect before:
+
+     1. IT IS AN S-CURVE, so the direction changes continuously along the stem
+        and nothing combs uniformly.
+     2. THE TIP CURLS. The tight end of the spiral IS the crozier — the nodding,
+        hooked tip. It falls out of the maths rather than being added.
+     3. SPACING TIGHTENS TOWARD THE TIP, because arc length per unit of theta
+        shrinks geometrically. Heads crowd at the growing point exactly as they
+        do on a real raceme.
+     4. IT IS THE SAME CONSTANT ALREADY GOVERNING THE FLORETS. The golden angle
+        places florets within a head (see botany.ts); the golden spiral now
+        places heads along the stem. One ratio at both scales, which is the
+        actual reason plants look coherent.
+
+   The raw spiral is normalised to a fixed span at module load so the rest of the
+   system — foliage, branchlets, the camera framing — keeps working against the
+   dimensions it already expects.
+   -------------------------------------------------------------------------- */
+
+const PHI = (1 + Math.sqrt(5)) / 2;
+/** The defining property: radius multiplies by PHI every quarter turn. */
+const SPIRAL_B = Math.log(PHI) / (Math.PI / 2);
+/** A turn and a third was a snail shell — the raceme doubled back on itself and the heads
+ *  piled into one blob with no direction in it. Just under three quarters of a turn gives the
+ *  sweeping crescent the reference has, and because a log spiral's curvature rises toward its
+ *  tight end, the curl still lands where it should: only at the tip. */
+const SPIRAL_TURN = 0.72 * Math.PI;
+/** Where the BASE sits. t runs base -> tip, so theta runs down and the radius shrinks. */
+const SPIRAL_THETA0 = 2.42 * Math.PI;
+/** Rotation of the whole curve in frame. Aesthetic, not botanical: it stands the raceme up
+ *  so it rises from the lower left rather than lying on its side. */
+const SPIRAL_ROT = 3.64;
+
+function spiralRaw(t: number): [number, number] {
+  const th = SPIRAL_THETA0 - t * SPIRAL_TURN;
+  const r = Math.exp(SPIRAL_B * th);
+  const x = r * Math.cos(th);
+  const y = r * Math.sin(th);
+  const c = Math.cos(SPIRAL_ROT), sn = Math.sin(SPIRAL_ROT);
+  /* Mirrored in x, so the stem rises from the lower LEFT and its mass leans right. The gate's
+     type sits on the left; a raceme sweeping the other way put the densest part of the plant
+     directly behind the words. Composition, not botany — a spiral has a handedness and either
+     one is a real plant. */
+  return [-(x * c - y * sn), x * sn + y * c];
+}
+
+/** Fit the raw spiral into the span the old bezier occupied, once, at module load. */
+const SPIRAL_FIT = (() => {
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (let i = 0; i <= 96; i++) {
+    const [x, y] = spiralRaw(i / 96);
+    minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+  }
+  const span = Math.max(maxX - minX, maxY - minY) || 1;
+  return { k: 5.9 / span, cx: (minX + maxX) / 2, cy: (minY + maxY) / 2 };
+})();
+
 export function axisAt(t: number): { p: [number, number, number]; tan: [number, number, number] } {
-  const u = 1 - t;
-  const p: [number, number, number] = [
-    u * u * AXIS_A[0] + 2 * u * t * AXIS_B[0] + t * t * AXIS_C[0],
-    u * u * AXIS_A[1] + 2 * u * t * AXIS_B[1] + t * t * AXIS_C[1],
-    u * u * AXIS_A[2] + 2 * u * t * AXIS_B[2] + t * t * AXIS_C[2],
-  ];
-  const d: [number, number, number] = [
-    2 * u * (AXIS_B[0] - AXIS_A[0]) + 2 * t * (AXIS_C[0] - AXIS_B[0]),
-    2 * u * (AXIS_B[1] - AXIS_A[1]) + 2 * t * (AXIS_C[1] - AXIS_B[1]),
-    2 * u * (AXIS_B[2] - AXIS_A[2]) + 2 * t * (AXIS_C[2] - AXIS_B[2]),
-  ];
+  const at = (u: number): [number, number, number] => {
+    const [rx, ry] = spiralRaw(u);
+    return [
+      (rx - SPIRAL_FIT.cx) * SPIRAL_FIT.k,
+      (ry - SPIRAL_FIT.cy) * SPIRAL_FIT.k,
+      // A shallow arc out of plane, so the stem is not a flat cut-out under the camera tilt.
+      Math.sin(u * Math.PI) * 0.55 - 0.2,
+    ];
+  };
+
+  const p = at(t);
+  // Finite difference rather than an analytic derivative: the curve is cheap to sample and
+  // this stays correct if the parametrisation above is ever retuned.
+  const h = 0.004;
+  const a = at(Math.max(0, t - h));
+  const b = at(Math.min(1, t + h));
+  const d: [number, number, number] = [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
   const len = Math.hypot(d[0], d[1], d[2]) || 1;
   return { p, tan: [d[0] / len, d[1] / len, d[2] / len] };
 }
@@ -146,17 +216,29 @@ export function spray(opts: { heads: number; height: number; lean: number; scale
     ];
     centres.push(centre);
 
+    /* HEADS TAPER TOWARD THE TIP, BY PHI.
+
+       On a real raceme the basal heads are the oldest and largest and the growing point
+       carries small young buds — which is also what the reference plume does, and what stops
+       a stem reading as a repeated stamp. PHI^-t takes a head at the tip to 1/1.618 of one at
+       the base, the same ratio the spiral uses per quarter turn.
+
+       The per-head jitter on top of it is there because nothing in a plant is uniform: with a
+       clean exponential every head sat exactly where its neighbours predicted, which is the
+       botanical equivalent of twinning. */
+    const taper = Math.pow(PHI, -t) * (0.88 + rand() * 0.24);
+
     for (const f of flowerHead(rand)) {
-      const x = centre[0] + f.offset[0] * scale;
-      const yy = centre[1] + f.offset[1] * scale;
-      const z = centre[2] + f.offset[2] * scale;
+      const x = centre[0] + f.offset[0] * scale * taper;
+      const yy = centre[1] + f.offset[1] * scale * taper;
+      const z = centre[2] + f.offset[2] * scale * taper;
       home.push(x, yy, z);
 
       // Closed state is a tight bud tucked against the branch, not a scatter.
       dispersed.push(
-        p[0] + f.offset[0] * scale * 0.18,
-        p[1] + f.offset[1] * scale * 0.18 - 0.1,
-        p[2] + f.offset[2] * scale * 0.18,
+        p[0] + f.offset[0] * scale * taper * 0.18,
+        p[1] + f.offset[1] * scale * taper * 0.18 - 0.1,
+        p[2] + f.offset[2] * scale * taper * 0.18,
       );
 
       attr.push(f.radial, t, rand(), h);
@@ -246,14 +328,36 @@ export function stamens(
   seed = 303,
   shell = 0.30,
 ) {
+  /* FILAMENTS ARC. THEY DO NOT SPIKE.
+
+     Each stamen used to be a single two-point segment: a straight radial spike from the
+     head's shell. Straight-line interpolation is the default behaviour of every animation
+     tool and the first thing that has to be corrected by hand, because nature has no
+     mechanical rails — a filament is a cantilever under its own weight and it curves.
+     Straight spikes are also precisely why an earlier, longer `reach` turned the heads into
+     asterisks and had to be cut back to almost nothing: the problem was never the length, it
+     was that the length was straight.
+
+     So a filament is now a four-segment polyline bending along a quadratic. Quadratic, not
+     linear, so the curve ACCELERATES toward the tip and ends in a hook rather than a bland
+     circular arc — natural arcs are asymmetric, and the hook is what the grevillea reference
+     is made of.
+
+     Every filament also carries its anchor on the shell as a second attribute, so the shader
+     can grow it outward from that point instead of switching it on at full length. */
+  const SEGS = 4;
   const rand = mulberry32(seed);
-  const position = new Float32Array(centres.length * perHead * 2 * 3);
-  const attr = new Float32Array(centres.length * perHead * 2 * 3);
-  let p = 0;
-  let a = 0;
+  const perFilament = SEGS * 2; // line segments: two vertices each
+  const total = centres.length * perHead * perFilament;
+  const position = new Float32Array(total * 3);
+  const anchor = new Float32Array(total * 3);
+  const attr = new Float32Array(total * 3);
+  let p = 0, an = 0, a = 0;
 
   for (let ci = 0; ci < centres.length; ci++) {
     const c = centres[ci]!;
+    const cluster = ci / Math.max(1, centres.length - 1);
+
     for (let s = 0; s < perHead; s++) {
       // Even angular spread with jitter, on a random 3D axis.
       const theta = (s / perHead) * Math.PI * 2 + rand() * 0.5;
@@ -262,24 +366,48 @@ export function stamens(
       /* A STAMEN LIVES ON THE SHELL, NOT AT THE CORE. Drawing each filament from the head's
          centre meant every one of them crossed the whole head and was legible straight through
          it — which is what made a head read as an asterisk rather than as a ball of fuzz. Real
-         stamens occupy a thin band at the surface. So the inner vertex starts out at the shell,
-         jittered, and the filament extends only a short way past it. */
+         stamens occupy a thin band at the surface. */
       const ux = Math.sin(phi) * Math.cos(theta);
       const uy = Math.cos(phi);
       const uz = Math.sin(phi) * Math.sin(theta);
       const inner = shell * (0.82 + rand() * 0.26);
-      const outer = inner + reach * (0.45 + rand() * 0.55);
+      const len = reach * (0.45 + rand() * 0.55);
 
-      position[p++] = c[0] + ux * inner; position[p++] = c[1] + uy * inner; position[p++] = c[2] + uz * inner;
-      position[p++] = c[0] + ux * outer; position[p++] = c[1] + uy * outer; position[p++] = c[2] + uz * outer;
+      /* The bend direction: any unit vector perpendicular to the filament. Built by crossing
+         with whichever axis is least parallel to it, which is the standard way to get a stable
+         perpendicular without a degenerate case when the filament points along an axis. */
+      const ax: [number, number, number] =
+        Math.abs(uy) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+      let bx = uy * ax[2] - uz * ax[1];
+      let by = uz * ax[0] - ux * ax[2];
+      let bz = ux * ax[1] - uy * ax[0];
+      const bl = Math.hypot(bx, by, bz) || 1;
+      bx /= bl; by /= bl; bz /= bl;
 
-      const cluster = ci / Math.max(1, centres.length - 1);
+      // Asymmetric: sign and magnitude both vary, so no two filaments hook alike.
+      const hook = len * (0.55 + rand() * 0.75) * (rand() < 0.5 ? 1 : -1);
       const seedV = rand();
-      attr[a++] = 0; attr[a++] = cluster; attr[a++] = seedV;
-      attr[a++] = 1; attr[a++] = cluster; attr[a++] = seedV;
+
+      const base: [number, number, number] = [c[0] + ux * inner, c[1] + uy * inner, c[2] + uz * inner];
+      const at = (k: number): [number, number, number] => [
+        base[0] + ux * len * k + bx * hook * k * k,
+        base[1] + uy * len * k + by * hook * k * k,
+        base[2] + uz * len * k + bz * hook * k * k,
+      ];
+
+      for (let g = 0; g < SEGS; g++) {
+        const k0 = g / SEGS, k1 = (g + 1) / SEGS;
+        const v0 = at(k0), v1 = at(k1);
+        position[p++] = v0[0]; position[p++] = v0[1]; position[p++] = v0[2];
+        position[p++] = v1[0]; position[p++] = v1[1]; position[p++] = v1[2];
+        anchor[an++] = base[0]; anchor[an++] = base[1]; anchor[an++] = base[2];
+        anchor[an++] = base[0]; anchor[an++] = base[1]; anchor[an++] = base[2];
+        attr[a++] = k0; attr[a++] = cluster; attr[a++] = seedV;
+        attr[a++] = k1; attr[a++] = cluster; attr[a++] = seedV;
+      }
     }
   }
-  return { count: centres.length * perHead * 2, position, attr };
+  return { count: total, position, anchor, attr };
 }
 
 
@@ -312,7 +440,12 @@ export function foliage(opts: { count: number; height: number; lean: number; see
     const ca = Math.cos(ang), sa = Math.sin(ang);
     const c = phyllode(rand);
     const { upper, lower } = phyllodeRibbon(c, 12, 0.07);
-    const k = 0.13 + rand() * 0.085;
+    /* SMALLER BLADES, AND MANY MORE OF THEM (the count is raised at the call site). At 0.13 to
+       0.215 each phyllode rendered as a broad flat leaf several hundred pixels across — closer
+       to a banana palm than to an acacia, and opaque enough to hide the flowers behind it.
+       Acacia pycnantha's phyllodes are narrow sickle blades, and what makes a branch read as
+       wattle is their DENSITY, not their size. */
+    const k = 0.075 + rand() * 0.05;
     const seedV = rand();
     const depth = rand();
     const oz = p[2] + (rand() - 0.5) * 1.1;
