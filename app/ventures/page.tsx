@@ -29,7 +29,7 @@ export default function VenturesPage() {
   return (
     <>
       {/* Upper-left headline over a full-bleed ground — the Parable move. */}
-      <section className="section grad-wattle-eucalypt" style={{ paddingTop: "12vw", paddingBottom: "8vw" }}>
+      <section className="section is-black" style={{ paddingTop: "12vw", paddingBottom: "8vw" }}>
         <div className="padding-global">
           <p className="text-style-tag">Ventures — {String(VENTURES.length).padStart(2, "0")}</p>
           <h1 className="heading-style-h1" style={{ marginTop: "1.5vw" }}>What we build.</h1>
@@ -41,7 +41,7 @@ export default function VenturesPage() {
       </section>
 
       <Ticker
-        className="is-black text-colour-white"
+        className="is-white"
         items={["One venture", "In build", "Not yet at its own address", "Sydney and the Gold Coast"]}
       />
 
@@ -56,7 +56,7 @@ export default function VenturesPage() {
         <div key={venture.slug} id={venture.slug}>
           {/* The dominant visual: the venture's name at plate scale on a flat hue. */}
           <section
-            className="is-wattle"
+            className="grad-wattle-eucalypt"
             style={{ display: "grid", placeItems: "center", padding: "7vw var(--gutter)", containerType: "inline-size" }}
           >
             <p className="display-wordmark" style={{ fontSize: "min(12vw, 15cqw)" }}>{venture.name}</p>
