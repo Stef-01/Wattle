@@ -337,8 +337,15 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
                border-bottom:var(--rule) solid var(--black) }
 .loop-track{ display:flex; align-items:center; width:max-content;
              animation:loop 30s linear infinite }
-.loop-track span{ font-size:2em; font-weight:700; text-transform:uppercase;
-                  letter-spacing:-.04em; white-space:nowrap; padding-right:1.25vw }
+/* POSITIVE TRACKING. Capitals need opening up, not closing; the -.04em this inherited from
+   the display rules is correct for large mixed-case type and wrong for every set of caps on the
+   site. Smaller and lighter than it was, too — the band states, it does not shout. */
+.loop-item{ display:inline-flex; align-items:center; gap:.75vw;
+            font-size:1.35em; font-weight:700; text-transform:uppercase;
+            letter-spacing:.09em; white-space:nowrap; padding-right:2.25vw }
+/* The mark sits optically centred on the cap-height rather than the em box, and holds back so
+   the words lead. */
+.loop-item svg{ flex:none; opacity:.55; margin-top:-.06em }
 @keyframes loop{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 .spinner{ animation:spin 6s linear infinite; display:inline-block }

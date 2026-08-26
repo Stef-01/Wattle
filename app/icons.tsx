@@ -3,6 +3,24 @@
  * hundred icons is a site whose copy is not doing its job. No unicode arrows standing in for a
  * drawn mark.
  */
+/**
+ * A single wattle floret, drawn.
+ *
+ * Replaces the `✳` that was separating ticker items. A unicode asterisk is whatever glyph the
+ * user's font happens to carry at U+2733 — it is not ours, it renders differently on every
+ * platform, and it read as a decorative flourish rather than as a mark. Three circles in the
+ * cluster arrangement of a real head is unmistakably this company's, at any size, everywhere.
+ */
+export function Floret({ size = 12 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true" focusable="false">
+      <circle cx="6" cy="3.6" r="2.5" fill="currentColor" />
+      <circle cx="3.3" cy="8" r="2" fill="currentColor" opacity="0.75" />
+      <circle cx="8.9" cy="8.2" r="1.7" fill="currentColor" opacity="0.55" />
+    </svg>
+  );
+}
+
 export function Menu({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">

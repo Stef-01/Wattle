@@ -62,8 +62,16 @@ export default function HomePage() {
             <h2 className="heading-style-h3 reveal">Four commitments, enforced in the build</h2>
           </div>
           <div className="card-grid">
-            {PRACTICE.map((item) => (
-              <article className="card reveal" key={item.title}>
+            {PRACTICE.map((item, i) => (
+              // The second card takes a eucalypt ground so it does not read as a repeat of the
+              // first — .card sets its white background after the .is-* utilities, so the colour
+              // is applied inline to win on source order. Text stays black (the gate clears
+              // black-on-eucalypt) and the hover shadow stays gold on this black section.
+              <article
+                className="card reveal"
+                key={item.title}
+                style={i === 1 ? { background: "var(--eucalypt)" } : undefined}
+              >
                 <div className="card-body">
                   <h3 className="heading-style-h5">{item.title}</h3>
                   <p className="body-text" style={{ marginTop: "1vw" }}>{item.short}</p>
