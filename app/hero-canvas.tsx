@@ -92,6 +92,10 @@ function chooseTier(): Tier | null {
      preference by drawing one frozen, fully-open frame with no loop running — which is what
      the preference actually asks for. Returning null here used to mean a stated preference and
      a missing GPU took the same path, and they are not the same request. */
+  /* QA: `?field=off` skips the WebGL tier entirely, so the gate can be bisected on a real
+     device without a rebuild. Tier 1 still runs, so the page is never blank. */
+  if (new URLSearchParams(window.location.search).get("field") === "off") return null;
+
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
 
   /* THE 768px FLOOR IS GONE, because the layout that justified it is gone. It was there

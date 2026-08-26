@@ -936,6 +936,13 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 .approach-rural{ max-width:62ch; opacity:.62 }
 @media (max-width:767px){ .approach-lede{ font-size:1.3em } }
 
+/* The on-device readout. Only ever rendered under ?perf=1 — see app/perf-probe.tsx. */
+.perf-probe{ position:fixed; left:8px; bottom:8px; z-index:9999;
+             font-family:var(--font-mono); font-size:11px; line-height:1.4;
+             color:var(--wattle); background:rgb(0 0 0 / .8);
+             padding:6px 8px; border-radius:6px; pointer-events:none;
+             max-width:calc(100vw - 16px) }
+
 /* --------------------------------------------------------------------------
    THE DISCLOSURE LIST — headings that open. See app/disclosure-list.tsx.
    -------------------------------------------------------------------------- */

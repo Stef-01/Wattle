@@ -213,6 +213,8 @@ uniform float uOpacity;
    core carries almost all the alpha, so overlapping florets build a SOLID ball instead of a
    brighter one. */
 uniform float uMatte;
+/* 1 on desktop, 0 on the phone tier. Gates the per-fragment sphere shading below. */
+uniform float uShade;
 
 varying float vRadial;
 varying float vOpen;

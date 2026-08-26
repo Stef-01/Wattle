@@ -25,6 +25,8 @@ export function Starfield() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
+    // QA: `?sky=off` leaves the canvas unpainted so the gate can be bisected on a real device.
+    if (new URLSearchParams(window.location.search).get("sky") === "off") return;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 

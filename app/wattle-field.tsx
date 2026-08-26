@@ -44,6 +44,10 @@ export interface WattleFieldProps {
 }
 
 export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxPixelRatio }: WattleFieldProps) {
+  /* The phone tier, identified by the one number that only it carries. Used for the two things
+     that have to differ on a handset rather than merely be smaller: fragment cost, and whether
+     the bloom is driven by scroll at all. */
+  const lowPower = maxPixelRatio <= 1.25;
   const hostRef = useRef<HTMLDivElement | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -159,7 +163,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const far = spray({ heads: Math.max(3, Math.round(heads * 0.5)), height: 5.6, lean: 0.5, scale: 1.5, seed: 31 });
     const farL = pointsLayer(far.home, far.attr, 4, WATTLE_VERT, WATTLE_FRAG, {
       uGold: { value: GOLD }, uBronze: { value: BRONZE }, uRed: { value: RED },
-      uSize: { value: 35 }, uMatte: { value: 0 },
+      uSize: { value: 35 }, uMatte: { value: 0 }, uShade: { value: 0 },
     });
     farL.geo.setAttribute("aDispersed", new THREE.BufferAttribute(far.dispersed, 3));
     const farPoints = new THREE.Points(farL.geo, farL.mat);
@@ -180,6 +184,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
          florets and reads as fine grain — the individual floret should be legible when you
          look for it and not countable at a glance. */
       uSize: { value: 14 },
+      /* Sphere shading is desktop-only — see the note in WATTLE_FRAG. */
+      uShade: { value: lowPower ? 0 : 1 },
       // The subject is matte; only the far, out-of-focus copy glows.
       uMatte: { value: 1 },
     }, THREE.NormalBlending);
@@ -481,6 +487,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const INTRO_MS = 2200;
     /* The foliage's own entrance, slower than the flowers' would be. A canopy fills in. */
     const LEAF_MS = 2600;
+    /* How long the phone tier takes to open the flowers on its own clock. Long enough to read
+       as growth rather than as a transition, short enough to have finished by the time somebody
+       has scrolled to the second beat. */
+    const PHONE_BLOOM_MS = 9000;
 
     /* The gate, not the canvas. The canvas host is inside a `position:sticky` stage, so its
        own rect is pinned to the viewport for the entire scroll and reports no travel
@@ -535,12 +545,31 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       // The leaves arrive on the intro's clock and stay; scroll never takes them away again.
       uLeafIn.value = pinned !== null ? 1 : easeOut(Math.min(1, clock / LEAF_MS));
 
-      /* Read in the frame loop, not in a scroll listener. A `scroll` handler fires at input
-         frequency and forces layout on every read; this rect is measured once per rendered
-         frame inside a loop that was already running, and is skipped entirely when the gate
-         is off screen or the tab is hidden. */
+      /* ON A PHONE THE BLOOM IS NOT DRIVEN BY SCROLL AT ALL, AND THIS IS THE FIX FOR THE
+         STUTTER THAT SURVIVED EVERYTHING ELSE.
+
+         iOS scrolls on a separate thread. The compositor moves the page; main-thread JavaScript
+         is not synchronised with it and, during momentum, is not even guaranteed to be sampled
+         at the display rate. So a render loop that reads scroll position every frame and draws
+         a canvas from it CANNOT track an iOS scroll — the canvas is always reporting where the
+         page was a frame or three ago, and that desync is what reads as judder. It is not a
+         cost problem, which is why making the scene cheaper never fixed it. Every scrollytelling
+         site meets this and no amount of smoothing removes it, because the lag is structural.
+
+         So on a handset the plant blooms on its OWN clock: it opens once, over about nine
+         seconds, and holds. Nothing in the render loop touches layout or scroll position, the
+         canvas becomes an independent animation, and scrolling is left as pure compositor work
+         with nothing on the main thread trying to keep up with it.
+
+         What is lost is scrubbing the bloom with your thumb. What is gained is a bloom that does
+         not stutter, and the text still arrives on scroll — which was always the part carrying
+         the meaning. A wide screen keeps the scroll-driven version, where the scroller is
+         synchronous and it works. */
       let travelled = 0;
-      if (document.body.classList.contains("entered")) {
+      if (lowPower) {
+        travelled = Math.min(1, Math.max(0, (clock - LEAF_MS * 0.55) / PHONE_BLOOM_MS));
+        travelled = easeOut(travelled);
+      } else if (document.body.classList.contains("entered")) {
         /* Past the gate the track is display:none, so the section is shorter than the viewport
            and the measurement below would return 0 — snapping a fully open plant shut at the
            exact moment the visitor commits. Entry means finished, permanently. */
@@ -557,7 +586,9 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       const target = pinned ?? Math.max(easeOut(intro) * BUD, BUD + travelled * (1 - BUD));
       /* Scroll-linked motion is smoothed but never lagged far enough to feel disconnected from
          the wheel — 9 per second is roughly a 110ms tail. */
-      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : 9);
+      /* The 9-per-second tail existed to hide scroll lag. Driven by its own clock there is no
+         lag to hide, and a slower approach is smoother. */
+      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : lowPower ? 4 : 9);
       uBloom.value = bloom;
 
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
@@ -621,7 +652,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       renderer.dispose();
       if (renderer.domElement.parentNode === host) host.removeChild(renderer.domElement);
     };
-  }, [heads, dustCount, bokehCount, stamensPerHead, maxPixelRatio]);
+  }, [heads, dustCount, bokehCount, stamensPerHead, maxPixelRatio, lowPower]);
 
   if (failed) return null;
   return <div ref={hostRef} className="wattle-field" aria-hidden="true" />;

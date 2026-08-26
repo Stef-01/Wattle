@@ -6,6 +6,7 @@ import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
 import { EnterGate } from "./enter-gate";
 import { Starfield } from "./starfield";
+import { PerfProbe } from "./perf-probe";
 import { BEATS, EMBLEM } from "@/content/emblem";
 import { Ticker } from "./ticker";
 
@@ -37,6 +38,7 @@ export default function HomePage() {
         <div className="gate-stage">
           <Starfield />
           <HeroCanvas />
+          <PerfProbe />
           <div className="hero-inner">
             <WattleBloom className="hero-bloom" />
           </div>
