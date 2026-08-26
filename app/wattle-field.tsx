@@ -77,6 +77,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const uOpacity = { value: 0 };
     const uPixelRatio = { value: dpr };
     const uViewH = { value: 900 };
+    /* Extra camera distance for narrow frames, set on resize and applied in the dolly. */
+    const dolly = { value: 0 };
 
     /* REMAPPED ONTO THE TEN-HUE SYSTEM. The old palette's --blossom/--bronze/--sage are gone;
        --blossom now means soft PINK, which would have quietly turned the wattle into a
@@ -248,6 +250,24 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+
+      /* THE COMPOSITION IS NOT THE SAME SHAPE ON A PHONE.
+         The plant is placed right of centre so the gate's type has the left of the frame to
+         itself. That division only exists on a landscape screen; in portrait there is no left
+         and right to give away, and the same offset just pushed half the raceme off the edge.
+         Portrait recentres it and pulls the camera back, because a tall narrow frame sees less
+         of the width at the same distance. */
+      /* MOVE THE SUBJECT, NOT THE SUBJECT AND THE CAMERA. Shifting both by the same amount is
+         a no-op — the first attempt did exactly that and the raceme stayed exactly where it
+         was, hard against the right edge with half of it off screen. The camera stays on the
+         axis and the plant slides across it.
+
+         The plant also rises in portrait: the words occupy the bottom of a phone screen, so
+         the flowers are given the top. */
+      const portrait = w / h < 1;
+      plant.position.x = portrait ? -1.35 : 0;
+      plant.position.y = portrait ? 1.15 : -0.25;
+      dolly.value = portrait ? 3.4 : 0;
     };
     resize();
     const ro = new ResizeObserver(resize);
@@ -302,7 +322,6 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const started = performance.now();
     let elapsedAtPause = 0;
     let pausedSince: number | null = null;
-    let raf = 0;
     let bloom = 0;
     let lastFrame = performance.now();
 
@@ -317,8 +336,12 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     // easeOutCubic: fast open, gentle landing. An entrance decelerates.
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
+    /* THREE'S OWN LOOP, NOT A RAW requestAnimationFrame.
+       setAnimationLoop stops being called entirely when the tab is backgrounded, where a bare
+       rAF keeps firing and this callback kept waking up only to return at the `document.hidden`
+       check below. Same picture, no work in a tab nobody is looking at — which on a laptop is
+       battery. It is also the loop WebXR requires, so it is the form that stays correct. */
     const frame = () => {
-      raf = requestAnimationFrame(frame);
       const paused = document.documentElement.dataset["motion"] === "paused";
       if (!onScreen || document.hidden) return;
 
@@ -377,7 +400,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
          out once open — over a range that leaves the plant inside the frame at every point of
          it. */
       const push = Math.sin(Math.min(1, bloom) * Math.PI);
-      camera.position.z = 15.4 - push * 2.4;
+      camera.position.z = 15.4 + dolly.value - push * 2.4;
       camera.position.y = 0.3 + push * 0.3;
       camera.lookAt(0, 0.1, 0);
 
@@ -402,10 +425,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
       renderer.render(scene, camera);
     };
-    raf = requestAnimationFrame(frame);
+    renderer.setAnimationLoop(frame);
 
     return () => {
-      cancelAnimationFrame(raf);
+      renderer.setAnimationLoop(null);
       io.disconnect(); ro.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       host.removeEventListener("pointerleave", onPointerLeave);

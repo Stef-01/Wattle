@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { COMPANY } from "@/content/company";
-import { TEAM, TEAM_PUBLIC, monogram } from "@/content/team";
+import Link from "next/link";
+import { TEAM, TEAM_PUBLIC, monogram, given } from "@/content/team";
 import { SpecimenPlate } from "../specimen-plate";
 
 export const metadata: Metadata = {
@@ -28,13 +29,23 @@ export const metadata: Metadata = {
 export default function CompanyPage() {
   return (
     <>
+      {/* ONE AXIS FOR THE WHOLE PAGE.
+
+          The page had two. The intro sat in `inner-section-wrapper`, a 0.5fr/1fr rail that
+          pushes its content to the right and leaves the left third of the screen empty; the
+          roster beneath it is centred. Neither is wrong on its own and together they read as
+          two pages stacked, which is most of what "disorganised" was pointing at — the eye
+          resets its expectation of where a line starts, twice, on the way down.
+
+          Centred, because the section this page exists for is a symmetry of two. The rest of
+          the site keeps its left axis; this is the one page whose subject is a pair. */}
       <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
-        <div className="padding-global">
+        <div className="padding-global centre-axis">
           <p className="text-style-tag">Company</p>
           <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>
             A company built around one question.
           </h1>
-          <p className="subheading-large max-width-medium" style={{ marginTop: "2vw" }}>
+          <p className="subheading-large" style={{ marginTop: "2vw" }}>
             Whether a person who needs a clinician can actually reach one. Everything Wattle
             Technologies builds sits downstream of that.
           </p>
@@ -42,24 +53,24 @@ export default function CompanyPage() {
       </section>
 
       <section className="section">
-        <div className="padding-global">
-          <div className="inner-section-wrapper">
+        <div className="padding-global centre-axis">
+          <div>
             <h2 className="text-style-tag">What we are</h2>
             <div>
-              <p className="heading-style-h3" style={{ maxWidth: "24ch" }}>
+              <p className="heading-style-h3" style={{ maxWidth: "24ch", margin: "0.6em auto 0" }}>
                 We build the part of care that happens before care.
               </p>
-              <p className="body-text max-width-medium" style={{ marginTop: "1.5rem" }}>
+              <p className="body-text" style={{ marginTop: "1.5rem" }}>
                 Not the consultation, the diagnosis or the prescription — the step before all of
                 them, where a person looking for help either finds somebody they can reach or gives
                 up.
               </p>
-              <p className="body-text max-width-medium" style={{ marginTop: "1rem" }}>
+              <p className="body-text" style={{ marginTop: "1rem" }}>
                 Wattle Technologies is the company behind ADHD.ME, kept separate from it so a page
                 about partnerships never routes through the product&rsquo;s regulatory gate, and
                 that gate is never softened to let one through.
               </p>
-              <p className="body-text max-width-medium" style={{ marginTop: "1rem" }}>
+              <p className="body-text" style={{ marginTop: "1rem" }}>
                 One venture, in build. We are specific about being early.
               </p>
             </div>
@@ -70,65 +81,69 @@ export default function CompanyPage() {
       {TEAM_PUBLIC && TEAM.length > 0 ? (
         <section className="section is-black" id="team">
           <div className="padding-global">
-            {/* Counted label, headline left, supporting copy right — the reference's structure.
-                A count belongs on a team of two: it says the number is deliberate rather than
-                a page that has not been filled in yet. */}
-            <p className="text-style-tag">
-              Directors<span className="count">{String(TEAM.length).padStart(2, "0")}</span>
-            </p>
-            <div className="inner-section-wrapper" style={{ marginTop: "1vw" }}>
+            {/* CENTRED, BECAUSE THERE ARE TWO OF THEM.
+
+                The old plate was `auto-fit` over `1fr`, which is a grid built for a roster that
+                grows. With two entries it stretched each one across half the page — two enormous
+                cards, a wall of affiliation links and a headline pushed off to one side. A layout
+                that is waiting to be filled in reads as a company that has not filled it in.
+
+                Two is not an incomplete row, it is a SYMMETRY, so the structure is a diptych:
+                one centre line, one name either side of it, mirrored. The names are the graphic
+                — set large in tracked caps and given nothing to compete with — which is the
+                whole device of the reference poster. Everything else waits for the pointer. */}
+            <div className="roster-head">
+              <p className="text-style-tag">
+                Directors<span className="count">{String(TEAM.length).padStart(2, "0")}</span>
+              </p>
               <h2 className="heading-style-h3">The people behind it.</h2>
-              <p className="subheading-large" style={{ maxWidth: "44ch" }}>
+              <p className="body-text roster-note">
                 Named here because you should know who is behind software that decides where a
                 person looking for care gets sent.
               </p>
             </div>
 
-            <ul className="directors">
+            <ul className="roster">
               {TEAM.map((member) => (
-                <li className="director" key={member.name}>
-                  <div className="director-portrait">
-                    {member.portrait ? (
-                      <Image
-                        src={member.portrait}
-                        /* The name alone is the accurate alt for a portrait. A role is a
-                           characterisation and sits beside it in the markup, not inside the alt. */
-                        alt={member.name}
-                        width={520}
-                        height={650}
-                        sizes="(max-width:767px) 45vw, 20vw"
-                      />
-                    ) : (
-                      <span className="director-monogram" aria-hidden="true">
-                        {monogram(member.name)}
-                      </span>
-                    )}
-                  </div>
+                <li key={member.name}>
+                  {/* THE WHOLE TILE IS THE LINK, not the name inside it. A hover target that is
+                      smaller than the thing that visibly responds to hover is the commonest way
+                      an interaction like this ends up feeling broken. */}
+                  <Link href={`/company/${member.slug}`} className="roster-entry">
+                    {/* THE FRAME IS ALWAYS THERE; WHAT FILLS IT CHANGES. At rest it carries the
+                        monogram, so the resting composition is two framed panels and two names
+                        rather than two names over a reserved void. The photograph fades in on
+                        top of the monogram — which is also why the frame reserves its space
+                        rather than collapsing: a portrait that appears on hover and pushes the
+                        name down is a layout animation firing every time a pointer crosses it. */}
+                    <span className="roster-portrait" aria-hidden="true">
+                      <span className="director-monogram">{monogram(member.name)}</span>
+                      {member.portrait ? (
+                        <Image
+                          src={member.portrait}
+                          alt=""
+                          width={520}
+                          height={650}
+                          sizes="(max-width:767px) 60vw, 22vw"
+                        />
+                      ) : null}
+                    </span>
 
-                  {/* role and remit render only when supplied — an entry with just a name is the
-                      honest intermediate state, not a plate with an invented title. */}
-                  {member.role ? <p className="director-role">{member.role}</p> : null}
-                  <p className="director-name">{member.name}</p>
-                  {member.remit ? <p className="director-remit">{member.remit}</p> : null}
+                    <span className="roster-name">
+                      <span>{given(member)}</span>
+                      <span className="roster-family">{member.family}</span>
+                    </span>
 
-                  {member.affiliations.length > 0 ? (
-                    <ul className="director-affiliations">
-                      {member.affiliations.map((a) => (
-                        <li key={a.name}>
-                          <a href={a.href} target="_blank" rel="noreferrer" aria-label={a.label}>
-                            {a.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
+                    {member.remit ? <span className="roster-remit">{member.remit}</span> : null}
+                    <span className="roster-more" aria-hidden="true">Profile</span>
+                  </Link>
                 </li>
               ))}
             </ul>
 
             {/* The advisory board a company like this is expected to list does not exist.
                 Saying so where a visitor looks for it beats letting them conclude we forgot. */}
-            <p className="body-text text-style-muted" style={{ marginTop: "var(--space-l)", maxWidth: "62ch" }}>
+            <p className="body-text text-style-muted roster-caveat">
               There is no clinical or scientific advisory board. Clinicians are involved in
               building the product, which is not the same thing, and we will not describe it as one
               until it is constituted.

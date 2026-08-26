@@ -47,6 +47,9 @@
   --ease-quart:cubic-bezier(.165,.84,.44,1);
   --ease-cubic:cubic-bezier(.215,.61,.355,1);
   --dur-fast:.3s; --dur-mid:.6s; --dur-slow:.8s;
+  /* STATE FEEDBACK IS NOT AN ENTRANCE. Hover and press answer the pointer and belong in the
+     100-200ms band; --dur-slow stays for reveals, where 800ms is doing real work. */
+  --dur-ui:.16s;
 
   /* Bowlby One is the free stand-in the spec names for Gill Sans Ultra Bold — ultra-heavy,
      tiny counters, rounded terminals. Self-hosted, so it renders identically everywhere.
@@ -171,6 +174,8 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
                    margin:0; white-space:nowrap }
 
 h1,h2,h3,h4,h5,h6{ margin:0 }
+.heading-style-h1,.heading-style-h2,.heading-style-h3,.heading-style-h4,
+.display-footer,.display-wordmark{ overflow-wrap:break-word }
 .heading-style-h1{ text-wrap:balance; font-family:var(--font-display); font-size:8em; line-height:.95; letter-spacing:-.06em }
 .heading-style-h2{ text-wrap:balance; font-family:var(--font-display); font-size:6em; line-height:1;   letter-spacing:-.06em }
 .heading-style-h3{ text-wrap:balance; font-family:var(--font-display); font-size:4em; line-height:1;   letter-spacing:-.06em }
@@ -198,6 +203,29 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 @media (max-width:991px){
   .heading-style-h1{font-size:6em} .heading-style-h2{font-size:5em}
   .heading-style-h3{font-size:3em} .heading-style-h4{font-size:2.5em}
+}
+
+/* THE LADDER INVERTED ITSELF ON PHONES, and it put a horizontal scrollbar on every page that
+   has an h1.
+
+   The root goes 1vw / 1.5vw / 2vw / 4vw down the breakpoints — and that last step DOUBLES it,
+   so at 390px the root is 15.6px and `heading-style-h1` at 6em resolves to 93.6px of Bowlby
+   One. An ultra-heavy display face at 93.6px sets "Accessibility." — one word, nothing to
+   break at — to 709px. The viewport is 390. Chrome's response to content it cannot fit is to
+   widen the layout viewport, which is why the symptom presented as a 501px-wide fixed HEADER
+   on a 390px screen: the header was innocent, it was just honouring `right:0` against a
+   viewport that something else had stretched.
+
+   Below 480 the em multipliers have to come down as the root goes up, or the two compound.
+
+   AND A BACKSTOP, because sizing alone is only correct for the words that happen to be in the
+   file today. `overflow-wrap:break-word` does nothing until a word genuinely cannot fit, and
+   then it breaks it rather than breaking the page. A broken word in a brutalist poster is a
+   house style; a sideways-scrolling page is a defect. */
+@media (max-width:479px){
+  .heading-style-h1{font-size:2.8em} .heading-style-h2{font-size:2.5em}
+  .heading-style-h3{font-size:2.05em} .heading-style-h4{font-size:1.75em}
+  .display-footer{ font-size:9vw }
   .heading-style-h5{font-size:2em}
   .max-width-medium,.max-width-small,.display-footer{max-width:100%}
 }
@@ -272,7 +300,23 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 @media (max-width:767px){
   .menu-overlay{grid-template-columns:1fr}
   .menu-right{display:none}
-  .nav-logo{font-size:6vw}
+  .nav-logo{font-size:5vw}
+
+  /* THE HEADER OVERFLOWED EVERY PAGE ON A PHONE. At 390px the bar measured 501px wide — a
+     111px horizontal scroll on every route, which is why the whole document could be dragged
+     sideways on a handset.
+
+     `1fr 1fr 1fr` looks like it divides the bar into equal thirds, and it does until a child
+     will not fit: an implicit `min-width:auto` stops a grid track shrinking below its
+     content's minimum, so the three tracks each grew to the widest word in them and the row
+     pushed past its container. The equal-thirds rule was making the bar as wide as its
+     contents demanded rather than fitting its contents to the bar.
+
+     Content-sized outer columns with a flexible middle, and an explicit `min-width:0` so the
+     centre track is allowed to be narrower than the wordmark it holds. */
+  .nav-wrapper{ grid-template-columns:auto minmax(0,1fr) auto; column-gap:var(--space-s) }
+  .nav-wrapper > *{ min-width:0 }
+  .nav-cta .button{ font-size:.85em; padding:.7em 1.1em }
 }
 
 /* --------------------------------------------------------------------------
@@ -286,23 +330,30 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
   font-family:var(--font-ui); font-size:1.2em; font-weight:700; line-height:1;
   text-transform:uppercase; text-align:center;
   position:relative; z-index:2;
-  transition:color var(--dur-slow) var(--ease-quart),
-             border-color var(--dur-slow) var(--ease-quart),
-             background-color var(--dur-slow) var(--ease-quart);
+  transition:color var(--dur-ui) var(--ease-cubic),
+             border-color var(--dur-ui) var(--ease-cubic),
+             background-color var(--dur-ui) var(--ease-cubic),
+             transform var(--dur-ui) var(--ease-cubic);
 }
 .button:hover{ background:var(--black); color:var(--white); border-color:var(--white) }
+/* SQUASH ON PRESS — the pointer gets an answer at the click, not only on approach. */
+.button:active{ transform:scale(.98) }
 .button-small{ font-size:1em }
 .button-invert{ background:var(--black); color:var(--white); border-color:var(--white) }
 .button-invert:hover{ background:var(--white); color:var(--black); border-color:var(--black) }
 
 .button-pressed{
   box-shadow:0 6px 0 0 var(--black); transform:translateY(-.25vw);
-  transition:transform var(--dur-fast) var(--ease-cubic),
-             box-shadow var(--dur-fast) var(--ease-cubic),
-             background-color var(--dur-slow) var(--ease-quart),
-             color var(--dur-slow) var(--ease-quart);
+  transition:transform var(--dur-ui) var(--ease-cubic),
+             box-shadow var(--dur-ui) var(--ease-cubic),
+             background-color var(--dur-ui) var(--ease-cubic),
+             color var(--dur-ui) var(--ease-cubic);
 }
-.button-pressed:hover,.button-pressed:active{ transform:translateY(0); box-shadow:0 0 0 0 var(--black) }
+/* ANTICIPATION, THEN THE ACT. Hover and :active both flattened it, so a mouse user watched the
+   button depress on APPROACH and the click returned nothing — the affordance was spent before it
+   was used. Hover is the wind-up now; :active lands it. */
+.button-pressed:hover{ transform:translateY(-.4vw); box-shadow:0 9px 0 0 var(--black) }
+.button-pressed:active{ transform:translateY(0); box-shadow:0 0 0 0 var(--black) }
 
 /* --------------------------------------------------------------------------
    8. CARDS
@@ -311,7 +362,7 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
   background:var(--white); color:var(--black); border:var(--rule) solid var(--black);
   border-radius:var(--radius); overflow:hidden;
   display:flex; flex-direction:column; height:100%; position:relative;
-  transition:box-shadow var(--dur-slow) var(--ease-quart);
+  transition:box-shadow var(--dur-ui) var(--ease-cubic);
 }
 .card:hover{ box-shadow:-6px 6px 0 0 var(--black) }   /* down and LEFT — signature */
 /* On a black ground a black shadow is invisible. The offset takes the accent instead. */
@@ -367,7 +418,7 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
            border:var(--rule) solid var(--black); border-top:0;
            border-radius:0 0 var(--radius) var(--radius);
            white-space:nowrap; font-size:1.1em; font-weight:700; text-transform:uppercase;
-           transition:background-color var(--dur-slow) var(--ease-quart) }
+           transition:background-color var(--dur-ui) var(--ease-cubic) }
 .edge-tab:hover{ background:var(--wattle) }
 @media (max-width:767px){ .edge-tab{ display:none } }
 
@@ -412,6 +463,15 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
          transition:opacity var(--dur-slow) var(--ease-quart),
                     transform var(--dur-slow) var(--ease-quart) }
 .reveal.in{ opacity:1; transform:none }
+
+/* WCAG 2.2.2 — THE PAUSE BUTTON HAS TO REACH THIS.
+   `data-motion` was read by the WebGL field and by nothing else, so "Pause motion" stopped the
+   bloom and left the marquee running: auto-started, well past five seconds, sitting directly
+   alongside body copy — the exact content the criterion is written about. Paused, not hidden:
+   the band is a divider, and removing it would move the page under the reader who just asked it
+   to hold still. */
+[data-motion="paused"] .loop-track,
+[data-motion="paused"] .spinner{ animation-play-state:paused }
 
 @media (prefers-reduced-motion:reduce){
   .loop-track,.spinner{ animation:none }
@@ -518,8 +578,8 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
                 padding:.6vw 1.2vw; border:var(--rule) solid var(--white);
                 border-radius:var(--radius-pill); background:var(--black); color:var(--white);
                 font-size:1em; font-weight:700; text-transform:uppercase;
-                transition:background-color var(--dur-slow) var(--ease-quart),
-                           color var(--dur-slow) var(--ease-quart) }
+                transition:background-color var(--dur-ui) var(--ease-cubic),
+                           color var(--dur-ui) var(--ease-cubic) }
 .motion-toggle:hover{ background:var(--wattle); color:var(--black); border-color:var(--wattle) }
 
 /* THE THREE-COLUMN SLIDE COLLAPSES.
@@ -613,54 +673,151 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    returns on hover, which is where a person's attention already is.
    -------------------------------------------------------------------------- */
 
-/* A CAPPED TRACK, NOT 1fr. With auto-fit and a 1fr maximum, two directors stretched to fill the
-   full width — 589px portraits, 736px tall, on a team of two. A team row should not change card
-   size with headcount: the third director should join the row, not shrink the first two. Capping
-   the track at 19vw and starting the row left keeps every card the same size whether there are
-   two or six. */
-.directors{ display:grid; grid-template-columns:repeat(auto-fit,minmax(13vw,19vw));
-            justify-content:start; gap:var(--space-l);
-            list-style:none; margin:0; padding:0 }
-@media (max-width:767px){ .directors{ grid-template-columns:1fr 1fr; gap:var(--space-m) } }
+/* --------------------------------------------------------------------------
+   THE ROSTER — a diptych, because there are two directors.
 
-.director{ display:flex; flex-direction:column }
-.director-portrait{
-  position:relative; aspect-ratio:4/5; overflow:hidden;
-  border-radius:var(--radius); background:#111;
-  border:var(--rule) solid var(--white);
+   WHAT WAS HERE WAS A GRID WAITING TO BE FILLED. `auto-fit` over a capped
+   track is the right structure for a roster that grows and the wrong one for
+   a roster of two: it left the pair sitting hard against the left edge with
+   the rest of the row empty, every affiliation link and remit on show at once,
+   and the headline shunted into a rail beside them. Two people rendered as a
+   half-finished row of six.
+
+   Two is a SYMMETRY, not a short list. So: one centre line, one name either
+   side, mirrored — and the names are the graphic. Everything else is held
+   back until the pointer asks for it, which is what makes the section read as
+   one composition instead of two cards.
+   -------------------------------------------------------------------------- */
+/* THE PAGE'S SINGLE AXIS. A measure cap on the prose as well as the centring — centred text
+   with a long line is harder to read than left-aligned text with a long line, because the eye
+   has to find a new left edge on every return. */
+.centre-axis{ text-align:center }
+.centre-axis .body-text,
+.centre-axis .subheading-large{ margin-left:auto; margin-right:auto; max-width:58ch }
+.centre-axis .heading-style-h1{ margin-left:auto; margin-right:auto; max-width:20ch }
+
+.roster-head{ text-align:center; max-width:52ch; margin:0 auto var(--space-3xl) }
+.roster-head .heading-style-h3{ margin-top:.6em }
+.roster-note{ margin:1.2em auto 0; max-width:46ch; opacity:.7 }
+
+.roster{
+  list-style:none; margin:0 auto; padding:0;
+  display:grid; grid-template-columns:1fr 1fr;
+  max-width:64vw;
+  /* THE CENTRE LINE IS THE GAP'S OWN BORDER, so it exists only where the two entries meet and
+     needs no extra element to draw it. */
+  column-gap:0;
 }
-.director-portrait img{
-  width:100%; height:100%; object-fit:cover; display:block;
-  /* Slight lift in contrast alongside the desaturation: greyscale alone tends to read flat. */
-  filter:grayscale(1) contrast(1.08);
-  transition:filter var(--dur-slow) var(--ease-quart), transform var(--dur-mid) var(--ease-quart);
+.roster > li{ display:flex }
+.roster > li + li{ border-left:var(--rule) solid rgb(255 255 255 / .18) }
+
+.roster-entry{
+  flex:1; display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap:.55em; padding:var(--space-xl) var(--space-l) var(--space-l);
+  color:inherit; text-decoration:none;
+  transition:background-color var(--dur-ui) var(--ease-cubic);
 }
-.director:hover .director-portrait img{ filter:grayscale(0) contrast(1); transform:scale(1.03) }
-/* THE ONE ACCENT ON THE CARD. Neither director supplied a role, so the yellow role line never
-   renders and the cards are otherwise pure monochrome — which is right. The border taking the
-   accent on hover puts the emphasis exactly where attention already is, and pairs with the
-   colour returning to the photograph rather than competing with it. */
-.director-portrait{ transition:border-color var(--dur-slow) var(--ease-quart) }
-.director:hover .director-portrait{ border-color:var(--wattle) }
+.roster-entry:hover{ background:rgb(255 255 255 / .04) }
+
+/* THE PORTRAIT IS THE REVEAL. It holds its own space at all times — collapsing it would move
+   the name every time a pointer crossed it, which is both ugly and a layout animation. */
+.roster-portrait{
+  position:relative; display:block; width:min(15vw,220px); aspect-ratio:4/5;
+  border-radius:var(--radius); overflow:hidden; background:var(--black);
+  border:var(--rule) solid rgb(255 255 255 / .16);
+  transition:border-color var(--dur-ui) var(--ease-cubic);
+}
+/* The photograph sits ON TOP of the monogram and fades in. Both occupy the same box, so
+   nothing moves when one replaces the other. */
+.roster-portrait img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+                      display:block; filter:grayscale(1) contrast(1.08);
+                      opacity:0; transition:opacity var(--dur-fast) var(--ease-quart) }
+
+/* FOCUS-WITHIN, NOT JUST HOVER. A keyboard tabs to this link and never hovers it; without the
+   focus case the portrait would be permanently invisible to anyone not using a mouse. */
+.roster-entry:hover .roster-portrait,
+.roster-entry:focus-visible .roster-portrait{ border-color:var(--wattle) }
+.roster-entry:hover .roster-portrait img,
+.roster-entry:focus-visible .roster-portrait img{ opacity:1 }
+
+.roster-name{ display:block; font-family:var(--font-display); font-size:2.1em; line-height:.98;
+              text-transform:uppercase; letter-spacing:.02em }
+.roster-family{ display:block; color:var(--wattle) }
+
+.roster-remit{ display:block; max-width:26ch; font-size:1em; line-height:1.4; opacity:0;
+               transition:opacity var(--dur-slow) var(--ease-quart) }
+.roster-entry:hover .roster-remit,
+.roster-entry:focus-visible .roster-remit{ opacity:.72 }
+
+.roster-more{ display:inline-flex; align-items:center; min-height:44px;
+              font-family:var(--font-ui); font-size:.72em; font-weight:700;
+              text-transform:uppercase; letter-spacing:.22em; color:var(--wattle);
+              opacity:0; transition:opacity var(--dur-slow) var(--ease-quart) }
+.roster-entry:hover .roster-more,
+.roster-entry:focus-visible .roster-more{ opacity:1 }
+
+/* A TOUCH SCREEN HAS NO HOVER, so on one there is nothing to reveal and everything is simply
+   on. Keying this to the INPUT rather than to the width is the point: a small laptop still
+   gets the reveal, and a large tablet does not get a permanently empty frame. */
+@media (hover:none){
+  .roster-portrait img{ opacity:1 }
+  .roster-remit{ opacity:.72 }
+  .roster-more{ opacity:1 }
+}
+@media (max-width:767px){
+  .roster{ grid-template-columns:1fr; max-width:none }
+  .roster > li + li{ border-left:0; border-top:var(--rule) solid rgb(255 255 255 / .18) }
+  .roster-name{ font-size:1.7em }
+  .roster-portrait{ width:min(46vw,220px) }
+}
 
 /* The monogram fallback, same footprint, so a director without a photograph does not
    collapse the row. */
 .director-monogram{
   position:absolute; inset:0; display:grid; place-items:center;
-  font-family:var(--font-display); font-size:3em; color:var(--wattle);
+  font-family:var(--font-display); font-size:2.6em; color:var(--wattle); opacity:.55;
 }
 
-.director-role{ margin:var(--space-2xs) 0 0; font-family:var(--font-mono);
-                font-size:.78em; letter-spacing:.08em; text-transform:uppercase; color:var(--wattle) }
-.director-name{ margin:.35em 0 0; font-size:1.5em; font-weight:700; letter-spacing:-.02em; line-height:1.1 }
-.director-remit{ margin:.5em 0 0; font-size:1.05em; line-height:1.35; opacity:.7 }
-
-.director-affiliations{ list-style:none; margin:auto 0 0; padding:var(--space-2xs) 0 0; display:grid; gap:.35em }
-.director-affiliations a{ display:inline-flex; align-items:center; min-height:2.2em;
-                          font-family:var(--font-mono); font-size:.78em; letter-spacing:.05em;
-                          opacity:.6; transition:opacity var(--dur-fast) var(--ease-cubic),
+/* --------------------------------------------------------------------------
+   ONE DIRECTOR'S OWN PAGE. What the roster reveals on hover, in plain flow —
+   the version that works on a touch screen, a keyboard and a shared link.
+   -------------------------------------------------------------------------- */
+.profile{ padding-top:11vw }
+.profile-back{ color:var(--wattle) }
+.profile-head{ display:grid; grid-template-columns:auto 1fr; gap:var(--space-2xl);
+               align-items:start; margin-top:var(--space-l) }
+.profile-portrait{ position:relative; width:min(24vw,340px); aspect-ratio:4/5;
+                   border-radius:var(--radius); overflow:hidden; background:var(--black);
+                   border:var(--rule) solid var(--wattle) }
+.profile-portrait img{ width:100%; height:100%; object-fit:cover; display:block;
+                       filter:grayscale(1) contrast(1.08) }
+.profile-name{ font-family:var(--font-display); font-size:3.4em; line-height:.95;
+               text-transform:uppercase; letter-spacing:.01em; margin:0 }
+.profile-name > span{ display:block }
+.profile-family{ color:var(--wattle) }
+.profile-role{ margin:.8em 0 0; font-family:var(--font-mono); font-size:.78em;
+               letter-spacing:.08em; text-transform:uppercase; color:var(--wattle) }
+.profile-remit{ margin:.8em 0 0; font-size:1.3em; line-height:1.4; max-width:34ch; opacity:.8 }
+.profile-sub{ margin-top:var(--space-xl) }
+.profile-affiliations{ margin-top:var(--space-2xs); max-width:44ch }
+.profile-affiliations a{ display:inline-flex; align-items:center; min-height:44px;
+                         font-family:var(--font-mono); font-size:.82em; letter-spacing:.05em;
+                         opacity:.75; transition:opacity var(--dur-fast) var(--ease-cubic),
                                                  color var(--dur-fast) var(--ease-cubic) }
-.director-affiliations a:hover{ opacity:1; color:var(--eucalypt) }
+.profile-affiliations a:hover{ opacity:1; color:var(--wattle) }
+@media (max-width:767px){
+  .profile-head{ grid-template-columns:1fr; gap:var(--space-l) }
+  .profile-portrait{ width:min(60vw,340px) }
+  .profile-name{ font-size:2.4em }
+}
+
+/* The caveat belongs to the composition above it, so it shares its axis. Left-aligned under a
+   centred diptych it read as a stray note somebody had appended. */
+.roster-caveat{ margin:var(--space-3xl) auto 0; max-width:56ch; text-align:center }
+
+@media (prefers-reduced-motion:reduce){
+  .roster-portrait img,.roster-remit,.roster-more{ transition:opacity var(--dur-fast) linear }
+}
 
 /* A counted label: "Directors" with the number set small and raised, as the reference does. */
 .count{ font-family:var(--font-mono); font-size:.7em; vertical-align:super;
@@ -736,11 +893,13 @@ body:has(main .hero):not(.entered) footer { display:none }
   background:transparent; color:var(--white);
   font-family:var(--font-ui); font-size:1.05em; font-weight:700;
   text-transform:uppercase; letter-spacing:.12em; cursor:pointer;
-  transition:background-color var(--dur-slow) var(--ease-quart),
-             color var(--dur-slow) var(--ease-quart),
-             border-color var(--dur-slow) var(--ease-quart),
+  transition:background-color var(--dur-ui) var(--ease-cubic),
+             color var(--dur-ui) var(--ease-cubic),
+             border-color var(--dur-ui) var(--ease-cubic),
+             transform var(--dur-ui) var(--ease-cubic),
              opacity var(--dur-mid) var(--ease-quart);
 }
+.gate-enter:active{ transform:scale(.98) }
 .gate-enter:hover{ background:var(--wattle); border-color:var(--wattle); color:var(--black) }
 
 /* THE EXIT. The control leaves first, then the page is released — so the art is never
@@ -770,10 +929,26 @@ body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) bot
    covers less ground, so the beats shorten — the bloom is mapped across whatever the track
    turns out to be, not across a fixed number, so shortening it costs nothing. */
 @media (max-width:767px){
-  .gate-beat{ min-height:82vh; min-height:82dvh }
-  .gate-line{ font-size:1.25em; line-height:1.4 }
+  /* THE TYPE SITS ON A PANEL, BECAUSE ON A PHONE IT HAS NOWHERE ELSE TO GO.
+
+     On a wide screen the composition separates them: the raceme holds the right of the frame
+     and the words hold the left, and neither has to defend itself. A portrait phone has no
+     left and right to divide — the text is full width and the plant is directly behind it, so
+     white serif on a field of gold florets was simply unreadable.
+
+     A translucent panel is the honest fix rather than dimming the whole animation: the plant
+     stays at full strength everywhere the reader is not currently reading. */
+  .gate-beat{ min-height:82vh; min-height:82dvh;
+              /* Clears the motion toggle, which is pinned bottom-right and was landing on top
+                 of the last line of the longest beat. */
+              padding-bottom:9vh }
+  .gate-line{ font-size:1.12em; line-height:1.45 }
   .gate-binomial{ font-size:2em }
-  .gate-copy{ max-width:none }
+  .gate-copy{ max-width:none; background:rgb(0 0 0 / .66); backdrop-filter:blur(10px);
+              border-radius:var(--radius); padding:1.4em 1.2em }
+  /* The first beat carries only the scroll cue, so there is nothing to protect and a panel
+     there would just be a grey box over the opening shot. */
+  .gate-beat-first .gate-copy{ background:none; backdrop-filter:none; padding:0 }
 }
 
 @media (prefers-reduced-motion:reduce){

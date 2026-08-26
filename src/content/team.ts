@@ -43,6 +43,11 @@ export interface Affiliation {
 
 export interface Member {
   name: string;
+  /** URL segment for this person's own page, under /company. Stable: it is a public address. */
+  slug: string;
+  /** Family name alone. The roster sets given and family name on separate lines, and splitting
+   *  on a space would break on anyone whose name does not have exactly two parts. */
+  family: string;
   /** Optional: rendered only when the person supplied it. */
   role?: string;
   /** Optional: rendered only when the person supplied it. */
@@ -51,9 +56,17 @@ export interface Member {
   affiliations: readonly Affiliation[];
 }
 
+/** Given name(s): the whole name less the family name. Derived rather than stored, so the two
+ *  halves of a roster entry can never drift apart from the name itself. */
+export function given(m: Member): string {
+  return m.name.slice(0, m.name.length - m.family.length).trim();
+}
+
 export const TEAM: ReadonlyArray<Member> = [
   {
     name: "Vikram Ganeshalingam",
+    slug: "vikram-ganeshalingam",
+    family: "Ganeshalingam",
     remit: "What a person meets when they first look for help.",
     portrait: "/vikram.jpg",
     affiliations: [
@@ -67,6 +80,8 @@ export const TEAM: ReadonlyArray<Member> = [
   },
   {
     name: "Stefan Thottunkal",
+    slug: "stefan-thottunkal",
+    family: "Thottunkal",
     remit: "Physician-in-training and health-systems researcher, Stanford Medicine.",
     portrait: "/stefan.jpg",
     affiliations: [
