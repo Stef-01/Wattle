@@ -388,44 +388,54 @@ void main() {
 export const STAMEN_VERT = /* glsl */ `
 precision highp float;
 ${MOTION_CHUNK}
-attribute vec3 aAttr;   // 0 at core / 1 at tip, cluster t, seed
-attribute vec3 aAnchor; // where this filament meets the head's shell
+
+/* THE ONLY PER-VERTEX ATTRIBUTE. One filament template, expanded per instance below. */
+attribute float aAlong;      // 0 at the base of this filament, 1 at its tip
+
+/* PER-INSTANCE. Eleven floats describe a whole stamen; the curve is evaluated here rather
+   than baked into a buffer on the CPU. */
+attribute vec3  aBase;       // where this filament meets its head's shell
+attribute vec3  aAxis;       // direction out of the head, pre-scaled by the filament's length
+attribute vec3  aHook;       // perpendicular, pre-scaled by a signed hook magnitude
+attribute vec2  aMeta;       // x: length, y: axial position of the head on the raceme
+attribute float aSeed;
+
 uniform float uTime;
 uniform float uBloom;
 uniform vec3 uPointer;
 uniform float uPointerOn;
 varying float vTip;
 varying float vOpen;
+
 void main() {
-  float tip = aAttr.x;
-  float cluster = aAttr.y;
-  vTip = tip;
+  float k = aAlong;
+  vTip = k;
 
   /* Filaments are the far end of the drag hierarchy — drag 1.0, the last thing on the plant
      to move, following the head that carries them. */
-  float open = racemeOpen(uBloom, cluster, 1.0);
+  float open = racemeOpen(uBloom, aMeta.y, 1.0);
   vOpen = open;
 
-  /* THE FILAMENT GROWS OUT OF THE HEAD.
+  /* THE ARC, EVALUATED ON THE GPU.
 
-     THIS WAS THREE NO-OPS. The previous version read:
+     Linear along the axis, QUADRATIC across it. Quadratic so the curve accelerates toward the
+     tip and ends in a hook rather than a bland circular arc — natural arcs are asymmetric, and
+     the hook is what the grevillea reference is made of. A straight radial spike is what made
+     an earlier, longer reach turn every head into an asterisk: the length was never the
+     problem, the straightness was.
 
-         pos = mix(position - vec3(0.0, 0.0, 0.0), position, 1.0);
-         vec3 core = position;
-         pos = mix(core, position, 1.0);
+     THE FILAMENT GROWS OUT OF THE HEAD, and this is where three no-ops used to be. The old
+     code read "pos = mix(position - vec3(0.0), position, 1.0)" twice over, which is just
+     "position" — so every filament sat at full extension from the first frame and only its
+     alpha changed. Scaling k by open extends the tip along its own arc while the base stays
+     welded to the shell, which is what the comment there always claimed. */
+  float grown = k * open;
+  vec3 pos = aBase + aAxis * grown + aHook * grown * grown;
 
-     mix(a, a, 1.0) is a, subtracting a zero vector is a, and so all three lines resolved to
-     "pos = position". The comment above them promised that the tip travelled while the core
-     stayed put; the code did nothing at all, so every filament was at full extension from the
-     first frame and only its alpha ever changed. The stamens — the whole visual mass of a
-     wattle head — sat outside the bloom entirely.
-
-     Interpolating from the anchor is what the comment always described: the base stays welded
-     to the shell and the tip sweeps out along its arc as the head opens. */
-  vec3 pos = mix(aAnchor, position, open);
-
-  pos += wattleDrift(pos, aAttr.z, uTime, 0.3 * tip);
-  pos += wattlePointer(pos, uPointer, uPointerOn * open, 1.15 * tip, 3.1);
+  pos += wattleDrift(pos, aSeed, uTime, 0.3 * k);
+  /* CURSOR DEFLECTION rises along the filament: the base is anchored in the head and the tip
+     is free, so the same force moves the tip and barely moves the root. */
+  pos += wattlePointer(pos, uPointer, uPointerOn * open, 1.15 * k, 3.1);
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }

@@ -328,32 +328,45 @@ export function stamens(
   seed = 303,
   shell = 0.30,
 ) {
-  /* FILAMENTS ARC. THEY DO NOT SPIKE.
+  /* INSTANCED. One filament of geometry, drawn thousands of times.
 
-     Each stamen used to be a single two-point segment: a straight radial spike from the
-     head's shell. Straight-line interpolation is the default behaviour of every animation
-     tool and the first thing that has to be corrected by hand, because nature has no
-     mechanical rails — a filament is a cantilever under its own weight and it curves.
-     Straight spikes are also precisely why an earlier, longer `reach` turned the heads into
-     asterisks and had to be cut back to almost nothing: the problem was never the length, it
-     was that the length was straight.
+     WHAT THIS REPLACES. Every filament used to be baked into one enormous flat buffer: four
+     segments x two vertices x three floats, repeated for every stamen on every head, with the
+     curve of each one precomputed on the CPU at build time. At 34 heads and 26 stamens that
+     was already ~21k floats of position and as much again of anchor and attribute, all of it
+     uploaded once and none of it shareable.
 
-     So a filament is now a four-segment polyline bending along a quadratic. Quadratic, not
-     linear, so the curve ACCELERATES toward the tip and ends in a hook rather than a bland
-     circular arc — natural arcs are asymmetric, and the hook is what the grevillea reference
-     is made of.
+     An InstancedBufferGeometry inverts that. ONE filament is described — a strip of points
+     from 0 to 1 along its own length — and every instance supplies only what makes it
+     different: where its base sits, which way it points, which way and how hard it hooks, and
+     which head it belongs to. Per-instance cost falls from ~24 vertices to 11 floats, so the
+     count stops being the constraint and the tier can carry thousands of filaments instead of
+     hundreds.
 
-     Every filament also carries its anchor on the shell as a second attribute, so the shader
-     can grow it outward from that point instead of switching it on at full length. */
-  const SEGS = 4;
+     THE CURVE MOVED TO THE GPU. It was a CPU loop writing four line segments per filament; it
+     is now evaluated in the vertex shader from `aAxis` and `aHook` at whatever resolution
+     SEGS gives. Same quadratic, same hook, computed per vertex in parallel.
+
+     Returned as plain typed arrays rather than a THREE object so this file stays free of
+     three.js — the whole point of keeping botany and layers separate from the renderer. */
+  const SEGS = 5;
   const rand = mulberry32(seed);
-  const perFilament = SEGS * 2; // line segments: two vertices each
-  const total = centres.length * perHead * perFilament;
-  const position = new Float32Array(total * 3);
-  const anchor = new Float32Array(total * 3);
-  const attr = new Float32Array(total * 3);
-  let p = 0, an = 0, a = 0;
 
+  /* The template: SEGS+1 points along one filament, as a line strip expanded to segment pairs.
+     `aAlong` is the only per-vertex attribute there is. */
+  const along: number[] = [];
+  for (let g = 0; g < SEGS; g++) {
+    along.push(g / SEGS, (g + 1) / SEGS);
+  }
+
+  const count = centres.length * perHead;
+  const iBase = new Float32Array(count * 3);   // where the filament meets the head's shell
+  const iAxis = new Float32Array(count * 3);   // unit direction out of the head
+  const iHook = new Float32Array(count * 3);   // perpendicular * signed hook magnitude
+  const iMeta = new Float32Array(count * 2);   // length, and this head's axial position
+  const iSeed = new Float32Array(count);
+
+  let n = 0;
   for (let ci = 0; ci < centres.length; ci++) {
     const c = centres[ci]!;
     const cluster = ci / Math.max(1, centres.length - 1);
@@ -365,49 +378,40 @@ export function stamens(
 
       /* A STAMEN LIVES ON THE SHELL, NOT AT THE CORE. Drawing each filament from the head's
          centre meant every one of them crossed the whole head and was legible straight through
-         it — which is what made a head read as an asterisk rather than as a ball of fuzz. Real
-         stamens occupy a thin band at the surface. */
+         it — which is what made a head read as an asterisk rather than as a ball of fuzz. */
       const ux = Math.sin(phi) * Math.cos(theta);
       const uy = Math.cos(phi);
       const uz = Math.sin(phi) * Math.sin(theta);
       const inner = shell * (0.82 + rand() * 0.26);
       const len = reach * (0.45 + rand() * 0.55);
 
-      /* The bend direction: any unit vector perpendicular to the filament. Built by crossing
-         with whichever axis is least parallel to it, which is the standard way to get a stable
-         perpendicular without a degenerate case when the filament points along an axis. */
-      const ax: [number, number, number] =
-        Math.abs(uy) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+      /* A stable perpendicular: cross with whichever axis is least parallel, so there is no
+         degenerate case when the filament happens to point along one. */
+      const ax: [number, number, number] = Math.abs(uy) < 0.9 ? [0, 1, 0] : [1, 0, 0];
       let bx = uy * ax[2] - uz * ax[1];
       let by = uz * ax[0] - ux * ax[2];
       let bz = ux * ax[1] - uy * ax[0];
       const bl = Math.hypot(bx, by, bz) || 1;
-      bx /= bl; by /= bl; bz /= bl;
-
       // Asymmetric: sign and magnitude both vary, so no two filaments hook alike.
-      const hook = len * (0.55 + rand() * 0.75) * (rand() < 0.5 ? 1 : -1);
-      const seedV = rand();
+      const hook = (len * (0.55 + rand() * 0.75) * (rand() < 0.5 ? 1 : -1)) / bl;
 
-      const base: [number, number, number] = [c[0] + ux * inner, c[1] + uy * inner, c[2] + uz * inner];
-      const at = (k: number): [number, number, number] => [
-        base[0] + ux * len * k + bx * hook * k * k,
-        base[1] + uy * len * k + by * hook * k * k,
-        base[2] + uz * len * k + bz * hook * k * k,
-      ];
-
-      for (let g = 0; g < SEGS; g++) {
-        const k0 = g / SEGS, k1 = (g + 1) / SEGS;
-        const v0 = at(k0), v1 = at(k1);
-        position[p++] = v0[0]; position[p++] = v0[1]; position[p++] = v0[2];
-        position[p++] = v1[0]; position[p++] = v1[1]; position[p++] = v1[2];
-        anchor[an++] = base[0]; anchor[an++] = base[1]; anchor[an++] = base[2];
-        anchor[an++] = base[0]; anchor[an++] = base[1]; anchor[an++] = base[2];
-        attr[a++] = k0; attr[a++] = cluster; attr[a++] = seedV;
-        attr[a++] = k1; attr[a++] = cluster; attr[a++] = seedV;
-      }
+      iBase[n * 3] = c[0] + ux * inner;
+      iBase[n * 3 + 1] = c[1] + uy * inner;
+      iBase[n * 3 + 2] = c[2] + uz * inner;
+      iAxis[n * 3] = ux * len; iAxis[n * 3 + 1] = uy * len; iAxis[n * 3 + 2] = uz * len;
+      iHook[n * 3] = bx * hook; iHook[n * 3 + 1] = by * hook; iHook[n * 3 + 2] = bz * hook;
+      iMeta[n * 2] = len; iMeta[n * 2 + 1] = cluster;
+      iSeed[n] = rand();
+      n++;
     }
   }
-  return { count: total, position, anchor, attr };
+
+  return {
+    count,
+    verticesPerInstance: SEGS * 2,
+    along: new Float32Array(along),
+    iBase, iAxis, iHook, iMeta, iSeed,
+  };
 }
 
 

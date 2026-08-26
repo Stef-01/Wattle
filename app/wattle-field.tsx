@@ -171,13 +171,27 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        itself. 0.26 puts them just past the floret shell, which is where they actually sit. */
     /* REACH IS UP FROM 0.13, because the filaments curve now. It was cut to almost nothing
        when they were straight radial spikes and any real length turned a head into an
-       asterisk — the length was never the problem, the straightness was. An arced filament
-       reads as fuzz at a length a straight one could not survive. */
+       asterisk — the length was never the problem, the straightness was. */
     const st = stamens(near.centres, stamensPerHead, 0.27, 303, 0.32);
-    const stGeo = new THREE.BufferGeometry();
-    stGeo.setAttribute("position", new THREE.BufferAttribute(st.position, 3));
-    stGeo.setAttribute("aAnchor", new THREE.BufferAttribute(st.anchor, 3));
-    stGeo.setAttribute("aAttr", new THREE.BufferAttribute(st.attr, 3));
+
+    /* INSTANCED. One filament template, `st.count` copies, eleven floats each. The old buffer
+       baked every filament's curve into ~24 vertices of flat position data; this uploads the
+       template once and lets the vertex shader draw the arc. The stamen count stops being the
+       thing that limits the tier. */
+    const stGeo = new THREE.InstancedBufferGeometry();
+    stGeo.instanceCount = st.count;
+    stGeo.setAttribute("aAlong", new THREE.Float32BufferAttribute(st.along, 1));
+    /* A `position` attribute three.js can compute a bounding sphere from. Without one it warns
+       and frustum-culls the whole field on the first frame, because an instanced geometry has
+       no intrinsic extent — the instances are where the size actually lives. */
+    stGeo.setAttribute("position", new THREE.Float32BufferAttribute(new Float32Array(st.along.length * 3), 3));
+    stGeo.setAttribute("aBase", new THREE.InstancedBufferAttribute(st.iBase, 3));
+    stGeo.setAttribute("aAxis", new THREE.InstancedBufferAttribute(st.iAxis, 3));
+    stGeo.setAttribute("aHook", new THREE.InstancedBufferAttribute(st.iHook, 3));
+    stGeo.setAttribute("aMeta", new THREE.InstancedBufferAttribute(st.iMeta, 2));
+    stGeo.setAttribute("aSeed", new THREE.InstancedBufferAttribute(st.iSeed, 1));
+    stGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 12);
+
     const stMat = new THREE.ShaderMaterial({
       vertexShader: STAMEN_VERT, fragmentShader: STAMEN_FRAG,
       uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uGold: { value: GOLD } },
@@ -233,7 +247,12 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     folMesh.renderOrder = -1;
     subject.add(folMesh);
     subject.add(new THREE.LineSegments(brGeo, brMat));
-    subject.add(new THREE.LineSegments(stGeo, stMat));
+    /* LineSegments with an InstancedBufferGeometry: three.js reads `instanceCount` and issues
+       one instanced draw call for every filament in the field, rather than one draw of a very
+       large static buffer. */
+    const stMesh = new THREE.LineSegments(stGeo, stMat);
+    stMesh.frustumCulled = false;
+    subject.add(stMesh);
     subject.add(new THREE.Points(nearL.geo, nearL.mat));
     plant.add(subject);
 

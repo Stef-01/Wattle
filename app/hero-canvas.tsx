@@ -36,6 +36,12 @@ const WattleField = dynamic(() => import("./wattle-field").then((m) => m.WattleF
   ssr: false,
 });
 
+/* TIER 1. Also dynamic, because it is still a canvas and still no use to a server, but it is
+   two orders of magnitude smaller than the WebGL tier and carries no dependency at all. */
+const WattleCanvas = dynamic(() => import("./wattle-canvas").then((m) => m.WattleCanvas), {
+  ssr: false,
+});
+
 interface Tier {
   heads: number;
   dustCount: number;
@@ -46,15 +52,22 @@ interface Tier {
 
 /* Layer counts, not one number. The dust is cheap per point and the bokeh is expensive per
    pixel — a single "particle count" would have scaled the wrong things together. */
+/* STAMEN COUNTS ROSE SHARPLY WHEN THE FILAMENTS WERE INSTANCED. They were capped at 26 per
+   head because every one of them was baked into a flat vertex buffer, so the count was paid
+   for in upload size and memory. One template drawn N times costs eleven floats an instance,
+   and the ceiling moved: high tier now carries 34 x 90 = 3,060 filaments where it carried 884.
+
+   The heads read as fuzz rather than as spokes at that density, which is the whole visual
+   difference between a wattle and a dandelion clock. */
 const TIERS: Record<"high" | "mid" | "low", Tier> = {
-  high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 26, maxPixelRatio: 2 },
+  high: { heads: 34, dustCount: 1100, bokehCount: 18, stamensPerHead: 90, maxPixelRatio: 2 },
   // Fewer heads and much less bokeh: overdraw from big soft discs is what actually costs on a
   // mid device, more than the point count does.
-  mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 16, maxPixelRatio: 1.5 },
+  mid: { heads: 18, dustCount: 500, bokehCount: 6, stamensPerHead: 46, maxPixelRatio: 1.5 },
   /* PHONES. Bokeh drops to two and the pixel ratio is capped at 1.25 — a 3x phone screen
      rendering full-resolution soft discs is the single most reliable way to make a handset
      hot. The heads are what the plant IS, so they are cut least. */
-  low: { heads: 12, dustCount: 260, bokehCount: 2, stamensPerHead: 12, maxPixelRatio: 1.25 },
+  low: { heads: 12, dustCount: 260, bokehCount: 2, stamensPerHead: 26, maxPixelRatio: 1.25 },
 };
 
 function chooseTier(): Tier | null {
@@ -71,6 +84,10 @@ function chooseTier(): Tier | null {
      behaviour for protecting a regional visitor and impossible to demo around. */
   const forced = new URLSearchParams(window.location.search).get("field") === "force";
 
+  /* REDUCED MOTION DROPS TO TIER 1, IT DOES NOT DROP TO NOTHING. Tier 1 honours the same
+     preference by drawing one frozen, fully-open frame with no loop running — which is what
+     the preference actually asks for. Returning null here used to mean a stated preference and
+     a missing GPU took the same path, and they are not the same request. */
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
 
   /* THE 768px FLOOR IS GONE, because the layout that justified it is gone. It was there
@@ -115,13 +132,29 @@ function chooseTier(): Tier | null {
 
 export function HeroCanvas() {
   const [tier, setTier] = useState<Tier | null>(null);
+  const [decided, setDecided] = useState(false);
 
   useEffect(() => {
     // Deferred past first paint so the decision itself never competes with rendering the page.
-    const id = window.setTimeout(() => setTier(chooseTier()), 0);
+    const id = window.setTimeout(() => { setTier(chooseTier()); setDecided(true); }, 0);
     return () => window.clearTimeout(id);
   }, []);
 
-  if (!tier) return null;
-  return <WattleField {...tier} />;
+  /* PROGRESSIVE ENHANCEMENT, IN THAT ORDER.
+
+     Tier 1 mounts first and unconditionally: it is a 2D context and a few hundred arcs, so it
+     is on screen while the WebGL bundle is still being fetched, and it is the whole experience
+     on any device that never gets tier 2. Tier 2 mounts ON TOP when the gate passes, and tier
+     1 steps back to `hidden` rather than unmounting — a remount on every resize or capability
+     re-check would restart its blooms, and the two tiers drawing at once is the one thing that
+     would make the gate look doubled.
+
+     The order matters for the reason it always does: the thing that works everywhere renders
+     first, and the thing that needs a GPU arrives late and improves it. */
+  return (
+    <>
+      <WattleCanvas />
+      {decided && tier ? <WattleField {...tier} /> : null}
+    </>
+  );
 }

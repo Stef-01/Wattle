@@ -12,6 +12,10 @@
  * fact, it says so.
  */
 
+/* The golden angle was written out here as `Math.PI * (3 - Math.sqrt(5))` and again, as the
+   golden RATIO, in layers.ts — same constant, two jobs, two definitions. It now has one home. */
+import { fibonacciSphere } from "./phyllotaxis";
+
 /** Deterministic PRNG. The field must look identical on every load — a generative system that
  *  reshuffles on refresh is a system nobody can art-direct or screenshot for review. */
 export function mulberry32(seed: number): () => number {
@@ -43,7 +47,6 @@ export function mulberry32(seed: number): () => number {
       visual mass of a head is its stamens, not its centre.
    -------------------------------------------------------------------------- */
 
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
 
 export const FLORETS_MIN = 40;
 export const FLORETS_MAX = 80;
@@ -66,9 +69,7 @@ export function flowerHead(rand: () => number): Floret[] {
 
   for (let i = 0; i < count; i++) {
     // Fibonacci sphere: even angular coverage without clumping at the poles.
-    const y = 1 - (i / (count - 1)) * 2;
-    const ringRadius = Math.sqrt(Math.max(0, 1 - y * y));
-    const theta = GOLDEN_ANGLE * i;
+    const [ux, uy, uz] = fibonacciSphere(i, count);
 
     /* Outward-biased jitter (cube root pushes samples toward the shell). Biased harder than
        before: at 0.35 the florets filled the head evenly and neighbouring heads merged into one
@@ -78,10 +79,7 @@ export function flowerHead(rand: () => number): Floret[] {
     const t = Math.cbrt(0.62 + 0.38 * rand());
     const r = radius * t;
 
-    florets.push({
-      offset: [Math.cos(theta) * ringRadius * r, y * r, Math.sin(theta) * ringRadius * r],
-      radial: t,
-    });
+    florets.push({ offset: [ux * r, uy * r, uz * r], radial: t });
   }
   return florets;
 }

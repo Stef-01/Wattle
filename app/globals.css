@@ -532,12 +532,22 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* THE TRACK, pulled up under the stage so both occupy the same screens. The hero's height
    IS this track's height — four beats of one viewport each, which is the scroll budget the
    bloom is mapped across. */
-.gate-track{ position:relative; z-index:2; margin-top:-100vh; margin-top:-100dvh }
+/* POINTER-TRANSPARENT, so the canvas underneath can be clicked.
+
+   The track is four full viewports of mostly-empty box sitting directly over the animation, so
+   with default pointer-events it swallowed every click before one could reach the plant — the
+   spawn interaction was wired correctly and simply never received an event. Only the things
+   that are actually there to be touched take pointers back. */
+.gate-track{ position:relative; z-index:2; margin-top:-100vh; margin-top:-100dvh;
+             pointer-events:none }
+.gate-track a,.gate-track button,.gate-copy{ pointer-events:auto }
 .gate-beat{ min-height:100vh; min-height:100dvh; display:grid; align-items:center;
             padding:0 var(--gutter) }
 /* The first screen stays bare — the plant and a cue, nothing else. That is the minimalism
    that was asked for; it is kept by moving the words down, not by deleting them. */
-.gate-beat-first{ pointer-events:none }
+/* The first beat carries only the scroll cue, which is decoration — nothing on it should take
+   a pointer even though the copy rule above would otherwise give it one. */
+.gate-beat-first,.gate-beat-first .gate-copy{ pointer-events:none }
 .gate-beat-last{ align-items:center }
 .gate-copy{ max-width:min(46ch,78vw); pointer-events:auto }
 
@@ -570,9 +580,26 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 
 /* The generative field IS the hero image. Centred, full-bleed within the hero, with the CTA
    sitting on top of it — the spec's gate section, with a living subject instead of a still. */
-.wattle-field{ position:absolute; inset:0; z-index:1; pointer-events:none }
+.wattle-field{ position:absolute; inset:0; z-index:2; pointer-events:none }
+
+/* TIER 1 sits behind tier 2 and takes pointer events, because a click on it spawns a raceme.
+   It stays MOUNTED but hidden once the WebGL tier is up: unmounting would restart every bloom
+   on any resize that re-ran the capability check, and two tiers drawing at once is the one
+   failure that would make the gate look doubled. `visibility` rather than `display` so the
+   canvas keeps its box and its ResizeObserver keeps reporting a real size. */
+.wattle-canvas{ position:absolute; inset:0; z-index:1; width:100%; height:100%;
+                display:block; touch-action:manipulation }
+.hero:has(.wattle-field) .wattle-canvas{ visibility:hidden; pointer-events:none }
 .hero-bloom{ position:relative; z-index:2; width:100%; height:auto; max-height:62vh }
-.hero:has(.wattle-field) .hero-bloom{ display:none }
+/* THE STILL SVG IS THE FLOOR BENEATH BOTH TIERS, and it now has two things above it rather
+   than one. The rule hid it only when `.wattle-field` mounted, which was correct while WebGL
+   was the sole alternative — with tier 1 in place it left a flat drawn spray sitting on top of
+   the live canvas, and the composite read as a broken third plant.
+
+   It stays in the markup: it is what renders with JavaScript off, or when neither tier can
+   mount at all. */
+.hero:has(.wattle-field) .hero-bloom,
+.hero:has(.wattle-canvas) .hero-bloom{ display:none }
 .motion-toggle{ position:absolute; right:var(--gutter); bottom:var(--space-l); z-index:4;
                 display:inline-flex; align-items:center; gap:.5vw; min-height:2.75em;
                 padding:.6vw 1.2vw; border:var(--rule) solid var(--white);
