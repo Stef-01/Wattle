@@ -368,11 +368,30 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     document.querySelectorAll(".gate-beat").forEach((el) => sectionIO.observe(el));
 
     /* ---- sizing ---- */
+    /* Last size the drawing buffer was allocated at. See the guard below. */
+    let sizedW = 0, sizedH = 0;
+
     const resize = () => {
       const { clientWidth: w, clientHeight: h } = host;
       if (!w || !h) return;
+
+      /* BELT AND BRACES AGAINST THE ADDRESS BAR.
+
+         The stage is sized in `svh` now, so it should no longer change height while scrolling on
+         iOS — but this is the code that pays for it if anything ever does. renderer.setSize
+         REALLOCATES the GPU drawing buffer, and doing that repeatedly during a scroll is the
+         stutter this was chasing. A height that moves less than 140px with the width unchanged
+         is browser chrome, not a resize anybody asked for: the canvas keeps its buffer and only
+         the projection is refreshed, which costs nothing.
+
+         Width is honest — nothing collapses a viewport's width mid-scroll. */
+      const chromeOnly = w === sizedW && sizedH !== 0 && Math.abs(h - sizedH) < 140;
+
       uViewH.value = h;
-      renderer.setSize(w, h, false);
+      if (!chromeOnly) {
+        renderer.setSize(w, h, false);
+        sizedW = w; sizedH = h;
+      }
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
 
@@ -389,10 +408,16 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
          The plant also rises in portrait: the words occupy the bottom of a phone screen, so
          the flowers are given the top. */
+      /* PORTRAIT PUTS THE PLANT IN THE TOP HALF, because the words now occupy the bottom one
+         and the two no longer overlap at all. It used to be centred with the type floating on a
+         panel over it; lifting it clear is what let the panel go. */
       const portrait = w / h < 1;
-      plant.position.x = portrait ? -1.35 : 0;
-      plant.position.y = portrait ? 1.15 : -0.25;
-      dolly.value = portrait ? 3.4 : 0;
+      plant.position.x = portrait ? -1.15 : 0;
+      /* 1.9, not 3.1. Lifting it clear of the words is right; lifting it out of the frame is
+         not — at 3.1 only the bottom of the raceme was left on screen and the subject of the
+         gate was mostly above it. */
+      plant.position.y = portrait ? 1.9 : -0.25;
+      dolly.value = portrait ? 2.6 : 0;
     };
     resize();
     const ro = new ResizeObserver(resize);

@@ -67,7 +67,11 @@ const TIERS: Record<"high" | "mid" | "low", Tier> = {
   /* PHONES. Bokeh drops to two and the pixel ratio is capped at 1.25 — a 3x phone screen
      rendering full-resolution soft discs is the single most reliable way to make a handset
      hot. The heads are what the plant IS, so they are cut least. */
-  low: { heads: 12, dustCount: 260, bokehCount: 2, stamensPerHead: 26, maxPixelRatio: 1.25 },
+  /* BOKEH DROPS TO ZERO ON A PHONE, not to two. These are the most expensive thing in the scene
+     per pixel — large soft additive discs are pure overdraw, and overdraw is the one cost a
+     mobile GPU actually feels. On a 393pt frame they contributed a faint haze nobody would miss
+     and a fill cost the device cannot spare. */
+  low: { heads: 12, dustCount: 220, bokehCount: 0, stamensPerHead: 26, maxPixelRatio: 1.25 },
 };
 
 function chooseTier(): Tier | null {

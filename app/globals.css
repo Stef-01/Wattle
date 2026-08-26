@@ -505,7 +505,22 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    reads as a shot rather than a background: the art is what you are watching,
    the text is what moves. */
 .gate-stage{
-  position:sticky; top:0; height:100vh; height:100dvh; z-index:1;
+  position:sticky; top:0; z-index:1;
+  /* svh, NOT dvh — AND THIS IS THE iPHONE FIX.
+
+     `dvh` is the DYNAMIC viewport height: it tracks Safari's address bar collapsing and
+     expanding as you scroll. That sounds like the considerate unit and on this page it was the
+     expensive one. The stage is what the WebGL field measures itself against, so every scroll
+     direction change resized it by 60-80px, fired the field's ResizeObserver, and called
+     renderer.setSize() — which reallocates the GPU drawing buffer. Doing that repeatedly, mid
+     scroll, is the stutter.
+
+     `svh` is the SMALL viewport height, measured with browser chrome shown, and it does not
+     change. The stage is then a fixed box that never resizes while scrolling, and the only cost
+     is a strip of ground visible when the bar hides — on a black gate, invisible.
+
+     Cannot be reproduced in a headless browser, which has no address bar. */
+  height:100vh; height:100svh;
   display:flex; align-items:center; justify-content:center;
   overflow:clip;
   /* Black, lifted very slightly toward the signature gold in the centre so the frame is not
@@ -555,10 +570,10 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    with default pointer-events it swallowed every click before one could reach the plant — the
    spawn interaction was wired correctly and simply never received an event. Only the things
    that are actually there to be touched take pointers back. */
-.gate-track{ position:relative; z-index:2; margin-top:-100vh; margin-top:-100dvh;
+.gate-track{ position:relative; z-index:2; margin-top:-100vh; margin-top:-100svh;
              pointer-events:none }
 .gate-track a,.gate-track button,.gate-copy{ pointer-events:auto }
-.gate-beat{ min-height:100vh; min-height:100dvh; display:grid; align-items:center;
+.gate-beat{ min-height:100vh; min-height:100svh; display:grid; align-items:center;
             padding:0 var(--gutter) }
 /* THE FIRST BEAT SITS AT THE TOP, NOT THE MIDDLE, and it now carries the first heading.
 
@@ -1061,6 +1076,11 @@ body:has(main .hero):not(.entered) footer { display:none }
 @keyframes gate-cue-drift{ 0%,100%{ transform:translateY(0); opacity:.45 }
                            50%{ transform:translateY(.7em); opacity:1 } }
 
+/* Held opaque across the middle of its own passage, faded at both ends. The flat centre is what
+   stops it reading as a pulse — a block that is only briefly at full strength feels like it is
+   being taken away from you while you read it. */
+@keyframes beat-hold{ 0%{ opacity:0 } 18%{ opacity:1 } 62%{ opacity:1 } 84%,100%{ opacity:0 } }
+
 .gate-tag{ font-family:var(--font-ui); font-size:.75em; font-weight:700; text-transform:uppercase;
            letter-spacing:.22em; color:var(--wattle); margin:0 0 1.2em }
 /* THE LEAD IS THE SENTENCE SOMEBODY STOPS ON. Set large in the editorial serif, with the
@@ -1125,34 +1145,91 @@ body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) bot
    covers less ground, so the beats shorten — the bloom is mapped across whatever the track
    turns out to be, not across a fixed number, so shortening it costs nothing. */
 @media (max-width:767px){
-  /* THE TYPE SITS ON A PANEL, BECAUSE ON A PHONE IT HAS NOWHERE ELSE TO GO.
+  /* ON A PHONE THE FRAME IS DIVIDED TOP AND BOTTOM, NOT LEFT AND RIGHT.
 
-     On a wide screen the composition separates them: the raceme holds the right of the frame
-     and the words hold the left, and neither has to defend itself. A portrait phone has no
-     left and right to divide — the text is full width and the plant is directly behind it, so
-     white serif on a field of gold florets was simply unreadable.
+     A wide screen separates them for free: the raceme holds one side, the type holds the other,
+     and neither has to defend itself. Portrait has no left and right to give away — but it has
+     a top and a bottom. The plant takes the upper band, the words take the lower, and the stage
+     fades between them so the plant DISSOLVES into the type rather than being covered by
+     anything. That is what replaced the frosted panel that used to sit here.
 
-     A translucent panel is the honest fix rather than dimming the whole animation: the plant
-     stays at full strength everywhere the reader is not currently reading. */
-  .gate-beat{ min-height:82vh; min-height:82dvh;
+     TALLER THAN THE SCREEN, NOT SHORTER. 82svh was the wrong number the moment the copy grew: a
+     beat shorter than the viewport GUARANTEES two of them are on screen at once, so pinning the
+     text and fading it could never separate anything — the first block runs to most of a phone
+     screen on its own and the next was always already under it. 125svh gives each beat enough
+     scroll to hold the lower band by itself, with dark between. It costs a longer gate, which on
+     a phone is the cheaper thing to spend.
+
+     svh, not dvh, for the same reason the stage uses it: dvh tracks Safari's address bar, and a
+     height that changes on every scroll direction change is a resize the whole gate has to
+     absorb. */
+  .gate-beat{ min-height:125vh; min-height:125svh; align-items:end;
               /* Clears the motion toggle, which is pinned bottom-right and was landing on top
                  of the last line of the longest beat. */
               padding-bottom:9vh }
+  /* THE DISSOLVE ITSELF. A full-width vertical fade on the STAGE, so it is one fixed element
+     that never repaints while the beats scroll past it, and — because it spans the whole width
+     and ends in the stage's own black — it has no perceptible edge anywhere.
+
+     The copy carries a light radial as well, but only as insurance. Left to do the job alone
+     its bounding box was faintly visible as a horizontal edge under the type, which is a card
+     by another name. */
+  .gate-stage::before{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:66%;
+    z-index:3; pointer-events:none;
+    background:linear-gradient(to bottom,
+      rgb(0 0 0 / 0) 0%, rgb(0 0 0 / .3) 24%, rgb(0 0 0 / .68) 48%,
+      rgb(0 0 0 / .9) 70%, var(--black) 88%);
+  }
   .gate-lead{ font-size:1.5em }
   .gate-line{ font-size:1em; line-height:1.5 }
   .gate-binomial{ font-size:2em }
-  .gate-copy{ max-width:none; background:rgb(0 0 0 / .66); backdrop-filter:blur(10px);
-              border-radius:var(--radius); padding:1.4em 1.2em }
-  /* The first beat carries only the scroll cue, so there is nothing to protect and a panel
-     there would just be a grey box over the opening shot. */
-  /* The opening beat now carries real copy over the plant like every other one, so it keeps
-     its panel. It used to hold only a cue, where a panel would have been a grey box over the
-     opening shot. */
+  /* THE WORDS DO NOT TRAVEL ACROSS THE PLANT. THEY HOLD A ZONE.
+
+     A fixed scrim at the bottom of the stage was the first attempt and it was answering the
+     wrong question: the beats SCROLL, so a beat's copy passes through the whole frame on its
+     way up and spends most of that journey outside whatever zone was darkened for it. The text
+     crossed the raceme exactly as before, just with a gradient in the wrong place.
+
+     `position:sticky` with a `bottom` offset pins each beat's copy near the foot of the screen
+     for as long as its beat is passing, then lets it go as the next one arrives. The words stay
+     in the lower band, the plant stays in the upper one, and neither ever crosses the other —
+     which is the separation a wide screen gets for free from having a left and a right.
+
+     Pure CSS, compositor-only, and nothing measures anything. */
+  .gate-copy{ max-width:none; position:sticky; bottom:11vh;
+              /* A soft local fade travelling with the text. Not a card: a radial with no hard
+                 stop, so it dissolves rather than ending. Insurance for the moment a beat is
+                 handing over to the next and a floret is briefly behind a line. */
+              background:radial-gradient(150% 130% at 42% 52%,
+                          rgb(0 0 0 / .55) 0%, rgb(0 0 0 / .34) 52%, rgb(0 0 0 / 0) 88%);
+              padding:1.4em 1.2em 1.6em; margin:0 -1.2em }
+
+  /* ONE BEAT AT A TIME.
+
+     Pinning the copy fixes it crossing the plant but not the handover: as a beat leaves, its
+     text exits the top of the screen while the next beat's text is already pinned at the
+     bottom, so for part of every transition there are two blocks on screen. Legible, and
+     cluttered — which is the opposite of what a gate is for.
+
+     A view-progress timeline fades each block in as it arrives and out as it goes, keyed to its
+     own passage through the viewport. Native, off the main thread, no observer and no
+     measurement. The resting state is fully opaque, so a browser without support (Firefox, as
+     of early 2026) simply keeps both blocks visible — which is exactly where this started, and
+     is a legible fallback rather than a broken one. */
+  @supports (animation-timeline: view()){
+    .gate-copy{ animation:beat-hold linear both; animation-timeline:view(); animation-range:cover }
+  }
+  /* On desktop the opening beat holds its heading at the top of the screen. In portrait the
+     type belongs at the bottom with every other beat, under the plant. */
+  .gate-beat-open{ align-items:end; padding-top:0 }
 }
 
 @media (prefers-reduced-motion:reduce){
   .hero,.gate-enter,.nav-block{ transition:none }
   .gate-cue{ animation:none; opacity:.7 }
+  /* The fade is a scroll-linked opacity change, which is tier 3 — no displacement, no depth
+     cue, nothing vestibular. It stays. */
   body.entered main > *:not(.hero), body.entered footer{ animation:none }
   /* No field mounts under reduced motion, so there is nothing to scroll through. The beats
      collapse to their content and the whole gate fits a screen or two. */
