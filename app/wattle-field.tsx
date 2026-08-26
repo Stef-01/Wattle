@@ -108,7 +108,11 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       const mat = new THREE.ShaderMaterial({
         vertexShader: vert, fragmentShader: frag,
         uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uPixelRatio, uViewH, ...extra },
-        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        transparent: true, depthWrite: false,
+        /* NORMAL, NOT ADDITIVE. Additive blending adds light to what is behind it, which is why
+           it worked on the black gate and why it cannot work on this one: adding gold to white
+           produces white. Every layer now composites as an object over the ground. */
+        blending: THREE.NormalBlending,
       });
       disposables.push(geo, mat);
       return { geo, mat };
@@ -116,7 +120,9 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
     /* ---- 1. dust ---- */
     const d = dust(dustCount);
-    const dustL = pointsLayer(d.position, d.attr, 4, DUST_VERT, DUST_FRAG, { uColour: { value: SAGE } });
+    /* On a light ground the far motes read as dark specks, not as sparks — so they take the
+       foliage green rather than the sage highlight. */
+    const dustL = pointsLayer(d.position, d.attr, 4, DUST_VERT, DUST_FRAG, { uColour: { value: new THREE.Color("#2f3a24") } });
     plant.add(new THREE.Points(dustL.geo, dustL.mat));
 
     /* ---- 2. far spray: same plant, deeper, bigger, softer ---- */
@@ -153,11 +159,12 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const stMat = new THREE.ShaderMaterial({
       vertexShader: STAMEN_VERT, fragmentShader: STAMEN_FRAG,
       uniforms: { uTime, uBloom, uPointer, uPointerOn, uOpacity, uGold: { value: GOLD } },
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      /* The stamens were the last additive layer. On white they were adding gold to white and
+         disappearing entirely — the filament tips are the whole point of the reference. */
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
     });
     disposables.push(stGeo, stMat);
 
-    nearL.mat.blending = THREE.NormalBlending;
 
     /* ---- FOLIAGE. Half the picture in the reference, and absent here until now. ---- */
     const fol = foliage({ count: Math.round(heads * 1.6), height: 6.4, lean: 0.9, seed: 61 });

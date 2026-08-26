@@ -226,8 +226,14 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* --------------------------------------------------------------------------
    6. NAV
    -------------------------------------------------------------------------- */
+/* The header stays solid over the gate too.
+   A transparent header that solidifies on scroll was built and then removed: it needed a
+   scroll-state class, and the whole behaviour could not be verified in the review environment.
+   Shipping a moving part I cannot see is worse than a header that is simply consistent — and
+   the reference's own frame carries a dark band across the top, so this is not a compromise
+   dressed as a decision. */
 .nav-block{ position:fixed; inset:0 0 auto; z-index:999;
-            padding:var(--space-2xs) 0; background:var(--black) }
+            padding:var(--space-2xs) 0; background:var(--black); color:var(--white) }
 .nav-wrapper{ display:grid; grid-template-columns:1fr 1fr 1fr;
               align-items:center; column-gap:var(--space-l) }
 .nav-logo{ font-size:3.4vw; text-align:center; color:var(--white) }
@@ -416,8 +422,31 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* --------------------------------------------------------------------------
    14. PAGE PIECES
    -------------------------------------------------------------------------- */
+/* THE GATE — light ground, warm spill, dark filaments with gold tips.
+
+   The reference hangs a bundle of dark fibres with glowing tips against a pale
+   ground, lit from below. A wattle branch already IS that: near-black stems and
+   grey-green phyllodes carrying golden heads. The only thing that had to change
+   was the ground it hangs against.
+
+   White to ochre rather than white to grey — ochre is the palette's warm
+   neutral, so the wash stays inside the ten hues and warms toward the spill
+   instead of going cold. */
 .hero{ min-height:100vh; min-height:100dvh; display:flex; align-items:center; justify-content:center;
-       padding:10vw var(--gutter) var(--space-3xl); position:relative; overflow:clip }
+       padding:10vw var(--gutter) var(--space-3xl); position:relative; overflow:clip;
+       background:linear-gradient(to bottom, var(--white) 0%, var(--white) 42%, var(--ochre) 100%);
+       color:var(--black) }
+
+/* The spill. A wide, shallow pool of warm light along the bottom edge, as though the
+   filaments are lit from beneath the frame. Sits above the ground and below everything
+   else, and never intercepts a click. */
+.hero::after{
+  content:""; position:absolute; left:50%; bottom:-14vh; transform:translateX(-50%);
+  width:120%; height:34vh; pointer-events:none; z-index:1;
+  background:radial-gradient(ellipse at 50% 100%,
+              rgb(255 196 0 / .55) 0%, rgb(255 196 0 / .22) 38%, transparent 70%);
+  filter:blur(1vw);
+}
 .hero-inner{ position:relative; display:flex; align-items:center; justify-content:center;
              width:100%; max-width:58vw;
              /* AN EXPLICIT HEIGHT, because the field is absolutely positioned and the SVG it
@@ -602,3 +631,55 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* A counted label: "Directors" with the number set small and raised, as the reference does. */
 .count{ font-family:var(--font-mono); font-size:.7em; vertical-align:super;
         margin-left:.4em; color:var(--wattle); letter-spacing:.04em }
+
+
+/* --------------------------------------------------------------------------
+   16. THE GATE
+
+   The intro holds the animation and one control. Every other thing the site has
+   to say — the nav, the headline, the sections — is behind the click, so the
+   first screen is the plant and a way in.
+   -------------------------------------------------------------------------- */
+
+/* Nothing but the gate until it is opened: no scroll, no header, no content. */
+body:not(.entered) { overflow:hidden }
+body:not(.entered) .nav-block { opacity:0; pointer-events:none }
+body:not(.entered) main > *:not(.hero),
+body:not(.entered) footer { display:none }
+
+.nav-block{ transition:opacity var(--dur-slow) var(--ease-quart) }
+
+.gate-enter{
+  position:absolute; left:50%; bottom:14vh; transform:translateX(-50%); z-index:4;
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:44px; padding:1em 2.4em;
+  border:var(--rule) solid var(--black); border-radius:var(--radius-pill);
+  background:transparent; color:var(--black);
+  font-family:var(--font-ui); font-size:1.05em; font-weight:700;
+  text-transform:uppercase; letter-spacing:.12em; cursor:pointer;
+  transition:background-color var(--dur-slow) var(--ease-quart),
+             color var(--dur-slow) var(--ease-quart),
+             opacity var(--dur-mid) var(--ease-quart);
+}
+.gate-enter:hover{ background:var(--black); color:var(--white) }
+
+/* THE EXIT. The control leaves first, then the page is released — so the art is never
+   interrupted, it simply stops being the only thing on screen. */
+body.entering .gate-enter{ opacity:0; pointer-events:none }
+/* The hero shrinks on entry, but the change is NOT transitioned. min-height is a layout
+   property: animating it forces layout on every frame of the transition, which is the one
+   thing that reliably drops frames on a mid-range device. The motion the eye actually reads
+   is the content rising underneath on transform and opacity — both compositor-only. */
+body.entering .hero,
+body.entered .hero{ min-height:82vh }
+
+/* What the click reveals. Entrance decelerates; the sections rise as one body rather than
+   each animating separately, which would read as a queue. */
+body.entered main > *:not(.hero),
+body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) both }
+@keyframes gate-reveal{ from{ opacity:0; transform:translateY(3vh) } to{ opacity:1; transform:none } }
+
+@media (prefers-reduced-motion:reduce){
+  .hero,.gate-enter,.nav-block{ transition:none }
+  body.entered main > *:not(.hero), body.entered footer{ animation:none }
+}

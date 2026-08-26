@@ -5,6 +5,7 @@ import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
 import { MotionToggle } from "./motion-toggle";
+import { EnterGate } from "./enter-gate";
 import { Ticker } from "./ticker";
 
 /**
@@ -21,19 +22,13 @@ export default function HomePage() {
   return (
     <>
       {/* 1. THE GATE. Full viewport, black, one subject, one pill CTA on top of it. */}
-      <section className="hero is-black">
-        {/* Direct child of the hero, not of .hero-inner. The inner box is capped at
-            58vw x 62vh to hold the CTA's layout, and while the canvas lived inside it the
-            poster's subject was confined to that island — at 900x1400 it measured 522x868
-            inside an 885x1400 hero, with black on every side. The art is the hero; it fills
-            the hero. */}
+      {/* THE GATE. The animation, and one way in. Everything else waits behind the click. */}
+      <section className="hero">
         <HeroCanvas />
         <div className="hero-inner">
           <WattleBloom className="hero-bloom" />
-          <Link href="/ventures" className="button button-pressed hero-cta">
-            Enter Wattle
-          </Link>
         </div>
+        <EnterGate />
         <MotionToggle />
       </section>
 
