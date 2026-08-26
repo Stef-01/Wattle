@@ -514,65 +514,25 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
      a matter of not writing the hex, not of not being caught. */
   background:var(--black);
 
-  /* THE STARFIELD, IN CSS, ON THE GATE ONLY.
+  /* THE SKY IS A CANVAS NOW — see app/starfield.tsx and src/wattle/sky.ts.
 
-     Three tiled layers of tiny radial gradients, at 179 / 283 / 419 pixels. Those are primes, so
-     the three tiles only realign every few hundred thousand pixels and the field never visibly
-     repeats — the giveaway with a tiled starfield is always a rhythm the eye catches, and
-     co-prime tile sizes are what removes it. Different star sizes and alphas per layer give the
-     depth a single layer cannot.
+     THIS WAS THREE TILED LAYERS OF CSS GRADIENTS and it read as synthetic, because it was.
+     Gradients can place dots; they cannot vary a star's brightness across a power law, give it
+     a colour temperature, or thin the field out where there is no galaxy. All three are what
+     the eye is actually reading when it decides a sky is real, and the third one — a dust lane
+     cutting through a mottled belt of unresolved stars — is not expressible in CSS at all.
 
-     CSS RATHER THAN MORE WEBGL, deliberately. It costs nothing to composite, it is identical on
-     both tiers, and it is still there under `prefers-reduced-motion` and on the devices that
-     never get a GPU context at all — where a starfield built into the field would simply be
-     absent. The one thing the gate should never do is look emptier on a weaker device.
-
-     The Milky Way band is one wide ellipse of --lorikeet at 6%, rotated across the frame, plus
-     the gold pool the plant is lit by. No eleventh colour: white stars, the palette's blue, the
-     palette's gold. */
-  background-image:
-    /* the warm pool the plant sits in */
-    radial-gradient(ellipse 90% 70% at 50% 40%, rgb(255 196 0 / .07) 0%, rgb(255 196 0 / 0) 70%),
-    /* the galactic band */
-    radial-gradient(ellipse 26% 120% at 38% 46%, rgb(46 155 224 / .075) 0%, rgb(46 155 224 / 0) 68%),
-    radial-gradient(ellipse 40% 90% at 62% 30%, rgb(46 155 224 / .045) 0%, rgb(46 155 224 / 0) 70%),
-    /* three star layers */
-    radial-gradient(1.6px 1.6px at 34px 51px, rgb(255 255 255 / .95) 50%, transparent 52%),
-    radial-gradient(1.2px 1.2px at 121px 19px, rgb(255 255 255 / .7) 50%, transparent 52%),
-    radial-gradient(1.1px 1.1px at 68px 142px, rgb(255 255 255 / .8) 50%, transparent 52%),
-    radial-gradient(1.4px 1.4px at 158px 96px, rgb(255 255 255 / .6) 50%, transparent 52%),
-    radial-gradient(1px 1px at 210px 63px, rgb(255 255 255 / .55) 50%, transparent 52%),
-    radial-gradient(1.3px 1.3px at 47px 231px, rgb(255 255 255 / .75) 50%, transparent 52%),
-    radial-gradient(1px 1px at 264px 187px, rgb(255 255 255 / .5) 50%, transparent 52%),
-    radial-gradient(1.5px 1.5px at 189px 268px, rgb(255 255 255 / .65) 50%, transparent 52%),
-    radial-gradient(.9px .9px at 356px 88px, rgb(255 255 255 / .5) 50%, transparent 52%),
-    radial-gradient(1.2px 1.2px at 92px 344px, rgb(255 255 255 / .6) 50%, transparent 52%),
-    radial-gradient(1px 1px at 301px 402px, rgb(255 255 255 / .45) 50%, transparent 52%),
-    radial-gradient(1.1px 1.1px at 401px 218px, rgb(255 255 255 / .55) 50%, transparent 52%);
-  background-size:
-    100% 100%, 100% 100%, 100% 100%,
-    179px 179px, 179px 179px, 179px 179px,
-    283px 283px, 283px 283px, 283px 283px,
-    419px 419px, 419px 419px, 419px 419px, 419px 419px;
-  background-repeat:no-repeat, no-repeat, no-repeat, repeat, repeat, repeat,
-                    repeat, repeat, repeat, repeat, repeat, repeat, repeat;
+     What stays here is the ground the canvas sits on: black, lifted very slightly toward the
+     signature gold in the centre so the frame is not a flat void, plus the warm pool the plant
+     is lit by. Both derived from an existing hue at low alpha rather than declared as an
+     eleventh colour. */
+  background-image:radial-gradient(ellipse 90% 70% at 50% 40%,
+                    rgb(255 196 0 / .07) 0%, rgb(255 196 0 / 0) 70%);
 }
 
-/* A SLOW TWINKLE ON ONE LAYER ONLY. Animating background-position would repaint the whole
-   stage every frame; this drifts a separate overlay on transform instead, which is
-   compositor-only. Opacity carries the twinkle, transform carries the parallax. */
-.gate-stage::before{
-  content:""; position:absolute; inset:-6%; z-index:0; pointer-events:none;
-  background-image:
-    radial-gradient(1.7px 1.7px at 77px 41px, rgb(255 255 255 / .9) 50%, transparent 52%),
-    radial-gradient(1.4px 1.4px at 233px 164px, rgb(255 255 255 / .8) 50%, transparent 52%),
-    radial-gradient(1.9px 1.9px at 141px 292px, rgb(255 255 255 / .85) 50%, transparent 52%);
-  background-size:347px 347px;
-  animation:star-drift 34s linear infinite, star-twinkle 6.5s ease-in-out infinite;
-  will-change:transform, opacity;
-}
-@keyframes star-drift{ from{ transform:translate3d(0,0,0) } to{ transform:translate3d(-347px,0,0) } }
-@keyframes star-twinkle{ 0%,100%{ opacity:.5 } 50%{ opacity:1 } }
+/* Behind everything, including the plant. Painted once; no loop, no per-frame cost. */
+.starfield{ position:absolute; inset:0; z-index:0; width:100%; height:100%;
+            display:block; pointer-events:none }
 
 /* The spill. A wide, shallow pool of warm light along the bottom edge, as though the
    filaments are lit from beneath the frame. On the old white ground this was gold at 55%
@@ -1099,9 +1059,6 @@ body.entered footer{ animation:gate-reveal var(--dur-slow) var(--ease-quart) bot
 @media (prefers-reduced-motion:reduce){
   .hero,.gate-enter,.nav-block{ transition:none }
   .gate-cue{ animation:none; opacity:.7 }
-  /* Drifting stars are exactly the large-area, depth-implying motion the preference is about.
-     The field itself stays — it is a background, not an animation. */
-  .gate-stage::before{ animation:none; opacity:.75 }
   body.entered main > *:not(.hero), body.entered footer{ animation:none }
   /* No field mounts under reduced motion, so there is nothing to scroll through. The beats
      collapse to their content and the whole gate fits a screen or two. */

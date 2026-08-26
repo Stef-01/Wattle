@@ -5,6 +5,7 @@ import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
 import { EnterGate } from "./enter-gate";
+import { Starfield } from "./starfield";
 import { BEATS, EMBLEM } from "@/content/emblem";
 import { Ticker } from "./ticker";
 
@@ -34,6 +35,7 @@ export default function HomePage() {
           backdrop the text sits on, it is the thing being watched, and the text is what passes. */}
       <section className="hero">
         <div className="gate-stage">
+          <Starfield />
           <HeroCanvas />
           <div className="hero-inner">
             <WattleBloom className="hero-bloom" />
