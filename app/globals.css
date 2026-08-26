@@ -641,11 +641,21 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    first screen is the plant and a way in.
    -------------------------------------------------------------------------- */
 
-/* Nothing but the gate until it is opened: no scroll, no header, no content. */
-body:not(.entered) { overflow:hidden }
-body:not(.entered) .nav-block { opacity:0; pointer-events:none }
-body:not(.entered) main > *:not(.hero),
-body:not(.entered) footer { display:none }
+/* Nothing but the gate until it is opened: no scroll, no header, no content.
+
+   SCOPED TO PAGES THAT ACTUALLY HAVE A GATE. These rules were written unscoped and shipped that
+   way, and the consequence was total: only the home page has a `.hero`, so on every other route
+   `main > *:not(.hero)` matched EVERY section. /ventures, /approach, /company, /contact and
+   /accessibility all rendered blank, with the footer hidden and scroll locked, and there was no
+   gate on them to click to get out of it.
+
+   `:has(.hero)` makes the gate's own presence the condition, so a page without one is untouched.
+   The lesson is narrower than "test every route": a rule whose selector describes what a page
+   does NOT contain will match hardest on the pages that were never considered. */
+body:has(main .hero):not(.entered) { overflow:hidden }
+body:has(main .hero):not(.entered) .nav-block { opacity:0; pointer-events:none }
+body:has(main .hero):not(.entered) main > *:not(.hero),
+body:has(main .hero):not(.entered) footer { display:none }
 
 .nav-block{ transition:opacity var(--dur-slow) var(--ease-quart) }
 
