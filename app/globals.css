@@ -264,7 +264,10 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
             padding:var(--space-2xs) 0; background:var(--black); color:var(--white) }
 .nav-wrapper{ display:grid; grid-template-columns:1fr 1fr 1fr;
               align-items:center; column-gap:var(--space-l) }
-.nav-logo{ font-size:3.4vw; text-align:center; color:var(--white) }
+/* The wordmark is the home link, and at 16px tall it was under the 24px WCAG 2.2 AA floor.
+   inline-flex with a min-height gives it a real target without moving the mark. */
+.nav-logo{ font-size:3.4vw; text-align:center; color:var(--white);
+           display:inline-flex; align-items:center; justify-content:center; min-height:24px }
 .nav-cta{ justify-self:end }
 
 .menu-toggle{ width:3vw; height:3vw; min-width:44px; min-height:44px;
@@ -315,7 +318,12 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
      Content-sized outer columns with a flexible middle, and an explicit `min-width:0` so the
      centre track is allowed to be narrower than the wordmark it holds. */
   .nav-wrapper{ grid-template-columns:auto minmax(0,1fr) auto; column-gap:var(--space-s) }
-  .nav-wrapper > *{ min-width:0 }
+  /* THE CENTRE TRACK ONLY. `.nav-wrapper > *` was 0,1,1 specificity against `.menu-toggle`'s
+     0,1,0, so it silently overrode the toggle's `min-width:44px` and left the hamburger a 16px
+     sliver on every phone — a 16x44 tap target on the one control that opens the whole site.
+     The rule was only ever needed so the wordmark's track could be narrower than the wordmark;
+     naming that track is what it should have said in the first place. */
+  .nav-wrapper > .nav-logo{ min-width:0 }
   .nav-cta .button{ font-size:.85em; padding:.7em 1.1em }
 }
 
@@ -849,7 +857,10 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    the version that works on a touch screen, a keyboard and a shared link.
    -------------------------------------------------------------------------- */
 .profile{ padding-top:11vw }
-.profile-back{ color:var(--wattle) }
+/* WCAG 2.2 AA (2.5.8) puts the floor at 24x24 CSS px. This was 17px tall — a back link on a
+   profile page, which is exactly the control somebody reaches for on a phone. Inline-flex with
+   a min-height is enough; it does not change where the text sits. */
+.profile-back{ color:var(--wattle); display:inline-flex; align-items:center; min-height:24px }
 .profile-head{ display:grid; grid-template-columns:auto 1fr; gap:var(--space-2xl);
                align-items:start; margin-top:var(--space-l) }
 .profile-portrait{ position:relative; width:min(24vw,340px); aspect-ratio:4/5;
@@ -933,6 +944,9 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
                 letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
 .approach-list{ margin-bottom:var(--space-3xl) }
 .approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+/* Sits under the absence list it explains, not in a band of its own. */
+.approach-promise{ margin-top:var(--space-m); max-width:62ch }
+
 .approach-rural{ max-width:62ch; opacity:.62 }
 @media (max-width:767px){ .approach-lede{ font-size:1.3em } }
 

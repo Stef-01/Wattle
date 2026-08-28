@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { PRACTICE } from "@/content/company";
 import { PENDING, PENDING_PROMISE } from "@/content/disclosures";
 import { REACH_GAP } from "@/content/presence";
-import { Ticker } from "../ticker";
 import { DisclosureList } from "../disclosure-list";
 
 export const metadata: Metadata = {
@@ -95,37 +93,23 @@ export default function ApproachPage() {
               tone="absent"
               items={PENDING.map((d) => ({ title: d.item, body: d.state }))}
             />
+            {/* ONE LINE, NOT A SECTION. This used to be a full-bleed pale band of its own
+                headed "Why we publish that", two blocks below the list it explains, with a red
+                marquee of the same absences in between and a closing panel restating the
+                position a third time. The page said the same thing three times in three
+                treatments.
+
+                A list of things a company does not have, with no sentence saying why it is
+                published, reads as a confession rather than a position — so the sentence stays.
+                It just sits under the list it belongs to, at body weight, and takes one line
+                instead of a screen. */}
+            <p className="body-text text-style-muted approach-promise">{PENDING_PROMISE}</p>
           </div>
 
           <p className="body-text text-style-muted approach-rural">{REACH_GAP.rural}</p>
         </div>
       </section>
 
-      <Ticker
-        className="is-waratah text-colour-black"
-        items={["No ISO 27001", "No SOC 2", "No advisory board", "No outcomes data", "No TGA determination"]}
-      />
-
-      {/* The promise that makes the absence a position rather than an apology. */}
-      <section className="section is-bloom">
-        <div className="padding-global">
-          <div className="inner-section-wrapper" style={{ marginBottom: 0 }}>
-            <p className="text-style-tag">Why we publish that</p>
-            <p className="subheading-large max-width-medium">{PENDING_PROMISE}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section is-black" style={{ paddingTop: 0 }}>
-        <div className="padding-global">
-          <div className="cta-block is-eucalypt">
-            <h2 className="heading-style-h4">
-              If we cannot show you where a claim came from, we do not make it
-            </h2>
-            <Link href="/ventures" className="button button-pressed">See what that looks like</Link>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
