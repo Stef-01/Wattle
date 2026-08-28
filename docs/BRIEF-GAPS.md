@@ -163,3 +163,34 @@ publish. Nothing here has been read by an Aboriginal or Torres Strait Islander r
 question of whether a health-software company should be narrating this at all is not ours to
 settle alone. Before launch this needs Indigenous-led review, and if that review says cut it, it
 is cut rather than softened.
+
+## The Acknowledgement's mark — a wattle sprig, NOT an Indigenous symbol
+
+An Indigenous symbol was asked for above the Acknowledgement of Country, tied to the wattle and
+carrying meaning for Aboriginal and Torres Strait Islander peoples. It was not made, and the
+reason belongs on the record rather than only in a code comment.
+
+**Why not.** Aboriginal and Torres Strait Islander visual motifs — dot work, rarrk
+cross-hatching, concentric meeting-place circles, U-shapes — are not a shared public vocabulary.
+They belong to particular nations and often to particular families who hold the right to paint
+them under customary law. A non-Indigenous company generating one is the harm the Australian
+Indigenous Design Charter and the Indigenous Art Code exist to name, and a fabricated symbol
+placed above an Acknowledgement would undercut the one thing the Acknowledgement is there to do.
+It is also a live commercial risk: inauthentic "Aboriginal-style" art is the subject of a
+Productivity Commission report and an ongoing national campaign.
+
+**What is there instead.** `app/acknowledgement-sprig.tsx` — Acacia pycnantha, generated from
+the same botany modules as the gate's field: real floret counts, the golden angle placing them
+within each head, the PHI taper along the raceme, the falcate phyllode with its asymmetric base.
+It makes no cultural claim. It is the company's own subject, set as a mark of care above the
+words, in the site's own visual language.
+
+**What is outstanding.** The honest version of what was asked for is a commissioned work: an
+Aboriginal or Torres Strait Islander artist engaged, paid at a fair rate, credited by name, and
+licensing the work rather than selling it outright — the standard path for Reconciliation Action
+Plan artwork. That commission has not been made. If and when it is, the artwork replaces the
+sprig and the artist is credited beside it.
+
+Related: the Acknowledgement wording itself is still general. A specific acknowledgement naming
+the Country the company actually works on should replace it, written in consultation with those
+Traditional Owners.

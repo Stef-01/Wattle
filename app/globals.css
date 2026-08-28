@@ -616,6 +616,11 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 .rule-list{ border-top:var(--rule) solid currentColor; margin:0; padding:0; list-style:none }
 .rule-list > li{ border-bottom:var(--rule) solid currentColor; padding:var(--space-s) 0 }
 
+/* The wattle sprig above the Acknowledgement. Small and quiet: it is a mark of care, not a
+   graphic device, and anything larger would start competing with the words it introduces. */
+.ack-sprig{ display:block; width:7em; height:auto; margin:0 0 var(--space-m); opacity:.95 }
+@media (max-width:767px){ .ack-sprig{ width:5.5em } }
+
 /* The acknowledgement sits in the dark footer zone, above the wordmark. */
 .acknowledgement{ border-top:var(--rule) solid rgba(255,255,255,.25);
                   border-bottom:var(--rule) solid rgba(255,255,255,.25);
