@@ -1,4 +1,4 @@
-import { AcknowledgementSprig } from "./acknowledgement-sprig";
+import { AcknowledgementUnderlay } from "./acknowledgement-underlay";
 
 /**
  * An Acknowledgement of Country, rendered once and shared by every page so the wording is
@@ -11,12 +11,18 @@ import { AcknowledgementSprig } from "./acknowledgement-sprig";
  * decoration. The Australian Indigenous Design Charter asks for Indigenous-led design input for
  * work that represents Indigenous people or culture; nobody has provided that here.
  *
- * THE MARK ABOVE THE WORDS IS A WATTLE SPRIG AND NOTHING ELSE. It was asked for as an Indigenous
- * symbol and is deliberately not one — see app/acknowledgement-sprig.tsx for the reasoning. It
- * is Acacia pycnantha drawn from this site's own botany modules, which is a claim about the
- * company's subject rather than about anybody's culture. The honest version of what was asked
- * for is a commissioned work by an Aboriginal or Torres Strait Islander artist, paid, credited
- * and licensed; that is recorded in docs/BRIEF-GAPS.md as outstanding.
+ * THE FIELD BEHIND THE WORDS IS LEAVES, AND DELIBERATELY NOT DOTS — the reasoning is in
+ * app/acknowledgement-underlay.tsx. No sprig sits above them any more either.
+ *
+ * A wattle sprig sat above these words for a while. It was never an
+ * Indigenous symbol and was never going to be — that request was declined and the reasoning is in
+ * docs/BRIEF-GAPS.md — but by direction the company's mark belongs beside the letters of the
+ * wordmark, top and bottom, not floating above a paragraph it has no relationship to. So this
+ * band is back to carrying words and nothing else, which is where it started and is the safer
+ * place for it to be.
+ *
+ * The honest version of what was asked for remains a commissioned work by an Aboriginal or
+ * Torres Strait Islander artist, paid, credited and licensed. Recorded as outstanding.
  *
  * BEFORE LAUNCH: this wording is general, and general is the correct placeholder — but a
  * specific acknowledgement naming the Country the company actually works on should replace it,
@@ -26,8 +32,8 @@ import { AcknowledgementSprig } from "./acknowledgement-sprig";
 export function Acknowledgement() {
   return (
     <section className="acknowledgement padding-global" aria-label="Acknowledgement of Country">
+      <AcknowledgementUnderlay />
       <div>
-        <AcknowledgementSprig />
         <p>
           Wattle Technologies acknowledges the Traditional Owners of Country throughout Australia,
           and the many First Nations whose lands and waters we live and work among. We pay our

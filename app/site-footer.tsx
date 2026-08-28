@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DOORS, FOOTER_DOORS } from "./site";
 import { COMPANY } from "@/content/company";
 import { Acknowledgement } from "./acknowledgement";
+import { WattleGlyph } from "./wattle-glyph";
 
 /**
  * FOOTER — two zones.
@@ -61,8 +62,13 @@ export function SiteFooter() {
       <div className="footer-bottom">
         <Acknowledgement />
         <div className="padding-global">
-          {/* Edge to edge. The last thing on the page is the name. */}
-          <p className="footer-wordmark" translate="no">Wattle</p>
+          {/* Edge to edge. The last thing on the page is the name, and the mark travels with it
+              — the same glyph that sits beside the wordmark in the header, so the plant opens the
+              site and closes it. */}
+          <p className="footer-wordmark" translate="no">
+            <WattleGlyph className="footer-glyph" />
+            <span>Wattle</span>
+          </p>
           <div className="footer-meta">
             <span>© {year} {COMPANY.name}</span>
             <span>{COMPANY.country}</span>

@@ -164,7 +164,32 @@ question of whether a health-software company should be narrating this at all is
 settle alone. Before launch this needs Indigenous-led review, and if that review says cut it, it
 is cut rather than softened.
 
-## The Acknowledgement's mark — a wattle sprig, NOT an Indigenous symbol
+## The Acknowledgement's artwork — DECLINED TWICE, and the slot is built and waiting
+
+Asked for twice: first an Indigenous symbol above the Acknowledgement, then an underlay behind it
+referenced to an Aboriginal dot painting — concentric meeting-place circles, dot infill, radiating
+motifs. Neither was reproduced and nothing was generated in that style.
+
+**Why.** That vocabulary belongs to particular nations and often to particular families who hold
+the right to paint it under customary law. The reference image is somebody's copyrighted work.
+Inauthentic "Aboriginal-style" art is a named harm with a Productivity Commission report and a
+standing national campaign behind it, and a fabricated version of it sitting under an
+Acknowledgement of Country would undo the Acknowledgement.
+
+**One shape is avoided deliberately.** The obvious botanical answer for this position is a wattle
+HEAD — a disc of florets in phyllotactic rings — and it is exactly wrong here. A large dotted
+concentric circle behind an Acknowledgement of Country reads as a meeting-place symbol whatever
+the intent was, and intent is not what a reader sees. The circular and dotted vocabulary is left
+alone entirely. `app/acknowledgement-underlay.tsx` uses falcate phyllodes — sickles, not discs,
+no circle and no dot anywhere in it.
+
+**The slot exists.** The underlay treatment is built: positioned, stacked behind the words, at 5%
+so the acknowledgement's contrast is untouched. Only the artwork is missing. Commission an
+Aboriginal or Torres Strait Islander artist — engaged, paid at a fair rate, credited by name, and
+licensing rather than selling the work, which is the standard path for Reconciliation Action Plan
+artwork — and it drops straight into that slot with the artist credited beside it.
+
+## Earlier note: the wattle sprig above the Acknowledgement
 
 An Indigenous symbol was asked for above the Acknowledgement of Country, tied to the wattle and
 carrying meaning for Aboriginal and Torres Strait Islander peoples. It was not made, and the
