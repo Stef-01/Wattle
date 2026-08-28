@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { VENTURES, STATUS_LABEL } from "@/content/ventures";
 import { Ticker } from "../ticker";
+import { PRESENCE, REACH_GAP } from "@/content/presence";
 
 export const metadata: Metadata = {
   title: "Ventures",
@@ -74,14 +75,43 @@ export default function VenturesPage() {
                     </p>
                   ) : null}
                   <p className="body-text max-width-medium" style={{ marginTop: "2vw" }}>{venture.problem}</p>
-                  <p className="text-style-mono" style={{ marginTop: "2vw" }}>
-                    {venture.areas.join("  /  ")}
-                  </p>
+                  {venture.areas.length > 0 ? (
+                    <p className="text-style-mono" style={{ marginTop: "2vw" }}>
+                      {venture.areas.join("  /  ")}
+                    </p>
+                  ) : null}
                   <p className="body-text text-style-muted" style={{ marginTop: ".75vw", maxWidth: "52ch" }}>
                     {venture.areasNote}
                   </p>
                 </div>
               </div>
+
+              {/* THE COVERAGE, AREA BY AREA — MOVED HERE FROM THE HOME PAGE.
+
+                  It used to be a full section on the front page: a headline about most of
+                  Australia being unreached, and a three-column list of the two areas with one of
+                  them marked as having nobody in it. That is a fact about ADHD.ME's matching, not
+                  about Wattle Technologies, and on the company's front page it read as the
+                  company's own footprint. Here it sits under the product it is true of, at the
+                  size a qualifier should be.
+
+                  Only rendered for a venture that actually claims areas — the second entry claims
+                  none, and an empty table under it would imply it had a map. */}
+              {venture.areas.length > 0 ? (
+                <div className="venture-coverage">
+                  <p className="text-style-tag">Where the matching reaches</p>
+                  <ul className="rule-list">
+                    {PRESENCE.map((place) => (
+                      <li key={place.area}>
+                        <span className="heading-style-h5">{place.area}, {place.state}</span>
+                        <span className="text-style-mono">{place.status}</span>
+                        <span className="body-text">{place.short}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="body-text text-style-muted venture-coverage-note">{REACH_GAP.short}</p>
+                </div>
+              ) : null}
 
               {/* Equal weight, deliberately. */}
               <div className="card-grid two-up" style={{ marginTop: "2vw" }}>

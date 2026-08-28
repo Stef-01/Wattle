@@ -53,34 +53,12 @@ export default function CompanyPage() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="padding-global centre-axis">
-          <PhyllodeDivider seed={91} />
-          <div style={{ marginTop: "var(--space-xl)" }}>
-            <h2 className="text-style-tag">What we are</h2>
-            <div>
-              <p className="heading-style-h3" style={{ maxWidth: "24ch", margin: "0.6em auto 0" }}>
-                We build the part of care that happens before care.
-              </p>
-              <p className="body-text" style={{ marginTop: "1.5rem" }}>
-                Not the consultation, the diagnosis or the prescription — the step before all of
-                them, where a person looking for help either finds somebody they can reach or gives
-                up.
-              </p>
-              <p className="body-text" style={{ marginTop: "1rem" }}>
-                Wattle Technologies is the company behind ADHD.ME, kept separate from it so a page
-                about partnerships never routes through the product&rsquo;s regulatory gate, and
-                that gate is never softened to let one through.
-              </p>
-              <p className="body-text" style={{ marginTop: "1rem" }}>
-                Two ventures: one in build, one still being scoped. We are specific about being
-                early, because the alternative is letting you assume otherwise.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* DIRECTORS SECOND, DIRECTLY AFTER THE HEADLINE.
 
+          It used to sit third, behind "What we are" — a page about a company explained itself
+          before it said who it was. For a two-person company that is the wrong order: the
+          honest answer to "who is this" is two names and two faces, and everything after it is
+          context for them rather than a preamble to them. */}
       {TEAM_PUBLIC && TEAM.length > 0 ? (
         <section className="section is-black" id="team">
           <div className="padding-global">
@@ -155,6 +133,34 @@ export default function CompanyPage() {
           </div>
         </section>
       ) : null}
+
+      <section className="section" style={{ paddingTop: 0 }}>
+        <div className="padding-global centre-axis">
+          <PhyllodeDivider seed={91} />
+          <div style={{ marginTop: "var(--space-xl)" }}>
+            <h2 className="text-style-tag">What we are</h2>
+            <div>
+              <p className="heading-style-h3" style={{ maxWidth: "24ch", margin: "0.6em auto 0" }}>
+                We build the part of care that happens before care.
+              </p>
+              <p className="body-text" style={{ marginTop: "1.5rem" }}>
+                Not the consultation, the diagnosis or the prescription — the step before all of
+                them, where a person looking for help either finds somebody they can reach or gives
+                up.
+              </p>
+              <p className="body-text" style={{ marginTop: "1rem" }}>
+                Wattle Technologies is the company behind ADHD.ME, kept separate from it so a page
+                about partnerships never routes through the product&rsquo;s regulatory gate, and
+                that gate is never softened to let one through.
+              </p>
+              <p className="body-text" style={{ marginTop: "1rem" }}>
+                Two ventures: one in build, one still being scoped. We are specific about being
+                early, because the alternative is letting you assume otherwise.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <SpecimenPlate />
 

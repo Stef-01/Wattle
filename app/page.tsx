@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { COMPANY, PRACTICE } from "@/content/company";
 import { VENTURES, STATUS_LABEL } from "@/content/ventures";
-import { PRESENCE, REACH_GAP } from "@/content/presence";
 import { WattleBloom } from "./wattle-bloom";
 import { HeroCanvas } from "./hero-canvas";
 import { EnterGate } from "./enter-gate";
@@ -84,10 +83,18 @@ export default function HomePage() {
         items={["Health software", "Australia", "ADHD.ME in build", "Access before quality"]}
       />
 
-      {/* 3. STATEMENT. One headline, justified uppercase subhead, two-stop vertical gradient. */}
+      {/* 3. STATEMENT.
+
+          THE TAGLINE IS NOT SET IN THE POSTER FACE ANY MORE. It was heading-style-h1 — Bowlby
+          One, ultra-heavy, at 8em — on the brightest band on the site, which is the loudest
+          treatment this design system can produce. Shouting a sentence about people who cannot
+          reach care is a tonal mismatch: the display face is right for a NAME and wrong for a
+          claim about somebody's difficulty getting seen.
+
+          Still an <h1>, because it is still the page's heading. Only its clothes changed. */}
       <section className="section grad-wattle-eucalypt text-colour-black">
         <div className="padding-global">
-          <h1 className="heading-style-h1 reveal">{COMPANY.tagline}</h1>
+          <h1 className="statement-lead reveal">{COMPANY.tagline}</h1>
           <p className="subheading-hero max-width-medium reveal" style={{ marginTop: "2vw" }}>
             We build the routing layer of care — the part that decides whether a person who needs a
             clinician ever reaches one
@@ -153,30 +160,6 @@ export default function HomePage() {
           </div>
         </section>
       ) : null}
-
-      {/* 6. PRESENCE — the honest map. Rule list, not cards. */}
-      <section className="section is-white">
-        <div className="padding-global">
-          <div className="inner-section-wrapper">
-            <p className="text-style-tag">Where we operate</p>
-            <div>
-              <h2 className="heading-style-h3 reveal">{REACH_GAP.heading}</h2>
-              <p className="subheading-large reveal" style={{ marginTop: "1.5vw", maxWidth: "48ch" }}>
-                {REACH_GAP.short}
-              </p>
-            </div>
-          </div>
-          <ul className="rule-list">
-            {PRESENCE.map((p) => (
-              <li key={p.area} className="reveal" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "2vw" }}>
-                <span className="heading-style-h5">{p.area}, {p.state}</span>
-                <span className="text-style-mono">{p.status}</span>
-                <span className="body-text">{p.short}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       {/* 7. CTA BLOCK */}
       <section className="section is-black">

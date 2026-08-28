@@ -837,9 +837,15 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
   transition:border-color var(--dur-ui) var(--ease-cubic);
 }
 /* The photograph sits ON TOP of the monogram and fades in. Both occupy the same box, so
-   nothing moves when one replaces the other. */
+   nothing moves when one replaces the other.
+
+   IN COLOUR, ALWAYS. These were desaturated so the plates read as one monochrome system with a
+   single gold accent — a design argument that quietly cost the two people on the page the thing
+   a portrait is for. A director's face is not a texture. The hover still does real work, in that
+   the photograph replaces the monogram; it just no longer withholds their colour until somebody
+   points at them. */
 .roster-portrait img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-                      display:block; filter:grayscale(1) contrast(1.08);
+                      display:block;
                       opacity:0; transition:opacity var(--dur-fast) var(--ease-quart) }
 
 /* FOCUS-WITHIN, NOT JUST HOVER. A keyboard tabs to this link and never hovers it; without the
@@ -901,8 +907,7 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
 .profile-portrait{ position:relative; width:min(24vw,340px); aspect-ratio:4/5;
                    border-radius:var(--radius); overflow:hidden; background:var(--black);
                    border:var(--rule) solid var(--wattle) }
-.profile-portrait img{ width:100%; height:100%; object-fit:cover; display:block;
-                       filter:grayscale(1) contrast(1.08) }
+.profile-portrait img{ width:100%; height:100%; object-fit:cover; display:block }
 .profile-name{ font-family:var(--font-display); font-size:3.4em; line-height:.95;
                text-transform:uppercase; letter-spacing:.01em; margin:0 }
 .profile-name > span{ display:block }
@@ -979,6 +984,39 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
                 letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
 .approach-list{ margin-bottom:var(--space-3xl) }
 .approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+/* THE HOME STATEMENT, IN THE EDITORIAL SERIF.
+
+   Three changes from heading-style-h1, and each one is doing a job:
+
+   THE FACE. Bowlby One is an ultra-heavy poster display with tiny counters — it is built to be
+   a wordmark and it makes any sentence set in it read as a shout. The editorial serif is the
+   same face the gate's leads use, and it is the one this site already says things in when it
+   wants to be believed rather than noticed.
+
+   THE SIZE. 8em to 3.2em. At 8em on a 1440px screen the line was around 120px and filled the
+   band; the sentence was an object before it was a sentence.
+
+   THE TRACKING. The display ladder runs -.06em, which is correct for setting six letters edge
+   to edge and wrong for a line somebody has to read. Back to a hair under neutral.
+
+   A MEASURE, TOO. 26ch, so it breaks into two or three lines of readable length instead of one
+   enormous ribbon across the full width. */
+.statement-lead{ font-family:var(--font-editorial); font-size:3.2em; line-height:1.14;
+                 letter-spacing:-.015em; max-width:26ch; margin:0; text-wrap:balance }
+@media (max-width:991px){ .statement-lead{ font-size:2.6em } }
+@media (max-width:767px){ .statement-lead{ font-size:2.1em; max-width:none } }
+
+/* The coverage table on a venture. Three columns on a wide screen — place, status, qualifier —
+   collapsing to a stack on a phone, where three columns of 130px break every line in half. */
+.venture-coverage{ margin-top:var(--space-2xl) }
+.venture-coverage .rule-list{ margin-top:var(--space-s) }
+.venture-coverage .rule-list > li{ display:grid; grid-template-columns:1fr 1fr 1.4fr;
+                                   gap:var(--space-m); align-items:baseline }
+.venture-coverage-note{ margin-top:var(--space-m); max-width:56ch }
+@media (max-width:767px){
+  .venture-coverage .rule-list > li{ grid-template-columns:1fr; gap:.4em }
+}
+
 /* THE DEFINITION. Set larger than body copy and smaller than a heading — it is a sentence to be
    read, not a headline to be scanned, and the size is what says which. */
 .definition-lead{ font-family:var(--font-editorial); font-size:2.1em; line-height:1.22;

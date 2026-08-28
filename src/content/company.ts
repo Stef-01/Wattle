@@ -28,6 +28,20 @@ export const COMPANY = {
    */
   country: "Australia",
   /**
+   * WHERE THE COMPANY IS, which is a different claim from where its product reaches.
+   *
+   * `PRESENCE` in presence.ts is ADHD.ME's SERVICE COVERAGE — the areas its matching claims to
+   * serve, and the note that one of them has no clinician in it. These two are the cities the
+   * company's own people work from. Conflating them is the mistake this comment exists to
+   * prevent: a reader who sees "Sydney, Gold Coast" under the company name and then meets the
+   * same two names under the product would reasonably conclude the product is live in both, and
+   * it is not.
+   *
+   * Not elaborated into street addresses, because nobody has supplied one and an office is a
+   * claim about permanence.
+   */
+  locations: ["Sydney", "Gold Coast"] as const,
+  /**
    * Contact. Today this is the address ADHD.ME already publishes in its Organization JSON-LD,
    * so putting it here discloses nothing new. REPLACE with a company address (hello@…) the day
    * the domain exists — this constant is the only place it appears.

@@ -71,7 +71,7 @@ export function SiteFooter() {
           </p>
           <div className="footer-meta">
             <span>© {year} {COMPANY.name}</span>
-            <span>{COMPANY.country}</span>
+            <span>{COMPANY.locations.join(" · ")}, {COMPANY.country}</span>
             <span>ADHD.ME is a {COMPANY.shortName} product</span>
           </div>
         </div>
