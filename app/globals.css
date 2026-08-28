@@ -984,6 +984,42 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
                 letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
 .approach-list{ margin-bottom:var(--space-3xl) }
 .approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+/* WHERE TO START. Two columns: the heading holds the left, the rows hold the right — the
+   reference's calm split rather than one long stack of paragraphs down the middle of the page. */
+.start{ display:grid; grid-template-columns:.55fr 1fr; gap:var(--space-3xl);
+        align-items:start; margin-top:var(--space-l) }
+/* The left column's contents. Sticky on a wide screen so the heading stays beside the rows a
+   reader is scanning, rather than scrolling away and leaving them in an unlabelled list. */
+.start-head{ position:sticky; top:7em }
+@media (max-width:991px){ .start-head{ position:static } }
+.start-heading{ font-family:var(--font-editorial); font-size:1.9em; line-height:1.18;
+                letter-spacing:-.015em; margin:.5em 0 0; max-width:16ch; text-wrap:balance }
+
+/* A row is a label and a line. Grid rather than a stacked dt/dd so the two align on one baseline
+   and the eye can run straight down the labels looking for its own. */
+.start-rows{ margin:var(--space-l) 0 0; padding:0;
+             border-top:var(--rule) solid rgb(255 255 255 / .22) }
+.start-row{ display:grid; grid-template-columns:1fr 1.25fr; gap:var(--space-l);
+            align-items:baseline; padding:var(--space-s) 0;
+            border-bottom:var(--rule) solid rgb(255 255 255 / .22) }
+.start-row dt{ font-size:1.08em; font-weight:700; line-height:1.25 }
+.start-row dd{ margin:0; font-size:1em; line-height:1.45; color:rgb(255 255 255 / .74) }
+
+/* THE ONE BLOCK ON THE PAGE THAT CANNOT BE SKIMMED PAST. Red rule, full-strength white, its own
+   space above the list. It was previously the last clause of a paragraph in row three. */
+.urgent{ display:flex; flex-wrap:wrap; gap:.35em 1.4em; margin:0;
+         border-left:3px solid var(--waratah); padding:.55em 0 .55em 1em;
+         font-size:1.05em; line-height:1.4; color:var(--white) }
+.urgent b{ font-weight:700; white-space:nowrap }
+
+@media (max-width:991px){
+  .start{ grid-template-columns:1fr; gap:var(--space-l) }
+}
+@media (max-width:767px){
+  .start-row{ grid-template-columns:1fr; gap:.35em }
+  .start-heading{ font-size:1.6em; max-width:none }
+}
+
 /* THE HOME STATEMENT, IN THE EDITORIAL SERIF.
 
    Three changes from heading-style-h1, and each one is doing a job:

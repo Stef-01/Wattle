@@ -20,31 +20,27 @@ export const metadata: Metadata = {
  * treatment is called here now, and the label rail is `inner-section-wrapper`.
  */
 
+/**
+ * WHERE TO START — six audiences, one line each.
+ *
+ * These were paragraphs. Six of them stacked in a single column, each explaining itself in two
+ * or three sentences, which is a page nobody reads to the end of — and a reader arriving at a
+ * contact page is not reading, they are looking for the row that is about them. So each row is
+ * now a label you can scan and one line that tells you what to do.
+ *
+ * THE CRISIS LINE CAME OUT OF ROW THREE. "In an emergency call 000. Lifeline is 13 11 14" was
+ * the tail of a paragraph inside one of six collapsed rows — findable only by someone already
+ * reading carefully, which is the opposite of who needs it. Shortening this section was the
+ * moment to promote it, not to lose it. It is its own block now, above the list, in the one
+ * treatment on the page that is impossible to skim past.
+ */
 const ROUTES = [
-  {
-    t: "You commission or fund services",
-    d: "Ask what is actually live first — the answer is “not much, in two areas”. Everything useful follows from starting there.",
-  },
-  {
-    t: "You run a general practice",
-    d: "Tell us the care areas your clinicians take on and the languages they work in. That is all our matching uses.",
-  },
-  {
-    t: "You are looking for assessment",
-    d: "We do not provide clinical care. ADHD.ME points you to a GP; the clinical conversation is with them. In an emergency call 000. Lifeline is 13 11 14.",
-  },
-  {
-    t: "You want to work with us",
-    d: "No advertised roles, and no careers process yet. Write anyway if you build health software or assess ADHD.",
-  },
-  {
-    t: "Something on our sites is wrong",
-    d: "Especially if it is about you. Corrections about a real person jump the queue.",
-  },
-  {
-    t: "You hit an accessibility barrier",
-    d: "Tell us what stopped you. We treat it as a defect, not as feedback.",
-  },
+  { t: "You fund or commission services", d: "Ask what is actually live. The answer is: not much, in two areas." },
+  { t: "You run a general practice", d: "Send the care areas and languages your clinicians work in. That is all we match on." },
+  { t: "You are looking for assessment", d: "We are not clinicians. ADHD.ME points you to a GP — the conversation is with them." },
+  { t: "You want to work with us", d: "No roles listed, no process yet. Write anyway." },
+  { t: "Something on our sites is wrong", d: "Tell us. If it is about a real person, it jumps the queue." },
+  { t: "You hit an accessibility barrier", d: "Tell us what stopped you. We log it as a defect, not as feedback." },
 ];
 
 export default function ContactPage() {
@@ -71,18 +67,34 @@ export default function ContactPage() {
 
       <section className="section">
         <div className="padding-global">
-          <div className="inner-section-wrapper">
-            <h2 className="text-style-tag">Where to start</h2>
-            <dl className="rule-list" style={{ margin: 0 }}>
-              {ROUTES.map((row) => (
-                <div key={row.t} style={{ borderBottom: "var(--rule) solid currentColor", padding: "var(--space-s) 0" }}>
-                  <dt className="heading-style-h6">{row.t}</dt>
-                  <dd className="body-text text-style-muted max-width-medium" style={{ margin: "0.5rem 0 0" }}>
-                    {row.d}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+          {/* NO inner-section-wrapper HERE. That is a 0.5fr/1fr rail, and `.start` is already a
+              two-column layout — nesting them put the whole section inside the rail's right-hand
+              track and then split THAT in two, so six rows of one-line answers were squeezed into
+              a column about a third of the page wide and wrapped to five lines each. One column
+              system per layout. */}
+          <div className="start">
+              <div className="start-head">
+                <h2 className="text-style-tag">Where to start</h2>
+                <p className="start-heading">Find the line that is about you.</p>
+              </div>
+
+              <div>
+                {/* NOT MUTED, NOT SMALL, NOT INSIDE A ROW. The only element on this page that
+                    somebody might need in a hurry. */}
+                <p className="urgent">
+                  <span>In an emergency call <b>000</b>.</span>
+                  <span>Lifeline <b>13 11 14</b>.</span>
+                </p>
+
+                <dl className="start-rows">
+                  {ROUTES.map((row) => (
+                    <div className="start-row" key={row.t}>
+                      <dt>{row.t}</dt>
+                      <dd>{row.d}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
           </div>
         </div>
       </section>
