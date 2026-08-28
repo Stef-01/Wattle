@@ -24,6 +24,16 @@ const isPages = process.env.GITHUB_PAGES === "true";
 const nextConfig = {
   typescript: { ignoreBuildErrors: false },
   devIndicators: false,
+
+  /* A VERIFY BUILD MUST NOT CLOBBER A RUNNING DEV SERVER.
+     `next build` and `next dev` both write to `.next` by default, so running the gates while
+     the dev server is up replaces its compiled CSS with the production build's — and the dev
+     server then serves a 9-byte stylesheet. Every page loses its styling at once, which looks
+     exactly like a catastrophic CSS regression and has now cost three separate debugging
+     detours, one of which nearly went out as a bug report against the gate.
+     NEXT_DIST_DIR lets `pnpm verify` build somewhere else. Unset everywhere it matters, so
+     Vercel and the Pages workflow are unaffected. */
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   ...(isPages
     ? {
         output: "export",

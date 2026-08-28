@@ -267,7 +267,28 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 /* The wordmark is the home link, and at 16px tall it was under the 24px WCAG 2.2 AA floor.
    inline-flex with a min-height gives it a real target without moving the mark. */
 .nav-logo{ font-size:3.4vw; text-align:center; color:var(--white);
-           display:inline-flex; align-items:center; justify-content:center; min-height:24px }
+           display:inline-flex; align-items:center; justify-content:center; min-height:24px;
+           gap:.34em }
+/* Sized in em so it tracks the wordmark at every breakpoint rather than needing its own ladder.
+   `flex-shrink:0` because the middle nav track is minmax(0,1fr) on small screens and would
+   otherwise squeeze the glyph before the text. */
+.nav-glyph{ width:.62em; height:auto; flex:0 0 auto; display:block;
+            transition:opacity var(--dur-slow) var(--ease-quart) }
+
+/* NOT ON THE GATE — IT ARRIVES WITH THE SITE.
+
+   The wordmark itself is visible over the gate (the gate hides the nav's controls, not the
+   bar), so without this the glyph would sit beside it while the real plant is still blooming
+   two hundred pixels below — the mark and its subject on screen at once, which makes the mark
+   redundant and the plant look like a decoration of it.
+
+   Held back until entry, it reads as what it is: the thing you just watched, condensed, handed
+   to you as the mark you will carry through the rest of the site. It fades rather than appears,
+   on the same easing as the sections rising underneath it.
+
+   `visibility` alongside opacity so it is out of the accessibility tree too while hidden,
+   though it is aria-hidden regardless. */
+body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
 .nav-cta{ justify-self:end }
 
 .menu-toggle{ width:3vw; height:3vw; min-width:44px; min-height:44px;

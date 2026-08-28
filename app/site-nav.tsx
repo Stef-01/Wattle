@@ -7,6 +7,7 @@ import { DOORS, FOOTER_DOORS } from "./site";
 import { COMPANY } from "@/content/company";
 import { VENTURES } from "@/content/ventures";
 import { MotionToggle } from "./motion-toggle";
+import { WattleGlyph } from "./wattle-glyph";
 
 /**
  * NAVIGATION — three cells: menu toggle, wordmark, one CTA.
@@ -35,6 +36,9 @@ export function SiteNav() {
           </Dialog.Trigger>
 
           <Link href="/" className="nav-logo display-wordmark" translate="no">
+            {/* The gate's last frame, beside the wordmark. Only after entry — the gate hides the
+                whole nav until then, so this arrives with it. */}
+            <WattleGlyph className="nav-glyph" />
             Wattle
           </Link>
 
