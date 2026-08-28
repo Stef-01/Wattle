@@ -48,7 +48,11 @@ export function SiteFooter() {
             <nav aria-labelledby="f-work">
               <h2 id="f-work">Work</h2>
               <Link href="/ventures">ADHD.ME</Link>
-              <Link href="/approach">What we do not have</Link>
+              {/* WAS "What we do not have", which named a section of /approach that has since
+                  been removed. A footer link is a promise about what is on the other side of it;
+                  leaving the old label would have sent a reader looking for a list that is not
+                  there any more. */}
+              <Link href="/approach">How we work</Link>
             </nav>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { mulberry32, flowerHead, phyllode, phyllodeBlade } from "@/wattle/botany";
-import { PHI } from "@/wattle/phyllotaxis";
+import { PHI, svgNum } from "@/wattle/phyllotaxis";
 
 /**
  * A WATTLE SPRIG ABOVE THE ACKNOWLEDGEMENT — AND EXPLICITLY NOT AN INDIGENOUS SYMBOL.
@@ -82,7 +82,7 @@ export function AcknowledgementSprig() {
           d={l.d}
           fill="var(--eucalypt)"
           opacity=".45"
-          transform={`translate(${l.x} ${l.y}) rotate(${l.rot}) scale(1.5 ${l.flip ? -1.5 : 1.5})`}
+          transform={`translate(${svgNum(l.x)} ${svgNum(l.y)}) rotate(${l.rot}) scale(1.5 ${l.flip ? -1.5 : 1.5})`}
         />
       ))}
 
@@ -96,9 +96,9 @@ export function AcknowledgementSprig() {
           {h.florets.map((f, fi) => (
             <circle
               key={fi}
-              cx={h.x + (f.offset[0] / 0.4) * h.r}
-              cy={h.y - (f.offset[1] / 0.4) * h.r}
-              r={h.r * 0.2}
+              cx={svgNum(h.x + (f.offset[0] / 0.4) * h.r)}
+              cy={svgNum(h.y - (f.offset[1] / 0.4) * h.r)}
+              r={svgNum(h.r * 0.2)}
               fill="var(--wattle)"
               opacity={(0.5 + f.radial * 0.45).toFixed(2)}
             />

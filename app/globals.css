@@ -970,6 +970,22 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
                 letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
 .approach-list{ margin-bottom:var(--space-3xl) }
 .approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+/* THE DEFINITION. Set larger than body copy and smaller than a heading — it is a sentence to be
+   read, not a headline to be scanned, and the size is what says which. */
+.definition-lead{ font-family:var(--font-editorial); font-size:2.1em; line-height:1.22;
+                  letter-spacing:-.02em; max-width:24ch; margin:.6em 0 0; text-wrap:balance }
+.definition-body{ margin-top:var(--space-l); max-width:62ch;
+                  display:flex; flex-direction:column; gap:1em }
+@media (max-width:767px){ .definition-lead{ font-size:1.6em; max-width:none } }
+
+/* The neglected problems. Two columns of ruled rows on a wide screen; one on a phone. Ruled
+   rather than carded, so they read as a list of conditions rather than as four product claims. */
+.neglected{ list-style:none; margin:var(--space-2xl) 0 0; padding:0;
+            display:grid; grid-template-columns:1fr 1fr; gap:0 var(--space-2xl) }
+.neglected > li{ border-top:var(--rule) solid currentColor; padding:var(--space-m) 0 var(--space-l) }
+.neglected .body-text{ margin-top:.7em; max-width:44ch; opacity:.78 }
+@media (max-width:991px){ .neglected{ grid-template-columns:1fr } }
+
 /* Sits under the absence list it explains, not in a band of its own. */
 .approach-promise{ margin-top:var(--space-m); max-width:62ch }
 

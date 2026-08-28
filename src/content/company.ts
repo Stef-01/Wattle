@@ -61,33 +61,43 @@ export const UNCONFIRMED: ReadonlyArray<{ item: string; why: string }> = [
  * the argument has gone looking for it. The short form never says anything the long form does
  * not; it is a compression, not a softer claim.
  */
+/**
+ * THE FOUR COMMITMENTS, WRITTEN FROM THE OTHER END.
+ *
+ * Every one of these is the same commitment it was, enforced in the same place — the change is
+ * whose side the sentence is written from. They used to describe a build: commit gates, copy
+ * linters, sourced figures. A reader met four statements about how software is made when what
+ * they came to find out was what this company thinks a person is owed. The engineering is still
+ * named in each one, because a commitment nobody can check is a slogan; it is just no longer the
+ * subject of the sentence.
+ */
 export const PRACTICE: ReadonlyArray<{ title: string; short: string; body: string }> = [
   {
-    title: "Access before anything else",
+    title: "Reachable, or it is not care",
     short:
-      "A service you cannot reach has no clinical quality to measure.",
+      "A service you cannot get to has no quality worth measuring.",
     body:
-      "The first question our software asks is not what is wrong with you. It is whether there is anybody you can actually get to — in your language, in your care area, at a practice you can physically reach. A service you cannot reach has no clinical quality to measure.",
+      "The first question we ask is not what is wrong with you. It is whether there is anybody you can actually get to — in your language, in your area, at a place you can physically reach on the day you are able to travel. Quality matters enormously, and it is the second question. A service nobody can reach has no quality worth measuring, and treating access as a lesser problem is how it stayed unsolved.",
   },
   {
-    title: "Matching keyed to clinicians, never to symptoms",
+    title: "We profile the clinician. Never you.",
     short:
-      "We match on what clinicians declare about themselves. We never profile a patient.",
+      "You are the person being helped, not the data being sorted.",
     body:
-      "Our matching runs on attributes clinicians declare about themselves — the work they do, the languages they speak, where they practise. It does not profile a patient's symptoms to target them. That boundary is a line in the product's compliance suite, not a preference.",
+      "Matching runs on what clinicians choose to declare about themselves — the work they do, the languages they speak, where they practise. Nothing you tell us about your symptoms is turned into a targeting signal, sold, or used to decide what you are shown. You are the person being helped here, not the data being sorted. That line is enforced in the product's compliance suite, so it holds whether or not anyone is watching.",
   },
   {
-    title: "Regulated from the first commit",
+    title: "Nothing reaches you we cannot source",
     short:
-      "A page that makes a claim it cannot source fails the build, not the review.",
+      "A claim without a source fails the build, not the review.",
     body:
-      "Australian health advertising law is not a launch checklist here. Copy linters, a public-surface sweep and a set of founder gates run in the build, so a page that claims an outcome, publishes a rating or advertises a regulated service the wrong way fails the build rather than the review.",
+      "Health copy is where good intentions turn into promises nobody can keep, and the person who pays for that is whoever believed it. So Australian health-advertising law is not a checklist we run before launch. Copy linters, a public-surface sweep and a set of founder gates run in the build: a page that claims an outcome, publishes a rating, or advertises a regulated service the wrong way fails the build rather than the review. It never becomes your problem because it never ships.",
   },
   {
-    title: "Figures stay indicative until they are sourced",
+    title: "A range is what honesty looks like",
     short:
-      "Ranges are what uncertainty looks like when it is being honest.",
+      "Precision we have not earned is a kind of lying.",
     body:
-      "Numbers on our public pages are written as ranges precisely while nobody in the tree has confirmed them against a source. Ranges are how uncertainty looks when it is being honest about itself.",
+      "Numbers on our public pages are written as ranges for exactly as long as nobody here has confirmed them against a source. A precise figure is a claim about how much we know, and precision we have not earned is a quiet kind of lying. When a number is sourced it stops being a range and the source travels with it.",
   },
 ];

@@ -1,4 +1,4 @@
-import { getPhyllotacticPosition, PHI } from "@/wattle/phyllotaxis";
+import { getPhyllotacticPosition, PHI, svgNum } from "@/wattle/phyllotaxis";
 
 /**
  * THE WORDMARK'S GLYPH — the gate's animation, stopped on its last frame.
@@ -82,9 +82,9 @@ export function WattleGlyph({ className }: { className?: string }) {
           return (
             <circle
               key={`${hi}-${fi}`}
-              cx={h.x + p.x}
-              cy={h.y - p.y}
-              r={h.r * 0.29}
+              cx={svgNum(h.x + p.x)}
+              cy={svgNum(h.y - p.y)}
+              r={svgNum(h.r * 0.29)}
               fill={h.red ? "var(--waratah)" : "var(--wattle)"}
               opacity={h.red ? 0.92 : 0.96}
             />

@@ -51,3 +51,20 @@ export function fibonacciSphere(index: number, count: number): [number, number, 
   const theta = GOLDEN_ANGLE * index;
   return [Math.cos(theta) * ring, y, Math.sin(theta) * ring];
 }
+
+/**
+ * ROUND A COORDINATE BEFORE IT BECOMES AN SVG ATTRIBUTE.
+ *
+ * THIS FIXES A REAL HYDRATION MISMATCH. Math.cos, Math.sin and Math.pow are
+ * IMPLEMENTATION-DEFINED in ECMAScript — a conforming engine may return results that differ in
+ * the last bits, and Node and the browser's V8 do not have to agree. So a server-rendered
+ * `cx="12.345678901234567"` could come back as `...68` on the client, React would compare the
+ * attribute strings, and every generated SVG on the site threw a hydration error on every page.
+ *
+ * Three decimals is far finer than any viewBox here resolves and makes both sides emit the same
+ * string. It also cuts the markup: sixty florets at seventeen digits each is real bytes for
+ * precision no screen can show.
+ */
+export function svgNum(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PRACTICE } from "@/content/company";
-import { PENDING, PENDING_PROMISE } from "@/content/disclosures";
+import { SYSTEM_DEFINITION, NEGLECTED, APPROACH_LEDE } from "@/content/approach";
 import { REACH_GAP } from "@/content/presence";
 import { DisclosureList } from "../disclosure-list";
 
@@ -37,7 +37,16 @@ export default function ApproachPage() {
       <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
         <div className="padding-global">
           <p className="text-style-tag">Approach</p>
-          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>How we work.</h1>
+          {/* "How we work" described the company to itself. This names who the work is for, and
+              it is the one sentence on the site that says what makes this company different from
+              every other piece of health software: everyone else is built for the moment
+              somebody arrives. */}
+          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>
+            Built for the people who never arrive.
+          </h1>
+          <p className="subheading-large max-width-medium" style={{ marginTop: "2vw" }}>
+            {APPROACH_LEDE}
+          </p>
         </div>
       </section>
 
@@ -56,6 +65,47 @@ export default function ApproachPage() {
         ))}
       </div>
 
+      {/* THE DEFINITION. The page turns on this, so it gets a section of its own and the widest
+          type on the page after the headline. A company that builds health systems should be
+          able to say what it thinks one IS, in its own words, without reaching for a diagram. */}
+      <section className="section is-black">
+        <div className="padding-global">
+          <p className="text-style-tag">{SYSTEM_DEFINITION.tag}</p>
+          <p className="definition-lead">{SYSTEM_DEFINITION.lead}</p>
+          <div className="definition-body">
+            {SYSTEM_DEFINITION.body.map((para) => (
+              <p className="body-text" key={para.slice(0, 24)}>{para}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* THE PROBLEMS. Named plainly and without a statistic on any of them — every one could
+          carry a number and every number would need a source this tree has not confirmed. The
+          rule that a claim without a source fails the build does not get suspended because a
+          figure would be persuasive. */}
+      <section className="section is-black" style={{ paddingTop: 0 }}>
+        <div className="padding-global">
+          <div className="inner-section-wrapper">
+            <p className="text-style-tag">
+              Long-standing, and nobody&rsquo;s job
+              <span className="count">{String(NEGLECTED.length).padStart(2, "0")}</span>
+            </p>
+            <p className="heading-style-h3" style={{ maxWidth: "26ch" }}>
+              Four problems everyone in health can name and no one is paid to fix.
+            </p>
+          </div>
+          <ul className="neglected">
+            {NEGLECTED.map((n) => (
+              <li key={n.title}>
+                <h2 className="heading-style-h5">{n.title}</h2>
+                <p className="body-text">{n.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* THE TWO LISTS, AS HEADINGS YOU CAN OPEN.
 
           They used to be three parallel columns of fully-expanded prose — an argument, four
@@ -69,8 +119,9 @@ export default function ApproachPage() {
       <section className="section is-black">
         <div className="padding-global">
           <p className="approach-lede">
-            Four commitments, each enforced somewhere in a build pipeline rather than promised on
-            a page — which is the only version of a commitment worth publishing.
+            Four commitments. Each one is enforced somewhere a person can check rather than
+            promised on a page, because a commitment nobody can verify is a slogan wearing a
+            commitment&rsquo;s clothes.
           </p>
 
           <div className="approach-list">
@@ -80,30 +131,6 @@ export default function ApproachPage() {
             <DisclosureList
               items={PRACTICE.map((p) => ({ title: p.title, body: p.short, more: p.body }))}
             />
-          </div>
-
-          {/* THE TRUST SPINE, INVERTED. A large health-technology company front-loads its
-              certifications here. This one holds none of them, so it front-loads the absence at
-              the weight the badges would have had. */}
-          <div className="approach-list">
-            <p className="text-style-tag">
-              What we do not have<span className="count">{String(PENDING.length).padStart(2, "0")}</span>
-            </p>
-            <DisclosureList
-              tone="absent"
-              items={PENDING.map((d) => ({ title: d.item, body: d.state }))}
-            />
-            {/* ONE LINE, NOT A SECTION. This used to be a full-bleed pale band of its own
-                headed "Why we publish that", two blocks below the list it explains, with a red
-                marquee of the same absences in between and a closing panel restating the
-                position a third time. The page said the same thing three times in three
-                treatments.
-
-                A list of things a company does not have, with no sentence saying why it is
-                published, reads as a confession rather than a position — so the sentence stays.
-                It just sits under the list it belongs to, at body weight, and takes one line
-                instead of a screen. */}
-            <p className="body-text text-style-muted approach-promise">{PENDING_PROMISE}</p>
           </div>
 
           <p className="body-text text-style-muted approach-rural">{REACH_GAP.rural}</p>

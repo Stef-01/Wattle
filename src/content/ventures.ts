@@ -12,7 +12,10 @@
  * against memory.
  */
 
-export type VentureStatus = "live" | "building" | "paused";
+/* "scoping" is earlier than "building" and the distinction is load-bearing: a venture in build
+   has something running, and one in scoping has a question and no answer yet. Collapsing the two
+   would let the second entry borrow the first one's credibility. */
+export type VentureStatus = "live" | "building" | "scoping" | "paused";
 
 export interface Venture {
   slug: string;
@@ -65,10 +68,35 @@ export const VENTURES: ReadonlyArray<Venture> = [
       "The public clinician directory is gated and not live.",
     ],
   },
+  {
+    slug: "reach",
+    name: "Reach",
+    status: "scoping",
+    summary:
+      "Early work on service engagement in Aboriginal and Torres Strait Islander health — why people entitled to a service do not use it, and what the service would have to change to be worth using.",
+    problem:
+      "Engagement is almost always measured as a property of the patient: did they attend, did they follow up, did they comply. We think it is mostly a property of the service, and that very little health software is built to test that idea.",
+    built: [
+      "Nothing. This is a question we are working on, not a product we are building.",
+    ],
+    areas: [],
+    areasNote:
+      "No areas are named because none have been agreed with anybody. Naming one would imply a relationship that does not exist.",
+    href: null,
+    open: [
+      /* THE FIRST LINE OF THE FIRST ENTRY A READER WILL CHECK. A non-Indigenous company listing
+         an Aboriginal and Torres Strait Islander health venture with no partnership named is the
+         thing that should be questioned, so it is stated before anybody has to ask. */
+      "This is not Indigenous-led, and nothing here is done in partnership yet. No community organisation, governance arrangement or advisory relationship is in place. None will be claimed before it exists, and the work does not proceed past scoping without one.",
+      "Whether the right output is software at all. It may be that the useful contribution is research, or funding somebody already doing this.",
+      "The name. Reach is what we call it internally; it is not a brand and may not survive.",
+    ],
+  },
 ];
 
 export const STATUS_LABEL: Record<VentureStatus, string> = {
   live: "Live",
   building: "In build",
+  scoping: "Scoping",
   paused: "Paused",
 };

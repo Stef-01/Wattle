@@ -73,7 +73,8 @@ export default function CompanyPage() {
                 that gate is never softened to let one through.
               </p>
               <p className="body-text" style={{ marginTop: "1rem" }}>
-                One venture, in build. We are specific about being early.
+                Two ventures: one in build, one still being scoped. We are specific about being
+                early, because the alternative is letting you assume otherwise.
               </p>
             </div>
           </div>

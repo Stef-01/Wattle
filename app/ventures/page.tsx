@@ -18,7 +18,7 @@ export const metadata: Metadata = {
  * display face over a flat brand hue, because the spec allows one colour per section and a
  * borrowed palette would put twelve hues on a ten-hue site.
  *
- * ONE VENTURE MEANS THE PAGE CAN BE GENEROUS. A portfolio of one does not need a grid — it needs
+ * A SHORT LIST MEANS THE PAGE CAN BE GENEROUS. Two entries do not need a grid — they need
  * a plate. Each venture gets a full band of its own, so a second entry extends the page rather
  * than shrinking the first into a third of a row.
  *
@@ -42,7 +42,7 @@ export default function VenturesPage() {
 
       <Ticker
         className="is-white"
-        items={["One venture", "In build", "Not yet at its own address", "Sydney and the Gold Coast"]}
+        items={["Two ventures", "One in build, one in scoping", "Neither at its own address", "Sydney and the Gold Coast"]}
       />
 
       {VENTURES.map((venture) => {
@@ -124,7 +124,7 @@ export default function VenturesPage() {
         <div className="padding-global">
           <div className="cta-block is-eucalypt">
             <h2 className="heading-style-h4">
-              A portfolio of one says so, rather than padding the page with a roadmap
+              A list this short says so, rather than padding the page with a roadmap
             </h2>
             <Link href="/contact" className="button button-pressed">Ask what is live</Link>
           </div>
