@@ -36,13 +36,13 @@ export const metadata: Metadata = {
  * `Organization`, NOT `MedicalOrganization`. The brief asked for MedicalOrganization "where
  * applicable" and it is not applicable: Wattle Technologies writes software, it does not provide
  * medical care, and claiming a medical schema type to a search engine is the machine-readable
- * version of holding yourself out as a health service. ADHD.ME is declared as a `brand` because
+ * version of holding yourself out as a health service. ADHDME is declared as a `brand` because
  * that is what it is — a product of this company, not a subsidiary entity.
  *
  * DELIBERATELY ABSENT: foundingDate, address, numberOfEmployees, founder, hasCredential, and any
  * rating or review markup. The first five are facts nobody has supplied (src/content/company.ts,
  * UNCONFIRMED); rating and review markup is prohibited for regulated health services and is
- * banned by the ADHD.ME tree's own compliance laws, which this site does not escape by being the
+ * banned by the ADHDME tree's own compliance laws, which this site does not escape by being the
  * parent company.
  */
 const ORGANIZATION_JSONLD = {
@@ -56,7 +56,7 @@ const ORGANIZATION_JSONLD = {
       email: COMPANY.email,
       description: COMPANY.tagline,
       areaServed: { "@type": "Country", name: "Australia" },
-      brand: { "@type": "Brand", name: "ADHD.ME" },
+      brand: { "@type": "Brand", name: "ADHDME" },
       knowsLanguage: "en-AU",
     },
     {

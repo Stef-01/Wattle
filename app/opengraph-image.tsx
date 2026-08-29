@@ -45,7 +45,7 @@ export default function OpengraphImage() {
           Health software for the parts of the system people cannot reach.
         </div>
 
-        <div style={{ display: "flex", fontSize: 26, color: "#a8b394" }}>Australia · ADHD.ME</div>
+        <div style={{ display: "flex", fontSize: 26, color: "#a8b394" }}>Australia · ADHDME</div>
       </div>
     ),
     size,

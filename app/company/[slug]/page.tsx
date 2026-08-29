@@ -13,7 +13,7 @@ import { TEAM, TEAM_PUBLIC, monogram, given } from "@/content/team";
  * is on this page in plain flow.
  *
  * NOTHING IS WRITTEN HERE THAT IS NOT ALREADY IN THE REGISTER. src/content/team.ts holds facts
- * supplied by their subjects and transcribed from ADHD.ME. A profile page is exactly the place
+ * supplied by their subjects and transcribed from ADHDME. A profile page is exactly the place
  * where a paragraph of plausible biography would get invented to fill the space, so this page
  * renders the register and stops. A person with one affiliation and no role gets a short page.
  */

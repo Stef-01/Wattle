@@ -26,11 +26,6 @@ export const metadata: Metadata = {
  * tree and a stock image would be the one dishonest thing on a page about honesty.
  */
 export default function ApproachPage() {
-  const bands = [
-    { hue: "is-wattle", label: PRACTICE[0]?.title },
-    { hue: "is-eucalypt", label: PRACTICE[1]?.title },
-    { hue: "is-lorikeet", label: PRACTICE[2]?.title },
-  ];
 
   return (
     <>
@@ -50,32 +45,22 @@ export default function ApproachPage() {
         </div>
       </section>
 
-      {/* THE BAND STAYS. Three flat hues rather than a photograph, because there is no
-          photography in this tree and a stock image would be the one dishonest thing on a page
-          about honesty. */}
-      <div className="cols-3" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
-        {bands.map((b) => (
-          <div
-            key={b.label}
-            className={b.hue}
-            style={{ minHeight: "17vw", padding: "1.5vw", display: "flex", alignItems: "flex-end" }}
-          >
-            <p className="heading-style-h5">{b.label}</p>
-          </div>
-        ))}
-      </div>
-
       {/* THE DEFINITION. The page turns on this, so it gets a section of its own and the widest
           type on the page after the headline. A company that builds health systems should be
           able to say what it thinks one IS, in its own words, without reaching for a diagram. */}
       <section className="section is-black">
         <div className="padding-global">
           <p className="text-style-tag">{SYSTEM_DEFINITION.tag}</p>
-          <p className="definition-lead">{SYSTEM_DEFINITION.lead}</p>
-          <div className="definition-body">
+          {/* Two columns: the definition holds the left, what follows from it holds the right.
+              Stacked, the lead sat in a narrow measure with two-thirds of the page empty beside
+              it — generous is one thing, unfinished is another. */}
+          <div className="definition">
+            <p className="definition-lead">{SYSTEM_DEFINITION.lead}</p>
+            <div className="definition-body">
             {SYSTEM_DEFINITION.body.map((para) => (
               <p className="body-text" key={para.slice(0, 24)}>{para}</p>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

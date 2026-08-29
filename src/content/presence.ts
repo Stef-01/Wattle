@@ -6,7 +6,7 @@
  * whose entire thesis is that people cannot reach care does not get to imply national coverage
  * it does not have. The empty middle IS the argument.
  *
- * Sourced from ADHD.ME's coverage map and Organization JSON-LD, re-checked 2026-08-23.
+ * Sourced from ADHDME's coverage map and Organization JSON-LD, re-checked 2026-08-23.
  */
 
 export interface Place {

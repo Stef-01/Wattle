@@ -34,16 +34,17 @@ export default function VenturesPage() {
         <div className="padding-global">
           <p className="text-style-tag">Ventures — {String(VENTURES.length).padStart(2, "0")}</p>
           <h1 className="heading-style-h1" style={{ marginTop: "1.5vw" }}>What we build.</h1>
-          <p className="subheading-hero max-width-medium" style={{ marginTop: "2vw" }}>
-            Each entry says what exists today, where it operates, and what has not been settled —
-            in that order, and without softening the third
-          </p>
+          {/* THE FORMAT NO LONGER EXPLAINS ITSELF. This was a 25-word uppercase line describing
+              the shape of the entries below it — "each entry says what exists today, where it
+              operates, and what has not been settled, in that order". A page that has to
+              announce its own structure before showing it is a page that does not trust the
+              structure. The entries say it by being it. */}
         </div>
       </section>
 
       <Ticker
         className="is-white"
-        items={["Two ventures", "One in build, one in scoping", "Neither at its own address", "Sydney and the Gold Coast"]}
+        items={["Three ventures", "One live", "One in build", "One still a question"]}
       />
 
       {VENTURES.map((venture) => {
@@ -55,12 +56,15 @@ export default function VenturesPage() {
         const mechanism = rest.join(" — ");
         return (
         <div key={venture.slug} id={venture.slug}>
-          {/* The dominant visual: the venture's name at plate scale on a flat hue. */}
-          <section
-            className="grad-wattle-eucalypt"
-            style={{ display: "grid", placeItems: "center", padding: "7vw var(--gutter)", containerType: "inline-size" }}
-          >
-            <p className="display-wordmark" style={{ fontSize: "min(12vw, 15cqw)" }}>{venture.name}</p>
+          {/* THE PLATE IS BLACK NOW.
+
+              It was a full-bleed gold-to-green gradient with the name in heavy black display
+              type. That was tolerable when there was one venture. At three it is the same loud
+              band three times down one page, and the register is supposed to read as a list of
+              facts rather than as three product launches. The name is still the dominant thing
+              on its plate; it just no longer arrives on a colour field. */}
+          <section className="venture-plate">
+            <p className="display-wordmark">{venture.name}</p>
           </section>
 
           <section className="section is-black">
@@ -90,7 +94,7 @@ export default function VenturesPage() {
 
                   It used to be a full section on the front page: a headline about most of
                   Australia being unreached, and a three-column list of the two areas with one of
-                  them marked as having nobody in it. That is a fact about ADHD.ME's matching, not
+                  them marked as having nobody in it. That is a fact about ADHDME's matching, not
                   about Wattle Technologies, and on the company's front page it read as the
                   company's own footprint. Here it sits under the product it is true of, at the
                   size a qualifier should be.
@@ -135,7 +139,17 @@ export default function VenturesPage() {
 
               {venture.href ? (
                 <p style={{ marginTop: "3vw" }}>
-                  <a className="button" href={venture.href}>Visit {venture.name}</a>
+                  {/* New tab with rel, matching how every other outbound link on this site
+                      behaves — a visitor following a venture to its own site has not finished
+                      with the register they were reading. */}
+                  <a
+                    className="button"
+                    href={venture.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Visit {venture.name}
+                  </a>
                 </p>
               ) : (
                 /* No link while the product has no address of its own. A company site does not

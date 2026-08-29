@@ -40,9 +40,8 @@ export default function AccessibilityPage() {
           <div className="body-text max-width-medium">
             <p>
               We build this site to <strong>WCAG 2.2 Level AA</strong>. We are not claiming
-              conformance to it. Conformance is a measured result, and no independent audit of
-              this site has been carried out — so the honest statement is the target plus the
-              evidence below.
+              conformance to it. Conformance is measured, and nobody has audited this site. So
+              what follows is the target and the evidence, not a badge.
             </p>
           </div>
         </div>
@@ -64,17 +63,16 @@ export default function AccessibilityPage() {
               </li>
               <li>
                 <strong>The animated field is optional.</strong> The
-                generative wattle field on the home page is decorative and carries no information.
-                It never loads at all under reduced motion, on Data Saver or a slow connection, on
-                a small screen, or on a lower-powered device — a hand-drawn version is already on
-                screen before that decision is made, and nothing waits for it.
+                generative wattle field is decorative and carries no information. It never loads
+                under reduced motion, Data Saver, a slow connection or a low-powered device. A
+                drawn version is already on screen before that decision is made.
               </li>
               <li>
-                <strong>Motion you can stop.</strong> The home page
-                carries a <em>Pause motion</em> control. The wattle spray moves on its own and keeps
-                moving past five seconds, which under WCAG 2.2.2 needs a way to stop it — and a
-                system-level motion preference does not discharge that, because it only serves
-                readers who set one in advance.
+                <strong>Motion you can stop.</strong> A <em>Pause
+                motion</em> control sits in the site menu, reachable from every page. The spray
+                moves past five seconds, which WCAG 2.2.2 says needs a stop — and a system motion
+                preference does not discharge that, since it only serves readers who set one in
+                advance.
               </li>
               <li>
                 <strong>Text resizing and zoom.</strong> Layouts use
@@ -83,15 +81,14 @@ export default function AccessibilityPage() {
               </li>
               <li>
                 <strong>Keyboard access.</strong> Every control is a
-                real button or link, there is a skip link to the main content, and one focus style
-                is used site-wide.
+                real button or link. There is a skip link, and one focus style site-wide.
               </li>
               <li>
                 <strong>Structure.</strong> One{" "}
                 <code style={{ fontSize: "0.9em" }}>h1</code> per page, headings in order, named
                 landmarks, and alternative text on every image that carries meaning. Decorative
-                graphics — the wattle sprig and the mark — are hidden from assistive technology
-                rather than described.
+                graphics — the wordmark's glyph, the section dividers and the field behind the
+                Acknowledgement — are hidden from assistive technology rather than described.
               </li>
             </ul>
           </div>
@@ -103,8 +100,8 @@ export default function AccessibilityPage() {
             <ul className="stack body-text">
               <li>
                 <strong>Screen-reader testing.</strong> This site has
-                not been tested end to end with NVDA, JAWS or VoiceOver by a person who uses one.
-                Automated checks are not a substitute and we are not going to present them as one.
+                not been tested with NVDA, JAWS or VoiceOver by somebody who uses one. Automated
+                checks are not a substitute and we will not present them as one.
               </li>
               <li>
                 <strong>Testing with people with disability.</strong>{" "}

@@ -48,7 +48,7 @@ export function SiteFooter() {
             </nav>
             <nav aria-labelledby="f-work">
               <h2 id="f-work">Work</h2>
-              <Link href="/ventures">ADHD.ME</Link>
+              <Link href="/ventures">ADHDME</Link>
               {/* WAS "What we do not have", which named a section of /approach that has since
                   been removed. A footer link is a promise about what is on the other side of it;
                   leaving the old label would have sent a reader looking for a list that is not
@@ -72,7 +72,7 @@ export function SiteFooter() {
           <div className="footer-meta">
             <span>© {year} {COMPANY.name}</span>
             <span>{COMPANY.locations.join(" · ")}, {COMPANY.country}</span>
-            <span>ADHD.ME is a {COMPANY.shortName} product</span>
+            <span>ADHDME is a {COMPANY.shortName} product</span>
           </div>
         </div>
       </div>

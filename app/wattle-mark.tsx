@@ -2,7 +2,7 @@
  * THE MARK — a wattle sprig.
  *
  * Acacia pycnantha, the golden wattle: small gold spheres clustered along a stem over
- * grey-green foliage. It is drawn rather than photographed for the reason the ADHD.ME tree
+ * grey-green foliage. It is drawn rather than photographed for the reason the ADHDME tree
  * gives about portraits — a mark this company will actually use should be a file somebody
  * owns, and until a designer supplies one, a geometric sprig is honest about being a
  * placeholder that still holds the brand's shape.

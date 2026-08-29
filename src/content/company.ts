@@ -1,11 +1,11 @@
 /**
  * THE COMPANY REGISTER — the one place a fact about Wattle Technologies is written down.
  *
- * The law of this file is the law the ADHD.ME tree runs on, carried over deliberately: a
+ * The law of this file is the law the ADHDME tree runs on, carried over deliberately: a
  * sentence about a real company or a real person ships only if somebody actually said it.
  * Nothing here was inferred, rounded up, or written to fill a gap in a layout.
  *
- * Everything in CONFIRMED is derivable from the ADHD.ME repository itself (its README, its
+ * Everything in CONFIRMED is derivable from the ADHDME repository itself (its README, its
  * Organization JSON-LD, its compliance suite). Everything a corporate site would normally
  * carry and this one does NOT — ABN, incorporation date, registered office, headcount,
  * investors, clients, revenue, awards — is listed in UNCONFIRMED below rather than invented,
@@ -23,14 +23,14 @@ export const COMPANY = {
    */
   tagline: "We build health software for the parts of the system people cannot reach.",
   /**
-   * Country of operation. Stated because ADHD.ME's own structured data names Australian places
+   * Country of operation. Stated because ADHDME's own structured data names Australian places
    * served; NOT elaborated into a head-office address, which nobody has supplied.
    */
   country: "Australia",
   /**
    * WHERE THE COMPANY IS, which is a different claim from where its product reaches.
    *
-   * `PRESENCE` in presence.ts is ADHD.ME's SERVICE COVERAGE — the areas its matching claims to
+   * `PRESENCE` in presence.ts is ADHDME's SERVICE COVERAGE — the areas its matching claims to
    * serve, and the note that one of them has no clinician in it. These two are the cities the
    * company's own people work from. Conflating them is the mistake this comment exists to
    * prevent: a reader who sees "Sydney, Gold Coast" under the company name and then meets the
@@ -42,7 +42,7 @@ export const COMPANY = {
    */
   locations: ["Sydney", "Gold Coast"] as const,
   /**
-   * Contact. Today this is the address ADHD.ME already publishes in its Organization JSON-LD,
+   * Contact. Today this is the address ADHDME already publishes in its Organization JSON-LD,
    * so putting it here discloses nothing new. REPLACE with a company address (hello@…) the day
    * the domain exists — this constant is the only place it appears.
    */
@@ -58,16 +58,16 @@ export const COMPANY = {
 export const UNCONFIRMED: ReadonlyArray<{ item: string; why: string }> = [
   { item: "ABN / ACN and registered entity name", why: "Required on Australian commercial pages and invoices. No company register entry has been supplied to this tree." },
   { item: "Date of incorporation", why: "Every 'founded in ____' on a company site is either a fact or a fabrication. This one is not yet a fact." },
-  { item: "Registered office / principal place of business", why: "ADHD.ME names Beecroft NSW and the Gold Coast QLD as areas SERVED. An area served is not an address." },
-  { item: "Headcount and roles", why: "The ADHD.ME team page is gated by founder direction while the team is still forming — see src/content/team.ts." },
+  { item: "Registered office / principal place of business", why: "ADHDME names Beecroft NSW and the Gold Coast QLD as areas SERVED. An area served is not an address." },
+  { item: "Headcount and roles", why: "The ADHDME team page is gated by founder direction while the team is still forming — see src/content/team.ts." },
   { item: "Ownership, funding and cap table", why: "No investor, grant or ownership document has been shown to this tree." },
-  { item: "Privacy policy and terms for the corporate entity", why: "ADHD.ME has its own at /privacy and /terms. Wattle Technologies as a company has not published either, and one product's policy does not cover the parent." },
+  { item: "Privacy policy and terms for the corporate entity", why: "ADHDME has its own at /privacy and /terms. Wattle Technologies as a company has not published either, and one product's policy does not cover the parent." },
   { item: "Insurance, clinical governance and complaints route", why: "A company selling into general practice is asked for all three. None is recorded here." },
 ];
 
 /**
  * What the company does, in the terms the product itself uses. Each line is traceable to the
- * ADHD.ME tree rather than to a positioning exercise.
+ * ADHDME tree rather than to a positioning exercise.
  *
  * TWO LENGTHS, ONE CLAIM. `short` is what the home page shows — a single sentence, because a
  * visitor scrolling a front page is deciding whether to keep reading, not studying a position.

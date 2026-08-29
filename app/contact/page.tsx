@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 const ROUTES = [
   { t: "You fund or commission services", d: "Ask what is actually live. The answer is: not much, in two areas." },
   { t: "You run a general practice", d: "Send the care areas and languages your clinicians work in. That is all we match on." },
-  { t: "You are looking for assessment", d: "We are not clinicians. ADHD.ME points you to a GP — the conversation is with them." },
+  { t: "You are looking for assessment", d: "We are not clinicians. ADHDME points you to a GP — the conversation is with them." },
   { t: "You want to work with us", d: "No roles listed, no process yet. Write anyway." },
   { t: "Something on our sites is wrong", d: "Tell us. If it is about a real person, it jumps the queue." },
   { t: "You hit an accessibility barrier", d: "Tell us what stopped you. We log it as a defect, not as feedback." },

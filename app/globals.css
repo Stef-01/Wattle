@@ -176,9 +176,14 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
 h1,h2,h3,h4,h5,h6{ margin:0 }
 .heading-style-h1,.heading-style-h2,.heading-style-h3,.heading-style-h4,
 .display-footer,.display-wordmark{ overflow-wrap:break-word }
-.heading-style-h1{ text-wrap:balance; font-family:var(--font-display); font-size:8em; line-height:.95; letter-spacing:-.06em }
-.heading-style-h2{ text-wrap:balance; font-family:var(--font-display); font-size:6em; line-height:1;   letter-spacing:-.06em }
-.heading-style-h3{ text-wrap:balance; font-family:var(--font-display); font-size:4em; line-height:1;   letter-spacing:-.06em }
+/* THE DISPLAY LADDER CAME DOWN. 8/6/4em was a poster scale: an h1 ran to about 120px on a
+   1440px screen and filled its band edge to edge, which is a wordmark's job and not a
+   sentence's. Every page opened by shouting before it said anything. The face and the tight
+   tracking stay — this is still the same design language — it is just no longer the loudest
+   thing possible at every level. */
+.heading-style-h1{ text-wrap:balance; font-family:var(--font-display); font-size:5.4em; line-height:.98; letter-spacing:-.05em }
+.heading-style-h2{ text-wrap:balance; font-family:var(--font-display); font-size:4.2em; line-height:1;   letter-spacing:-.05em }
+.heading-style-h3{ text-wrap:balance; font-family:var(--font-display); font-size:3.1em; line-height:1.02; letter-spacing:-.05em }
 .heading-style-h4{ font-size:3em;    font-weight:700; line-height:1;   letter-spacing:-.06em }
 .heading-style-h5{ font-size:2.25em; font-weight:700; line-height:1;   letter-spacing:-.06em }
 .heading-style-h6{ font-size:1.45em; font-weight:700; line-height:1.2; letter-spacing:-.03em }
@@ -201,8 +206,8 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 .max-width-small{ max-width:50% }
 
 @media (max-width:991px){
-  .heading-style-h1{font-size:6em} .heading-style-h2{font-size:5em}
-  .heading-style-h3{font-size:3em} .heading-style-h4{font-size:2.5em}
+  .heading-style-h1{font-size:4.2em} .heading-style-h2{font-size:3.6em}
+  .heading-style-h3{font-size:2.6em} .heading-style-h4{font-size:2.2em}
 }
 
 /* THE LADDER INVERTED ITSELF ON PHONES, and it put a horizontal scrollbar on every page that
@@ -223,8 +228,8 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    then it breaks it rather than breaking the page. A broken word in a brutalist poster is a
    house style; a sideways-scrolling page is a defect. */
 @media (max-width:479px){
-  .heading-style-h1{font-size:2.8em} .heading-style-h2{font-size:2.5em}
-  .heading-style-h3{font-size:2.05em} .heading-style-h4{font-size:1.75em}
+  .heading-style-h1{font-size:2.5em} .heading-style-h2{font-size:2.2em}
+  .heading-style-h3{font-size:1.9em} .heading-style-h4{font-size:1.65em}
   .display-footer{ font-size:9vw }
   .heading-style-h5{font-size:2em}
   .max-width-medium,.max-width-small,.display-footer{max-width:100%}
@@ -984,6 +989,14 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
                 letter-spacing:-.02em; max-width:34ch; margin:0 0 var(--space-3xl) }
 .approach-list{ margin-bottom:var(--space-3xl) }
 .approach-list .text-style-tag{ margin-bottom:var(--space-s) }
+/* THE VENTURE PLATE. Black, with the name at plate scale and a hairline above it to separate one
+   entry from the last. A rule does the dividing a colour band used to do, at a fraction of the
+   noise. */
+.venture-plate{ display:grid; place-items:center; container-type:inline-size;
+                padding:6vw var(--gutter) 5vw;
+                border-top:var(--rule) solid rgb(255 255 255 / .18) }
+.venture-plate .display-wordmark{ font-size:min(11vw,14cqw); color:var(--white) }
+
 /* WHERE TO START. Two columns: the heading holds the left, the rows hold the right — the
    reference's calm split rather than one long stack of paragraphs down the middle of the page. */
 .start{ display:grid; grid-template-columns:.55fr 1fr; gap:var(--space-3xl);
@@ -1055,11 +1068,15 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
 
 /* THE DEFINITION. Set larger than body copy and smaller than a heading — it is a sentence to be
    read, not a headline to be scanned, and the size is what says which. */
-.definition-lead{ font-family:var(--font-editorial); font-size:2.1em; line-height:1.22;
-                  letter-spacing:-.02em; max-width:24ch; margin:.6em 0 0; text-wrap:balance }
-.definition-body{ margin-top:var(--space-l); max-width:62ch;
-                  display:flex; flex-direction:column; gap:1em }
-@media (max-width:767px){ .definition-lead{ font-size:1.6em; max-width:none } }
+.definition{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-3xl);
+             align-items:start; margin-top:.6em }
+.definition-lead{ font-family:var(--font-editorial); font-size:2em; line-height:1.22;
+                  letter-spacing:-.02em; max-width:22ch; margin:0; text-wrap:balance }
+.definition-body{ margin:0; max-width:52ch; display:flex; flex-direction:column; gap:1em }
+@media (max-width:991px){
+  .definition{ grid-template-columns:1fr; gap:var(--space-l) }
+  .definition-lead{ font-size:1.6em; max-width:none }
+}
 
 /* The neglected problems. Two columns of ruled rows on a wide screen; one on a phone. Ruled
    rather than carded, so they read as a list of conditions rather than as four product claims. */

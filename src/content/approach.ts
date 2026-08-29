@@ -24,9 +24,9 @@ export const SYSTEM_DEFINITION = {
   tag: "What we mean by a health system",
   lead: "A health system is not a building, a platform or a database. It is a small number of people trying to hold one person's care between them.",
   body: [
-    "Everything that helps them do that is the system. Everything else is what they work around — and most software written for health in the last thirty years has been written to record care rather than to help anyone deliver it. The record got better. The holding did not.",
-    "So we design for the parts that are load-bearing and human: a clinician's judgement, a person's own account of themselves, the handover between two people who will never meet. Those cannot be automated away and should not be. What can go is the accumulated clutter around them — the forms that exist because a form existed, the steps nobody chose, the friction that quietly decides who gets seen.",
-    "Remove enough of that and a team works the way a team is supposed to. That is the whole of it, and it is harder than it sounds.",
+    "Everything that helps them do that is the system. Everything else is what they work around.",
+    "Thirty years of health software was built to record care, not to deliver it. The record got better. The holding did not.",
+    "So we keep what is load-bearing and human — a clinician's judgement, a person's own account of themselves, the handover between two people who will never meet — and remove the clutter around it. The forms that exist because a form existed. The friction that quietly decides who gets seen.",
   ],
 } as const;
 
@@ -41,22 +41,22 @@ export const SYSTEM_DEFINITION = {
 export const NEGLECTED: ReadonlyArray<{ title: string; body: string }> = [
   {
     title: "The people who never arrive",
-    body: "Health services measure the people who reach them. The person who called four practices, got four waiting lists, and stopped calling is not in anybody's data — and their absence reads, in every dashboard, as a need that does not exist.",
+    body: "Services measure the people who reach them. Someone who called four practices, got four waiting lists and stopped calling is in nobody's data. In every dashboard, their absence reads as a need that does not exist.",
   },
   {
     title: "Referral as a dead end",
-    body: "A referral is treated as the end of an episode. For the person holding it, it is the beginning of one: finding somebody who takes it, is accepting patients, speaks their language, and is close enough to actually attend. Nobody owns that gap, so it is where people are lost.",
+    body: "For the clinician it closes an episode. For the person holding it, it opens one — find somebody who takes it, is accepting patients, speaks their language, and is close enough to reach. Nobody owns that gap. It is where people are lost.",
   },
   {
     title: "The distance nobody costs",
-    body: "Specialist care concentrates where specialists concentrate, which is not where a large share of Australians live. A referral that requires a day of driving is a referral many people will not use, and it is recorded as a referral made.",
+    body: "Specialists concentrate where specialists already are, which is not where a large share of Australians live. A referral needing a day of driving is one many people will not use. It is recorded as a referral made.",
   },
   {
     title: "Coordination as unpaid work",
-    body: "The work of keeping a person's care coherent across several clinicians is real, skilled and largely unfunded. It falls to whoever will do it — usually the patient, or someone who loves them.",
+    body: "Keeping care coherent across several clinicians is real, skilled work, and largely unfunded. It falls to whoever will do it — usually the patient, or someone who loves them.",
   },
 ];
 
 /** The lede beneath the headline. */
 export const APPROACH_LEDE =
-  "Most health software is built for the moment a person arrives. We build for everything before that — the part that quietly decides whether they arrive at all.";
+  "Most health software is built for the moment a person arrives. We build for everything before it.";

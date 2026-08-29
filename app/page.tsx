@@ -80,7 +80,7 @@ export default function HomePage() {
       {/* 2. TICKER */}
       <Ticker
         className="is-wattle text-colour-black"
-        items={["Health software", "Australia", "ADHD.ME in build", "Access before quality"]}
+        items={["Health software", "Australia", "ADHDME in build", "Access before quality"]}
       />
 
       {/* 3. STATEMENT.

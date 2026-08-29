@@ -1,11 +1,11 @@
 /**
  * THE VENTURE REGISTER.
  *
- * One entry today. A list rather than a hand-written "our product" page because the second
+ * Three entries: one in build, one live, one still a question. A list rather than a hand-written "our product" page because the second
  * entry is what breaks a hand-written one, and because a venture that is not live yet must be
  * able to sit here with `status: "building"` and no claims attached to it.
  *
- * EVERY LINE IS TRANSCRIBED FROM THE ADHD.ME TREE — its public copy, its coverage map and its
+ * EVERY LINE IS TRANSCRIBED FROM THE ADHDME TREE — its public copy, its coverage map and its
  * compliance suite — and re-checked against that tree on 2026-08-23. Nothing was upgraded on
  * the way across: "indicative" stayed indicative and the open decisions stayed open. When the
  * product moves, this file is what goes stale, so check it against the source rather than
@@ -31,7 +31,7 @@ export interface Venture {
   areas: readonly string[];
   /**
    * THE QUALIFIER THAT KEEPS `areas` HONEST. Naming two focus areas implies a clinician in
-   * each, and today there is not one: ADHD.ME's own flow tells a Gold Coast reader, in as many
+   * each, and today there is not one: ADHDME's own flow tells a Gold Coast reader, in as many
    * words, that every listed GP is in Beecroft. A company site that printed the two area names
    * and stopped would be making the claim the product itself refuses to make.
    */
@@ -44,8 +44,8 @@ export interface Venture {
 
 export const VENTURES: ReadonlyArray<Venture> = [
   {
-    slug: "adhd-me",
-    name: "ADHD.ME",
+    slug: "adhdme",
+    name: "ADHDME",
     status: "building",
     summary:
       "ADHD assessment you can actually reach — a finder that matches people to GPs who do ADHD assessment, and a console for the practices doing it.",
@@ -66,6 +66,31 @@ export const VENTURES: ReadonlyArray<Venture> = [
       "The name asserts a diagnosis, and needs an Ahpra review of the name itself.",
       "Every public figure is indicative until it is checked against its source.",
       "The public clinician directory is gated and not live.",
+    ],
+  },
+  {
+    slug: "bay-health",
+    name: "Bay Health",
+    status: "live",
+    summary:
+      "An integrative general practice in Double Bay, led by Dr Anubhav Saxena. Testing first, then a plan built from what the testing found.",
+    problem:
+      "A ten-minute consult rarely has enough to go on. This is the other model — investigate properly, then decide — and it is the only venture here where the care is actually delivered rather than routed.",
+    /* TRANSCRIBED FROM bayhealth.com.au, 2026-08-29, and nothing is inferred past it. These are
+       services the practice lists as available; they are not claims about what those services
+       achieve, and none is written here as an outcome. */
+    built: [
+      "Functional testing for digestive and microbiome function.",
+      "Blood panels put together against a patient's own history.",
+      "IV and injectable therapy on site, under clinical supervision.",
+      "Retesting over time, so a plan is reviewed against results rather than assumed.",
+    ],
+    areas: ["Double Bay, NSW"],
+    areasNote: "One practice, one address: 2 Cooper Street, Double Bay.",
+    href: "https://bayhealth.com.au",
+    open: [
+      "Everything above is transcribed from the practice's own public site rather than confirmed from inside it. Where the two disagree, the practice is right and this page is stale.",
+      "How the practice and the software side relate is not settled, and nothing is shared between them today.",
     ],
   },
   {

@@ -126,9 +126,8 @@ export default function CompanyPage() {
             {/* The advisory board a company like this is expected to list does not exist.
                 Saying so where a visitor looks for it beats letting them conclude we forgot. */}
             <p className="body-text text-style-muted roster-caveat">
-              There is no clinical or scientific advisory board. Clinicians are involved in
-              building the product, which is not the same thing, and we will not describe it as one
-              until it is constituted.
+              There is no advisory board. Clinicians help build the product, which is not the
+              same thing.
             </p>
           </div>
         </section>
@@ -144,18 +143,15 @@ export default function CompanyPage() {
                 We build the part of care that happens before care.
               </p>
               <p className="body-text" style={{ marginTop: "1.5rem" }}>
-                Not the consultation, the diagnosis or the prescription — the step before all of
-                them, where a person looking for help either finds somebody they can reach or gives
-                up.
+                Not the consultation or the diagnosis. The step before both, where a person either
+                finds somebody they can reach or gives up.
               </p>
               <p className="body-text" style={{ marginTop: "1rem" }}>
-                Wattle Technologies is the company behind ADHD.ME, kept separate from it so a page
-                about partnerships never routes through the product&rsquo;s regulatory gate, and
-                that gate is never softened to let one through.
+                We are the company behind ADHDME, kept separate from it so a page about
+                partnerships never routes through the product&rsquo;s regulatory gate.
               </p>
               <p className="body-text" style={{ marginTop: "1rem" }}>
-                Two ventures: one in build, one still being scoped. We are specific about being
-                early, because the alternative is letting you assume otherwise.
+                Three ventures: one practice open, one product in build, one still a question.
               </p>
             </div>
           </div>
