@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SiteNav } from "./site-nav";
+import { SmoothScroll } from "./smooth-scroll";
 import { Reveal } from "./reveal";
 import { SiteFooter } from "./site-footer";
 import { SITE_URL } from "./site";
@@ -81,6 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <SmoothScroll />
+        <div className="scroll-progress" aria-hidden="true" />
         <SiteNav />
         <main id="main">{children}</main>
         <SiteFooter />

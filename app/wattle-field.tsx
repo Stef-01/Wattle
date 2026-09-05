@@ -467,6 +467,36 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const io = new IntersectionObserver(([e]) => { onScreen = e?.isIntersecting ?? true; }, { threshold: 0 });
     io.observe(host);
 
+    /* ---- THE FIELD STOPS DRAWING WHILE A FINGER IS SCROLLING -----------------------------
+       On a phone this is the last thing competing with the scroller, and it is worth naming
+       precisely why it can be paused at all: on this tier the bloom runs on its OWN clock, not
+       on scroll position, so the plant is not mid-way through anything a scroll is driving. It
+       is drifting. Nobody watching a page fly past is reading a drift.
+
+       iOS composites the scroll on another thread. Everything the main thread does during that
+       scroll — a React render, a rAF, a full WebGL scene — is contention, and a scene redraw is
+       by far the largest item on the list. Skipping it hands the whole frame budget back to the
+       one thing the reader is actually looking at, which is the page moving.
+
+       The last frame stays on the canvas throughout, so the plant does not blink or vanish; it
+       simply holds still for the length of the gesture and picks up where it left off. Desktop
+       is untouched, because there the field IS scroll-driven and freezing it would freeze the
+       bloom the scroll is supposed to be opening.
+
+       PASSIVE, AND NOT A SCROLL HANDLER THAT DOES WORK. This listener sets a boolean and
+       schedules a timeout. It reads no layout, touches no DOM, and cannot itself become the
+       jank it exists to prevent. */
+    let scrolling = false;
+    let scrollIdle = 0;
+    const onScroll = () => {
+      scrolling = true;
+      window.clearTimeout(scrollIdle);
+      /* 140ms after the last scroll event. Long enough to cover the gaps between events during
+         a slow drag, short enough that the plant is moving again before a reader has settled. */
+      scrollIdle = window.setTimeout(() => { scrolling = false; }, 140);
+    };
+    if (lowPower) window.addEventListener("scroll", onScroll, { passive: true });
+
     /* ---- the shot ----
 
        THE SCROLL IS THE ANIMATION NOW, and this is the fix to a contradiction rather than a
@@ -536,6 +566,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
     const frame = () => {
       const paused = document.documentElement.dataset["motion"] === "paused";
       if (!onScreen || document.hidden) return;
+      /* See onScroll above. Phone only, and only because the bloom is not scroll-driven there. */
+      if (scrolling) { lastFrame = performance.now(); return; }
 
       const now = performance.now();
       if (paused) { if (pausedSince === null) pausedSince = now; }
@@ -663,6 +695,8 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
 
     return () => {
       renderer.setAnimationLoop(null);
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(scrollIdle);
       io.disconnect(); ro.disconnect(); sectionIO.disconnect();
       stage.removeEventListener("pointerdown", onClick);
       window.removeEventListener("pointermove", onPointerMove);

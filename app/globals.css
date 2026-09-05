@@ -265,6 +265,30 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    Shipping a moving part I cannot see is worse than a header that is simply consistent — and
    the reference's own frame carries a dark band across the top, so this is not a compromise
    dressed as a decision. */
+/* SCROLL PROGRESS — ZERO JAVASCRIPT AND ZERO MAIN-THREAD COST.
+
+   `animation-timeline: scroll(root block)` ties the transform to the document scroller itself,
+   which the browser runs on the compositor. A scroll handler reading scrollY and setting a width
+   would be the textbook version of the jank this whole pass is trying to remove: a main-thread
+   read plus a layout-triggering write, on every scroll event, on the device least able to afford
+   it. scaleX is compositor-only.
+
+   Unsupported browsers (Firefox, early 2026) simply never run it, and the bar rests at scaleX(0)
+   — invisible, which is the correct absence for something purely decorative. It is aria-hidden
+   for the same reason: scroll position is already conveyed by the scrollbar. */
+.scroll-progress{ position:fixed; inset:0 0 auto; height:2px; z-index:1000;
+                  transform-origin:0 50%; transform:scaleX(0);
+                  background:var(--wattle); pointer-events:none }
+@supports (animation-timeline: scroll()){
+  .scroll-progress{ animation:scroll-progress linear both;
+                    animation-timeline:scroll(root block) }
+}
+@keyframes scroll-progress{ from{ transform:scaleX(0) } to{ transform:scaleX(1) } }
+/* Nothing to indicate until the gate is open, and a gold bar creeping across a black opening
+   shot is exactly the kind of chrome that gate exists without. */
+body:has(main .hero):not(.entered) .scroll-progress{ opacity:0 }
+@media (prefers-reduced-motion:reduce){ .scroll-progress{ animation:none } }
+
 .nav-block{ position:fixed; inset:0 0 auto; z-index:999;
             padding:var(--space-2xs) 0; background:var(--black); color:var(--white) }
 .nav-wrapper{ display:grid; grid-template-columns:1fr 1fr 1fr;
