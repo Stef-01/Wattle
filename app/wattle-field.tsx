@@ -507,7 +507,21 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
        Sibling to `?field=force`, and for the same reason: the bloom is time- and scroll-driven,
        so two screenshots of the same build land at different phases and cannot be compared.
        Pinning it makes a visual diff mean something. Review-only — it changes nothing about
-       what a visitor sees, because without the parameter `pinned` is null. */
+       what a visitor sees, because without the parameter `pinned` is null.
+
+       IT PINS THE INPUT, NOT THE OUTPUT, AND THAT DISTINCTION IS THE WHOLE POINT.
+
+       It used to substitute for `target` and for `bloom` directly, which meant a pinned frame
+       never ran the derivation underneath: not `travelled`, not the intro ramp, not the max()
+       that composes them. The harness photographed a path no visitor takes. Break the scroll
+       measurement — invert the max(), read the wrong rect, return 0 where it should return 1 —
+       and every pinned screenshot still comes out perfect, because none of that arithmetic was
+       on the pinned path at all. A check that cannot fail is not a check.
+
+       So the parameter now supplies the JOURNEY POSITION the scroll would have supplied, and
+       everything downstream runs exactly as it does for a visitor. Only the smoothing is
+       neutralised — the tail is a transient, and a transient is the one thing a screenshot must
+       not catch mid-flight. Same determinism, real code path. */
     const bloomParam = new URLSearchParams(window.location.search).get("bloom");
     const pinned = bloomParam === null ? null : Math.max(0, Math.min(1, Number(bloomParam)));
 
@@ -543,7 +557,7 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       const clock = now - started - elapsedAtPause;
       const intro = Math.min(1, clock / INTRO_MS);
       // The leaves arrive on the intro's clock and stay; scroll never takes them away again.
-      uLeafIn.value = pinned !== null ? 1 : easeOut(Math.min(1, clock / LEAF_MS));
+      uLeafIn.value = easeOut(Math.min(1, (pinned !== null ? pinned : clock / LEAF_MS)));
 
       /* ON A PHONE THE BLOOM IS NOT DRIVEN BY SCROLL AT ALL, AND THIS IS THE FIX FOR THE
          STUTTER THAT SURVIVED EVERYTHING ELSE.
@@ -566,7 +580,10 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
          the meaning. A wide screen keeps the scroll-driven version, where the scroller is
          synchronous and it works. */
       let travelled = 0;
-      if (lowPower) {
+      if (pinned !== null) {
+        // Stand in for the scroll read; every line below this still runs.
+        travelled = pinned;
+      } else if (lowPower) {
         travelled = Math.min(1, Math.max(0, (clock - LEAF_MS * 0.55) / PHONE_BLOOM_MS));
         travelled = easeOut(travelled);
       } else if (document.body.classList.contains("entered")) {
@@ -583,12 +600,14 @@ export function WattleField({ heads, dustCount, bokehCount, stamensPerHead, maxP
       /* max(), not a handover. The bud must never shut because someone scrolled back up past
          the intro's own progress, and the scroll must be able to run ahead of the intro if a
          visitor starts moving immediately. Whichever is further open, wins. */
-      const target = pinned ?? Math.max(easeOut(intro) * BUD, BUD + travelled * (1 - BUD));
+      const target = Math.max(easeOut(intro) * BUD, BUD + travelled * (1 - BUD));
       /* Scroll-linked motion is smoothed but never lagged far enough to feel disconnected from
          the wheel — 9 per second is roughly a 110ms tail. */
       /* The 9-per-second tail existed to hide scroll lag. Driven by its own clock there is no
          lag to hide, and a slower approach is smoother. */
-      bloom = pinned ?? bloom + (target - bloom) * approach(intro < 1 ? 12 : lowPower ? 4 : 9);
+      // Pinned: land ON the target rather than wherever the tail happened to be. The damping
+      // is the only thing switched off, so a screenshot is deterministic without being fictional.
+      bloom = pinned !== null ? target : bloom + (target - bloom) * approach(intro < 1 ? 12 : lowPower ? 4 : 9);
       uBloom.value = bloom;
 
       /* THE DOLLY. Wide on the bud, push in through the opening, pull back once open — the
