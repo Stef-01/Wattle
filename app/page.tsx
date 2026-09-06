@@ -98,7 +98,7 @@ export default function HomePage() {
       <section className="section grad-wattle-eucalypt text-colour-black">
         <div className="padding-global">
           <h1 className="statement-lead reveal">{COMPANY.tagline}</h1>
-          <p className="subheading-hero max-width-medium reveal" style={{ marginTop: "2vw" }}>
+          <p className="subheading-hero max-width-medium reveal" style={{ marginTop: "var(--space-l)" }}>
             The routing layer of care — the part that decides whether anyone reaches a clinician
           </p>
         </div>

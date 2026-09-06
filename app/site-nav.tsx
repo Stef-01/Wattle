@@ -109,13 +109,13 @@ export function SiteNav() {
               "Insights" grid pretending to be one. */}
           <div className="menu-right">
             <p className="text-style-tag">In build</p>
-            <h2 className="heading-style-h3" style={{ marginTop: "1vw" }}>
+            <h2 className="heading-style-h3" style={{ marginTop: "var(--space-s)" }}>
               {VENTURES[0]?.name}
             </h2>
-            <p className="body-text" style={{ marginTop: "1vw", maxWidth: "34ch" }}>
+            <p className="body-text" style={{ marginTop: "var(--space-s)", maxWidth: "34ch" }}>
               {VENTURES[0]?.summary}
             </p>
-            <p style={{ marginTop: "2vw" }}>
+            <p style={{ marginTop: "var(--space-l)" }}>
               <Dialog.Close asChild>
                 <Link href="/ventures" className="button button-small">
                   See the venture

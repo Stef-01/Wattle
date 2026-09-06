@@ -29,17 +29,17 @@ export default function ApproachPage() {
 
   return (
     <>
-      <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
+      <section className="section is-black page-head">
         <div className="padding-global">
           <p className="text-style-tag">Approach</p>
           {/* "How we work" described the company to itself. This names who the work is for, and
               it is the one sentence on the site that says what makes this company different from
               every other piece of health software: everyone else is built for the moment
               somebody arrives. */}
-          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>
+          <h1 className="heading-style-h1" style={{ marginTop: "var(--space-s)" }}>
             Built for the people who never arrive.
           </h1>
-          <p className="subheading-large max-width-medium" style={{ marginTop: "2vw" }}>
+          <p className="subheading-large max-width-medium" style={{ marginTop: "var(--space-l)" }}>
             {APPROACH_LEDE}
           </p>
         </div>

@@ -25,12 +25,12 @@ export function SiteFooter() {
                 One address, read by the people building it. No form — there is nowhere for one to
                 post yet, and we would rather say so.
               </p>
-              <p style={{ marginTop: "1.5vw" }}>
+              <p style={{ marginTop: "var(--space-m)" }}>
                 <a href={`mailto:${COMPANY.email}`} className="button button-pressed">
                   {COMPANY.email}
                 </a>
               </p>
-              <p className="text-style-tag" style={{ marginTop: "1vw", opacity: 0.6 }}>
+              <p className="text-style-tag" style={{ marginTop: "var(--space-s)", opacity: 0.6 }}>
                 Replies Mon–Fri · AEST/AEDT
               </p>
             </div>

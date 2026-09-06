@@ -22,11 +22,11 @@ export const metadata: Metadata = {
 export default function AccessibilityPage() {
   return (
     <>
-      <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
+      <section className="section is-black page-head">
         <div className="padding-global">
           <p className="text-style-tag">Accessibility</p>
-          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>Accessibility.</h1>
-          <p className="subheading-large max-width-medium" style={{ marginTop: "2vw" }}>
+          <h1 className="heading-style-h1" style={{ marginTop: "var(--space-s)" }}>Accessibility.</h1>
+          <p className="subheading-large max-width-medium" style={{ marginTop: "var(--space-l)" }}>
             What we build to, what is checked automatically on every commit, and what has not been
             verified yet.
           </p>

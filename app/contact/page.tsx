@@ -46,15 +46,15 @@ const ROUTES = [
 export default function ContactPage() {
   return (
     <>
-      <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
+      <section className="section is-black page-head">
         <div className="padding-global">
           <p className="text-style-tag">Contact</p>
-          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>Write to us.</h1>
-          <p className="subheading-large max-width-medium" style={{ marginTop: "2vw" }}>
+          <h1 className="heading-style-h1" style={{ marginTop: "var(--space-s)" }}>Write to us.</h1>
+          <p className="subheading-large max-width-medium" style={{ marginTop: "var(--space-l)" }}>
             One address, read by the people building the thing. No form — there is nowhere for one
             to post yet, and we would rather say so than collect your details into a void.
           </p>
-          <p style={{ marginTop: "2.5vw" }}>
+          <p style={{ marginTop: "var(--space-l)" }}>
             <a href={`mailto:${COMPANY.email}`} className="button button-pressed">
               {COMPANY.email}
             </a>

@@ -295,6 +295,14 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    5. LAYOUT
    -------------------------------------------------------------------------- */
 .section{ padding:var(--space-3xl) 0; position:relative }
+/* SECTIONS WERE DOUBLE-PADDING AT EVERY SEAM. Every .section paid --space-3xl top AND bottom, so
+   two stacked on the same black ground left 173px of void between them at 1440 — read as an
+   unfinished page rather than a quiet one. Minimalism is a tighter, more consistent rhythm, not
+   more emptiness. Collapse the seam so the gap between sections IS --space-3xl, once. */
+.section + .section:not(.page-head){ padding-block-start:0 }
+/* One rhythm for every page's opening block, replacing five inline paddingTop:"11vw"/"12vw" that
+   the class gate could not see and that had no floor on a phone or ceiling on a monitor. */
+.page-head{ padding-block:var(--space-5xl) var(--space-xl) }
 .padding-global{ padding-left:var(--gutter); padding-right:var(--gutter) }
 
 .inner-section-wrapper{ display:grid; grid-template-columns:.5fr 1fr;
@@ -366,8 +374,11 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    sequence hijacks the scroll for its own length, which modern-web-design lists as Pitfall 6 and
    which on a phone is the difference between a page and a hostage situation. The narrative is
    carried by the beats arriving in order, which is what a reader actually perceives. */
-.beats{ counter-reset:beat; display:flex; flex-direction:column; gap:var(--space-4xl);
-        margin:var(--space-3xl) 0 0; padding:0; list-style:none }
+/* THE GAP WAS BIGGER THAN THE BEAT. Each beat is 70-100px of text and 4xl put 115px of nothing
+   after it, so four related statements read as four unrelated ones adrift on a black field.
+   Grouping is proximity: the space inside a run has to be smaller than the space around it. */
+.beats{ counter-reset:beat; display:flex; flex-direction:column; gap:var(--space-2xl);
+        margin:var(--space-2xl) 0 0; padding:0; list-style:none }
 .beat{ display:grid; grid-template-columns:auto 1fr; gap:var(--space-l); align-items:start }
 .beat::before{
   counter-increment:beat; content:counter(beat,decimal-leading-zero);
@@ -375,7 +386,7 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
   padding-top:.5em;
 }
 .beat-body{ max-width:52ch }
-.beat h3{ margin:0 0 .45em }
+.beat h3{ margin:0 0 .45em; text-wrap:balance }
 @media (max-width:767px){ .beat{ grid-template-columns:1fr; gap:var(--space-2xs) } }
 
 /* THE WORD REVEAL. Each word brightens as the block crosses the viewport, staggered by its
@@ -1012,6 +1023,12 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
    only — nothing here introduces a colour outside the ten.
    ========================================================================== */
 .plate{ background:var(--black); color:var(--white); padding:var(--space-4xl) 0 }
+/* .plate paints black onto an already-black page, so the seam above it shows nothing — the
+   section's bottom padding and the plate's top padding stacked to 202px of invisible void. It is
+   not a band the reader can see, so it does not need the clearance a visible band would.
+   (.venture-plate is left alone: it carries a border-top, so that space separates content from a
+   rule the reader can actually see, and removing it would run the text into the line.) */
+.section + .plate{ padding-block-start:var(--space-l) }
 .plate-grid{ display:grid; grid-template-columns:1fr 1.15fr .85fr;
              column-gap:var(--space-2xl); row-gap:var(--space-xl); align-items:start }
 @media (max-width:991px){ .plate-grid{ grid-template-columns:1fr } }
@@ -1239,16 +1256,21 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
 /* --------------------------------------------------------------------------
    THE PHYLLODE DIVIDER — a section rule drawn as leaves, not as a line.
    -------------------------------------------------------------------------- */
-.phyllode-divider{ width:100%; padding:var(--space-xl) 0; line-height:0 }
+.phyllode-divider{ width:100%; padding:var(--space-l) 0; line-height:0 }
 /* A CENTRED ORNAMENT, NOT AN EDGE-TO-EDGE RULE. The viewBox is 320x34 and keeps its aspect,
    so stretched to the full column width it letterboxed and the leaves bunched into the middle
    third anyway. Making that explicit is better than fighting it: a small botanical motif on the
    page's centre line reads as deliberate, and it matches the axis the rest of this page uses.
    `preserveAspectRatio:none` was the alternative and it would have flattened every sickle. */
-.phyllode-divider svg{ display:block; width:min(100%,22em); height:auto; margin:0 auto;
+/* IT WAS INVISIBLE, WHICH IS WORSE THAN ABSENT. stroke-width .6 on a 320-unit viewBox drawn at
+   22em is a two-thirds-of-a-pixel hairline, and .5 opacity halved it again: eight leaves at
+   ~44px each, rendering as flecks rather than a motif. A decorative mark nobody can resolve
+   reads as dirt on the screen. Wider box gives each phyllode room to be a shape, and a heavier
+   stroke at lower opacity keeps the same overall lightness while making the edge continuous. */
+.phyllode-divider svg{ display:block; width:min(84%,32em); height:auto; margin:0 auto;
                        overflow:visible }
 .phyllode-divider path{
-  fill:none; stroke:currentColor; stroke-width:.6; stroke-linejoin:round; opacity:.5;
+  fill:none; stroke:currentColor; stroke-width:1.2; stroke-linejoin:round; opacity:.4;
   /* pathLength="1" on the element normalises every curve to a length of one, so this hides it
      and an offset of zero draws it — at any size, with nothing measured in JavaScript. */
   stroke-dasharray:1;
@@ -1547,8 +1569,13 @@ body:has(main .hero):not(.entered) footer { display:none }
    animation is a paragraph nobody finishes. */
 .gate-lead{ font-family:var(--font-editorial); font-size:2em; line-height:1.22;
             letter-spacing:-.02em; color:var(--white); margin:0 0 .8em; text-wrap:balance }
-.gate-line{ font-family:var(--font-editorial); font-size:1.12em; line-height:1.55;
-            letter-spacing:-.005em; color:rgb(255 255 255 / .74); margin:0 }
+/* THE ONE PARAGRAPH THAT IS NOT SERIF. Instrument Serif is a display face: high stroke
+   contrast, hairline thins. That is why it is right at 2em and wrong here. This is the longest
+   read on the site, it is white-on-black — which optically thins strokes further — and it sits
+   over a moving plant. Set it in the grotesque and it survives all three. The lead above it
+   stays serif, so the editorial voice is intact and only the load-bearing text changed. */
+.gate-line{ font-family:var(--font-ui); font-size:1.06em; line-height:1.6; font-weight:400;
+            letter-spacing:-.005em; color:rgb(255 255 255 / .78); margin:0 }
 
 .gate-binomial{ font-family:var(--font-editorial); font-style:italic; font-size:2.6em;
                 line-height:1; letter-spacing:-.02em; color:var(--wattle); margin:0 }

@@ -30,10 +30,10 @@ export default function VenturesPage() {
   return (
     <>
       {/* Upper-left headline over a full-bleed ground — the Parable move. */}
-      <section className="section is-black" style={{ paddingTop: "12vw", paddingBottom: "8vw" }}>
+      <section className="section is-black page-head">
         <div className="padding-global">
           <p className="text-style-tag">Ventures — {String(VENTURES.length).padStart(2, "0")}</p>
-          <h1 className="heading-style-h1" style={{ marginTop: "1.5vw" }}>What we build.</h1>
+          <h1 className="heading-style-h1" style={{ marginTop: "var(--space-m)" }}>What we build.</h1>
           {/* THE FORMAT NO LONGER EXPLAINS ITSELF. This was a 25-word uppercase line describing
               the shape of the entries below it — "each entry says what exists today, where it
               operates, and what has not been settled, in that order". A page that has to
@@ -74,17 +74,17 @@ export default function VenturesPage() {
                 <div>
                   <h2 className="heading-style-h3">{claim}</h2>
                   {mechanism ? (
-                    <p className="subheading-large max-width-medium" style={{ marginTop: "1.5vw" }}>
+                    <p className="subheading-large max-width-medium" style={{ marginTop: "var(--space-m)" }}>
                       {mechanism.charAt(0).toUpperCase() + mechanism.slice(1)}
                     </p>
                   ) : null}
-                  <p className="body-text max-width-medium" style={{ marginTop: "2vw" }}>{venture.problem}</p>
+                  <p className="body-text max-width-medium" style={{ marginTop: "var(--space-l)" }}>{venture.problem}</p>
                   {venture.areas.length > 0 ? (
-                    <p className="text-style-mono" style={{ marginTop: "2vw" }}>
+                    <p className="text-style-mono" style={{ marginTop: "var(--space-l)" }}>
                       {venture.areas.join("  /  ")}
                     </p>
                   ) : null}
-                  <p className="body-text text-style-muted" style={{ marginTop: ".75vw", maxWidth: "52ch" }}>
+                  <p className="body-text text-style-muted" style={{ marginTop: "var(--space-s)", maxWidth: "52ch" }}>
                     {venture.areasNote}
                   </p>
                 </div>
@@ -118,10 +118,10 @@ export default function VenturesPage() {
               ) : null}
 
               {/* Equal weight, deliberately. */}
-              <div className="card-grid two-up" style={{ marginTop: "2vw" }}>
+              <div className="card-grid two-up" style={{ marginTop: "var(--space-l)" }}>
                 <div>
                   <p className="text-style-tag">What exists</p>
-                  <ul className="rule-list" style={{ marginTop: "1vw" }}>
+                  <ul className="rule-list" style={{ marginTop: "var(--space-s)" }}>
                     {venture.built.map((line) => (
                       <li key={line} className="body-text">{line}</li>
                     ))}
@@ -129,7 +129,7 @@ export default function VenturesPage() {
                 </div>
                 <div>
                   <p className="text-style-tag">Still open</p>
-                  <ul className="rule-list" style={{ marginTop: "1vw" }}>
+                  <ul className="rule-list" style={{ marginTop: "var(--space-s)" }}>
                     {venture.open.map((line) => (
                       <li key={line} className="body-text">{line}</li>
                     ))}
@@ -138,7 +138,7 @@ export default function VenturesPage() {
               </div>
 
               {venture.href ? (
-                <p style={{ marginTop: "3vw" }}>
+                <p style={{ marginTop: "var(--space-xl)" }}>
                   {/* New tab with rel, matching how every other outbound link on this site
                       behaves — a visitor following a venture to its own site has not finished
                       with the register they were reading. */}
@@ -154,7 +154,7 @@ export default function VenturesPage() {
               ) : (
                 /* No link while the product has no address of its own. A company site does not
                    send visitors to a preview deployment. */
-                <p className="text-style-mono" style={{ marginTop: "3vw", opacity: 0.65 }}>
+                <p className="text-style-mono" style={{ marginTop: "var(--space-xl)", opacity: 0.65 }}>
                   Not yet published at its own address
                 </p>
               )}

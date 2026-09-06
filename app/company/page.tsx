@@ -40,13 +40,13 @@ export default function CompanyPage() {
 
           Centred, because the section this page exists for is a symmetry of two. The rest of
           the site keeps its left axis; this is the one page whose subject is a pair. */}
-      <section className="section is-black" style={{ paddingTop: "11vw", paddingBottom: "3vw" }}>
+      <section className="section is-black page-head">
         <div className="padding-global centre-axis">
           <p className="text-style-tag">Company</p>
-          <h1 className="heading-style-h1" style={{ marginTop: "1vw" }}>
+          <h1 className="heading-style-h1" style={{ marginTop: "var(--space-s)" }}>
             A company built around one question.
           </h1>
-          <p className="subheading-large" style={{ marginTop: "2vw" }}>
+          <p className="subheading-large" style={{ marginTop: "var(--space-l)" }}>
             Whether a person who needs a clinician can actually reach one. Everything Wattle
             Technologies builds sits downstream of that.
           </p>
