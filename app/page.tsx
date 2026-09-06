@@ -8,6 +8,9 @@ import { Starfield } from "./starfield";
 import { PerfProbe } from "./perf-probe";
 import { BEATS, EMBLEM } from "@/content/emblem";
 import { Ticker } from "./ticker";
+import { DragRail } from "./drag-rail";
+import { RevealWords, CountUp } from "./story";
+import { STATUS_LABEL as VSTATUS } from "@/content/ventures";
 
 /**
  * HOME — the page architecture from the spec: gate, ticker, statement, card grid, featured
@@ -18,7 +21,7 @@ import { Ticker } from "./ticker";
  * reading as a clown suit.
  */
 export default function HomePage() {
-  const lead = VENTURES[0];
+  const PRESENCE_COUNT = 2;
 
   return (
     <>
@@ -117,6 +120,7 @@ export default function HomePage() {
               // black-on-eucalypt) and the hover shadow stays gold on this black section.
               <article
                 className="card reveal"
+                data-tilt
                 key={item.title}
                 style={i === 1 ? { background: "var(--eucalypt)" } : undefined}
               >
@@ -130,36 +134,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. FEATURED 50/50 — the venture, in one bordered card. */}
-      {lead ? (
-        <section className="section is-black">
-          <div className="padding-global">
-            <article className="card card-featured reveal">
-              {/* NOT .card-media — that class absolutely positions every child to fill a fixed-ratio
-                  image box, which is right for a photo and wrong for type. A plain panel keeps
-                  the wordmark in normal flow where it can actually be seen. */}
-              <div className="is-wattle" style={{ display: "grid", placeItems: "center", padding: "2vw", containerType: "inline-size", minHeight: "18vw" }}>
-                <p className="display-wordmark" style={{ color: "var(--black)" }}>
-                  {lead.name}
-                </p>
-              </div>
-              <div className="card-body" style={{ padding: "2vw" }}>
-                <p className="text-style-tag">{STATUS_LABEL[lead.status]}</p>
-                <h3 className="heading-style-h4" style={{ marginTop: ".5vw" }}>
-                  ADHD assessment you can actually reach
-                </h3>
-                <p className="body-text" style={{ marginTop: "1vw" }}>{lead.problem}</p>
-                <p className="text-style-mono" style={{ marginTop: "1.5vw" }}>
-                  {lead.areas.join(" / ")}
-                </p>
-                <p style={{ marginTop: "1.5vw" }}>
+      {/* 5. THE VENTURES, AS A RAIL YOU CAN THROW.
+
+          Was a single featured card for the one venture that existed. There are three now, and a
+          rail is the honest shape for a register that is going to keep growing — a native
+          scroller with snap, so touch gets platform momentum and a keyboard can tab through it,
+          with pointer-drag added on top for the one input that has no native equivalent. */}
+      <section className="section is-black">
+        <div className="padding-global">
+          <div className="inner-section-wrapper">
+            <p className="text-style-tag">What we build<span className="count">{String(VENTURES.length).padStart(2, "0")}</span></p>
+            <h2 className="heading-style-h3 reveal">Three ventures, at three different stages.</h2>
+          </div>
+        </div>
+        <DragRail label="Ventures">
+          {VENTURES.map((v) => (
+            <article className="card" data-tilt key={v.slug}>
+              <div className="card-body">
+                <p className="text-style-tag">{VSTATUS[v.status]}</p>
+                <h3 className="heading-style-h5" style={{ marginTop: ".4em" }}>{v.name}</h3>
+                <p className="body-text" style={{ marginTop: "1em" }}>{v.summary}</p>
+                <p style={{ marginTop: "1.4em" }}>
                   <Link href="/ventures" className="button button-small">The full entry</Link>
                 </p>
               </div>
             </article>
+          ))}
+        </DragRail>
+      </section>
+
+      {/* 6. THE NARRATIVE. Four beats, arriving in order as they cross the fold.
+
+          NOT PINNED. A pinned sequence takes the scroll hostage for its own length, which the
+          skill lists as Pitfall 6 and which on a phone is the difference between reading a page
+          and being driven through one. The order is carried by the beats arriving in order,
+          which is the part a reader actually perceives.
+
+          The copy is the four commitments already in the register — no new claims were written
+          for a storytelling section, because a narrative built out of sentences invented to fill
+          beats is exactly the thing this site's gates exist to prevent. */}
+      <section className="section is-black has-bloom" id="how-it-works">
+        {/* Two clusters, different sizes and drift phases, well off the reading column. */}
+        <span className="bloom-bg" aria-hidden="true"
+              style={{ width: "38vw", height: "38vw", right: "-8vw", top: "6%" }} />
+        <span className="bloom-bg" aria-hidden="true"
+              style={{ width: "22vw", height: "22vw", left: "-6vw", bottom: "12%" }} />
+        <div className="padding-global">
+          <div className="inner-section-wrapper">
+            <p className="text-style-tag">How it works</p>
+            <div>
+              <h2 className="heading-style-h3 reveal">Four commitments, in the order they apply.</h2>
+              <RevealWords
+                className="subheading-large"
+                text="Each one is enforced somewhere a person can check rather than promised on a page."
+              />
+            </div>
           </div>
-        </section>
-      ) : null}
+
+          <ol className="beats">
+            {PRACTICE.map((item) => (
+              <li className="beat" key={item.title}>
+                <div className="beat-body">
+                  <h3 className="heading-style-h5">{item.title}</h3>
+                  <RevealWords className="body-text" text={item.short} />
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          {/* THE NUMBERS, INCLUDING THE ZERO. Every figure is one the register can source, and
+              one of them is nought — a stats band is where a company reaches for lives improved,
+              and this one has no outcomes data and says so. The zero is the honest number. */}
+          <div className="stats">
+            <CountUp to={VENTURES.length} label="Ventures" note="One live, one in build, one still a question." />
+            <CountUp to={PRESENCE_COUNT} label="Areas named" note="Sydney and the Gold Coast." />
+            <CountUp to={0} label="Clinicians on the Gold Coast" note="A declared focus area with nobody in it yet." />
+          </div>
+        </div>
+      </section>
 
       {/* 7. CTA BLOCK */}
       <section className="section is-black">

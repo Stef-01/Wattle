@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import * as Dialog from "@radix-ui/react-dialog";
 import { DOORS, FOOTER_DOORS } from "./site";
 import { COMPANY } from "@/content/company";
@@ -23,6 +24,10 @@ import { WattleGlyph } from "./wattle-glyph";
  */
 export function SiteNav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  /* Exact match, or a section root for its children — /company/vikram should still light
+     "Company" rather than nothing. */
+  const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -55,11 +60,12 @@ export function SiteNav() {
           {/* LEFT, BLACK: the destinations, set as display type. */}
           <nav className="menu-left" aria-label="Primary">
             {DOORS.map((door, i) => (
-              <div className="menu-group" key={door.href}>
+              <div className="menu-group" key={door.href} style={{ ["--i" as string]: String(i) }}>
                 <Dialog.Close asChild>
                   <Link
                     href={door.href}
                     className="display-nav"
+                    aria-current={isCurrent(door.href) ? "page" : undefined}
                     /* One link per menu takes the accent, to give the eye an entry point
                        rather than four identical slabs. */
                     style={i === 0 ? { color: "var(--wattle)" } : undefined}
@@ -87,8 +93,8 @@ export function SiteNav() {
           </div>
 
           <ul className="menu-links">
-              {FOOTER_DOORS.map((d) => (
-                <li key={d.href}>
+              {FOOTER_DOORS.map((d, i) => (
+                <li key={d.href} style={{ ["--i" as string]: String(DOORS.length + i) }}>
                   <Dialog.Close asChild>
                     <Link href={d.href}>{d.label}</Link>
                   </Dialog.Close>

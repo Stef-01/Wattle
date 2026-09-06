@@ -91,7 +91,7 @@ export default function CompanyPage() {
                   {/* THE WHOLE TILE IS THE LINK, not the name inside it. A hover target that is
                       smaller than the thing that visibly responds to hover is the commonest way
                       an interaction like this ends up feeling broken. */}
-                  <Link href={`/company/${member.slug}`} className="roster-entry">
+                  <Link href={`/company/${member.slug}`} className="roster-entry" data-tilt>
                     {/* THE FRAME IS ALWAYS THERE; WHAT FILLS IT CHANGES. At rest it carries the
                         monogram, so the resting composition is two framed panels and two names
                         rather than two names over a reserved void. The photograph fades in on

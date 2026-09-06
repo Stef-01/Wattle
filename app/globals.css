@@ -21,6 +21,14 @@
    -------------------------------------------------------------------------- */
 :root{
   /* Ten hues, plus black and white. Nothing outside this list, ever. */
+  /* THE PALETTE STAYS HEX RATHER THAN OKLCH, and this is a considered refusal of the skill's
+     token format rather than an oversight. OKLCH earns its keep when colours are being derived,
+     interpolated or themed at runtime; these ten are fixed, hand-picked, and already verified at
+     13/13 pairings above 4.5:1. Converting them would gain perceptual uniformity nobody is going
+     to exercise and would break scripts/contrast-gate.mjs, which parses `--name: #hex` to
+     enforce the ten-hue cap. Trading a working build gate for a format is a bad trade.
+     Everything else in the skill's token structure — fluid spacing, named durations, named
+     easings — is adopted below. */
   --black:#000; --white:#fff;
   --wattle:#ffc400;    /* signature gold  */
   --bloom:#ffe14d;     /* pale blossom    */
@@ -33,10 +41,23 @@
   --jacaranda:#6a4ba8; /* violet          */
   --ochre:#cbbfa6;     /* warm neutral    */
 
-  --space-3xs:.25vw; --space-2xs:.5vw;  --space-xs:.65vw;
-  --space-s:1vw;     --space-m:1.5vw;   --space-l:2vw;
-  --space-xl:3vw;    --space-2xl:4vw;   --space-3xl:6vw;
-  --space-4xl:8vw;   --space-5xl:10vw;  --space-6xl:12vw;
+  /* SPACING IS clamp() NOW, per modern-web-design's token structure — and it is a real fix,
+     not a format change. Raw vw spacing has no floor and no ceiling: --space-3xl at 6vw is 19px
+     on a 320px phone and 115px on a 1920px monitor, so the same token was cramped at one end and
+     cavernous at the other. Each step now states a minimum, a fluid middle and a maximum. The
+     scale and the names are unchanged, so nothing that consumes them had to move. */
+  --space-3xs:clamp(2px,  .25vw, 5px);
+  --space-2xs:clamp(4px,  .5vw,  9px);
+  --space-xs: clamp(6px,  .65vw, 12px);
+  --space-s:  clamp(8px,  1vw,   18px);
+  --space-m:  clamp(12px, 1.5vw, 27px);
+  --space-l:  clamp(16px, 2vw,   36px);
+  --space-xl: clamp(22px, 3vw,   54px);
+  --space-2xl:clamp(30px, 4vw,   72px);
+  --space-3xl:clamp(40px, 6vw,   108px);
+  --space-4xl:clamp(52px, 8vw,   144px);
+  --space-5xl:clamp(64px, 10vw,  180px);
+  --space-6xl:clamp(76px, 12vw,  216px);
 
   --gutter:3vw;
   --radius:15px;
@@ -46,6 +67,13 @@
   /* Two curves, three durations. That is the entire motion vocabulary. */
   --ease-quart:cubic-bezier(.165,.84,.44,1);
   --ease-cubic:cubic-bezier(.215,.61,.355,1);
+  /* ADDED FROM THE SKILL'S TOKEN SET. --ease-spring overshoots and settles, which is the curve
+     the magnetic release and the bloom-cluster scale-ins want: a wattle head opening does not
+     glide to a stop, it springs past and comes back. --ease-bloom is the same idea with the
+     overshoot pulled right down, for anything large enough that a visible bounce would read as
+     a glitch rather than as life. */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-bloom:cubic-bezier(.22,1.12,.36,1);
   --dur-fast:.3s; --dur-mid:.6s; --dur-slow:.8s;
   /* STATE FEEDBACK IS NOT AN ENTRANCE. Hover and press answer the pointer and belong in the
      100-200ms band; --dur-slow stays for reveals, where 800ms is doing real work. */
@@ -265,6 +293,165 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    Shipping a moving part I cannot see is worse than a header that is simply consistent — and
    the reference's own frame carries a dark band across the top, so this is not a compromise
    dressed as a decision. */
+/* --------------------------------------------------------------------------
+   BLOOM-CLUSTER PARALLAX — the Step 4 motif and the parallax requirement, one element.
+
+   A soft gold sphere, far behind the content, drifting at a different rate to the page. It is
+   the wattle head abstracted to its silhouette: a radial that is dense at the core and gone by
+   its own edge, which is what a floret cluster looks like out of focus. No literal flower, no
+   photograph.
+
+   THE PARALLAX IS A VIEW TIMELINE, NOT A SCROLL HANDLER. `animation-timeline: view()` ties the
+   drift to the element's own passage across the viewport and runs it on the compositor —
+   translate3d only, no layout property anywhere, nothing on the main thread. The usual parallax
+   implementation is a scroll listener writing `top` or `background-position` every frame, which
+   is a layout read and a layout write per frame and is the single most common source of scroll
+   jank on the web.
+
+   Displacement is 12% of its own height. modern-web-design and scroll-reveal-libraries both put
+   the ceiling around 20% before parallax stops reading as depth and starts reading as breakage.
+
+   Under reduced motion it holds still. It is a background; it does not need to move to be
+   understood, and depth cues are exactly the vestibular trigger the preference is about. */
+.bloom-bg{
+  position:absolute; z-index:0; pointer-events:none; border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,
+              rgb(255 196 0 / .16) 0%, rgb(255 196 0 / .07) 42%, rgb(255 196 0 / 0) 70%);
+  filter:blur(2px);
+  will-change:transform;
+}
+@supports (animation-timeline: view()){
+  .bloom-bg{ animation:bloom-drift linear both; animation-timeline:view();
+             animation-range:cover }
+}
+@keyframes bloom-drift{
+  from{ transform:translate3d(0,12%,0) scale(.94) }
+  to  { transform:translate3d(0,-12%,0) scale(1.06) }
+}
+@media (prefers-reduced-motion:reduce){ .bloom-bg{ animation:none; transform:none } }
+
+/* Any section carrying one has to clip it and establish a stacking context, or the sphere
+   escapes its band and sits over the section below. */
+.has-bloom{ position:relative; overflow:clip }
+.has-bloom > .padding-global{ position:relative; z-index:1 }
+
+/* --------------------------------------------------------------------------
+   STORYTELLING — beats, word reveal, counters.
+   -------------------------------------------------------------------------- */
+
+/* THE BEATS. Sequential blocks, each arriving as it crosses the fold. Not pinned: a pinned
+   sequence hijacks the scroll for its own length, which modern-web-design lists as Pitfall 6 and
+   which on a phone is the difference between a page and a hostage situation. The narrative is
+   carried by the beats arriving in order, which is what a reader actually perceives. */
+.beats{ counter-reset:beat; display:flex; flex-direction:column; gap:var(--space-4xl);
+        margin:var(--space-3xl) 0 0; padding:0; list-style:none }
+.beat{ display:grid; grid-template-columns:auto 1fr; gap:var(--space-l); align-items:start }
+.beat::before{
+  counter-increment:beat; content:counter(beat,decimal-leading-zero);
+  font-family:var(--font-mono); font-size:.8em; letter-spacing:.08em; color:var(--wattle);
+  padding-top:.5em;
+}
+.beat-body{ max-width:52ch }
+.beat h3{ margin:0 0 .45em }
+@media (max-width:767px){ .beat{ grid-template-columns:1fr; gap:var(--space-2xs) } }
+
+/* THE WORD REVEAL. Each word brightens as the block crosses the viewport, staggered by its
+   index. Compositor-run via a view timeline; the resting state is fully lit, so an unsupported
+   browser shows readable text rather than an empty paragraph. */
+.reveal-word{ display:inline-block; opacity:1 }
+@supports (animation-timeline: view()){
+  .reveal-words[data-split="1"] .reveal-word{
+    opacity:.16;
+    animation:word-lift linear both;
+    animation-timeline:view();
+    /* Each word occupies a slice of the block's passage, offset by its index — so the sentence
+       lights left to right as the paragraph rises, rather than all at once. */
+    animation-range:entry 12% cover calc(28% + (var(--i) / var(--n)) * 34%);
+  }
+}
+@keyframes word-lift{ from{ opacity:.16 } to{ opacity:1 } }
+
+/* THE STATS. One of these is a zero and it is the point — see app/story.tsx. */
+.stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-2xl);
+        margin-top:var(--space-2xl) }
+.stat{ display:flex; flex-direction:column; gap:.2em;
+       border-top:var(--rule) solid rgb(255 255 255 / .22); padding-top:var(--space-s) }
+.stat-num{ font-family:var(--font-display); font-size:3.4em; line-height:.9; color:var(--wattle) }
+.stat-label{ font-size:1.05em; font-weight:700 }
+.stat-note{ font-size:.95em; line-height:1.4; color:rgb(255 255 255 / .7); max-width:26ch }
+@media (max-width:767px){
+  .stats{ grid-template-columns:1fr; gap:var(--space-l) }
+  .stat-num{ font-size:2.6em }
+}
+
+/* --------------------------------------------------------------------------
+   DRAG CAROUSEL — native scroll-snap, plus pointer-drag with momentum.
+
+   THE TRACK IS A REAL SCROLLER, which is the decision everything else follows from. Touch gets
+   the platform's own momentum and snapping for free, a keyboard can tab through the cards and
+   the browser scrolls them into view, and a screen reader sees ordinary DOM. The JS below only
+   adds what a mouse lacks — press-and-drag — and hands the resulting velocity back to the
+   native scroller rather than animating position itself.
+   -------------------------------------------------------------------------- */
+.drag-rail{ display:flex; gap:var(--space-l); overflow-x:auto; overscroll-behavior-x:contain;
+            scroll-snap-type:x mandatory; scroll-padding-left:var(--gutter);
+            padding:var(--space-2xs) var(--gutter) var(--space-l);
+            /* The scrollbar is the one piece of chrome this design cannot absorb. Snapping and
+               the drag affordance already say the rail moves. */
+            scrollbar-width:none; -ms-overflow-style:none }
+.drag-rail::-webkit-scrollbar{ display:none }
+.drag-rail > *{ scroll-snap-align:start; flex:0 0 auto; width:min(30rem,78vw) }
+.drag-rail.is-dragging{ scroll-snap-type:none; cursor:grabbing; user-select:none }
+@media (hover: hover) and (pointer: fine){ .drag-rail{ cursor:grab } }
+@media (prefers-reduced-motion:reduce){ .drag-rail{ scroll-behavior:auto } }
+
+/* --------------------------------------------------------------------------
+   THE CURSOR LAYER. Dot pinned to the pointer, ring trailing behind it — the skill's
+   "circle/dot follower, delayed with easing" (§5a), with the state change on interactive
+   elements from §5b.
+
+   THE MOTIF IS THE RING. It is a wattle head: a soft circle that BLOOMS when the pointer meets
+   something it can act on — scaling out and thinning rather than filling in, the way a floret
+   shell opens. The palette's gold is the only colour it ever takes.
+
+   `mix-blend-mode: difference` so one cursor works over black sections, white sections and the
+   gold gradient without ever needing a per-section variant.
+
+   Only ever present when .has-cursor is set, which the controller only does on a fine pointer
+   with motion allowed. Nothing here exists on a touch device.
+   -------------------------------------------------------------------------- */
+.cursor-dot,.cursor-ring{ position:fixed; top:0; left:0; z-index:10000; pointer-events:none;
+                          border-radius:50%; mix-blend-mode:difference; will-change:transform }
+.cursor-dot{ width:6px; height:6px; background:var(--wattle) }
+.cursor-ring{ width:34px; height:34px; border:var(--rule) solid var(--wattle); opacity:.55;
+              transition:width var(--dur-ui) var(--ease-bloom),
+                         height var(--dur-ui) var(--ease-bloom),
+                         opacity var(--dur-ui) var(--ease-cubic) }
+/* The bloom: over anything actionable the ring opens and thins. */
+.cursor-over .cursor-ring{ width:58px; height:58px; opacity:.9 }
+.cursor-down .cursor-ring{ width:26px; height:26px; opacity:1 }
+
+/* The real cursor is hidden only once ours is proven to be running. If the controller never
+   mounts — touch, reduced motion, a thrown error — the system cursor is untouched, which is the
+   difference between a decorative effect and an unusable page. */
+.has-cursor,.has-cursor a,.has-cursor button,.has-cursor [role="button"]{ cursor:none }
+
+/* MAGNETIC AND TILT RELEASE. The follow is driven per-frame from JS with no transition, so it
+   tracks exactly; the transition below only ever applies when JS has cleared the inline
+   transform, which makes the RETURN springy without lagging the pull. --ease-spring is the
+   skill's own overshoot curve. */
+[data-magnetic],.button,[data-tilt]{ transition:transform var(--dur-mid) var(--ease-spring) }
+[data-tilt]{ transform-style:preserve-3d; will-change:transform }
+
+@media (prefers-reduced-motion:reduce){
+  .cursor-dot,.cursor-ring{ display:none }
+  [data-magnetic],.button,[data-tilt]{ transition:none }
+}
+/* Never over the gate: the landing shot is composed, and a dot chasing the pointer across it is
+   chrome on top of artwork. */
+body:has(main .hero):not(.entered) .cursor-dot,
+body:has(main .hero):not(.entered) .cursor-ring{ opacity:0 }
+
 /* SCROLL PROGRESS — ZERO JAVASCRIPT AND ZERO MAIN-THREAD COST.
 
    `animation-timeline: scroll(root block)` ties the transform to the document scroller itself,
@@ -329,8 +516,34 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
 .menu-toggle span{ width:.4vw; height:.4vw; min-width:4px; min-height:4px;
                    border-radius:100px; background:var(--white);
                    transition:background-color var(--dur-fast) var(--ease-cubic) }
+/* THE THREE DOTS MORPH INTO A CROSS — the skill's hamburger pattern (§4.1), adapted to the
+   mark this site already has. Its toggle was never three bars; it is three dots in a column,
+   which reads as a floret cluster. So the dots STRETCH into bars and rotate rather than being
+   swapped for a different icon: the same three elements travel to the new shape, which is what
+   makes a morph read as one object changing rather than two icons cross-fading.
+
+   Positioned absolutely inside the button so the transform has something stable to rotate
+   about — in the flex column they would each rotate around their own centre and miss. */
+.menu-toggle{ position:relative }
+.menu-toggle span:not(.sr-only){
+  position:absolute; left:50%; top:50%;
+  transition:width var(--dur-ui) var(--ease-bloom),
+             height var(--dur-ui) var(--ease-bloom),
+             opacity var(--dur-ui) var(--ease-cubic),
+             transform var(--dur-mid) var(--ease-spring),
+             background-color var(--dur-ui) var(--ease-cubic);
+}
+.menu-toggle span:not(.sr-only):nth-of-type(1){ transform:translate(-50%,-50%) translateY(-7px) }
+.menu-toggle span:not(.sr-only):nth-of-type(2){ transform:translate(-50%,-50%) }
+.menu-toggle span:not(.sr-only):nth-of-type(3){ transform:translate(-50%,-50%) translateY(7px) }
+
 .menu-toggle[aria-expanded="true"]{ background:var(--wattle); border-color:var(--wattle) }
-.menu-toggle[aria-expanded="true"] span{ background:var(--black) }
+.menu-toggle[aria-expanded="true"] span:not(.sr-only){ background:var(--black); border-radius:2px }
+.menu-toggle[aria-expanded="true"] span:not(.sr-only):nth-of-type(1){
+  width:17px; height:2px; transform:translate(-50%,-50%) rotate(45deg) }
+.menu-toggle[aria-expanded="true"] span:not(.sr-only):nth-of-type(2){ opacity:0; transform:translate(-50%,-50%) scale(.4) }
+.menu-toggle[aria-expanded="true"] span:not(.sr-only):nth-of-type(3){
+  width:17px; height:2px; transform:translate(-50%,-50%) rotate(-45deg) }
 
 .menu-overlay{ position:fixed; inset:0; z-index:998; width:100vw; height:100dvh;
                display:grid; grid-template-columns:1fr 1fr }
@@ -343,7 +556,35 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
             padding:6vw var(--gutter) var(--space-xl); height:100dvh; overflow:auto }
 .menu-right{ background:var(--white); color:var(--black);
              padding:6vw var(--gutter) var(--space-xl); height:100dvh; overflow:auto }
+/* STAGGERED ENTRANCE. Each destination arrives on its own beat — the skill's staggered reveal,
+   at 55ms, inside the 40-80ms band scroll-reveal-libraries specifies. The motion metaphor is the
+   raceme's: base to tip, one head at a time, never all at once.
+
+   Keyed off the overlay's own open state so it replays every time the menu opens, and set on
+   `.menu-group` rather than the link so the link keeps its own hover transform. */
 .menu-group{ margin-bottom:var(--space-l) }
+.menu-overlay[data-state="open"] .menu-group,
+.menu-overlay[data-state="open"] .menu-links li{
+  animation:menu-in-item var(--dur-slow) var(--ease-bloom) both;
+  animation-delay:calc(var(--i, 0) * 55ms + 80ms);
+}
+@keyframes menu-in-item{
+  from{ opacity:0; transform:translate3d(0, .55em, 0) }
+  to{ opacity:1; transform:none }
+}
+
+/* THE ACTIVE INDICATOR. A gold rule that grows from the left under the destination you are
+   already on — scaleX, so it is compositor-only, and transform-origin makes it grow rather than
+   fade. Hover gets the same rule at lower weight, so the current page reads as a stronger case
+   of the same signal rather than a different one. */
+.display-nav{ position:relative; display:inline-block }
+.display-nav::after{
+  content:""; position:absolute; left:0; right:0; bottom:-.06em; height:.06em;
+  background:var(--wattle); transform:scaleX(0); transform-origin:0 50%;
+  transition:transform var(--dur-mid) var(--ease-quart);
+}
+.display-nav:hover::after{ transform:scaleX(.4) }
+.display-nav[aria-current="page"]::after{ transform:scaleX(1) }
 .menu-group > a{ display:block }
 .menu-links{ display:flex; flex-wrap:wrap; gap:var(--space-m); margin-top:var(--space-2xs);
              font-size:1em; text-transform:uppercase; font-weight:700; list-style:none; padding:0 }
@@ -462,6 +703,13 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
    the words lead. */
 .loop-item svg{ flex:none; opacity:.55; margin-top:-.06em }
 @keyframes loop{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+/* PAUSABLE ON HOVER — animation-play-state, so the track holds exactly where it is and resumes
+   from there. Restarting the animation instead would snap it back to the start, which is the
+   usual bug in a "pausable" marquee. Pointer devices only: on a touch screen :hover latches
+   after a tap and the band would simply stop for good. */
+@media (hover: hover) and (pointer: fine){
+  .section-loop:hover .loop-track{ animation-play-state:paused }
+}
 
 .spinner{ animation:spin 6s linear infinite; display:inline-block }
 @keyframes spin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }

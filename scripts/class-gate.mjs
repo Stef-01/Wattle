@@ -46,7 +46,11 @@ function runVarPass() {
   /* Locally-scoped properties: set on an element by inline style or by a rule
      the gate cannot see, and read by a descendant. Declared here rather than
      guessed at. */
-  const LOCAL = new Set(["--i", "--o"]);
+  /* --n joins them for the word reveal: app/story.tsx sets --i and --n per word inline so each
+     word can compute its own slice of the paragraph's scroll range. The gate reads CSS files, so
+     a property that only ever exists as an inline style is invisible to it and has to be
+     declared, not guessed at. */
+  const LOCAL = new Set(["--i", "--o", "--n"]);
   const bad = [];
 
   const check = (label, src) => {
