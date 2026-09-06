@@ -66,6 +66,11 @@ const PAIRS = [
   ["black", "boronia", "hot pink grounds"],
   ["white", "desertpea", "magenta grounds"],
   ["white", "jacaranda", "violet grounds"],
+  /* THE VENTURE ACCENTS. Each of the three sets a status label in its own hue on black, and the
+     hover state sets the venture's name in it too. Those are words, not decoration, so the
+     colours belong here rather than in the exempt-by-absence group above. */
+  ["eucalypt", "black", "Bay Health's status label and name"],
+  ["lorikeet", "black", "Reach's status label and name"],
 ];
 
 /* --------------------------------------------------------------------------

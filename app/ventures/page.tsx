@@ -55,7 +55,7 @@ export default function VenturesPage() {
         const [claim, ...rest] = venture.summary.split(" — ");
         const mechanism = rest.join(" — ");
         return (
-        <div key={venture.slug} id={venture.slug}>
+        <div key={venture.slug} id={venture.slug} data-venture={venture.slug}>
           {/* THE PLATE IS BLACK NOW.
 
               It was a full-bleed gold-to-green gradient with the name in heavy black display

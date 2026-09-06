@@ -307,6 +307,10 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
 
 .inner-section-wrapper{ display:grid; grid-template-columns:.5fr 1fr;
                         column-gap:var(--space-3xl); margin-bottom:var(--space-2xl) }
+/* The trailing margin separates this block from the NEXT one. When it is the last thing in its
+   section there is no next one, so the margin stacked onto the section's own bottom padding —
+   144px of nothing before the footer on /accessibility, where the whole page is one wrapper. */
+.inner-section-wrapper:last-child{ margin-bottom:0 }
 .card-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-l) }
 .card-grid.two-up{ grid-template-columns:1fr 1fr }
 .card-featured{ display:grid; grid-template-columns:1fr 1fr; overflow:hidden }
@@ -1313,6 +1317,113 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
                 padding:6vw var(--gutter) 5vw;
                 border-top:var(--rule) solid rgb(255 255 255 / .18) }
 .venture-plate .display-wordmark{ font-size:min(11vw,14cqw); color:var(--white) }
+/* THE NAME WAS 158px FROM THE ENTRY IT NAMES. The plate's bottom padding and the following
+   section's top padding both applied across a seam with nothing on it — the border-top is at the
+   plate's TOP, so this edge is invisible. A venture's name and its first line belong to each
+   other; the space that separates one venture from the next is the rule above, not this. */
+.venture-plate + .section{ padding-block-start:var(--space-l) }
+/* Same invisible seam on /company: .plate paints black onto black, so the section above it does
+   not need full clearance to a boundary the reader cannot see. */
+.section:has(+ .plate){ padding-block-end:var(--space-l) }
+
+/* --------------------------------------------------------------------------
+   ONE COLOUR AND ONE MOVEMENT PER VENTURE.
+
+   The gradient band this plate replaced was dropped because three identical loud bands down one
+   page read as three product launches rather than a register. Three DIFFERENT colours fix the
+   thing that was actually wrong with it: the repetition, not the colour. Each entry now has an
+   identity, and the page reads as a list of distinct things instead of one thing repeated.
+
+   The accent is on the status label AT REST, so the colour coding survives on touch, in the
+   keyboard path and in a screenshot — hover is never the only way to learn something. What hover
+   adds is the movement, and each venture gets a different mechanism rather than the same fade
+   three times: the colour WIPES across ADHDME, a rule DRAWS along Bay Health, a glow BLOOMS
+   behind Reach. All three are transform/background-position only, so none of them lays out.
+
+   Colour is never the sole carrier: the status word is still written out in text next to it.
+   -------------------------------------------------------------------------- */
+/* -webkit-text-fill-color is not a property forced-colors forces, and its initial value is
+   currentColor — which every wordmark computed to white BEFORE the UA forced `color`. So under
+   Windows High Contrast the names kept a white fill over a forced ground. Pre-existing and not
+   specific to the accents; found while testing them, fixed for all of them. */
+@media (forced-colors:active){
+  .display-wordmark{ color:CanvasText; -webkit-text-fill-color:CanvasText }
+}
+
+[data-venture]{ --accent:var(--white) }
+[data-venture="adhdme"]{ --accent:var(--wattle) }
+[data-venture="bay-health"]{ --accent:var(--eucalypt) }
+[data-venture="reach"]{ --accent:var(--lorikeet) }
+
+[data-venture] .inner-section-wrapper > .text-style-tag{ color:var(--accent) }
+
+.venture-plate{ position:relative; overflow:hidden }
+.venture-plate .display-wordmark{ position:relative; z-index:1;
+  transition:color var(--dur-mid) var(--ease-bloom) }
+
+/* Bay Health — THE RULE DRAWS. The plate's hairline already separates one entry from the last;
+   on hover its own colour runs along it. scaleX from the left edge, so it is a compositor
+   transform rather than an animated width. */
+.venture-plate::before{ content:""; position:absolute; inset-block-start:0; inset-inline-start:0;
+  inline-size:100%; block-size:var(--rule); background:var(--accent);
+  transform:scaleX(0); transform-origin:left center;
+  transition:transform var(--dur-slow) var(--ease-bloom) }
+
+/* Reach — THE GLOW BLOOMS. The venture that is still a question gets the least literal of the
+   three: nothing draws and nothing wipes, a field just warms up behind the name. */
+.venture-plate::after{ content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(60% 120% at 50% 50%, var(--accent) 0%, transparent 70%);
+  opacity:0; transform:scale(.6);
+  transition:opacity var(--dur-slow) var(--ease-bloom), transform var(--dur-slow) var(--ease-bloom) }
+
+@media (hover:hover) and (pointer:fine){
+  /* ADHDME — THE COLOUR WIPES. A two-stop gradient twice the width of the text, clipped to the
+     glyphs and slid from one half to the other, so gold crosses the word left to right.
+     @supports because the fallback for an unsupported background-clip:text is transparent text,
+     i.e. an invisible venture name — the guard is what makes this safe to ship, not a nicety. */
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    [data-venture="adhdme"] .venture-plate .display-wordmark{
+      background-image:linear-gradient(90deg, var(--accent) 0 50%, var(--white) 50% 100%);
+      background-size:200% 100%; background-position:100% 0; background-repeat:no-repeat;
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      transition:background-position var(--dur-slow) var(--ease-bloom) }
+    [data-venture="adhdme"] .venture-plate:hover .display-wordmark{ background-position:0 0 }
+    /* @supports proves the browser CAN clip a background to text. It does not prove the
+       background will be PAINTED. Forced-colors mode strips background images and keeps the
+       author's color, so the pair above resolves to transparent-on-nothing and the flagship
+       venture's name disappears for a high-contrast user. Hand the glyphs back their own
+       colour there; the wipe is decoration and losing it costs nothing. */
+    @media (forced-colors:active){
+      [data-venture="adhdme"] .venture-plate .display-wordmark{
+        background-image:none; color:CanvasText; -webkit-text-fill-color:CanvasText }
+    }
+  }
+  [data-venture="bay-health"] .venture-plate:hover::before{ transform:scaleX(1) }
+  [data-venture="bay-health"] .venture-plate:hover .display-wordmark{ color:var(--accent) }
+  [data-venture="reach"] .venture-plate:hover::after{ opacity:.16; transform:scale(1) }
+  [data-venture="reach"] .venture-plate:hover .display-wordmark{ color:var(--accent) }
+}
+
+/* The rail cards carry the same identity so the three ventures are the same three colours on
+   the home page as on the register — but the card is WHITE, and that changes what the accent is
+   allowed to be. Setting the status label in the accent here was gold on white at 1.6:1: the
+   colours were chosen against black and do not survive the inversion. (The contrast gate did not
+   catch it because it checks the pairings I declare, not the pairings the DOM actually builds —
+   I declared eucalypt-on-black and then shipped eucalypt-on-white.) A colour FIELD has no such
+   floor, so the identity moves to a solid cap across the top of the card and the label goes back
+   to black. Colour is still not the sole carrier: the status word is written out beneath it. */
+.card[data-venture]{ border-block-start:6px solid var(--accent) }
+
+@media (prefers-reduced-motion:reduce){
+  /* The accent stays — it is information. Only the movement goes, and each mechanism resolves to
+     its finished state so a hover still confirms which entry is under the pointer. */
+  .venture-plate::before{ transition:none }
+  .venture-plate::after{ transition:none }
+  .venture-plate .display-wordmark{ transition:none }
+  [data-venture="adhdme"] .venture-plate .display-wordmark{
+    background-image:none; color:var(--white); transition:color var(--dur-fast) linear }
+  [data-venture="adhdme"] .venture-plate:hover .display-wordmark{ color:var(--accent) }
+}
 
 /* WHERE TO START. Two columns: the heading holds the left, the rows hold the right — the
    reference's calm split rather than one long stack of paragraphs down the middle of the page. */

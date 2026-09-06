@@ -119,7 +119,7 @@ export default function HomePage() {
         </div>
         <DragRail label="Ventures">
           {VENTURES.map((v) => (
-            <article className="card" data-tilt key={v.slug}>
+            <article className="card" data-tilt data-venture={v.slug} key={v.slug}>
               <div className="card-body">
                 <p className="text-style-tag">{VSTATUS[v.status]}</p>
                 <h3 className="heading-style-h5" style={{ marginTop: ".4em" }}>{v.name}</h3>
