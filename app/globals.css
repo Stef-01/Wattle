@@ -1,4 +1,5 @@
-@import "@fontsource/bowlby-one";
+@import "@fontsource-variable/inter";
+@import "@fontsource/instrument-serif";
 @import "@fontsource-variable/jetbrains-mono";
 
 /* ==========================================================================
@@ -84,10 +85,25 @@
      ARIAL IS NOT SELF-HOSTED, deliberately: Blackbird ships its own copy, and Arial is not
      ours to redistribute. The system stack falls to Helvetica/Liberation Sans, which are
      metrically compatible, so layout does not shift. */
-  --font-display:"Bowlby One","Gill Sans Ultra Bold","Arial Black",sans-serif;
-  --font-ui:Arial,"Helvetica Neue",Helvetica,"Liberation Sans",sans-serif;
-  --font-narrow:"Arial Narrow",Arial,sans-serif;
-  --font-editorial:"Times New Roman",Times,Georgia,serif;
+  /* ONE GROTESQUE DOES THE DISPLAY AND THE BODY.
+
+     BOWLBY ONE IS GONE, and it was most of what read as clunky. It is an ultra-heavy rounded
+     poster face with tiny counters — brilliant as a wordmark, and a blunt instrument the moment
+     it has to carry a sentence. Every heading on this site arrived shouting because the typeface
+     had no quieter register to fall back to.
+
+     Inter has the whole range in one variable file, so hierarchy comes from WEIGHT AND SPACE
+     rather than from swapping to a louder face. That is the actual mechanism of minimalist
+     typography: fewer families, more contrast within one. Display sets it at 700-800 with tight
+     negative tracking, body at 400 — same voice, different volume.
+
+     Instrument Serif replaces Times New Roman on the editorial leads. Times is a system fallback
+     nobody chose; Instrument is a high-contrast display serif that gives those sentences the
+     considered, slightly literary register they were reaching for. */
+  --font-display:"Inter Variable",Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-ui:"Inter Variable",Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-narrow:"Inter Variable",Inter,system-ui,sans-serif;
+  --font-editorial:"Instrument Serif",Georgia,"Times New Roman",serif;
   /* From industrial-brutalist-ui: micro-typography — metadata, tags, coordinates, figures —
      goes monospaced with GENEROUS tracking, against the display face's negative tracking.
      That contrast is doing structural work the spec's single Arial could not. */
@@ -192,12 +208,13 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
 /* --------------------------------------------------------------------------
    4. TYPOGRAPHY
    -------------------------------------------------------------------------- */
-.display-nav{ text-wrap:balance; font-family:var(--font-display); font-size:6vw; font-weight:400;
+.display-nav{ text-wrap:balance; font-family:var(--font-display); font-size:6vw; font-weight:780;
+              letter-spacing:-.04em;
               letter-spacing:-.03em; line-height:.95; text-transform:uppercase }
-.display-footer{ text-wrap:balance; font-family:var(--font-display); font-size:4vw; font-weight:400;
+.display-footer{ text-wrap:balance; font-family:var(--font-display); font-size:4vw; font-weight:780;
                  letter-spacing:-.05em; line-height:.9; text-transform:uppercase;
                  max-width:50%; margin:0 }
-.display-wordmark{ font-family:var(--font-display); font-weight:400;
+.display-wordmark{ font-family:var(--font-display); font-weight:800; letter-spacing:-.045em;
                    text-transform:uppercase; letter-spacing:-.04em; line-height:.8;
                    margin:0; white-space:nowrap }
 
@@ -209,10 +226,16 @@ h1,h2,h3,h4,h5,h6{ margin:0 }
    sentence's. Every page opened by shouting before it said anything. The face and the tight
    tracking stay — this is still the same design language — it is just no longer the loudest
    thing possible at every level. */
-.heading-style-h1{ text-wrap:balance; font-family:var(--font-display); font-size:5.4em; line-height:.98; letter-spacing:-.05em }
-.heading-style-h2{ text-wrap:balance; font-family:var(--font-display); font-size:4.2em; line-height:1;   letter-spacing:-.05em }
-.heading-style-h3{ text-wrap:balance; font-family:var(--font-display); font-size:3.1em; line-height:1.02; letter-spacing:-.05em }
-.heading-style-h4{ font-size:3em;    font-weight:700; line-height:1;   letter-spacing:-.06em }
+/* WEIGHT 780 AND -.035em. With a variable grotesque the heading is a setting, not a different
+   font — and the tracking is looser than the old -.05em because Inter's letterforms are narrower
+   than Bowlby's, so the same negative value that opened those up closes these into a block. */
+.heading-style-h1{ text-wrap:balance; font-family:var(--font-display); font-weight:780;
+                   font-size:5.4em; line-height:1; letter-spacing:-.035em }
+.heading-style-h2{ text-wrap:balance; font-family:var(--font-display); font-weight:780;
+                   font-size:4.2em; line-height:1.02; letter-spacing:-.032em }
+.heading-style-h3{ text-wrap:balance; font-family:var(--font-display); font-weight:760;
+                   font-size:3.1em; line-height:1.06; letter-spacing:-.028em }
+.heading-style-h4{ font-family:var(--font-display); font-weight:750; letter-spacing:-.02em; font-size:3em;    font-weight:700; line-height:1;   letter-spacing:-.06em }
 .heading-style-h5{ font-size:2.25em; font-weight:700; line-height:1;   letter-spacing:-.06em }
 .heading-style-h6{ font-size:1.45em; font-weight:700; line-height:1.2; letter-spacing:-.03em }
 
@@ -757,7 +780,7 @@ body:has(main .hero):not(.entered) .nav-glyph{ opacity:0; visibility:hidden }
    fit, so the type comes down to make room. Flex rather than an inline SVG so the glyph sits on
    the letters' optical centre instead of their baseline. */
 .footer-wordmark{ display:flex; align-items:center; gap:.08em; width:100%;
-                  font-family:var(--font-display);
+                  font-family:var(--font-display); font-weight:800;
                   font-size:11.7vw; line-height:.78; letter-spacing:-.055em;
                   text-transform:uppercase; margin:var(--space-2xs) 0; white-space:nowrap }
 .footer-glyph{ width:.58em; height:auto; flex:0 0 auto; display:block }

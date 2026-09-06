@@ -99,38 +99,8 @@ export default function HomePage() {
         <div className="padding-global">
           <h1 className="statement-lead reveal">{COMPANY.tagline}</h1>
           <p className="subheading-hero max-width-medium reveal" style={{ marginTop: "2vw" }}>
-            We build the routing layer of care — the part that decides whether a person who needs a
-            clinician ever reaches one
+            The routing layer of care — the part that decides whether anyone reaches a clinician
           </p>
-        </div>
-      </section>
-
-      {/* 4. CARD GRID — the four commitments. Black section, so the offset shadow takes gold. */}
-      <section className="section is-black">
-        <div className="padding-global">
-          <div className="inner-section-wrapper">
-            <p className="text-style-tag">How we work</p>
-            <h2 className="heading-style-h3 reveal">Four commitments, enforced in the build</h2>
-          </div>
-          <div className="card-grid">
-            {PRACTICE.map((item, i) => (
-              // The second card takes a eucalypt ground so it does not read as a repeat of the
-              // first — .card sets its white background after the .is-* utilities, so the colour
-              // is applied inline to win on source order. Text stays black (the gate clears
-              // black-on-eucalypt) and the hover shadow stays gold on this black section.
-              <article
-                className="card reveal"
-                data-tilt
-                key={item.title}
-                style={i === 1 ? { background: "var(--eucalypt)" } : undefined}
-              >
-                <div className="card-body">
-                  <h3 className="heading-style-h5">{item.title}</h3>
-                  <p className="body-text" style={{ marginTop: "1vw" }}>{item.short}</p>
-                </div>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -144,7 +114,7 @@ export default function HomePage() {
         <div className="padding-global">
           <div className="inner-section-wrapper">
             <p className="text-style-tag">What we build<span className="count">{String(VENTURES.length).padStart(2, "0")}</span></p>
-            <h2 className="heading-style-h3 reveal">Three ventures, at three different stages.</h2>
+            <h2 className="heading-style-h3 reveal">Three ventures. Three stages.</h2>
           </div>
         </div>
         <DragRail label="Ventures">
@@ -183,10 +153,10 @@ export default function HomePage() {
           <div className="inner-section-wrapper">
             <p className="text-style-tag">How it works</p>
             <div>
-              <h2 className="heading-style-h3 reveal">Four commitments, in the order they apply.</h2>
+              <h2 className="heading-style-h3 reveal">Four commitments.</h2>
               <RevealWords
                 className="subheading-large"
-                text="Each one is enforced somewhere a person can check rather than promised on a page."
+                text="Each one enforced somewhere you can check it."
               />
             </div>
           </div>
@@ -206,9 +176,9 @@ export default function HomePage() {
               one of them is nought — a stats band is where a company reaches for lives improved,
               and this one has no outcomes data and says so. The zero is the honest number. */}
           <div className="stats">
-            <CountUp to={VENTURES.length} label="Ventures" note="One live, one in build, one still a question." />
-            <CountUp to={PRESENCE_COUNT} label="Areas named" note="Sydney and the Gold Coast." />
-            <CountUp to={0} label="Clinicians on the Gold Coast" note="A declared focus area with nobody in it yet." />
+            <CountUp to={VENTURES.length} label="Ventures" note="One live. One in build. One a question." />
+            <CountUp to={PRESENCE_COUNT} label="Areas" note="Sydney. Gold Coast." />
+            <CountUp to={0} label="Clinicians on the Gold Coast" note="A focus area with nobody in it." />
           </div>
         </div>
       </section>
