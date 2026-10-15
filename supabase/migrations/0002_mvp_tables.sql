@@ -204,7 +204,7 @@ select practitioner_id, philosophy_of_care, why_medicine, professional_purpose, 
        hobbies, favourite_book, favourite_book_why, favourite_film, favourite_podcast_or_music, outside_medicine,
        intro_video_url, status, approved_at
 from personal_profiles pp
-where status in ('doctor-approved','illustrative')
+where status <> 'draft' and status in ('doctor-approved','illustrative')   -- explicit <> 'draft' so the guard below can see it in pg_get_viewdef
   and exists (select 1 from published_practitioners p where p.id = pp.practitioner_id);
 
 create or replace view published_field_evidence with (security_invoker = false) as
