@@ -91,7 +91,7 @@ SPECIALTY_TERMS: dict[str, tuple[str, ...]] = {
         "reproduct", "endometri", "cervical", "cervix", "ovarian", "ovary", "uterin", "uterus", "pelvic",
         "urogynec", "menopaus", "contracept", "birth", "neonat", "placent", "caesarean", "cesarean",
         "polycystic", "ivf", "perinatal", "prenatal", "antenatal", "postpartum", "labour", "labor and delivery",
-        "hysterectomy", "fibroid", "vulv", "hpv", "incontinence", "prolapse", "breast", "gestation", "oocyte",
+        "hysterectomy", "fibroid", "vulv", "hpv", "incontinence", "prolapse", "gestation", "oocyte",
         "embryo", "assisted reproduct", "miscarriage", "stillbirth",
     ),
     "paediatrics": (
@@ -369,6 +369,12 @@ def score(rec: dict, author: dict, state: str | None) -> dict:
     }
 
 
+def name_ok(c: dict) -> bool:
+    """A verified match needs the full given name, or an initial/diminutive plus a home-state institution."""
+    r = c["reasons"]
+    return r[0] in ("full first name",) or any(x.endswith(" institution") and not x.startswith("AU") for x in r)
+
+
 def merge_split_profiles(cands: list[dict]) -> list[dict]:
     """OpenAlex often holds two profiles for one person with the same ORCID; treat them as one
     identity (keep the larger profile, remember the other id) so the 'exactly one' rule does not
@@ -424,7 +430,7 @@ def hydrate(http: Http, author_id: str) -> dict | None:
     return http.get_json(oa_url(f"/authors/{author_id}", select=AUTHOR_FIELDS), "openalex")
 
 
-def fetch_works(http: Http, author_id: str) -> list[dict]:
+def fetch_works(http: Http, author_id: str, terms: list[str]) -> list[dict]:
     d = http.get_json(oa_url("/works", filter=f"author.id:{author_id}", sort="cited_by_count:desc",
                              **{"per-page": str(MAX_WORKS), "select": WORK_FIELDS}), "openalex")
     out = []
@@ -433,6 +439,11 @@ def fetch_works(http: Http, author_id: str) -> list[dict]:
         src = loc.get("source") or {}
         ids = w.get("ids") or {}
         topics = [t.get("display_name") for t in (w.get("topics") or []) if t.get("display_name")]
+        topic_names = list(topics)
+        for t in w.get("topics") or []:
+            for k in ("subfield", "field"):
+                if isinstance(t.get(k), dict) and t[k].get("display_name"):
+                    topic_names.append(t[k]["display_name"])
         if not topics:
             topics = [c.get("display_name") for c in (w.get("concepts") or [])
                       if c.get("display_name") and (c.get("score") or 0) >= 0.4][:5]
@@ -446,6 +457,7 @@ def fetch_works(http: Http, author_id: str) -> list[dict]:
             "venue": src.get("display_name") or loc.get("raw_source_name"),
             "pmid": (ids.get("pmid") or "").rsplit("/", 1)[-1] or None,
             "topics": topics,
+            "on_specialty": bool(topic_overlap(terms, topic_names or topics)),
             "cited_by_count": w.get("cited_by_count"),
             "open_access_url": oa.get("oa_url") if oa.get("is_oa") else None,
             "landing_page_url": loc.get("landing_page_url"),
@@ -525,13 +537,22 @@ def enrich_one(http: Http, rec: dict, state: str | None, search_fallback: bool) 
     cands.sort(key=lambda c: (-c["score"], -(c["works_count"] or 0)))
     out["candidates"] = [c for c in cands if c["score"] > 0][:5] or cands[:3]
     above = [c for c in cands if c["score"] >= THRESHOLD]
-    if len(above) == 1 and above[0]["au_institution"] and above[0]["topic_overlap"]:
+    if len(above) == 1 and above[0]["au_institution"] and above[0]["topic_overlap"] and name_ok(above[0]):
         c = above[0]
+        works = fetch_works(http, c["id"], doctor_terms(rec))
+        on = sum(1 for w in works if w["on_specialty"])
+        if works and on * 2 < len(works):
+            # OpenAlex profile that conflates several people: most of its cited works are in
+            # other fields. Keep for human review; works are not attached.
+            out["match_note"] = f"mixed profile: {on}/{len(works)} most-cited works on specialty; human review"
+            return out
         out["openalex_author_id"] = c["id"]
         out["authorship_verified"] = "identifier-matched"
-        out["match_note"] = f"score {c['score']}: " + "; ".join(c["reasons"])
-        out["works"] = fetch_works(http, c["id"])
+        out["match_note"] = f"score {c['score']}: " + "; ".join(c["reasons"]) + f"; {on}/{len(works)} works on specialty"
+        out["works"] = works
         crossref_check(http, out["works"])
+    elif len(above) == 1 and not name_ok(above[0]):
+        out["match_note"] = "candidate matches on initial only and institution is not in the doctor's state; human review"
     elif len(above) > 1:
         out["match_note"] = f"{len(above)} candidates above threshold; human review"
     elif cands:
