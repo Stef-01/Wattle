@@ -82,7 +82,8 @@ def get(url: str) -> str:
 
 
 def text(s: str) -> str:
-    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
+    s = html.unescape(re.sub(r"<[^>]+>", " ", s)).replace("�", "-")  # a few listings carry a cp1252 en dash
+    return re.sub(r"\s+", " ", s).strip()
 
 
 def parse_list(page: str) -> list[dict]:
@@ -92,7 +93,7 @@ def parse_list(page: str) -> list[dict]:
         if not m:
             continue
         creds = re.search(r'<p class="pos-subtitle">(.*?)</p>', block, re.S)
-        elems = re.findall(r'<div class="element element-(text|textarea)[^"]*">(.*?)</div>', block, re.S)
+        elems = re.findall(r'<div class="element element-(textarea|text)[^"]*">(.*?)</div>', block, re.S)
         texts = [(kind, text(v)) for kind, v in elems]
         tags = [t for kind, t in texts if kind == "textarea" and t]
         plain = [t for kind, t in texts if kind == "text" and t]
