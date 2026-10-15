@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "@fontsource-variable/newsreader/opsz.css";
+@import "@fontsource-variable/inter/opsz.css";
+
+@theme {
+  --color-blossom: #f6c544; /* decoration only; never carries text */
+  --color-gold: #8a6a00; /* AA accent on paper */
+  --color-foliage: #2f5d3a;
+  --color-bark: #2b2118;
+  --color-paper: #fbf8f1;
+  --color-mist: #f1ece0; /* card edge / fill */
+  --color-ink-soft: #5e5248;
+  --color-line: #e3dccb;
+  --font-display: "Newsreader Variable", Georgia, serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --radius-card: 14px;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-bark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-size: 17px;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-paper);
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  font-variation-settings: "opsz" 36;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Restrained motion: one fade for arriving content, nothing that loops. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 240ms ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}
+
+input[type="range"] {
+  accent-color: var(--color-foliage);
+  height: 44px;
+}
