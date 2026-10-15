@@ -1,0 +1,39 @@
+{
+  "name": "wattle-health",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "engines": { "node": "22.x", "pnpm": "10.x" },
+  "scripts": {
+    "dev": "next dev -p 3300",
+    "build": "next build",
+    "start": "next start -p 3300",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "gate:copy": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/copy-gate.mts",
+    "gate:text": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/text-budget.mts",
+    "eval": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-golden.mts",
+    "coverage:snapshot": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/coverage-snapshot.mts",
+    "verify": "pnpm typecheck && pnpm test && pnpm gate:copy && pnpm eval && pnpm build && pnpm gate:text"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "next": "^15.4.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "fast-check": "^4.9.0",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.0"
+  }
+}
