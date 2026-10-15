@@ -230,7 +230,7 @@ The goal is substantially better than healthdirect and Google, not a publishable
 
 | Phase | Weeks | Scope |
 |---|---|---|
-| 0 | 1 to 4 | Repo, FHIR-shaped schema, Ahpra extract request and PCA application sent, NHSD licence requested. Psychiatry in Sydney and Melbourne from college directory + practice sites + hospital directories while waiting. Seven screens. Golden set v1 (psychiatry). Coverage dashboard. |
+| 0 | 1 to 4 | Repo, FHIR-shaped schema, discipline vocabulary, seven screens on a fictional example roster, copy and text-budget gates, golden set v1 as data, coverage dashboard, pipeline skeleton with legal-basis guard. The matching engine is deferred by founder decision (2026-10-15); the UI runs a plain keyword ranker until then. Founder actions outside the repo: Ahpra extract, PCA application, NHSD licence. |
 | 1 | 5 to 12 | Paediatrics and O&G/women's health. Ahpra extract loaded nationally. Claim flow live and outreach begun. Evaluation panel rating weekly. Medical Costs Finder typical fees. Launch in two cities. |
 | 2 | 13 to 24 | All doctors: GPs via NHSD + BBPIP flag, then specialties ordered by directory quality (`RESEARCH-PLAN.md` §4). Referrer mode. Per-practitioner fees from Medical Costs Finder as released. |
 | 3 | 25 to 40 | Allied health, Ahpra professions first, then NASRHP. NDIS and aged-care flags from open data. Service system (ACCHOs, UCCs, Medicare Mental Health centres, headspace, hospitals, pharmacies). |
