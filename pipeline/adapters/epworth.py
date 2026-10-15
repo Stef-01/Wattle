@@ -35,8 +35,8 @@ def parse_profile(page: str, url: str):
     phone = re.search(r'class="field-phone-number">([^<]*)<', page)
     phone = clean(phone.group(1)) if phone else ""
     locs = []
-    for card in re.findall(r'<h3 class="delta[^"]*">(.*?)</h3>\s*<div class="card-loc[^"]*">(.*?)</div>\s*</div>', page, re.S):
-        lname = strip_tags(card[0])
+    for card in re.findall(r'(?:<h3 class="delta[^"]*">(.*?)</h3>\s*)?<div class="card-loc[^"]*">(.*?)</div>\s*</div>', page, re.S):
+        lname = strip_tags(card[0]) if card[0] else "Consulting rooms"
         body = card[1]
         k = body.find('class="consulting-location"')
         head, tail = (body, "") if k < 0 else (body[:k], body[k:])
