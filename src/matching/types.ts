@@ -145,4 +145,9 @@ export interface MatchResult {
   /** For `unserved`: the unmet ask and how many results dropping each filter would restore. */
   unserved?: { ask: string; restoreCount: number }[];
   clarifiers: { facet: string; question: string; options: string[] }[];
+  /**
+   * Set when the sentence carried an emergency cue (disciplines/<slug>.yaml `emergency_cues`).
+   * No results are ranked: `note` is the emergency-services copy the screen shows instead.
+   */
+  emergency?: { note: string };
 }

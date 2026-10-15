@@ -2,7 +2,7 @@
 
 Read `PRD.md` §4, §7, §8 before touching anything. Contracts live in `src/matching/types.ts`; vocabularies in `disciplines/*.yaml`.
 
-- **No ADHD.ME code.** `C:\Users\stefa\adhd.me` is a behaviour reference only. Re-derive, never copy.
+- **Matching is ported from ADHD.ME** (`src/matching`, the finder ranker in `src/demo/clinicians.ts`, `src/finder/filters.ts`, `src/geo/suburbs.ts`); keep provenance comments naming the source file.
 - **No API keys, no model calls in the request path.** Extraction and rationale are lexical and deterministic.
 - **No emails.** Outreach is a founder action and is not drafted here.
 - **Three tiers, three badges**: register / declared / found, each with a date. "Not declared" is a rendered value, never a blank.
