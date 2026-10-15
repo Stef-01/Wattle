@@ -1,0 +1,50 @@
+{
+  "obstetrics-gynaecology": {
+    "doctors": 2277,
+    "fellows_or_specialists": 1468,
+    "ahpra_registrations_2026_06": 2470,
+    "share_of_register": 0.594,
+    "with_location": 2263,
+    "with_phone": 6,
+    "with_geocode": 0,
+    "with_telehealth_flag": 0,
+    "with_wait_or_capacity": 0,
+    "with_tags": 2277,
+    "with_language": 733,
+    "multi_source": 0,
+    "by_state": {
+      "ACT": 38,
+      "NSW": 598,
+      "NT": 16,
+      "QLD": 445,
+      "SA": 169,
+      "TAS": 49,
+      "VIC": 715,
+      "WA": 249
+    }
+  },
+  "psychiatry": {
+    "doctors": 1299,
+    "fellows_or_specialists": 1299,
+    "ahpra_registrations_2026_06": 5343,
+    "share_of_register": 0.243,
+    "with_location": 1299,
+    "with_phone": 1293,
+    "with_geocode": 1299,
+    "with_telehealth_flag": 1299,
+    "with_wait_or_capacity": 1293,
+    "with_tags": 1287,
+    "with_language": 497,
+    "multi_source": 0,
+    "by_state": {
+      "ACT": 72,
+      "NSW": 437,
+      "NT": 6,
+      "QLD": 261,
+      "SA": 96,
+      "TAS": 16,
+      "VIC": 377,
+      "WA": 99
+    }
+  }
+}
