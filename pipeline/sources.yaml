@@ -1,0 +1,370 @@
+# Source registry for the Wattle Health pipeline. Mirrors the `sources` table
+# (supabase/migrations/0001_schema.sql) and RESEARCH-PLAN.md sections 2 to 5.
+# kind: register | open_data | api | licensed | scrape | declared | platform
+# legal_basis: a string citing the licence / agreement / statutory list / public-facts
+#   case, or TODO-founder when an agreement is still to be signed. An adapter
+#   without a string legal basis does not run (DATA-MODEL.md).
+# status: live (adapter runs today) | skeleton | planned | excluded
+
+sources:
+  # ---------------------------------------------------------------- spine (RESEARCH-PLAN section 2)
+  - id: ahpra_extract
+    name: Ahpra Medical Board register extract (specialist registrations, fields, endorsements, status, languages, PPP postcode)
+    kind: licensed
+    cadence: quarterly
+    url: https://www.ahpra.gov.au/About-Ahpra/What-We-Do/Data-access-and-research.aspx
+    legal_basis: TODO-founder (A3: Ahpra external data exchange agreement, ~$2,000 per extract; never scrape the register)
+    status: planned
+  - id: ahpra_pie
+    name: Ahpra Practitioner Information Exchange (daily status alerts, on-demand verification)
+    kind: api
+    cadence: daily
+    url: https://www.ahpra.gov.au/Registration/Practitioner-Information-Exchange.aspx
+    legal_basis: TODO-founder (A4: PIE agreement, $1 per practitioner per year; claimed profiles only)
+    status: planned
+  - id: nhsd
+    name: National Health Services Directory (healthdirect) Data and API Licence with bulk export
+    kind: licensed
+    cadence: nightly
+    url: https://about.healthdirect.gov.au/nhsd
+    legal_basis: TODO-founder (A1: NHSD Data and API Licence; "consumer-facing directory" in the approved purpose)
+    status: planned
+  - id: pca
+    name: Provider Connect Australia (ADHA) business partner feed
+    kind: api
+    cadence: push
+    url: https://www.digitalhealth.gov.au/healthcare-providers/initiatives-and-programs/provider-connect-australia
+    legal_basis: TODO-founder (A2: PCA participation agreement)
+    status: planned
+  - id: abr_bulk
+    name: ABN Bulk Extract (Australian Business Register)
+    kind: open_data
+    cadence: weekly
+    url: https://data.gov.au/data/dataset/abn-bulk-extract
+    legal_basis: CC BY 3.0 AU (data.gov.au ABN Bulk Extract; checked 2026-10-15)
+    adapter: pipeline/adapters/abr_bulk.py
+    status: live
+  - id: abs_asgs
+    name: ABS ASGS Edition 3 boundaries (SA2, SA3, LGA, state)
+    kind: open_data
+    cadence: on-release
+    url: https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files
+    legal_basis: CC BY 4.0 (ABS)
+    status: planned
+  - id: mmm_2023
+    name: Modified Monash Model 2023 and GP Catchments
+    kind: open_data
+    cadence: on-release
+    url: https://www.health.gov.au/resources/publications/modified-monash-model-fact-sheet
+    legal_basis: CC BY 2.5 AU (Department of Health, data.gov.au)
+    status: planned
+  - id: phn_boundaries
+    name: Primary Health Network boundaries
+    kind: open_data
+    cadence: on-release
+    url: https://www.health.gov.au/resources/publications/primary-health-networks-phn-boundaries
+    legal_basis: CC BY 4.0 (Department of Health)
+    status: planned
+
+  # ---------------------------------------------------------------- MVP specialties (section 3)
+  - id: ranzcp_find
+    name: RANZCP Find a Psychiatrist (yourhealthinmind.org)
+    kind: scrape
+    cadence: monthly
+    url: https://www.yourhealthinmind.org/find-a-psychiatrist
+    legal_basis: Facts from an opt-in public directory pending a feed agreement with RANZCP (section 7); republication rights to be confirmed Q4 (TODO-founder)
+    adapter: pipeline/adapters/ranzcp_find.py
+    status: live
+  - id: ranzcog_find
+    name: RANZCOG Find a Women's Health Doctor
+    kind: scrape
+    cadence: monthly
+    url: https://ranzcog.edu.au/find-a-doctor/
+    legal_basis: Facts from an opt-in public directory pending a feed agreement with RANZCOG (TODO-founder)
+    adapter: pipeline/adapters/ranzcog_find.py
+    status: live
+  - id: acd_find
+    name: ACD Find a Dermatologist
+    kind: scrape
+    cadence: monthly
+    url: https://www.dermcoll.edu.au/find-a-derm/
+    legal_basis: Facts from an opt-in public directory; robots.txt gates the adapter (stopped 2026-10-15)
+    adapter: pipeline/adapters/acd_find.py
+    status: skeleton
+  - id: hospital_group_directories
+    name: Hospital-group specialist directories (Healthscope, Ramsay, St John of God, Epworth)
+    kind: scrape
+    cadence: monthly
+    url: https://www.ramsayhealth.com.au/
+    legal_basis: Facts from public pages (Telstra v Phone Directories); robots and rate limits; no prose or photos
+    status: planned
+  - id: childrens_hospital_outpatients
+    name: Children's hospital outpatient directories (SCHN, RCH, QCH, PCH, WCH)
+    kind: scrape
+    cadence: monthly
+    url: https://www.schn.health.nsw.gov.au/
+    legal_basis: Facts from public pages
+    status: planned
+  - id: practice_sites
+    name: Practice websites (address, phone, fees, capacity statements, telehealth, interests)
+    kind: scrape
+    cadence: 60 days
+    url: n/a (per practice)
+    legal_basis: Facts only from public pages; robots and rate limits; timestamped; no prose or photos
+    status: planned
+  - id: medical_costs_finder
+    name: Medical Costs Finder (typical fees by MBS item and postcode; per-practitioner late 2026 / early 2027)
+    kind: open_data
+    cadence: monthly
+    url: https://medicalcostsfinder.health.gov.au/
+    legal_basis: Public Commonwealth site (CC BY 4.0 unless marked); confirm terms before ETL (TODO-founder)
+    status: planned
+  - id: medicare_mental_health_centres
+    name: Medicare Mental Health Centres list
+    kind: scrape
+    cadence: monthly
+    url: https://www.medicarementalhealth.gov.au/centre-list
+    legal_basis: Facts from a public Commonwealth page (checked 2026-10-15)
+    adapter: pipeline/adapters/medicare_mental_health_centres.py
+    status: live
+  - id: headspace_centres
+    name: headspace centres (177)
+    kind: scrape
+    cadence: monthly
+    url: https://headspace.org.au/headspace-centres/
+    legal_basis: Facts from a public page; robots permits (checked 2026-10-15)
+    adapter: pipeline/adapters/headspace_centres.py
+    status: live
+  - id: phn_commissioned_services
+    name: PHN-commissioned mental health services (31 PHN directories)
+    kind: scrape
+    cadence: quarterly
+    url: https://www.health.gov.au/our-work/phn
+    legal_basis: Facts from public pages; per-PHN terms review (TODO-founder)
+    status: planned
+  - id: private_psychiatric_hospitals
+    name: Private psychiatric hospital lists (state licensing registers; Declared Hospitals list)
+    kind: open_data
+    cadence: quarterly
+    url: https://www.health.gov.au/resources/publications/declared-hospitals
+    legal_basis: Public statutory list
+    status: planned
+  - id: healthshare_discovery
+    name: HealthShare find-a-paediatrician pages
+    kind: scrape
+    cadence: n/a
+    url: https://www.healthshare.com.au/
+    legal_basis: No licence for reuse; discovery of practice websites only, never ingested
+    status: excluded
+  - id: ndis_register
+    name: NDIS Commission provider register (full CSV, SIL and platform Part 3 CSVs)
+    kind: open_data
+    cadence: nightly
+    url: https://www.ndiscommission.gov.au/provider-registration/find-registered-provider
+    legal_basis: Public statutory list (NDIS Act 2013 s.73ZS; CSV offered for download; checked 2026-10-15)
+    adapter: pipeline/adapters/ndis_register.py
+    status: live
+  - id: public_maternity_services
+    name: Public maternity services (state hospital lists + NHSD HealthcareService types)
+    kind: scrape
+    cadence: quarterly
+    url: n/a (per state)
+    legal_basis: Public service lists
+    status: planned
+  - id: family_planning_alliance
+    name: Family Planning Alliance Australia members, 1800 My Options (Vic), Children by Choice (Qld)
+    kind: scrape
+    cadence: quarterly
+    url: https://www.fpaa.org.au/
+    legal_basis: Public lists; abortion providers published only where provider-consented
+    status: planned
+  - id: endo_pelvic_pain_clinics
+    name: Endometriosis and pelvic pain clinics; menopause services (Commonwealth-funded lists)
+    kind: open_data
+    cadence: on-release
+    url: https://www.health.gov.au/our-work/endometriosis-and-pelvic-pain-clinics
+    legal_basis: CC BY 4.0 (Department of Health)
+    status: planned
+
+  # ---------------------------------------------------------------- phase 2 (section 4)
+  - id: cleanbill
+    name: Cleanbill GP bulk-billing survey
+    kind: licensed
+    cadence: annual
+    url: https://cleanbill.com.au/
+    legal_basis: TODO-founder (licence)
+    status: planned
+  - id: medicare_ucc
+    name: Medicare Urgent Care Clinics finder (137)
+    kind: open_data
+    cadence: monthly
+    url: https://www.health.gov.au/our-work/medicare-urgent-care-clinics
+    legal_basis: Public statutory list (CC BY 4.0)
+    status: planned
+  - id: racs_find
+    name: RACS Find a Surgeon; AOA orthopaedic members
+    kind: scrape
+    cadence: monthly
+    url: https://www.surgeons.org/find-a-surgeon
+    legal_basis: Facts from opt-in public directories pending feeds (TODO-founder)
+    status: planned
+  - id: lspn_register
+    name: Location Specific Practice Number register (diagnostic imaging sites)
+    kind: open_data
+    cadence: 5 days
+    url: https://www.servicesaustralia.gov.au/location-specific-practice-number-register
+    legal_basis: Public statutory list
+    status: planned
+  - id: medicare_acc
+    name: Medicare Approved Collection Centres (pathology) PDF
+    kind: open_data
+    cadence: 10 days
+    url: https://www2.medicareaustralia.gov.au/pdsPortal/pub/approvedCollectionCentreSearch.faces
+    legal_basis: Public statutory list (Health Insurance Act 1973; checked 2026-10-15)
+    adapter: pipeline/adapters/medicare_acc.py
+    status: live
+  - id: nata_labs
+    name: NATA accredited pathology laboratories
+    kind: scrape
+    cadence: quarterly
+    url: https://nata.com.au/accredited-organisation/
+    legal_basis: Facts from a public register; terms review (TODO-founder)
+    status: planned
+  - id: aihw_myhospitals
+    name: AIHW MyHospitals (hospital list, ED waits)
+    kind: open_data
+    cadence: quarterly
+    url: https://www.aihw.gov.au/reports-data/myhospitals
+    legal_basis: CC BY 4.0 (AIHW)
+    status: planned
+  - id: declared_hospitals
+    name: Declared Hospitals list (private health insurance)
+    kind: open_data
+    cadence: monthly
+    url: https://www.health.gov.au/resources/publications/declared-hospitals
+    legal_basis: Public statutory list
+    status: planned
+  - id: acsep_directory
+    name: ACSEP sport and exercise medicine directory
+    kind: scrape
+    cadence: quarterly
+    url: https://www.acsep.org.au/
+    legal_basis: Facts from an opt-in public directory (TODO-founder)
+    status: planned
+  - id: telehealth_only_services
+    name: Telehealth-only services (InstantScripts, Doctors on Demand, Hola, 13SICK) price pages
+    kind: scrape
+    cadence: monthly
+    url: n/a (per provider)
+    legal_basis: Facts from public price pages, timestamped
+    status: planned
+
+  # ---------------------------------------------------------------- phase 3 (section 5)
+  - id: ahpra_allied_extracts
+    name: Ahpra allied-profession extracts (psychology, physiotherapy, pharmacy, OT, dental, optometry, chiro, osteo, podiatry, Chinese medicine, NMBA)
+    kind: licensed
+    cadence: annual
+    url: https://www.ahpra.gov.au/About-Ahpra/What-We-Do/Data-access-and-research.aspx
+    legal_basis: TODO-founder ($2,000 per board per snapshot)
+    status: planned
+  - id: nasrhp_associations
+    name: NASRHP self-regulated bodies (SPA, DA, ESSA, AASW, ARCAP/PACFA, Audiology Australia, AOPA, HGSA, LCANZ, ADEA)
+    kind: licensed
+    cadence: annual
+    url: https://nasrhp.org.au/
+    legal_basis: TODO-founder (association partnership, not scraping)
+    status: planned
+  - id: aged_care_service_list
+    name: GEN Aged Care Service List (AIHW)
+    kind: open_data
+    cadence: annual
+    url: https://www.gen-agedcaredata.gov.au/resources/access-data/2025/october/aged-care-service-list-30-june-2025
+    legal_basis: CC BY 4.0 (AIHW GEN; checked 2026-10-15)
+    adapter: pipeline/adapters/aged_care_service_list.py
+    status: live
+  - id: aged_care_star_ratings
+    name: Aged care Star Ratings extract (quarterly)
+    kind: open_data
+    cadence: quarterly
+    url: https://www.gen-agedcaredata.gov.au/
+    legal_basis: CC BY 4.0 (AIHW GEN)
+    status: planned
+  - id: infoxchange
+    name: Infoxchange service directory (Ask Izzy, Lifeline; 450k listings)
+    kind: api
+    cadence: nightly
+    url: https://www.infoxchange.org/au/service-directory
+    legal_basis: TODO-founder (API by agreement)
+    status: planned
+  - id: accho_sites
+    name: ACCHOs (HealthInfoNet map + NACCHO affiliates)
+    kind: scrape
+    cadence: quarterly
+    url: https://www.naccho.org.au/
+    legal_basis: Facts from public pages, hand-stewarded; community_controlled flag
+    status: planned
+  - id: drug_alcohol_directories
+    name: Path2Help, Your Room (NSW), Know Your Options (SA)
+    kind: scrape
+    cadence: quarterly
+    url: https://path2help.adf.org.au/
+    legal_basis: Facts from public pages
+    status: planned
+  - id: lgbtiq_directories
+    name: TransHub /doctor, DocDir, QLife
+    kind: scrape
+    cadence: quarterly
+    url: https://www.transhub.org.au/doctors
+    legal_basis: Facts from public pages; liveness of DocDir unverified
+    status: planned
+  - id: palliative_care_directory
+    name: Palliative Care Australia National Directory
+    kind: licensed
+    cadence: quarterly
+    url: https://palliativecare.org.au/directory/
+    legal_basis: TODO-founder (terms bar commercial reuse; data agreement needed)
+    status: planned
+  - id: canrefer
+    name: Canrefer (NSW/ACT MDT-verified cancer specialists), Cancer Connect
+    kind: scrape
+    cadence: 6 months
+    url: https://www.canrefer.org.au/
+    legal_basis: Facts from a public directory; terms review (TODO-founder)
+    status: planned
+  - id: hearing_services_locator
+    name: Hearing Services Program provider locator
+    kind: scrape
+    cadence: quarterly
+    url: https://www.hearingservices.gov.au/
+    legal_basis: Public Commonwealth locator
+    status: planned
+  - id: workers_comp_panels
+    name: SIRA approvals, icare panels, WorkSafe Vic directory
+    kind: open_data
+    cadence: quarterly
+    url: https://www.sira.nsw.gov.au/
+    legal_basis: Public scheme lists (per-scheme terms)
+    status: planned
+  - id: carer_gateway
+    name: Carer Gateway providers (11, one per region)
+    kind: scrape
+    cadence: annual
+    url: https://www.carergateway.gov.au/
+    legal_basis: Public Commonwealth list, hand-stewarded
+    status: planned
+
+  # ---------------------------------------------------------------- first-party
+  - id: claim
+    name: Provider claim and declaration flow
+    kind: declared
+    cadence: continuous
+    url: n/a
+    legal_basis: Provider declaration with APP 5 notice at collection
+    status: planned
+  - id: patient_report
+    name: "Did you get seen?" and "this was wrong" reports (non-clinical facts only)
+    kind: declared
+    cadence: continuous
+    url: n/a
+    legal_basis: Patient report, non-clinical facts only
+    status: planned

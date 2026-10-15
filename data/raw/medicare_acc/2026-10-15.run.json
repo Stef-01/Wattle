@@ -1,0 +1,18 @@
+{
+  "source": "medicare_acc",
+  "started_at": "2026-10-15T21:47:00+00:00",
+  "fetches": [
+    {
+      "url": "https://www2.medicareaustralia.gov.au/pdsPortal/pub/approvedCollectionCentreSearch.faces",
+      "bytes": 953744,
+      "sha256": "ff03ae53f654c2fb6ed0f2acf294ebc9bd141212d67e2c070b431e30ae0fbc5e",
+      "content_disposition": "attachment; filename=APCCReport.pdf",
+      "pages": 10
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:47:04+00:00",
+  "records": 1,
+  "output": "data/raw/medicare_acc/2026-10-15.jsonl",
+  "output_sha256": "38033ae968a0a76063e064c64192439b14063eff5fd0a3822af70ef9a60ff226"
+}

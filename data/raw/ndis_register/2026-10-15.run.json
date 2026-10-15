@@ -1,0 +1,31 @@
+{
+  "source": "ndis_register",
+  "started_at": "2026-10-15T21:45:19+00:00",
+  "fetches": [
+    {
+      "url": "https://www.ndiscommission.gov.au/provider-registration/find-registered-provider/download-csv",
+      "bytes": 42508506,
+      "ua": "browser"
+    },
+    {
+      "url": "https://cdn.ndiscommission.gov.au/nqsc_website/sil_providers.csv",
+      "bytes": 31499,
+      "ua": "declared"
+    },
+    {
+      "url": "https://cdn.ndiscommission.gov.au/nqsc_website/platform_providers.csv",
+      "bytes": 559,
+      "ua": "declared"
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:47:37+00:00",
+  "records": 65277,
+  "output": "data/raw/ndis_register/2026-10-15.jsonl",
+  "output_sha256": "70bc14fe356e75f9cdb449bd2ef34bed81ee55b2def490ddc0334701bd0053b5",
+  "counts": {
+    "full": 64734,
+    "sil": 539,
+    "platform": 4
+  }
+}

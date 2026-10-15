@@ -1,0 +1,26 @@
+{
+  "source": "medicare_mental_health_centres",
+  "started_at": "2026-10-15T21:47:31+00:00",
+  "fetches": [
+    {
+      "url": "https://www.medicarementalhealth.gov.au/centre-list",
+      "bytes": 220514,
+      "ua": "browser"
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:47:32+00:00",
+  "records": 55,
+  "output": "data/raw/medicare_mental_health_centres/2026-10-15.jsonl",
+  "output_sha256": "4e62381180ac5a1cb2d2b49b5e2b35a575b1fd49d78ce0ba025e1ecccd27bbf4",
+  "by_state": {
+    "NSW": 20,
+    "WA": 5,
+    "NT": 2,
+    "ACT": 2,
+    "TAS": 4,
+    "VIC": 1,
+    "QLD": 16,
+    "SA": 5
+  }
+}

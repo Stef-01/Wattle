@@ -1,0 +1,17 @@
+{
+  "source": "abr_bulk",
+  "started_at": "2026-10-15T21:45:17+00:00",
+  "fetches": [
+    {
+      "url": "https://data.gov.au/data/dataset/5bd7fcab-e315-42cb-8daf-50b7efc2027e/resource/0ae4d427-6fa8-4d40-8e76-c6909b5a071b/download/public_split_1_10.zip",
+      "mode": "stream-first-entry",
+      "limit": 5000,
+      "robots": "not applied: licensed CC BY download; data.gov.au robots.txt is Disallow: / for crawlers"
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:45:18+00:00",
+  "records": 5000,
+  "output": "data/raw/abr_bulk/2026-10-15.sample5000.jsonl",
+  "output_sha256": "e21769d0062abe0a38c429bb09662c5baad9451c8938a98776f996699dec783c"
+}

@@ -1,0 +1,21 @@
+{
+  "source": "aged_care_service_list",
+  "started_at": "2026-10-15T21:46:56+00:00",
+  "fetches": [
+    {
+      "url": "https://www.gen-agedcaredata.gov.au/getmedia/2599a590-3c5f-4227-aac3-f0a3a8aa84e4/Service-List-2025-Australia_300126",
+      "list_page": "https://www.gen-agedcaredata.gov.au/resources/access-data/2025/october/aged-care-service-list-30-june-2025",
+      "bytes": 990814,
+      "sha256": "0e71af6a3e43091553f4c8d2bf4d95336dfcace620079f931eb6e5f2b3c08f07",
+      "path": "data/raw/_cache/aged_care_service_list/2026-10-15-Service-List-Australia.xlsx"
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:46:59+00:00",
+  "records": 5378,
+  "output": "data/raw/aged_care_service_list/2026-10-15.jsonl",
+  "output_sha256": "60e73a9182a8cf165c055558509f6db6e1f467a474762a491b2b0b395349379d",
+  "sheets": {
+    "Service List 2025 - Australia": 5378
+  }
+}

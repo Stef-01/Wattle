@@ -1,0 +1,25 @@
+{
+  "source": "headspace_centres",
+  "started_at": "2026-10-15T21:47:30+00:00",
+  "fetches": [
+    {
+      "url": "https://headspace.org.au/headspace-centres/",
+      "bytes": 418171
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T21:47:31+00:00",
+  "records": 177,
+  "output": "data/raw/headspace_centres/2026-10-15.jsonl",
+  "output_sha256": "64c230db33a2ca7fef6c1fe81fa5282df5dadae5404b9758d545593c87fe03da",
+  "by_state": {
+    "ACT": 2,
+    "NSW": 54,
+    "NT": 4,
+    "QLD": 33,
+    "SA": 14,
+    "TAS": 5,
+    "VIC": 43,
+    "WA": 22
+  }
+}
