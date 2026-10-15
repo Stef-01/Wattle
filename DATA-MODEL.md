@@ -6,10 +6,10 @@ v0.1, 2026-10-15. Three entities, one attribute envelope, one resolution key per
 
 1. **Every attribute is an observation.** Values are never written bare. The envelope is:
    ```
-   { value, tier, source_id, source_url, observed_at, confidence, expires_at? }
-   tier ∈ register | declared | inferred | crowd | unknown
+   { value, tier, source_id, source_url, observed_at, expires_at? }
+   tier ∈ register | declared | found
    ```
-   Display picks the highest tier that has not expired. Ties go to the most recent.
+   Three tiers, shown to the patient as three badges (PRD §7). `found` covers anything inferred from a public page we may use, and patient reports of non-clinical facts. Display picks the highest tier that has not expired. Ties go to the most recent. There is no confidence score; the badge and the date are the confidence.
 2. **Registers are the spine.** A practitioner exists because a register says so. A location exists because a register, NHSD, ABR or a provider says so. We never create a practitioner from a web page alone.
 3. **Declarations expire.** Capacity and fees at 90 days; hours and phone at 365 days. Expired declarations fall back to the next tier and the profile says "last declared <date>".
 4. **Resolution keys are stable identifiers, not names.** Names are matched only to attach observations to an identity that already has a key.
