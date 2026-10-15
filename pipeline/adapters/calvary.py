@@ -11,7 +11,8 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(__file__))
-from _common import Fetcher, classify, clean, finish, location, next_flight_strings, json_after, parse_args, record, sitemap_urls  # noqa: E402
+from _common import (STATES, Fetcher, classify, clean, finish, location, next_flight_strings,  # noqa: E402
+                     json_after, parse_args, record, sitemap_urls)
 
 GROUP = "calvary"
 LEGAL_BASIS = ("facts from public page; Calvary Health Care robots.txt permits /hospitals/ (Allow: /) "
@@ -23,7 +24,16 @@ def hospital_name(slug: str) -> str:
     return " ".join(w.capitalize() if w not in ("of", "and") else w for w in slug.split("-"))
 
 
-def parse_dir(page: str, url: str, hospital: str):
+HOSPITAL_STATE = (("hobart", "TAS"), ("launceston", "TAS"), ("canberra", "ACT"), ("bruce", "ACT"),
+                  ("adelaide", "SA"), ("riverina", "NSW"), ("kogarah", "NSW"), ("melbourne", "VIC"),
+                  ("holmesglen", "VIC"))
+
+
+def hospital_state(slug: str) -> str:
+    return next((st for key, st in HOSPITAL_STATE if key in slug), "")
+
+
+def parse_dir(page: str, url: str, hospital: str, fallback_state: str = ""):
     flight = next_flight_strings(page)
     specialists = json_after(flight, '"specialists":[', "[") or []
     out, by_name = [], {}
@@ -34,7 +44,10 @@ def parse_dir(page: str, url: str, hospital: str):
         if not classify([spec]):
             continue
         name = clean(f"{s.get('title', '')} {s.get('firstName', '')} {s.get('lastName', '')}")
-        loc = location(hospital, s.get("address"), s.get("suburb"), s.get("state"), s.get("postcode"), s.get("phone"))
+        state = clean(s.get("state")).upper()
+        if state not in STATES:  # source sometimes holds a city ("HOBART") or nothing
+            state = fallback_state
+        loc = location(hospital, s.get("address"), s.get("suburb"), state, s.get("postcode"), s.get("phone"))
         if name in by_name:  # Contentful lists one entry per specialty; merge
             r = by_name[name]
             if spec.lower() not in (t.lower() for t in [r["specialty"], *r["subspecialty_tags"]]):
@@ -56,7 +69,7 @@ def main():
     for u in urls[: (1 if args.dry_run else len(urls))]:
         slug = DIR_RE.match(u).group(1)
         try:
-            recs = parse_dir(f.text(u), u, hospital_name(slug))
+            recs = parse_dir(f.text(u), u, hospital_name(slug), hospital_state(slug))
         except Exception as e:
             print("  skip", u, e)
             continue
