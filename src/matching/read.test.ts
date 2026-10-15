@@ -39,8 +39,11 @@ describe("W221 what it must NOT match, which is the whole cost of the change", (
    */
   it("keeps negations, so the specific cue still beats the general one inside it", () => {
     expect(tokenise("not just medication")).toContain("not");
-    const labels = readNeeds("I want alternatives, not just medication").map((n) => n.label);
-    expect(labels).toContain("Non-medication supports");
+    // Psychiatry has no non-medication care facet; the same mechanism is pinned on the additive
+    // "not just" idiom: "not just the anxiety" means anxiety AND MORE, so anxiety still reaches.
+    const labels = readNeeds("assess me for ADHD, not just the anxiety").map((n) => n.label);
+    expect(labels).toContain("Anxiety");
+    expect(labels).toContain("ADHD assessment");
   });
 
   it("leaves short words alone rather than stemming them into nonsense", () => {

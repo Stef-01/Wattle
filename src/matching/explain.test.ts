@@ -10,7 +10,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
+import { eachOf } from "./support/non-vacuous";
 import type { Patient, PatientId, PracticeId, ClinicianId } from "./support/domain-types";
 import {
   ALL_MATCH_REASONS,
@@ -59,7 +59,7 @@ describe("W213 explanation is total, not best-effort", () => {
   it("has copy for every reason and no reason without copy", () => {
     expect(Object.keys(MATCH_REASON_COPY).sort()).toEqual([...ALL_MATCH_REASONS].sort());
     for (const reason of eachOf(ALL_MATCH_REASONS, "the match-reason vocabulary")) {
-      expect(MATCH_REASON_COPY[reason].length, reason).toBeGreaterThan(40);
+      expect(MATCH_REASON_COPY[reason as MatchReason].length, reason).toBeGreaterThan(40);
     }
   });
 
@@ -82,9 +82,9 @@ describe("W213 explanation is total, not best-effort", () => {
     // W86's rule about kept decisions: "why was this person NOT offered one" is asked at least
     // as often, and a practice that turned matching on and saw nothing happen needs an answer.
     for (const reason of eachOf(ALL_MATCH_REASONS, "the match-reason vocabulary")) {
-      const matched = MATCHED_REASONS.includes(reason);
-      const explanation = explainMatch({ candidateRef: "c1", slotId: matched ? "s1" : null, reason });
-      expect(explanation.headline, reason).toBe(MATCH_REASON_COPY[reason]);
+      const matched = MATCHED_REASONS.includes(reason as MatchReason);
+      const explanation = explainMatch({ candidateRef: "c1", slotId: matched ? "s1" : null, reason: reason as MatchReason });
+      expect(explanation.headline, reason).toBe(MATCH_REASON_COPY[reason as MatchReason]);
       expect(explanation.headline.length, reason).toBeGreaterThan(0);
       expect(explanation.matched, reason).toBe(matched);
     }

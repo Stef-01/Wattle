@@ -1,26 +1,34 @@
 // Ported from adhd.me/src/matching/corpus.test.ts on 2026-10-15.
-// W231 (O47) verify gate: the standing corpus IS the CI gate the year plan asked for.
+//
+// The corpus is re-read on every run: every `reaches` holds, every `never` holds, every facet
+// meets its measured floor, and an aspiration that is now heard demands promotion. The facet
+// vocabulary comes from the discipline lexicon rather than ADHD.ME's onboarding tables.
 
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
-import { EI_QUALITY_KEYS } from "@/demo/emotional-fit";
-import { CARE_AREA_LABELS } from "@/onboarding/types";
+import { eachOf } from "./support/non-vacuous";
 import { corpusReachByFacet, REACH_CORPUS, REACH_FLOORS } from "./corpus";
-import { facetKey, readNeeds } from "./needs";
+import { careAreaLabels, facetKey, mannerTraits, readNeeds } from "./needs";
+import { matchableLanguages } from "./languages";
 
+// The lexicon alone, as ADHD.ME read it and as extractor-quality.ts grades it. Languages are
+// read against the roster (`languageNeeds`) and are a corpus aspiration until the corpus
+// learns them (clarifier-relevance blind spot 1).
 const read = (text: string) => readNeeds(text).map((n) => facetKey(n.facet));
 
 describe("the corpus is well-formed", () => {
   const VALID_KEYS = new Set<string>([
-    ...CARE_AREA_LABELS.map((a) => `care:${a.id}`),
-    ...EI_QUALITY_KEYS.map((t) => `manner:${t}`),
-    "pref:woman-gp", "pref:telehealth-first", "pref:longer-appointment", "pref:bulk-billing",
+    ...careAreaLabels().map((a) => `care:${a.id}`),
+    ...mannerTraits().map((t) => `manner:${t}`),
+    ...matchableLanguages().map((l) => `language:${l.toLowerCase()}`),
+    "pref:woman-gp", "pref:man-gp", "pref:telehealth-first", "pref:longer-appointment", "pref:bulk-billing",
   ]);
 
-  it("every entry expects something, and every key names a real facet", () => {
+  it("every key names a real facet", () => {
+    // ADHD.ME also required every entry to pin something. Wattle's corpus carries entries that
+    // deliberately pin NOTHING: the sentences registered in known-fps.ts, where a `never` pin
+    // would be false today. Those are held to the register instead (known-fps.test.ts).
     for (const entry of eachOf(REACH_CORPUS, "the reach corpus")) {
       const keys = [...(entry.reaches ?? []), ...(entry.never ?? []), ...(entry.aspires ?? [])];
-      expect(keys.length, `"${entry.text}" pins nothing`).toBeGreaterThan(0);
       for (const key of keys) expect(VALID_KEYS.has(key), `"${entry.text}" names unknown facet ${key}`).toBe(true);
     }
   });
@@ -66,11 +74,6 @@ describe("the per-facet gate (the year plan's CI ratchet)", () => {
     }
   });
 
-  /**
-   * The promotion loop, made mechanical: an `aspires` facet that the lexicon can now hear must
-   * be promoted to `reaches` (and the floor raised) IN THE SAME COMMIT as the improvement.
-   * Failing here is the corpus doing its job — the message names the exact edit to make.
-   */
   it("an aspiration that is now heard demands promotion, not silence", () => {
     const met: string[] = [];
     for (const entry of REACH_CORPUS) {
@@ -83,43 +86,21 @@ describe("the per-facet gate (the year plan's CI ratchet)", () => {
   });
 });
 
-/**
- * O123: the founder's G7 question, scoped from the corpus rather than from prose.
- *
- * Year plan 1b was written about five trauma sentences, and then unit after unit deferred to
- * it in passing until twenty-four aspirations across seven facets sat behind it — while most
- * of them turned out never to have been blocked, because the facets they belong to already
- * read exactly that register by settled design. A paragraph cannot notice that happening.
- * These do.
- */
 describe("O123 the founder question knows its own size", () => {
   const awaiting = REACH_CORPUS.filter((entry) => entry.awaitingFounder);
 
-  it("is exactly the sentences that name an experience or a self-state", () => {
-    // Pinned as a list, not a count: a new one must be added deliberately, with its kind.
-    expect(awaiting.map((e) => e.text).sort()).toEqual([
-      "I cry in the car after every appointment",
-      "I dissociate when doctors rush me",
-      "I rehearse what to say and still leave unheard",
-      "an abusive relationship left me jumpy in clinics",
-      "childhood was rough and it comes up in appointments",
-      "crying at work over nothing and I want it taken seriously",
-      "my moods flip fast and I say things I regret",
-      "my temper goes from zero to a hundred in seconds",
-      "rejection hits me like a truck",
-      "there is family violence in my past and it affects appointments",
-      "what happened to me before makes doctors hard to trust",
-    ]);
-    for (const entry of awaiting) {
-      expect(["experience", "self-state"]).toContain(entry.awaitingFounder);
-    }
+  it("is exactly the sentences that disclose a state the yaml reads as an ask", () => {
+    // ADHD.ME's eleven were sentences the lexicon left UNHEARD pending the founder. Wattle's
+    // one is the inverse case: the psychiatry yaml hears it today, and the founder has to say
+    // whether a disclosure made in a finder is an ask for care. Measured 2026-10-15.
+    expect(awaiting.map((e) => e.text).sort()).toEqual(["I drink a bottle of wine most nights"]);
+    for (const entry of awaiting) expect(entry.awaitingFounder!.length).toBeGreaterThan(20);
   });
 
-  it("never marks an entry that is already heard, which would be a decision taken quietly", () => {
-    // The whole point is that these are UNheard pending a human call. If a cue starts reaching
-    // one, that is the founder's question being answered by a cue author instead of a founder.
+  it("never marks an entry that pins nothing, which would be a decision taken quietly", () => {
     for (const entry of awaiting) {
-      expect(entry.aspires ?? [], `${entry.text} is marked awaiting but aspires to nothing`).not.toHaveLength(0);
+      const pinned = [...(entry.reaches ?? []), ...(entry.aspires ?? [])];
+      expect(pinned, `${entry.text} is marked awaiting but pins nothing`).not.toHaveLength(0);
     }
   });
 });

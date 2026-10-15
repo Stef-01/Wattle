@@ -66,7 +66,10 @@ export type DeclarationState = "declared" | "declared-no" | "undeclared";
  */
 export function declarationState(clinician: Clinician, facet: NeedSignal["facet"]): DeclarationState {
   if (facetStrength(clinician, facet) > 0) return "declared";
-  if (facet.kind === "preference" && facet.preference === "woman-gp") return "declared-no";
+  // A gender nobody observed is not a "no": only a DECLARED gender that is not "woman" is.
+  if (facet.kind === "preference" && (facet.preference === "woman-gp" || facet.preference === "man-gp")) {
+    return clinician.gender === "not-declared" ? "undeclared" : "declared-no";
+  }
   return "undeclared";
 }
 

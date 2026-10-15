@@ -1,48 +1,26 @@
 // Ported from adhd.me/src/matching/scale-fixture.test.ts on 2026-10-15.
-// W234 (O142): the clarifier at scale — Q3 item 10's premise, measured.
+//
+// O142: what the clarifier selector has to work with as the roster grows, measured on synthetic
+// rosters drawn from the fixture roster's rates. Every number was measured 2026-10-15.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
-import { clinicians } from "@/demo/clinicians";
-import { clarifierScaleReport, syntheticRoster } from "@/matching/scale-fixture";
+import { eachOf } from "./support/non-vacuous";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
+import { clarifierScaleReport, syntheticRoster } from "./scale-fixture";
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const ASK = "I need an ADHD assessment";
+/** A request that reached nothing is ungated (M10), so every splitting facet is a candidate. */
+const UNGATED = "help";
 
 describe("the fixture never reaches a patient", () => {
-  /**
-   * THE LAW OF THE FIXTURE, MADE EXECUTABLE.
-   *
-   * These entries are not people. Rendering one would publish a fabricated doctor, which is the
-   * thing W193's real-person law exists to prevent and the thing the founder gates forbid outright.
-   * A comment saying so decays; this fails.
-   */
-  /**
-   * O151: THIS WALKS `src/` TOO, AND THAT IS THE WHOLE POINT OF THE WIDENING.
-   *
-   * O142 shipped this guard walking `app/` only, which left a hole the width of `src/`: `app/`
-   * imports dozens of `src/` modules, so any one of them importing the fixture would carry twenty
-   * fabricated doctors to a patient surface with this test silent. The law it enforces is the
-   * strongest in the tree — publishing an invented clinician on a health directory is precisely
-   * what W193 exists to prevent — and an absolute law with a scoped guard is a guard that has
-   * only ever checked the easy half.
-   *
-   * It matches IMPORTS, not mentions, and that distinction was earned: the first version of this
-   * widening flagged three files that are all correct — `cdss-boundary.ts` NAMES the module in a
-   * W200 census declaration, `cdss-boundary.test.ts` dynamically imports it because the census has
-   * to load every module it lints, and `clarify.ts` mentions the scale report in a comment. A
-   * guard that cannot tell a citation from a dependency reports the tree's own bookkeeping as a
-   * breach, and would have been switched off within a week.
-   *
-   * Test files may import it — that is what the fixture is for. A NON-TEST module under `app/` or
-   * `src/` may not, because `app/` imports `src/` freely and that is the whole path to a patient.
-   */
   it("is imported by no non-test module under app/ or src/", () => {
     const IMPORTS_IT = /(?:from\s*["'][^"']*scale-fixture["']|import\s*\(\s*["'][^"']*scale-fixture["'])/;
     const offenders: string[] = [];
     const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) {
@@ -59,109 +37,58 @@ describe("the fixture never reaches a patient", () => {
   });
 
   it("carries no entry that could be mistaken for a real clinician", () => {
-    for (const entry of eachOf(syntheticRoster(20), "the synthetic roster")) {
-      expect(entry.realPerson).toBeUndefined();
-      expect(entry.image).toBeNull();
+    for (const entry of eachOf(syntheticRoster(20, clinicians), "the synthetic roster")) {
+      expect(entry.synthetic).toBe(true);
+      expect(entry.booking.via).toBe("practice");
       expect(entry.id).toMatch(/^synthetic-/);
       expect(entry.name).toContain("Synthetic fixture");
     }
   });
 
   it("is deterministic, so the measurements below are pins and not flakes", () => {
-    expect(syntheticRoster(20)).toEqual(syntheticRoster(20));
+    expect(syntheticRoster(20, clinicians)).toEqual(syntheticRoster(20, clinicians));
   });
 
-  /**
-   * The rates are DERIVED from the real roster, not chosen. This is the non-vacuity proof for
-   * that claim: a roster of only women produces a synthetic roster of only women. If somebody
-   * later hardcodes the rates, this fails.
-   */
   it("inherits the real roster's marginal rates rather than invented ones", () => {
     expect(clinicians.every((c) => c.languages.includes("English"))).toBe(true);
     const womenInReal = clinicians.filter((c) => c.gender === "woman").length;
-    const womenInSynthetic = syntheticRoster(40).filter((c) => c.gender === "woman").length;
+    const womenInSynthetic = syntheticRoster(40, clinicians).filter((c) => c.gender === "woman").length;
     if (womenInReal === 0) expect(womenInSynthetic).toBe(0);
     else expect(womenInSynthetic).toBeGreaterThan(0);
+    expect(womenInSynthetic).toBe(18);
   });
 });
 
 describe("Q3 item 10's premise", () => {
-  /**
-   * THE FINDING, AND THE EVENT IT WAS WAITING FOR.
-   *
-   * `clarifiers()` sorts candidates by `|heldBy/size - 0.5|`. On a two-clinician roster every
-   * splitting facet was held by exactly one person, so every candidate had the same evenness
-   * and the sort decided nothing at all — the selector's work was done entirely by O33's greedy
-   * holder-signature dedup underneath it. The pin said what would end that: "If the roster
-   * grows, this fails — which is correct: the sort waking up is exactly the event Q3 item 10 is
-   * waiting for."
-   *
-   * O252 IS THAT EVENT. Eleven clinicians, and the questions now carry four distinct evenness
-   * values, so the sort is choosing between them rather than rubber-stamping the dedup's order.
-   * The test keeps its name and its shape and states the number it has woken up to; renaming it
-   * "is no longer inert" would lose the thing worth reading, which is that the premise Q3 wrote
-   * down turned out to be right.
-   */
-  it("is inert on the real roster: one evenness value across every question", () => {
+  it("is inert on the fixture roster: one evenness value across every question", () => {
+    // Under the relevance gate the ADHD ask suggests exactly one facet (telehealth), so the
+    // evenness sort has one value to work with — nothing to decide.
     const report = clarifierScaleReport(ASK, clinicians);
-    expect(report.rosterSize).toBe(11);
-    expect(report.distinctEvenness).toBe(4);
+    expect(report.rosterSize).toBe(6);
+    expect(report.distinctEvenness).toBe(1);
   });
 
-  /**
-   * And the other half of the premise — "will matter a lot at twenty" — is EARNED. Pinned both
-   * ways: a regression fails, and an improvement has to move the number deliberately.
-   */
-  it("acquires real choices as the roster grows", () => {
-    // M10 REDREW THIS CURVE, AND THE PLATEAU IS THE GATE. Pre-gate the figures were 1/4/6/8 and
-    // kept climbing, because every splitting facet was a candidate and more clinicians meant
-    // more distinct split ratios. The relevance gate bounds candidates to the nine facets this
-    // ASK's corpus evidence suggests, so distinct evenness saturates once every suggested facet
-    // is a candidate — growth in the roster no longer manufactures questions the request never
-    // suggested, which is the gate doing at scale exactly what it does at three.
-    //
-    // O252: 1/4/5/5 -> 1/4/7/9. The synthetic roster is drawn from the REAL one's declaration
-    // rates (`scale-fixture.ts`'s `rateAmongReal`), so nine more clinicians with a wider spread
-    // of declarations change what a synthetic roster of any size looks like. The plateau the
-    // gate produced at 5 has lifted because more of the suggested facets are now split at
-    // rates far enough apart to be distinct — the gate is still bounding candidates, it simply
-    // has more genuinely different questions inside the bound to tell apart.
-    const measured = [3, 8, 20, 40].map((size) => clarifierScaleReport(ASK, syntheticRoster(size)));
-    expect(measured.map((r) => r.distinctEvenness)).toEqual([1, 4, 7, 9]);
-    // Monotone by construction of the evenness function, but pinned because the CLAIM is that it
-    // grows — a change that made it non-monotone would falsify the claim while passing the above.
+  it("acquires real choices as the roster grows — on an ungated request", () => {
+    // The gated ASK stays at one candidate at every size ([0, 1, 1, 1] measured): roster growth
+    // cannot manufacture questions the reader never hinted at, which is M10's whole point. The
+    // selector's own curve shows on an ungated request: 1 -> 4 -> 9 -> 15 distinct evenness.
+    expect([3, 8, 20, 40].map((size) => clarifierScaleReport(ASK, syntheticRoster(size, clinicians)).distinctEvenness)).toEqual([0, 1, 1, 1]);
+    const measured = [3, 8, 20, 40].map((size) => clarifierScaleReport(UNGATED, syntheticRoster(size, clinicians)));
+    expect(measured.map((r) => r.distinctEvenness)).toEqual([1, 4, 9, 15]);
     const evenness = measured.map((r) => r.distinctEvenness);
     expect([...evenness].sort((a, b) => a - b)).toEqual(evenness);
   });
 
-  /**
-   * The second half of what scale buys, and the more useful half. At today's size, the askable
-   * questions collapse into two distinct reorderings: most of the questions are, in effect,
-   * the same question. At twenty every one is distinct.
-   *
-   * Fourteen until M3 (F6): anubhav-saxena's `unhurried` declaration was the missing half of his
-   * own appointmentLength answer, and adding it makes "a longer first appointment" a real
-   * splitting question on this roster again (one holds it, one does not) — one more candidate,
-   * same two-signature shape (roster.ts's M3 comment; O179's "the day a GP declares
-   * longer-appointment" has arrived).
-   */
   it("turns duplicate questions into distinct ones", () => {
     const real = clarifierScaleReport(ASK, clinicians);
-    // O252: [9, 2] -> [11, 9], and the second number is the one this test is named after.
-    // Two distinct reorderings out of nine candidates meant most of the askable questions were
-    // in effect the SAME question — a two-person roster can only be reordered two ways. Eleven
-    // clinicians make nine of the eleven candidates genuinely different questions, which is
-    // what the "at twenty every one is distinct" half below predicted, arriving early.
-    expect([real.candidates, real.distinctSignatures]).toEqual([11, 9]);
-    // O252: [9, 9] -> [10, 10] at twenty, the same "every candidate is its own question"
-    // shape one candidate wider, from the same rate change that redrew the curve above.
-    const atTwenty = clarifierScaleReport(ASK, syntheticRoster(20));
-    expect([atTwenty.candidates, atTwenty.distinctSignatures]).toEqual([10, 10]);
+    expect([real.candidates, real.distinctSignatures]).toEqual([1, 1]);
+    const atTwenty = clarifierScaleReport(UNGATED, syntheticRoster(20, clinicians));
+    expect([atTwenty.candidates, atTwenty.distinctSignatures]).toEqual([27, 26]);
   });
 
-  /** Non-vacuity for the whole report: the selector's order is not the tie-break's order. */
   it("offers something the alphabetical tie-break alone would not", () => {
-    const atTwenty = clarifierScaleReport(ASK, syntheticRoster(20));
+    const atTwenty = clarifierScaleReport(UNGATED, syntheticRoster(20, clinicians));
     expect(atTwenty.offered).not.toEqual(atTwenty.offeredIfAlphabetical);
+    expect(atTwenty.offered).toEqual(["manner:direct", "pref:bulk-billing", "care:depression"]);
   });
 });

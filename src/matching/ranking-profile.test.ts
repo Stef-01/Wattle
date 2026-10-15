@@ -1,8 +1,8 @@
 // Ported from adhd.me/src/matching/ranking-profile.test.ts on 2026-10-15.
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
+import { eachOf } from "./support/non-vacuous";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 import {
-  clinicians,
   rankBands,
   rankClinicians,
   rankingProfile,
@@ -10,11 +10,9 @@ import {
   requestFitSummary,
   unservedAsks,
   needsFor,
-  type Clinician,
-} from "@/demo/clinicians";
-import { syntheticClinician } from "@/demo/synthetic-clinician";
-import type { CareArea } from "@/demo/care-archetypes";
-import type { EIQuality } from "@/demo/emotional-fit";
+} from "./rank";
+import type { Clinician } from "./clinician";
+import { syntheticClinician } from "./support/synthetic-clinician";
 
 const base = clinicians[0]!;
 
@@ -34,17 +32,17 @@ describe("2026-08-22 constraint-first ranking audit", () => {
       telehealthFirstAppointment: undefined,
       careAreas: [
         "adhd-assessment",
-        "titration",
-        "shared-care",
+        "bipolar",
+        "ocd",
         "depression",
         "anxiety",
-        "substance-history",
-        "non-medication",
-      ] as CareArea[],
-      manner: ["structured", "non_judgmental", "sense_making", "collaborative"] as EIQuality[],
+        "substance-use",
+        "trauma",
+      ],
+      manner: ["direct", "gentle", "collaborative", "culturally-safe"],
     });
     const request =
-      "I want the first appointment by phone. I also need titration, shared care, anxiety support and somewhere I can be honest about drinking.";
+      "I want the first appointment by phone. I also need help with bipolar, OCD, anxiety and my drinking.";
 
     expect(rankClinicians(request, [broadInRooms, telehealth])[0]!.id).toBe("telehealth");
     const needs = needsFor(request, [broadInRooms, telehealth]);
@@ -76,7 +74,7 @@ describe("2026-08-22 constraint-first ranking audit", () => {
     });
     const roster = [telehealthOnly, moreConstraints, commonA, commonB];
     const request =
-      "I need a woman GP who speaks Urdu. I want the first appointment by phone";
+      "I need a woman psychiatrist who speaks Urdu. I want the first appointment by phone";
     const needs = needsFor(request, roster);
 
     expect(rankingProfile(moreConstraints, needs).constraintCoverage).toBe(2);
@@ -89,25 +87,25 @@ describe("2026-08-22 constraint-first ranking audit", () => {
   });
 
   it("never turns roster-wide coverage into a claim that each doctor is a full match", () => {
-    const summary = requestFitSummary("I need a woman GP who speaks Urdu and offers telehealth");
+    const summary = requestFitSummary("I need a woman psychiatrist who speaks Urdu and offers telehealth", clinicians);
     expect(summary.recognizedNeedCount).toBe(3);
     expect(summary.fullMatchCount).toBe(0);
-    expect(requestFitCopy(summary, clinicians.length)).toBe(
-      "No listed GP matches every part of your request we understood. Showing the strongest declared matches.",
+    expect(requestFitCopy(summary, clinicians)).toBe(
+      "No listed psychiatrist matches every part of your request we understood. Showing the strongest declared matches.",
     );
   });
 
   it("names a supported consultation-language gap instead of treating it as unreadable", () => {
-    const needs = needsFor("I need a Punjabi-speaking GP");
-    expect(needs.map((need) => need.label)).toContain("Punjabi-speaking");
-    expect(unservedAsks("I need a Punjabi-speaking GP")[0]).toContain(
-      // O252: the sentence names the list it is about, and the real roster is no longer GPs only.
-      "Punjabi-speaking is not something any provider listed today declares",
+    // Farsi is in the discipline vocabulary and nobody on the fixture roster declares it.
+    const needs = needsFor("I need a Farsi-speaking psychiatrist", clinicians);
+    expect(needs.map((need) => need.label)).toContain("Farsi-speaking");
+    expect(unservedAsks("I need a Farsi-speaking psychiatrist", clinicians)[0]).toContain(
+      "Farsi-speaking is not something any psychiatrist listed today declares",
     );
   });
 
   it("does not invent a constraint when the reader only names care preferences", () => {
-    const needs = needsFor("my dose needs titration and I want it explained without jargon");
+    const needs = needsFor("I need help with my anxiety and I want someone who explains things", clinicians);
     for (const clinician of eachOf(clinicians, "the roster")) {
       expect(rankingProfile(clinician, needs).constraintScore).toBe(0);
     }
@@ -115,11 +113,11 @@ describe("2026-08-22 constraint-first ranking audit", () => {
 
   it("uses distinct-need coverage only after constraint and weighted scores tie", () => {
     const needs = [
-      { facet: { kind: "care" as const, area: "titration" as const }, matched: "dose", label: "Dose", weight: 20 },
+      { facet: { kind: "care" as const, area: "bipolar" as const }, matched: "bipolar", label: "Bipolar", weight: 20 },
       { facet: { kind: "care" as const, area: "anxiety" as const }, matched: "anxiety", label: "Anxiety", weight: 10 },
       { facet: { kind: "care" as const, area: "depression" as const }, matched: "mood", label: "Mood", weight: 10 },
     ];
-    const narrow = clone("narrow", { careAreas: ["titration"], careAreasSometimes: [], manner: [] });
+    const narrow = clone("narrow", { careAreas: ["bipolar"], careAreasSometimes: [], manner: [] });
     const broad = clone("broad", { careAreas: ["anxiety", "depression"], careAreasSometimes: [], manner: [] });
 
     expect(rankingProfile(narrow, needs).weightedScore).toBe(rankingProfile(broad, needs).weightedScore);
@@ -128,8 +126,8 @@ describe("2026-08-22 constraint-first ranking audit", () => {
 
   it("keeps bands honest about the complete ranking vector, not only the raw score", () => {
     const languageMatch = clone("language-match", { languages: ["English", "Tamil"], careAreas: [] });
-    const careMatch = clone("care-match", { languages: ["English"], careAreas: ["titration"] });
-    const bands = rankBands("I need a Tamil-speaking GP and titration", [careMatch, languageMatch]);
+    const careMatch = clone("care-match", { languages: ["English"], careAreas: ["bipolar"] });
+    const bands = rankBands("I need a Tamil-speaking psychiatrist for bipolar", [careMatch, languageMatch]);
 
     expect(bands).toHaveLength(2);
     expect(bands[0]!.clinicians[0]!.id).toBe("language-match");
@@ -158,10 +156,10 @@ describe("2026-08-24 M9 — tiers before summing, past the constraint tier (F9)"
     const mannerMatch = syntheticClinician({
       id: "manner-match",
       careAreas: [],
-      manner: ["structured", "non_judgmental", "sense_making"] as EIQuality[],
+      manner: ["direct", "gentle", "collaborative"],
     });
     const request =
-      "I need adhd assessment. I want a structured, non judgmental doctor who helps me make sense of things.";
+      "I need an adhd assessment. I want a direct, gentle doctor who listens.";
     const needs = needsFor(request, [careMatch, mannerMatch]);
 
     expect(rankingProfile(mannerMatch, needs).weightedScore).toBeGreaterThan(
@@ -181,9 +179,9 @@ describe("2026-08-24 M9 — tiers before summing, past the constraint tier (F9)"
    * tier is compared, not skipped, once the strong tier ties (both zero here).
    */
   it("still separates on manner when no care area was asked for", () => {
-    const mannerRich = syntheticClinician({ id: "manner-rich", careAreas: [], manner: ["structured"] as EIQuality[] });
+    const mannerRich = syntheticClinician({ id: "manner-rich", careAreas: [], manner: ["direct"] });
     const mannerNone = syntheticClinician({ id: "manner-none", careAreas: [], manner: [] });
-    const request = "I want a structured doctor.";
+    const request = "I want a direct doctor.";
 
     expect(rankClinicians(request, [mannerNone, mannerRich])[0]!.id).toBe("manner-rich");
   });
@@ -200,10 +198,10 @@ describe("2026-08-24 M9 — tiers before summing, past the constraint tier (F9)"
       id: "manner-match",
       languages: ["English"],
       careAreas: [],
-      manner: ["structured", "non_judgmental", "sense_making"] as EIQuality[],
+      manner: ["direct", "gentle", "collaborative"],
     });
     const request =
-      "I speak Hindi and want a structured, non judgmental doctor who helps me make sense of things.";
+      "I speak Hindi and want a direct, gentle doctor who listens.";
 
     expect(rankClinicians(request, [mannerMatch, languageMatch])[0]!.id).toBe("lang-match");
   });

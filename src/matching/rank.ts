@@ -688,6 +688,9 @@ export function rankCliniciansNear(
  * gazetteer. A location nobody can place is simply absent — our missing row, never their penalty.
  */
 function consultingPoints(clinician: Clinician): Array<{ suburb: string; point: SuburbPoint }> {
+  // Nobody travels to a telehealth-only clinician: no rooms, no distance, whatever the gazetteer
+  // knows about the suburb their practice is registered in.
+  if (clinician.telehealthOnly) return [];
   if (clinician.consultingPoints && clinician.consultingPoints.length > 0) {
     return clinician.consultingPoints.map((point) => ({ suburb: point.suburb, point }));
   }

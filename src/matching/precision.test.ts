@@ -14,8 +14,9 @@
 // All three are gone. The rest are now declared, five of them as known false positives.
 
 import { describe, expect, it } from "vitest";
-import { REACH_CORPUS } from "@/matching/corpus";
-import { facetKey, readNeeds } from "@/matching/needs";
+import { REACH_CORPUS } from "./corpus";
+import { facetKey, readNeeds } from "./needs";
+import { KNOWN_FALSE_POSITIVES, openFalsePositives } from "./known-fps";
 
 type Entry = {
   text: string;
@@ -27,7 +28,10 @@ type Entry = {
 function undeclaredReaches(): Array<{ text: string; extra: string[] }> {
   const out: Array<{ text: string; extra: string[] }> = [];
   for (const entry of REACH_CORPUS as ReadonlyArray<Entry>) {
-    const declared = new Set([...(entry.reaches ?? []), ...(entry.aspires ?? []), ...(entry.never ?? [])]);
+    // A registered false positive is a declaration too: the register names the facet and the
+    // sentence, so the reach is accounted for until the cue is narrowed (known-fps.ts).
+    const registered = KNOWN_FALSE_POSITIVES.filter((fp) => fp.text === entry.text && !fp.fixedBy).map((fp) => fp.facet);
+    const declared = new Set([...(entry.reaches ?? []), ...(entry.aspires ?? []), ...(entry.never ?? []), ...registered]);
     const heard = new Set(readNeeds(entry.text).map((need) => facetKey(need.facet)));
     const extra = [...heard].filter((key) => !declared.has(key));
     if (extra.length > 0) out.push({ text: entry.text, extra });
@@ -62,23 +66,18 @@ describe("O119 the corpus declares everything it hears", () => {
   });
 
   /**
-   * THE CLASS THE AUDIT NAMED, and the reason it is one finding rather than five.
+   * THE CLASS THE PORT NAMED, and the reason it is one finding rather than seven.
    *
-   * Every cue in the lexicon is written as though the CLINICIAN is the subject: "explains
-   * things", "believes me", "my son". Five corpus sentences put somebody else there — the
-   * patient doing the explaining, the family doing the disbelieving, a son who is the reason
-   * for an adult's own assessment — and the cue fires anyway. They are pinned as today's truth
-   * with retag demands; the fix is a subject check, which is a mechanism unit and not a cue.
+   * The psychiatry yaml cues several facets on a bare ordinary word — "ice", "flat", "checking",
+   * "court", "memory", "free", "patient" — and each fires on a sentence that means something
+   * else. They are pinned as today's truth in known-fps.ts; the fix is narrowing the yaml cue
+   * to a pair, which is the founder's vocabulary and not this unit's to edit in passing.
    */
-  it("the subject-blind false positives are still exactly the four that remain", () => {
-    const cases: Array<[string, string]> = [
-      ["a longer first appointment so I can actually explain", "manner:collaborative"],
-      ["book a double slot, I have twenty years to explain", "manner:collaborative"],
-      ["my family does not believe in ADHD and I need help navigating that", "manner:attuned"],
-      ["bring me into every decision about my own brain", "manner:sense_making"],
-    ];
-    for (const [text, facet] of cases) {
-      expect(readNeeds(text).map((need) => facetKey(need.facet)), text).toContain(facet);
+  it("the bare-word false positives are still exactly the ones the register holds", () => {
+    const open = openFalsePositives().filter((fp) => fp.family === "bare-word-in-yaml");
+    expect(open).toHaveLength(7);
+    for (const fp of open) {
+      expect(readNeeds(fp.text).map((need) => facetKey(need.facet)), fp.text).toContain(fp.facet);
     }
   });
 
@@ -91,9 +90,12 @@ describe("O119 the corpus declares everything it hears", () => {
    * paediatric GPs. The other four leak between manner facets and cost a shade of emphasis.
    */
   it("an adult asking for their own assessment is not sent to paediatric GPs", () => {
-    const heard = readNeeds("after my son was diagnosed I recognised myself and now I want my own assessment")
+    const heard = readNeeds("after my son saw a child psychiatrist I recognised myself and now I want my own ADHD assessment")
       .map((need) => facetKey(need.facet));
     expect(heard).toContain("care:adhd-assessment");
-    expect(heard).not.toContain("care:child-adolescent-adhd");
+    expect(heard).not.toContain("care:child-adolescent");
+    // The counter-check: without "my own", the same words are a parent's ask and the child facet stands.
+    expect(readNeeds("my son needs a child psychiatrist for an ADHD assessment").map((need) => facetKey(need.facet)))
+      .toContain("care:child-adolescent");
   });
 });

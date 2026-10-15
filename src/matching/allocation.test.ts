@@ -12,7 +12,7 @@ const doctor = (overrides: Partial<DoctorRecord> & { doctorRef: string }): Docto
   capacity: { booked: 2, limit: 10 },
   insuranceAccepted: ["bulk-billing", "medicare-gap"],
   communicationStyle: ["unhurried", "sense_making"],
-  careAreas: ["adhd-assessment", "titration"],
+  careAreas: ["adhd-assessment", "anxiety"],
   ...overrides,
 });
 
@@ -170,7 +170,7 @@ describe("W236 each criterion prices the declared fact it names", () => {
 
   it("clinical fit: the share of stated care asks; no stated asks is a said 1, not a guess", () => {
     const depth = scorePair(
-      patient({ patientRef: "p", statedNeeds: ["adhd-assessment", "trauma-informed"] }),
+      patient({ patientRef: "p", statedNeeds: ["adhd-assessment", "trauma"] }),
       doctor({ doctorRef: "a" }),
     ).breakdown.find((b) => b.criterion === "clinicalFit")!;
     expect(depth.raw).toBe(0.5);
@@ -247,9 +247,9 @@ describe("O132 the allocator reads a patient the way the finder does", () => {
 
   it("derives exactly what readNeeds produces — no facet added, none dropped", () => {
     for (const words of [
-      "a woman GP who bulk bills, unhurried, and can do adult ADHD assessment and titration",
-      "someone who explains things properly and does shared care with my psychiatrist",
-      "hindi speaking GP who takes time",
+      "a woman psychiatrist who bulk bills, gentle, and can do adult ADHD assessment and anxiety",
+      "someone who explains things and understands bipolar",
+      "hindi speaking psychiatrist who takes time",
     ]) {
       const built = requestFromWords(base, words);
       const needs = readNeeds(words);
@@ -265,7 +265,7 @@ describe("O132 the allocator reads a patient the way the finder does", () => {
   it("hears nothing the finder cannot hear", () => {
     // The one thing that would make this a second reader: a facet appearing here that the
     // finder's own read of the same words does not contain.
-    const words = "I want a longer first appointment and someone who is not judgmental";
+    const words = "I want a longer first appointment and someone direct about my depression";
     const built = requestFromWords(base, words);
     const readable = new Set<string>(
       readNeeds(words).map((n) => (n.facet.kind === "care" ? n.facet.area : n.facet.kind === "manner" ? n.facet.trait : "")),

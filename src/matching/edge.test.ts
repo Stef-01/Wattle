@@ -9,10 +9,10 @@
 // in the closed vocabulary, and every stated ordering guarantee holding at the edge.
 
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
-import { syntheticClinician } from "@/demo/synthetic-clinician";
+import { eachOf } from "./support/non-vacuous";
+import { syntheticClinician } from "./support/synthetic-clinician";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 import {
-  clinicians,
   matchEvidence,
   matchQuality,
   needsFor,
@@ -23,12 +23,11 @@ import {
   topTieNote,
   unservedAsks,
   getPersonalizedMatch,
-} from "@/demo/clinicians";
-import { NEED_LABELS, facetKey, readNeeds } from "./needs";
+} from "./rank";
+import { needLabels, facetKey, readNeeds } from "./needs";
 import { clarifiers } from "./clarify";
 import { matchSlots } from "./match";
-import { resolvePlace } from "@/geo/suburbs";
-import type { CareArea } from "@/demo/care-archetypes";
+import { resolvePlace } from "@/src/geo/suburbs";
 
 const JUNK: readonly string[] = [
   "",
@@ -42,8 +41,8 @@ const JUNK: readonly string[] = [
   "' OR 1=1 --",
   "{{constructor.constructor('return 1')()}}",
   "a".repeat(5000),
-  "titration ".repeat(200),
-  "TITRATION AND A LONGER FIRST APPOINTMENT",
+  "anxiety ".repeat(200),
+  "ANXIETY AND A LONGER FIRST APPOINTMENT",
   "don’t rush me, i don't want to be rushed",
   "null undefined NaN Infinity __proto__ toString",
 ];
@@ -52,28 +51,28 @@ describe("O9 hostile and accidental input", () => {
   it.each(JUNK.map((q) => [q.slice(0, 40) || "(empty)", q]))("survives %s", (_label, query) => {
     // The whole pipeline, twice, compared: no crash, and deterministic to the byte.
     const run = () => ({
-      needs: needsFor(query),
-      ranked: rankClinicians(query).map((c) => c.id),
-      bands: rankBands(query).map((b) => [b.score, b.clinicians.map((c) => c.id)]),
-      quality: matchQuality(query),
-      note: topTieNote(query),
-      unserved: unservedAsks(query),
+      needs: needsFor(query, clinicians),
+      ranked: rankClinicians(query, clinicians).map((c) => c.id),
+      bands: rankBands(query, clinicians).map((b) => [b.score, b.clinicians.map((c) => c.id)]),
+      quality: matchQuality(query, clinicians),
+      note: topTieNote(query, clinicians),
+      unserved: unservedAsks(query, clinicians),
       questions: clarifiers(query, clinicians, 20).map((c) => c.facetKey),
-      evidence: clinicians.map((c) => matchEvidence(c, query).map((n) => n.label)),
+      evidence: clinicians.map((c) => matchEvidence(c, query, clinicians).map((n) => n.label)),
     });
     expect(run()).toEqual(run());
   });
 
   it("never says anything back that is not in the closed vocabulary, whatever comes in", () => {
-    const allowed = new Set<string>(NEED_LABELS);
+    const allowed = new Set<string>(needLabels());
     for (const query of eachOf(JUNK, "the junk queries")) {
       for (const clinician of eachOf(clinicians, "the roster")) {
-        for (const need of matchEvidence(clinician, query)) {
+        for (const need of matchEvidence(clinician, query, clinicians)) {
           expect(allowed.has(need.label) || /-speaking$/.test(need.label), `${need.label}`).toBe(true);
         }
         // The reason sentence is composed from labels and fixed copy — a pasted script tag or
         // template string must never travel through it.
-        const { reason } = getPersonalizedMatch(clinician, query);
+        const { reason } = getPersonalizedMatch(clinician, query, clinicians);
         expect(reason).not.toContain("<script>");
         expect(reason).not.toContain("{{");
       }
@@ -81,14 +80,14 @@ describe("O9 hostile and accidental input", () => {
   });
 
   it("reads markup-wrapped asks as their words, not their markup", () => {
-    const needs = readNeeds("<b>titration</b> and my dose is wearing off");
-    expect(needs.some((n) => facetKey(n.facet) === "care:titration")).toBe(true);
+    const needs = readNeeds("<b>anxiety</b> and panic attacks every week");
+    expect(needs.some((n) => facetKey(n.facet) === "care:anxiety")).toBe(true);
   });
 
   it("counts an ask once however many times it is pasted", () => {
-    const once = needsFor("my dose needs titration");
-    const fifty = needsFor(`my dose needs titration. ${"titration ".repeat(50)}`);
-    const key = "care:titration";
+    const once = needsFor("I need help with my anxiety", clinicians);
+    const fifty = needsFor(`I need help with my anxiety. ${"anxiety ".repeat(50)}`, clinicians);
+    const key = "care:anxiety";
     expect(fifty.filter((n) => facetKey(n.facet) === key)).toHaveLength(1);
     expect(fifty.find((n) => facetKey(n.facet) === key)!.weight).toBe(
       once.find((n) => facetKey(n.facet) === key)!.weight,
@@ -96,21 +95,21 @@ describe("O9 hostile and accidental input", () => {
   });
 
   it("reads shouted asks the same as lower-case ones", () => {
-    expect(needsFor("TITRATION AND A LONGER FIRST APPOINTMENT").map((n) => facetKey(n.facet))).toEqual(
-      needsFor("titration and a longer first appointment").map((n) => facetKey(n.facet)),
+    expect(needsFor("ANXIETY AND A LONGER FIRST APPOINTMENT", clinicians).map((n) => facetKey(n.facet))).toEqual(
+      needsFor("anxiety and a longer first appointment", clinicians).map((n) => facetKey(n.facet)),
     );
   });
 
   it("treats both apostrophes alike in the one negator that matters", () => {
-    const straight = readNeeds("i don't want just medication, alternatives please");
-    const typographic = readNeeds("i don’t want just medication, alternatives please");
+    const straight = readNeeds("i don't want telehealth, an anxiety assessment in person please");
+    const typographic = readNeeds("i don’t want telehealth, an anxiety assessment in person please");
     expect(straight.map((n) => n.label)).toEqual(typographic.map((n) => n.label));
   });
 
   it("applies the stated-importance lift once, not per occurrence", () => {
     const answer = "I want the first appointment by phone";
-    const once = needsFor(`hello, ${answer}`);
-    const twice = needsFor(`hello, ${answer}, ${answer}`);
+    const once = needsFor(`hello, ${answer}`, clinicians);
+    const twice = needsFor(`hello, ${answer}, ${answer}`, clinicians);
     const key = "pref:telehealth-first";
     expect(twice.find((n) => facetKey(n.facet) === key)!.weight).toBe(
       once.find((n) => facetKey(n.facet) === key)!.weight,
@@ -126,50 +125,50 @@ describe("O9 hostile and accidental input", () => {
     // pinned: the same monster essay still crashes nothing and ranks everybody, an ask in its
     // OPENING is heard, and an ask planted past the cap is honestly not.
     const filler = "my life story continues here and ".repeat(1500);
-    const askFirst = `my dose needs titration. ${filler}`;
-    expect(needsFor(askFirst).some((n) => facetKey(n.facet) === "care:titration")).toBe(true);
-    expect(rankClinicians(askFirst)).toHaveLength(clinicians.length);
+    const askFirst = `I need help with my anxiety. ${filler}`;
+    expect(needsFor(askFirst, clinicians).some((n) => facetKey(n.facet) === "care:anxiety")).toBe(true);
+    expect(rankClinicians(askFirst, clinicians)).toHaveLength(clinicians.length);
 
-    const askLast = `${filler} my dose needs titration`;
-    expect(needsFor(askLast).some((n) => facetKey(n.facet) === "care:titration")).toBe(false);
-    expect(rankClinicians(askLast)).toHaveLength(clinicians.length);
+    const askLast = `${filler} I need help with my anxiety`;
+    expect(needsFor(askLast, clinicians).some((n) => facetKey(n.facet) === "care:anxiety")).toBe(false);
+    expect(rankClinicians(askLast, clinicians)).toHaveLength(clinicians.length);
   });
 });
 
 describe("O9 degenerate rosters", () => {
-  const template = () => clinicians.find((c) => c.id === "anusha-saxena")!;
+  const template = () => clinicians.find((c) => c.id === "fixture-rossi")!;
   const bare = (id: string) => ({
     ...template(),
     id,
-    careAreas: [] as CareArea[],
-    manner: [] as (typeof clinicians)[number]["manner"],
+    careAreas: [] as string[],
+    manner: [] as string[],
   });
 
   it("an empty roster returns empty everything and crashes nothing", () => {
-    expect(rankClinicians("titration", [])).toEqual([]);
-    expect(rankBands("titration", [])).toEqual([]);
-    expect(topTieNote("titration", [])).toBeNull();
-    expect(clarifiers("titration", [], 5)).toEqual([]);
-    expect(() => matchQuality("titration", [])).not.toThrow();
-    expect(needsFor("titration", [])).toEqual(
-      needsFor("titration", []).map((n) => ({ ...n, weight: n.weight })),
+    expect(rankClinicians("anxiety", [])).toEqual([]);
+    expect(rankBands("anxiety", [])).toEqual([]);
+    expect(topTieNote("anxiety", [])).toBeNull();
+    expect(clarifiers("anxiety", [], 5)).toEqual([]);
+    expect(() => matchQuality("anxiety", [])).not.toThrow();
+    expect(needsFor("anxiety", [])).toEqual(
+      needsFor("anxiety", []).map((n) => ({ ...n, weight: n.weight })),
     );
   });
 
   it("a roster of one is a listing, not a ranking", () => {
     const solo = [bare("only")];
-    expect(rankClinicians("titration", solo).map((c) => c.id)).toEqual(["only"]);
-    expect(rankBands("titration", solo)).toHaveLength(1);
-    expect(clarifiers("titration", solo, 5)).toEqual([]);
-    expect(topTieNote("titration", solo)).toBeNull();
+    expect(rankClinicians("anxiety", solo).map((c) => c.id)).toEqual(["only"]);
+    expect(rankBands("anxiety", solo)).toHaveLength(1);
+    expect(clarifiers("anxiety", solo, 5)).toEqual([]);
+    expect(topTieNote("anxiety", solo)).toBeNull();
   });
 
   it("a roster where every book is closed keeps its fit order", () => {
     const closed = [
-      { ...bare("a"), careAreas: ["titration"] as CareArea[], acceptingNewPatients: false },
+      { ...bare("a"), careAreas: ["anxiety"], acceptingNewPatients: false },
       { ...bare("b"), acceptingNewPatients: false },
     ];
-    expect(rankClinicians("my dose needs titration", closed)[0]!.id).toBe("a");
+    expect(rankClinicians("I need help with my anxiety", closed)[0]!.id).toBe("a");
   });
 
   it("a roster nobody can locate keeps its fit order under a distance sort", () => {
@@ -195,10 +194,10 @@ describe("O9 degenerate rosters", () => {
   });
 
   it("a clinician who declares nothing at all still renders, at the bottom", () => {
-    const roster = [bare("empty"), { ...bare("full"), careAreas: ["titration"] as CareArea[] }];
-    const ranked = rankClinicians("my dose needs titration", roster);
+    const roster = [bare("empty"), { ...bare("full"), careAreas: ["anxiety"] }];
+    const ranked = rankClinicians("I need help with my anxiety", roster);
     expect(ranked.map((c) => c.id)).toEqual(["full", "empty"]);
-    expect(scoreAgainst(ranked[1]!, needsFor("my dose needs titration", roster))).toBe(0);
+    expect(scoreAgainst(ranked[1]!, needsFor("I need help with my anxiety", roster))).toBe(0);
   });
 });
 

@@ -13,10 +13,10 @@
 // below keeps CI deterministic — change it deliberately, never to make a failure go away.
 
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
+import { eachOf } from "./support/non-vacuous";
 import fc from "fast-check";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 import {
-  clinicians,
   matchEvidence,
   matchQuality,
   needsFor,
@@ -24,16 +24,15 @@ import {
   rankClinicians,
   roundScore,
   scoreAgainst,
-  type Clinician,
-} from "@/demo/clinicians";
-import { facetKey, LEXICON_CUES, readNeeds } from "./needs";
+} from "./rank";
+import { facetKey, lexiconCues, readNeeds } from "./needs";
 import { MAX_RAW_TOKENS, MAX_READ_TOKENS, tokenise, tokeniseKeepingStopwords } from "./read";
-import type { CareArea } from "@/demo/care-archetypes";
+import type { Clinician } from "./clinician";
 
 const SEED = 20260819;
 
 /** Words the lexicon knows, split back out of its own phrases. */
-const CUE_WORDS = [...new Set(LEXICON_CUES.flatMap((cue) => cue.phrase.split(/\s+/)))];
+const CUE_WORDS = [...new Set(lexiconCues().flatMap((cue) => cue.phrase.split(/\s+/)))];
 
 /** The connective tissue of real requests — where the negation and collapse rules operate. */
 const FILLERS = [
@@ -66,7 +65,7 @@ describe("W232 the invariants, for all inputs", () => {
         const first = readNeeds(text).map((n) => `${facetKey(n.facet)}:${n.weight}`);
         const second = readNeeds(text).map((n) => `${facetKey(n.facet)}:${n.weight}`);
         expect(second).toEqual(first);
-        expect(rankClinicians(text).map((c) => c.id)).toEqual(rankClinicians(text).map((c) => c.id));
+        expect(rankClinicians(text, clinicians).map((c) => c.id)).toEqual(rankClinicians(text, clinicians).map((c) => c.id));
       }),
       { seed: SEED, numRuns: 300 },
     );
@@ -76,7 +75,7 @@ describe("W232 the invariants, for all inputs", () => {
     fc.assert(
       fc.property(soup, (text) => {
         const signals = readNeeds(text);
-        const quality = matchQuality(text);
+        const quality = matchQuality(text, clinicians);
         // Nothing read means no claim of an informed order — the honesty invariant W221 pinned
         // by example, held for every string this generator can produce.
         if (signals.length === 0) expect(quality).not.toBe("informed");
@@ -98,7 +97,7 @@ describe("W232 the invariants, for all inputs", () => {
   });
 
   it("monotonicity: adding a declared care area never lowers that clinician", () => {
-    const areas: readonly CareArea[] = ["titration", "anxiety", "trauma-informed", "substance-history", "non-medication"];
+    const areas: readonly string[] = ["bipolar", "anxiety", "trauma", "substance-use", "ocd"];
     fc.assert(
       fc.property(
         sentence,

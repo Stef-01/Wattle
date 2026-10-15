@@ -2,9 +2,11 @@
 // O234: the filters, round-tripped through a fake storage and applied to a fixture roster.
 
 import { describe, expect, it } from "vitest";
-import { eachOf } from "@/quality/non-vacuous";
-import { MATCHABLE_LANGUAGES } from "@/matching/languages";
-import { SUBURBS } from "@/geo/suburbs";
+// Port note: the ported Filters carry no consultRecording / approach / careNeeds /
+// clinicianIdentity / country (ADHD.ME allied-roster fields), so their assertions are gone.
+import { eachOf } from "@/src/matching/support/non-vacuous";
+import { matchableLanguages } from "@/src/matching/languages";
+import { SUBURBS } from "@/src/geo/suburbs";
 import {
   activeFilterCount,
   applyFilters,
@@ -44,13 +46,13 @@ const gp = (id: string, over: Partial<Fixture> = {}): Fixture => ({
 });
 
 const roster: Fixture[] = [
-  gp("a", { gender: "woman", languages: ["English", "Tamil"], wheelchairAccessible: true, practicalSignals: ["Bulk billed"] }),
+  gp("a", { gender: "woman", languages: ["English", "Hindi"], wheelchairAccessible: true, practicalSignals: ["Bulk billed"] }),
   gp("b", { telehealthFirstAppointment: true, suburb: "Southport" }),
   gp("c", { manner: ["unhurried"], acceptingNewPatients: false }),
   gp("d", { suburb: "Nowhere" }),
-  gp("e", { consultRecording: "ai-scribe" }),
-  gp("f", { consultRecording: "no-ai" }),
-  gp("g", { approach: ["holistic", "wearables"] }),
+  gp("e"),
+  gp("f"),
+  gp("g"),
 ];
 
 const beecroft = SUBURBS.find((s) => s.suburb === "Beecroft")!;
@@ -65,7 +67,7 @@ describe("the device record", () => {
 
   it("round-trips a set and removes the key when the set is empty", () => {
     const storage = fakeStorage();
-    const set: Filters = { ...emptyFilters(), place: "Beecroft", womanGp: true, languages: ["Tamil"], withinKm: 10 };
+    const set: Filters = { ...emptyFilters(), place: "Beecroft", womanGp: true, languages: ["Hindi"], withinKm: 10 };
     writeFilters(storage, set);
     expect(storage.store.has(FILTERS_KEY)).toBe(true);
     expect(readFilters(storage)).toEqual(set);
@@ -83,8 +85,6 @@ describe("the device record", () => {
     ["another version", JSON.stringify({ ...emptyFilters(), v: 99 })],
     ["a language the roster does not declare", JSON.stringify({ ...emptyFilters(), languages: ["Klingon"] })],
     ["a distance that is not a choice", JSON.stringify({ ...emptyFilters(), withinKm: 7 })],
-    ["a note-taking choice that is not one", JSON.stringify({ ...emptyFilters(), consultRecording: "maybe" })],
-    ["a way of working the roster does not declare", JSON.stringify({ ...emptyFilters(), approach: ["astrology"] })],
     ["a boolean that is not one", JSON.stringify({ ...emptyFilters(), womanGp: "yes" })],
     ["not JSON", "{nope"],
   ])("refuses %s rather than misreading it", (_label, raw) => {
@@ -109,7 +109,7 @@ describe("counting and naming", () => {
   it("counts every narrowing filter and not the place", () => {
     expect(activeFilterCount(emptyFilters())).toBe(0);
     expect(activeFilterCount({ ...emptyFilters(), place: "Epping" })).toBe(0);
-    expect(activeFilterCount({ ...emptyFilters(), womanGp: true, languages: ["Tamil", "Urdu"], withinKm: 5 })).toBe(4);
+    expect(activeFilterCount({ ...emptyFilters(), womanGp: true, languages: ["Hindi", "Urdu"], withinKm: 5 })).toBe(4);
   });
 
   it("names them in a fixed order, one label per filter", () => {
@@ -129,22 +129,22 @@ describe("counting and naming", () => {
     expect(labels[0]).toBe("Woman clinician");
     expect(labels.at(-1)).toBe("Within 20 km");
     expect(labels).toContain("Speaks Mandarin");
-    const kinds = describeFilters({ ...emptyFilters(), professions: ["psychologist", "adhd-coach"] });
-    expect(kinds).toEqual(["Psychologists or ADHD coaches"]);
-    expect(activeFilterCount({ ...emptyFilters(), professions: ["psychologist", "adhd-coach"] })).toBe(1);
+    const kinds = describeFilters({ ...emptyFilters(), professions: ["psychiatrist", "paediatrician"] });
+    expect(kinds).toEqual(["Psychiatrists or paediatricians"]);
+    expect(activeFilterCount({ ...emptyFilters(), professions: ["psychiatrist", "paediatrician"] })).toBe(1);
   });
 
   it("narrows to the kinds of professional chosen, reading an entry with no profession as a GP", () => {
     const plain = gp("h");
-    const psych = gp("i", { profession: "psychologist" });
-    const only = applyFilters([plain, psych], { ...emptyFilters(), professions: ["psychologist"] }, null, () => null);
+    const psych = gp("i", { profession: "psychiatrist" });
+    const only = applyFilters([plain, psych], { ...emptyFilters(), professions: ["psychiatrist"] }, null, () => null);
     expect(only).toEqual([psych]);
     expect(applyFilters([plain, psych], { ...emptyFilters(), professions: ["gp"] }, null, () => null)).toEqual([plain]);
     expect(applyFilters([plain, psych], emptyFilters(), null, () => null)).toHaveLength(2);
   });
 
   it("accepts exactly the languages the roster can match", () => {
-    for (const language of eachOf(MATCHABLE_LANGUAGES, "the matchable languages")) {
+    for (const language of eachOf(matchableLanguages(), "the matchable languages")) {
       const held = readFilters(fakeStorage({ [FILTERS_KEY]: JSON.stringify({ ...emptyFilters(), languages: [language] }) }));
       expect(held.languages).toEqual([language]);
     }
@@ -167,23 +167,9 @@ describe("applying", () => {
     expect(applyFilters(roster, { ...emptyFilters(), [key]: true }, null, nearest).map((c) => c.id)).toEqual([...expected]);
   });
 
-  it("narrows on the declared note-taking fact, and never counts silence as a yes", () => {
-    expect(applyFilters(roster, { ...emptyFilters(), consultRecording: "ai-scribe" }, null, nearest).map((c) => c.id)).toEqual(["e"]);
-    expect(applyFilters(roster, { ...emptyFilters(), consultRecording: "no-ai" }, null, nearest).map((c) => c.id)).toEqual(["f"]);
-    expect(describeFilters({ ...emptyFilters(), consultRecording: "no-ai" })).toEqual(["No AI recording"]);
-    expect(activeFilterCount({ ...emptyFilters(), consultRecording: "ai-scribe" })).toBe(1);
-  });
-
-  it("requires every chosen way of working, as declared", () => {
-    expect(applyFilters(roster, { ...emptyFilters(), approach: ["holistic"] }, null, nearest).map((c) => c.id)).toEqual(["g"]);
-    expect(applyFilters(roster, { ...emptyFilters(), approach: ["holistic", "functional"] }, null, nearest)).toEqual([]);
-    expect(describeFilters({ ...emptyFilters(), approach: ["wearables"] })).toEqual(["Open to wearable data"]);
-    expect(activeFilterCount({ ...emptyFilters(), approach: ["holistic", "wearables"] })).toBe(2);
-  });
-
   it("requires every chosen language", () => {
-    expect(applyFilters(roster, { ...emptyFilters(), languages: ["Tamil"] }, null, nearest).map((c) => c.id)).toEqual(["a"]);
-    expect(applyFilters(roster, { ...emptyFilters(), languages: ["Tamil", "Urdu"] }, null, nearest)).toEqual([]);
+    expect(applyFilters(roster, { ...emptyFilters(), languages: ["Hindi"] }, null, nearest).map((c) => c.id)).toEqual(["a"]);
+    expect(applyFilters(roster, { ...emptyFilters(), languages: ["Hindi", "Urdu"] }, null, nearest)).toEqual([]);
   });
 
   it("applies a distance ceiling only once the place resolves, lets telehealth-first through, and never an unplaceable GP", () => {

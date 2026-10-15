@@ -2,10 +2,11 @@
 // O117: the console panel and the finder cannot disagree about what a patient is told.
 
 import { describe, expect, it } from "vitest";
-import { eachOf, tally } from "@/quality/non-vacuous";
-import { clinicians, getPersonalizedMatch, matchEvidence } from "@/demo/clinicians";
-import { facetKey } from "@/matching/needs";
-import { notDeclaredFrames, reasonsPatientsCanSee, sentencesPatientsSee } from "@/matching/provenance";
+import { eachOf, tally } from "./support/non-vacuous";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
+import { getPersonalizedMatch, matchEvidence } from "./rank";
+import { facetKey } from "./needs";
+import { notDeclaredFrames, reasonsPatientsCanSee, sentencesPatientsSee } from "./provenance";
 
 describe("O117 what patients are told, enumerated for the clinician", () => {
   it("lists a line for every declaration, and nothing that is not a declaration", () => {
@@ -44,7 +45,7 @@ describe("O117 what patients are told, enumerated for the clinician", () => {
       for (const line of reasonsPatientsCanSee(clinician)) {
         if (!line.key?.startsWith("care:") && !line.key?.startsWith("manner:")) continue;
         // Ask the finder, in the reader's own register, for exactly this thing.
-        const evidence = matchEvidence(clinician, line.said.toLowerCase());
+        const evidence = matchEvidence(clinician, line.said.toLowerCase(), clinicians);
         const printed = evidence.map((need) => facetKey(need.facet));
         if (printed.length === 0) continue; // the label's words may not be its own cue
         checked.saw();
@@ -57,8 +58,8 @@ describe("O117 what patients are told, enumerated for the clinician", () => {
   it("the reason sentence is the finder's own, not a copy of it", () => {
     for (const clinician of eachOf(clinicians, "the roster")) {
       const first = reasonsPatientsCanSee(clinician)[0]!;
-      const said = sentencesPatientsSee(clinician).map((line) => line.said);
-      expect(said).toContain(getPersonalizedMatch(clinician, first.said.toLowerCase()).reason);
+      const said = sentencesPatientsSee(clinician, clinicians).map((line) => line.said);
+      expect(said).toContain(getPersonalizedMatch(clinician, first.said.toLowerCase(), clinicians).reason);
     }
   });
 
@@ -70,7 +71,7 @@ describe("O117 what patients are told, enumerated for the clinician", () => {
     // time of writing: 19 and 17 lines for the two clinicians.
     const checked = tally();
     for (const clinician of eachOf(clinicians, "the roster")) {
-      for (const line of [...reasonsPatientsCanSee(clinician), ...sentencesPatientsSee(clinician), ...notDeclaredFrames(clinician)]) {
+      for (const line of [...reasonsPatientsCanSee(clinician), ...sentencesPatientsSee(clinician, clinicians), ...notDeclaredFrames(clinician, clinicians)]) {
         checked.saw();
         expect(line.from.length).toBeGreaterThan(0);
         expect(line.said.length).toBeGreaterThan(0);
@@ -82,7 +83,7 @@ describe("O117 what patients are told, enumerated for the clinician", () => {
   it("the not-declared frames stay facts about a declaration, never claims about ability", () => {
     const checked = tally();
     for (const clinician of eachOf(clinicians, "the roster")) {
-      for (const line of notDeclaredFrames(clinician)) {
+      for (const line of notDeclaredFrames(clinician, clinicians)) {
         checked.saw();
         expect(line.said.toLowerCase()).toContain("declare");
         for (const forbidden of ["cannot", "unable", "does not do", "not qualified", "no good"]) {

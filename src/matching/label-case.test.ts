@@ -2,10 +2,9 @@
 // O118: a facet label lowered into a sentence, without breaking the words that must not be.
 
 import { describe, expect, it } from "vitest";
-import { clinicians, labelInSentence, missedAskCopy, missedAskParts, needsFor } from "@/demo/clinicians";
-import { type NeedSignal } from "@/matching/needs";
-import { CARE_AREA_LABELS } from "@/onboarding/types";
-import { EI_QUALITIES, EI_QUALITY_KEYS } from "@/demo/emotional-fit";
+import { labelInSentence, missedAskCopy, missedAskParts, needsFor } from "./rank";
+import { careAreaLabels, mannerLabels, type NeedSignal } from "./needs";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 
 const care = (label: string): NeedSignal =>
   ({ facet: { kind: "care", area: "adhd-assessment" }, matched: "", label, weight: 0 });
@@ -49,8 +48,8 @@ describe("O118 lowering a label into a sentence", () => {
    */
   it("loses no authored capital, across every label in the vocabulary", () => {
     const labels = [
-      ...CARE_AREA_LABELS.map((entry) => entry.label),
-      ...EI_QUALITY_KEYS.map((key) => EI_QUALITIES[key].label),
+      ...careAreaLabels().map((entry) => entry.label),
+      ...mannerLabels().map((entry) => entry.label),
       "A woman clinician", "By phone or telehealth", "Bulk billing", "A longer first appointment",
     ];
     for (const label of labels) {

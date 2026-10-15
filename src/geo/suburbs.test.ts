@@ -1,6 +1,6 @@
 // Ported from adhd.me/src/geo/suburbs.test.ts on 2026-10-15.
 import { describe, expect, it } from "vitest";
-import { clinicians } from "@/demo/clinicians";
+import { FIXTURE_ROSTER } from "@/src/matching/support/fixture-roster";
 import { SUBURBS, coveredSuburbs, describeDistance, distanceKm, resolvePlace, type SuburbPoint, suggestPlaces } from "./suburbs";
 
 const at = (name: string) => resolvePlace(name)!;
@@ -12,8 +12,10 @@ describe("the gazetteer covers what the roster claims", () => {
    * says why. This makes adding a practice in a new suburb fail loudly instead.
    */
   it("has a point for every suburb a clinician practises in", () => {
-    for (const clinician of clinicians) {
-      expect(resolvePlace(clinician.suburb), `${clinician.suburb} is not in the gazetteer`).not.toBeNull();
+    for (const clinician of FIXTURE_ROSTER) {
+      for (const suburb of [clinician.suburb, ...(clinician.alsoConsultsAt ?? [])]) {
+        expect(resolvePlace(suburb), `${suburb} is not in the gazetteer`).not.toBeNull();
+      }
     }
   });
 

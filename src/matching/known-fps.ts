@@ -75,6 +75,17 @@ export const KNOWN_FALSE_POSITIVES: readonly KnownFalsePositive[] = [
     family: "bare-word-in-yaml",
     pinnedBy: "W1",
   },
+  /* THE REFUSED-CUE IDIOM. The yaml's `(not|don't want|no) (a )?(man|male)` sets `gender: woman`
+     on a real English idiom about somebody being terse — the sentence ADHD.ME measured when it
+     refused "not a man" as a cue (O114). One member, so under the O84 bar; recorded so the next
+     author narrows the pattern (e.g. requiring "doctor|psychiatrist|gp" after it) rather than
+     re-measuring. */
+  {
+    text: "my GP is not a man of many words",
+    facet: "pref:woman-gp",
+    family: "yaml-refused-cue-idiom",
+    pinnedBy: "W1",
+  },
 ];
 
 export function openFalsePositives(

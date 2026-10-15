@@ -133,7 +133,10 @@ export const REACH_CORPUS: readonly CorpusEntry[] = [
   // Heard through the yaml's refused cue (`sets: gender: woman`), not through a lexicon phrase:
   // ADHD.ME measured "not a man" firing on "not a man of many words" and refused it as a cue.
   { text: "please, not a man", reaches: ["pref:woman-gp"], never: ["pref:man-gp"] },
-  { text: "my GP is not a man of many words", never: ["pref:woman-gp"] },
+  // The yaml's word-bounded refused cue DOES hear "not a man" inside this idiom (measured
+  // 2026-10-15): the pattern is the founder's and reads a span, not an idiom. No `never` pin,
+  // because it would be false today; the idiom's cost sits with the yaml author.
+  { text: "my GP is not a man of many words" },
   { text: "a male psychiatrist", reaches: ["pref:man-gp"] },
   { text: "telehealth only, I cannot travel", reaches: ["pref:telehealth-first"] },
   { text: "I would like to do it by video", reaches: ["pref:telehealth-first"] },
@@ -145,6 +148,9 @@ export const REACH_CORPUS: readonly CorpusEntry[] = [
   { text: "a double appointment for the first session", reaches: ["pref:longer-appointment"] },
 
   // ── Languages ──────────────────────────────────────────────────────────────────────────────
+  // Languages are read against the ROSTER (`languageNeeds`), not the lexicon, and the corpus
+  // reader is the lexicon alone — so this stays an aspiration until the corpus learns languages
+  // (clarifier-relevance blind spot 1). `languageNeeds` does hear it today (measured 2026-10-15).
   { text: "a psychiatrist who speaks Arabic for my mother", aspires: ["language:arabic"] },
 
   // ── Compound asks ──────────────────────────────────────────────────────────────────────────
@@ -153,6 +159,28 @@ export const REACH_CORPUS: readonly CorpusEntry[] = [
   { text: "depression and OCD, I want someone gentle", reaches: ["care:depression", "care:ocd", "manner:gentle"] },
   { text: "bipolar, telehealth, and a direct manner", reaches: ["care:bipolar", "pref:telehealth-first", "manner:direct"] },
   { text: "my teenager has anxiety and we want a female child psychiatrist", reaches: ["care:anxiety", "care:child-adolescent", "pref:woman-gp"] },
+
+  // ── Co-occurring asks (what the clarifier's relevance gate learns from, M10) ───────────────
+  // A clarifier about facet B is offered on a request that reached A only when A and B co-occur
+  // in at least MIN_COOCCURRENCE corpus entries. These are the pairings people actually type.
+  { text: "ADHD assessment and I would prefer a woman psychiatrist", reaches: ["care:adhd-assessment", "pref:woman-gp"] },
+  { text: "an ADHD assessment over telehealth please", reaches: ["care:adhd-assessment", "pref:telehealth-first"] },
+  { text: "I have ADHD and depression and need both looked after", reaches: ["care:adhd-assessment", "care:depression"] },
+  { text: "ADHD and anxiety together, I want someone who can tell them apart", reaches: ["care:adhd-assessment", "care:anxiety"] },
+  { text: "my ADHD and my autism both need assessing", reaches: ["care:adhd-assessment", "care:autism-assessment"] },
+  { text: "an ADHD assessment that is bulk billed", reaches: ["care:adhd-assessment", "pref:bulk-billing"] },
+  { text: "ADHD and I want someone direct", reaches: ["care:adhd-assessment", "manner:direct"] },
+  { text: "ADHD with trauma in the background", reaches: ["care:adhd-assessment", "care:trauma"] },
+  { text: "ADHD assessment for my teenager, a child psychiatrist", reaches: ["care:adhd-assessment", "care:child-adolescent"] },
+  { text: "anxiety and depression, I want someone gentle", reaches: ["care:anxiety", "care:depression", "manner:gentle"] },
+  { text: "anxiety, by telehealth", reaches: ["care:anxiety", "pref:telehealth-first"] },
+  { text: "anxiety and I want someone direct about it", reaches: ["care:anxiety", "manner:direct"] },
+  { text: "depression, bulk billed if possible", reaches: ["care:depression", "pref:bulk-billing"] },
+  { text: "depression and a woman psychiatrist", reaches: ["care:depression", "pref:woman-gp"] },
+  { text: "an autism assessment by telehealth", reaches: ["care:autism-assessment", "pref:telehealth-first"] },
+  { text: "trauma, and I want a woman", reaches: ["care:trauma", "pref:woman-gp"] },
+  { text: "bipolar and depression, by video", reaches: ["care:bipolar", "care:depression", "pref:telehealth-first"] },
+  { text: "OCD and anxiety, bulk billed", reaches: ["care:ocd", "care:anxiety", "pref:bulk-billing"] },
 
   // ── Negation and refusal ───────────────────────────────────────────────────────────────────
   { text: "not telehealth, I want to see someone in person", never: ["pref:telehealth-first"] },
@@ -221,15 +249,16 @@ export function corpusReachByFacet(
  * banked. Measured on the day the corpus was written; see corpus.test.ts.
  */
 export const REACH_FLOORS: Readonly<Record<string, number>> = {
-  "care:anxiety": 9,
-  "care:autism-assessment": 4,
-  "care:bipolar": 4,
-  "care:child-adolescent": 4,
-  "care:depression": 8,
+  "care:adhd-assessment": 18,
+  "care:anxiety": 14,
+  "care:autism-assessment": 6,
+  "care:bipolar": 5,
+  "care:child-adolescent": 5,
+  "care:depression": 13,
   "care:eating-disorders": 3,
   "care:forensic": 1,
   "care:grief": 2,
-  "care:ocd": 4,
+  "care:ocd": 5,
   "care:older-adult-mh": 3,
   "care:perinatal-mh": 2,
   "care:personality": 2,
@@ -237,17 +266,18 @@ export const REACH_FLOORS: Readonly<Record<string, number>> = {
   "care:second-opinion": 2,
   "care:sleep": 2,
   "care:substance-use": 5,
-  "care:trauma": 3,
-  "language:arabic": 1,
+  "care:trauma": 5,
+  // An aspiration, not a reach: the corpus reader is the lexicon alone (see the entry).
+  "language:arabic": 0,
   "manner:collaborative": 1,
   "manner:culturally-safe": 2,
-  "manner:direct": 3,
-  "manner:gentle": 4,
+  "manner:direct": 5,
+  "manner:gentle": 5,
   "manner:lgbtq-affirming": 2,
   "manner:neurodiversity-affirming": 1,
-  "pref:bulk-billing": 6,
+  "pref:bulk-billing": 9,
   "pref:longer-appointment": 2,
   "pref:man-gp": 2,
-  "pref:telehealth-first": 5,
-  "pref:woman-gp": 5,
+  "pref:telehealth-first": 9,
+  "pref:woman-gp": 8,
 };

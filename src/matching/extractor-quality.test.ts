@@ -1,29 +1,12 @@
 // Ported from adhd.me/src/matching/extractor-quality.test.ts on 2026-10-15.
-// M6 verify gate: the parser's own precision/recall, pinned apart from ranking quality.
 //
-// MEASURED, 2026-08-23, over the same 447-entry reaching population `tie-quality.test.ts` already
-// pins (`REACH_CORPUS` entries carrying a `reaches` set): every one of the 559 hard-pinned facets
-// across those 447 sentences is extracted, and NOT ONE sentence extracts a facet outside its own
-// `reaches` set. Recall 1.0, precision 1.0 (a lower bound — see the module header), 447/447
-// sentences correctly parsed. THAT IS WHY `rankingLadderAll` AND `rankingLadderCorrectlyParsed`
-// ARE IDENTICAL BELOW: with zero parser misses in the population, excluding parser misses from the
-// denominator excludes nothing. This is not the split failing to do anything — it is the split
-// reporting, correctly, that on today's corpus the entire tied/unserved population is
-// ranker/roster-side, not parser-side. The non-vacuity tests below prove the split DOES move
-// (`rankingLadderCorrectlyParsed` excludes a sentence `rankingLadderAll` counts) the moment a
-// parser defect exists — it is the corpus, not the code, that currently reports zero.
-//
-// RE-MEASURED, 2026-08-23, after M7 (F8): `matchQuality`'s `informed` grade tightened from "any
-// difference at all" to "at least half of the distinct facets asked actually separate the
-// roster" (`src/demo/clinicians.ts`'s `INFORMED_SEPARATION_RATIO`). informed 300 -> 297, tied
-// 54 -> 57 — three real sentences move ("a gentle GP who takes trauma seriously and bulk bills",
-// "telehealth assessment and I speak Hindi at home", "a calm doctor for my anxious mum, she
-// speaks Hindi"), each one where a single thin facet used to carry an `informed` verdict past
-// two or three others that tied. This is the parser doing nothing different — `extractorReport`
-// above is untouched — so it is exactly the M6 split's own claim: a number moved, and it was the
-// ranker's definition of "earned" that moved it, not the lexicon.
+// M6: the parser's own report, apart from any ranking outcome. The baseline is re-measured on
+// the psychiatry corpus and the fixture roster (2026-10-15); the non-vacuity block is verbatim
+// with psychiatry facet ids.
+
 import { describe, expect, it } from "vitest";
 import type { CorpusEntry } from "./corpus";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 import {
   correctlyParsedTexts,
   extractorReport,
@@ -35,54 +18,33 @@ import {
 
 describe("M6 the parser's own report, apart from any ranking outcome", () => {
   it("holds the measured baseline exactly, in both directions", () => {
+    // Measured 2026-10-15: 107 graded sentences, 142 gold facets, every one hit, nothing extra.
     expect(extractorReport()).toEqual({
-      // O191 re-pinned: refugee corpus line — one sentence, one gold facet (culturally_attuned).
-    // O210: 448 -> 451 and 560 -> 563. Three corpus sentences were added, one per cue that unit
-    // closed ("with patience", "hears me out", "hear me out"), each carrying exactly one gold facet.
-    // All three grade as `informed` (298 -> 301) and none becomes a tie, which is the outcome the
-    // cues were added for: a phrasing that used to reach nothing now separates the roster.
-      sampleSize: 451,
-      goldFacetCount: 563,
-      hitCount: 563,
+      sampleSize: 107,
+      goldFacetCount: 142,
+      hitCount: 142,
       recall: 1,
-      extractedCount: 563,
+      extractedCount: 142,
       extraCount: 0,
       precision: 1,
-      correctlyParsedCount: 451,
+      correctlyParsedCount: 107,
       correctlyParsedRate: 1,
     });
   });
 
   it("is graded over exactly the same reaching population the tie-quality KPI already pins", () => {
-    // Same filter as `tie-quality.ts`'s `corpusRun` (any entry with a non-empty `reaches`), so a
-    // reader comparing the two reports is comparing the same denominator, not two silently
-    // different corpora wearing the same "447".
-    expect(gradedEntries().length).toBe(451); // O210: +3 corpus sentences
+    expect(gradedEntries().length).toBe(107);
   });
 
   it("the ranking ladder split is IDENTICAL today, and that identity is itself the finding", () => {
-    const all = rankingLadderAll();
-    const parsed = rankingLadderCorrectlyParsed();
-    /*
-     * O252: 301/57/0/93 -> 422/0/0/29, over the same 451 sentences. Nine clinicians joined the
-     * roster and the ladder moved in the one direction that matters: 121 requests the finder
-     * used to render as an unranked list, it can now order.
-     *
-     * `tied` AT ZERO IS THE HEADLINE AND IT NEEDS SAYING CAREFULLY. It does not mean nothing
-     * ties any more; it means no request now ties the WHOLE roster, which is what this grade
-     * has always measured. A request that leaves eight of eleven level still produces an order,
-     * and `tie-quality.test.ts`'s `partialTie` column — 0 before, 299 now — is where those
-     * requests went. Two reports, one population, and neither is flattering the other: the
-     * strict grade improved because the roster genuinely answers more, and the band-size
-     * measure records how much of the roster is still level underneath the order.
-     *
-     * `unserved` 93 -> 29 is the same thing from the other side: sixty-four requests naming
-     * something nobody declared are now named by somebody who does.
-     */
-    expect(all).toEqual({ total: 451, informed: 422, tied: 0, unmatched: 0, unserved: 29 });
+    // Measured 2026-10-15 on the six-entry fixture roster: 105 informed, 2 unserved (the two
+    // longer-appointment asks, which no fixture entry declares), nothing tied or unmatched.
+    const all = rankingLadderAll(clinicians);
+    const parsed = rankingLadderCorrectlyParsed(clinicians);
+    expect(all).toEqual({ total: 107, informed: 105, tied: 0, unmatched: 0, unserved: 2 });
     expect(parsed).toEqual(all);
-    expect(parsed.informed).toBe(422);
-    expect(parsed.tied + parsed.unmatched + parsed.unserved).toBe(29);
+    expect(parsed.informed).toBe(105);
+    expect(parsed.tied + parsed.unmatched + parsed.unserved).toBe(2);
   });
 });
 
@@ -91,9 +53,9 @@ describe("M6 non-vacuity: the split can fail, and the report says so when it doe
   const REAL_FACET = "care:adhd-assessment";
 
   it("a wrong gold set registers as a miss, not a silent pass", () => {
-    const badEntry: CorpusEntry = { text: REAL_TEXT, reaches: ["care:non-medication"] };
+    const badEntry: CorpusEntry = { text: REAL_TEXT, reaches: ["care:psychosis"] };
     const result = gradeExtraction(badEntry);
-    expect(result.misses).toEqual(["care:non-medication"]);
+    expect(result.misses).toEqual(["care:psychosis"]);
     expect(result.extras).toEqual([REAL_FACET]);
     expect(result.correctlyParsed).toBe(false);
   });
@@ -117,8 +79,8 @@ describe("M6 non-vacuity: the split can fail, and the report says so when it doe
 
   it("extractorReport's recall and precision both fall on a mixed synthetic sample", () => {
     const mixed: CorpusEntry[] = [
-      { text: REAL_TEXT, reaches: [REAL_FACET] }, // correct
-      { text: REAL_TEXT, reaches: ["care:non-medication"] }, // miss + extra
+      { text: REAL_TEXT, reaches: [REAL_FACET] },
+      { text: REAL_TEXT, reaches: ["care:psychosis"] },
     ];
     const report = extractorReport(mixed);
     expect(report.sampleSize).toBe(2);
@@ -133,24 +95,18 @@ describe("M6 non-vacuity: the split can fail, and the report says so when it doe
 
   it("a parser miss is excluded from the correctly-parsed population by construction", () => {
     const mixed: CorpusEntry[] = [
-      { text: REAL_TEXT, reaches: [REAL_FACET] }, // correct: informed/tied/etc. counted
-      { text: REAL_TEXT, reaches: ["care:non-medication"] }, // parser defect: excluded
+      { text: REAL_TEXT, reaches: [REAL_FACET] },
+      { text: REAL_TEXT, reaches: ["care:psychosis"] },
     ];
     expect(correctlyParsedTexts(mixed)).toEqual([REAL_TEXT]);
-    const all = rankingLadderAll(mixed);
-    const parsed = rankingLadderCorrectlyParsed(mixed);
-    // Same two sentences produce the same ranking outcome (identical text), so the RATE the
-    // split would report differs even though the counts on this tiny sample happen to coincide —
-    // the population sizes themselves are what prove exclusion happened.
+    const all = rankingLadderAll(clinicians, mixed);
+    const parsed = rankingLadderCorrectlyParsed(clinicians, mixed);
     expect(all.total).toBe(2);
     expect(parsed.total).toBe(1);
   });
 
   it("an entry with no `reaches` pin is excluded from grading entirely, not counted as a miss", () => {
-    // `gradedEntries`/`extractorReport`'s default population only grades entries with a `reaches`
-    // pin — an `aspires`-only or `never`-only entry has no hard-pinned gold to grade the parser
-    // against and must not silently count as either a hit or a miss.
-    const aspiresOnly: CorpusEntry = { text: "I need my prescription continued after moving", aspires: ["care:shared-care"] };
+    const aspiresOnly: CorpusEntry = { text: "I am pregnant and worried about going back on medication", aspires: ["care:perinatal-mh"] };
     expect(extractorReport([aspiresOnly]).sampleSize).toBe(0);
   });
 });

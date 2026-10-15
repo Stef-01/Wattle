@@ -1,8 +1,12 @@
 // Ported from adhd.me/src/matching/declaration-state.test.ts on 2026-10-15.
+//
+// M8: express "we cannot tell" (F10). `facetStrength` returns 0 for two situations the reader
+// experiences differently — a clinician who was ASKED and said no, and one nobody ever asked —
+// and this module tells them apart. Facet ids are psychiatry's; the roster is the fixture.
+
 import { describe, expect, it } from "vitest";
-import { clinicians } from "@/demo/clinicians";
-import { syntheticClinician } from "@/demo/synthetic-clinician";
-import type { CareArea } from "@/demo/care-archetypes";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
+import { syntheticClinician } from "./support/synthetic-clinician";
 import type { NeedSignal } from "./needs";
 import { REACH_CORPUS } from "./corpus";
 import {
@@ -14,7 +18,7 @@ import {
   scoreInterval,
 } from "./declaration-state";
 
-const careNeed = (area: CareArea, weight = 24): NeedSignal => ({
+const careNeed = (area: string, weight = 24): NeedSignal => ({
   facet: { kind: "care", area },
   matched: "test",
   label: "the care area",
@@ -37,8 +41,8 @@ const telehealthNeed: NeedSignal = {
 
 describe("M8: declarationState", () => {
   it("is 'declared' for an often declaration and for a sometimes one — both are certain", () => {
-    const often = syntheticClinician({ careAreas: ["depression"] as CareArea[] });
-    const sometimes = syntheticClinician({ careAreas: [], careAreasSometimes: ["depression"] as CareArea[] });
+    const often = syntheticClinician({ careAreas: ["depression"] });
+    const sometimes = syntheticClinician({ careAreas: [], careAreasSometimes: ["depression"] });
     expect(declarationState(often, careNeed("depression").facet)).toBe("declared");
     expect(declarationState(sometimes, careNeed("depression").facet)).toBe("declared");
   });
@@ -46,10 +50,8 @@ describe("M8: declarationState", () => {
   it("is 'undeclared', never 'declared-no', for every facet kind except gender", () => {
     const silent = syntheticClinician({ careAreas: [], careAreasSometimes: [], manner: [], languages: ["English"] });
     expect(declarationState(silent, careNeed("depression").facet)).toBe("undeclared");
-    expect(declarationState(silent, { kind: "manner", trait: "unhurried" })).toBe("undeclared");
+    expect(declarationState(silent, { kind: "manner", trait: "gentle" })).toBe("undeclared");
     expect(declarationState(silent, { kind: "language", language: "Tamil" })).toBe("undeclared");
-    // Not every absent preference is a gender check — telehealth-first, bulk-billing and
-    // longer-appointment all read an optional field that can only ever be silent, never "no".
     expect(declarationState(silent, telehealthNeed.facet)).toBe("undeclared");
   });
 
@@ -61,12 +63,18 @@ describe("M8: declarationState", () => {
     expect(declarationState(nonBinary, womanGpNeed.facet)).toBe("declared-no");
     expect(declarationState(woman, womanGpNeed.facet)).toBe("declared");
   });
+
+  it("is 'undeclared' for woman-gp when the gender is 'not-declared' (the adapter's value for a doctor with no gender observation)", () => {
+    // A `Doctor` with no gender observation must not be told it "does not apply" to them.
+    const undeclared = syntheticClinician({ gender: "not-declared" });
+    expect(declarationState(undeclared, womanGpNeed.facet)).toBe("undeclared");
+  });
 });
 
 describe("M8: scoreInterval", () => {
   it("is an exact point for a declared value, whichever grade it was declared at", () => {
-    const often = syntheticClinician({ careAreas: ["depression"] as CareArea[] });
-    const sometimes = syntheticClinician({ careAreas: [], careAreasSometimes: ["depression"] as CareArea[] });
+    const often = syntheticClinician({ careAreas: ["depression"] });
+    const sometimes = syntheticClinician({ careAreas: [], careAreasSometimes: ["depression"] });
     const need = careNeed("depression", 24);
     expect(scoreInterval(often, need)).toEqual({ lo: 24, hi: 24, state: "declared" });
     expect(scoreInterval(sometimes, need)).toEqual({ lo: 12, hi: 12, state: "declared" });
@@ -86,12 +94,9 @@ describe("M8: scoreInterval", () => {
 
 describe("M8: intervalsDisjoint / intervalsSeparate — the ambiguity, proven rather than described", () => {
   it("does NOT separate a declared clinician from an undeclared one — the exact defect F10 names", () => {
-    const often = syntheticClinician({ id: "often", careAreas: ["depression"] as CareArea[] });
+    const often = syntheticClinician({ id: "often", careAreas: ["depression"] });
     const silent = syntheticClinician({ id: "silent", careAreas: [], careAreasSometimes: [] });
     const need = careNeed("depression", 24);
-    // Point [24,24] and range [0,24] touch at 24 — overlapping, not disjoint. A silent clinician
-    // could, for all this record says, also score 24: the roster's declarations do not rule it
-    // out, so nothing here may claim they differ.
     expect(intervalsDisjoint(scoreInterval(often, need), scoreInterval(silent, need))).toBe(false);
     expect(intervalsSeparate(need, [often, silent])).toBe(false);
   });
@@ -104,12 +109,8 @@ describe("M8: intervalsDisjoint / intervalsSeparate — the ambiguity, proven ra
   });
 
   it("separates two DECLARED clinicians at different grades — certainty needs no third state", () => {
-    const often = syntheticClinician({ id: "often", careAreas: ["depression"] as CareArea[] });
-    const sometimes = syntheticClinician({
-      id: "sometimes",
-      careAreas: [],
-      careAreasSometimes: ["depression"] as CareArea[],
-    });
+    const often = syntheticClinician({ id: "often", careAreas: ["depression"] });
+    const sometimes = syntheticClinician({ id: "sometimes", careAreas: [], careAreasSometimes: ["depression"] });
     const need = careNeed("depression", 24);
     expect(intervalsSeparate(need, [often, sometimes])).toBe(true);
   });
@@ -137,56 +138,29 @@ describe("M8: declarationSentence — three states, three sentences, never the s
   });
 });
 
-describe("M8: auditSeparation — the module header's claim, pinned against the real roster and corpus", () => {
+describe("M8: auditSeparation — the module header's claim, pinned against the fixture roster and corpus", () => {
   it("measures the real gap between 'differs' and 'is provably different', not assumed", () => {
+    // Measured 2026-10-15: of 149 (sentence, facet) pairs where the roster's values differ,
+    // only 20 are provably different; the three separating facets are the two care areas a
+    // fixture entry declares "sometimes" against another's "often", and gender.
     const result = auditSeparation(
       REACH_CORPUS.map((entry) => entry.text),
       clinicians,
     );
-    // MEASURED at this commit, over the real roster (two GPs and, since O252, nine more
-    // clinicians) and the full reach corpus. Re-earned, not inherited:
-    // a roster or corpus change that moves these numbers is real news about what this schema can
-    // and cannot tell a reader, and the pin exists so that news cannot pass silently.
-    // O191 re-pinned: the refugee-register corpus line grew the run 447 -> 448; culturally_attuned differs between the two, so valueDiffers 332 -> 333.
-    // O210: valueDiffers 333 -> 336 AND ambiguous 308 -> 311, from three corpus sentences (one per
-    // cue that unit closed). A first draft of this note claimed `ambiguous` was unmoved; it is not,
-    // and the corrected reading is the more interesting one. Each new sentence reaches a manner
-    // facet that exactly one clinician declares — so the pair's SCORES differ (valueDiffers +3) —
-    // while the other clinician is UNDECLARED rather than declared-no, which is precisely M8's
-    // "we cannot tell": the intervals overlap, so it is ambiguous too (+3). Both counters moving
-    // together is the correct shape for a two-person roster where one has answered and one has not.
-    // `intervalSeparates` is genuinely unmoved at 25, which is the part worth checking.
-    // O252: the roster went from two people to eleven, and this is the measurement that changed
-    // most interestingly. valueDiffers 336 -> 519 and ambiguous 311 -> 426 are the ordinary
-    // consequence of more pairs to compare. `intervalSeparates` 25 -> 93 is not, and neither is
-    // the list below: for as long as the roster was two people, the ONLY uncertainty-free
-    // separation the schema could produce was the one exempt field, because `declarationState`
-    // never returns 'declared-no' for anything else and an undeclared facet's interval is the
-    // whole [0, weight] range, which overlaps everything.
-    //
-    // FOUR CARE AREAS NOW SEPARATE WITHOUT A NEGATIVE, AND THE MECHANISM IS THE THREE-STATE
-    // GRADE, not a new kind of claim. `scoreInterval` is an exact point for a declaration AT
-    // EITHER GRADE (this file's own third test says so: "certainty needs no third state"), so
-    // two clinicians who both declare an area, one at 'often' and one at 'sometimes', hold two
-    // exact and different values — provably different, with no 'we cannot tell' in it. That
-    // combination did not exist on a two-person roster and now exists on four areas. The module
-    // header's warning stands where it was aimed — an UNDECLARED facet is still ambiguous, and
-    // 426 of these comparisons still are — but the claim that everything provable traces to
-    // gender was a fact about roster size, and is re-measured rather than restated.
-    expect(result.valueDiffers).toBe(519);
-    expect(result.intervalSeparates).toBe(93);
-    expect(result.ambiguous).toBe(426);
+    expect(result.valueDiffers).toBe(149);
+    // 22 after man-gp joined the declared-no set alongside woman-gp (re-measured 2026-10-15).
+    expect(result.intervalSeparates).toBe(22);
+    expect(result.ambiguous).toBe(127);
     expect(result.separatingFacetKeys).toEqual([
-      "care:autism-adhd",
-      "care:child-adolescent-adhd",
-      "care:non-medication",
-      "care:trauma-informed",
+      "care:autism-assessment",
+      "care:trauma",
+      "pref:man-gp",
       "pref:woman-gp",
     ]);
   });
 
   it("is non-vacuous: a roster with no real negative anywhere separates on nothing", () => {
-    const a = syntheticClinician({ id: "a", gender: "man", careAreas: ["depression"] as CareArea[] });
+    const a = syntheticClinician({ id: "a", gender: "man", careAreas: ["depression"] });
     const b = syntheticClinician({ id: "b", gender: "man", careAreas: [], careAreasSometimes: [] });
     const result = auditSeparation(["I want help with depression"], [a, b]);
     expect(result.valueDiffers).toBeGreaterThan(0);

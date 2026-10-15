@@ -1,18 +1,17 @@
 // Ported from adhd.me/src/matching/needs.test.ts on 2026-10-15.
 import { describe, expect, it } from "vitest";
-import { eachOf, tally } from "@/quality/non-vacuous";
+import { eachOf, tally } from "./support/non-vacuous";
+import { FIXTURE_ROSTER as clinicians } from "./support/fixture-roster";
 import {
-  clinicians,
   matchEvidence,
   matchQuality,
   needsFor,
-  professionOf,
   rankClinicians,
   scoreAgainst,
   getPersonalizedMatch,
-} from "@/demo/clinicians";
-import { MANNER_TRAITS, NEED_LABELS, facetKey, languageNeeds, readNeeds } from "./needs";
-import { syntheticClinician } from "@/demo/synthetic-clinician";
+} from "./rank";
+import { mannerTraits, needLabels, facetKey, languageNeeds, readNeeds } from "./needs";
+import { syntheticClinician } from "./support/synthetic-clinician";
 
 describe("W221 reading what somebody said into the closed vocabulary", () => {
   it("reads a preference about care, and reaches nothing on text that names none", () => {
@@ -27,18 +26,21 @@ describe("W221 reading what somebody said into the closed vocabulary", () => {
    * in the first case close to the opposite of what was asked for.
    */
   it("lets the specific phrase win over the general one inside it", () => {
-    const labels = readNeeds("I want alternatives, not just medication").map((n) => n.label);
-    expect(labels).toContain("Non-medication supports");
+    // Psychiatry has no non-medication facet, so the mechanism is pinned on the additive
+    // "not just" idiom: "not just the anxiety" asks for anxiety AND MORE, so anxiety reaches.
+    const labels = readNeeds("assess me for ADHD, not just the anxiety").map((n) => n.label);
+    expect(labels).toContain("Anxiety");
+    expect(labels).toContain("ADHD assessment");
   });
 
   it("counts one facet once, however many ways it was asked for", () => {
-    const needs = readNeeds("my dose is wearing off and the dose needs a titration review");
+    const needs = readNeeds("panic attacks, so anxious I cannot leave the house, worrying all day");
     const keys = needs.map((n) => facetKey(n.facet));
     expect(new Set(keys).size).toBe(keys.length);
   });
 
   it("is deterministic", () => {
-    const q = "a thorough structured assessment with the heart checked first";
+    const q = "a gentle psychiatrist for bipolar who speaks Arabic";
     expect(readNeeds(q)).toEqual(readNeeds(q));
   });
 
@@ -52,10 +54,10 @@ describe("W221 reading what somebody said into the closed vocabulary", () => {
     // fault — so `eachOf` on the inner loop would assert something false. What may NOT happen is
     // the whole roster returning nothing, because then this test proves the vocabulary is closed
     // without having read a single label. Measured when written: 4 and 1.
-    const labels = new Set<string>(NEED_LABELS);
+    const labels = new Set<string>(needLabels());
     const checked = tally();
     for (const clinician of eachOf(clinicians, "the roster")) {
-      for (const need of matchEvidence(clinician, "hindi, titration, rushed, heart, sleep, drinking")) {
+      for (const need of matchEvidence(clinician, "hindi, bipolar, gentle, trauma, sleep, drinking", clinicians)) {
         checked.saw();
         const allowed = labels.has(need.label) || /-speaking$/.test(need.label);
         expect(allowed, `${need.label} is not in the closed vocabulary`).toBe(true);
@@ -77,18 +79,18 @@ describe("W221 the ranking and the explanation are one computation", () => {
    * and anything said must have contributed.
    */
   const QUERIES = [
-    "my dose wears off by the afternoon and needs titration reviewed",
+    "I was diagnosed bipolar and need someone to manage my lithium",
     "I get rushed every time, I want a longer first appointment to tell the whole story",
-    "a calm GP who speaks Hindi, I was treated for anxiety for years",
-    "I drink too much and need that handled as a safety question, by phone",
-    "my sleep has never been right and my family think I am just disorganised",
+    "a gentle psychiatrist who speaks Hindi, I have had anxiety for years",
+    "I drink too much and need that handled, by phone",
+    "insomnia for two years and my family think I am just lazy",
     "I think I might have ADHD and I would like an assessment",
   ];
 
   it.each(QUERIES)("every point of score is sayable, and every reason scored: %s", (query) => {
     for (const clinician of eachOf(clinicians, "the roster")) {
-      const evidence = matchEvidence(clinician, query);
-      const said = getPersonalizedMatch(clinician, query).signals;
+      const evidence = matchEvidence(clinician, query, clinicians);
+      const said = getPersonalizedMatch(clinician, query, clinicians).signals;
 
       // Everything the page says came from the evidence.
       for (const label of said) expect(evidence.map((e) => e.label)).toContain(label);
@@ -103,7 +105,7 @@ describe("W221 the ranking and the explanation are one computation", () => {
       // against a rounded 27.273. The property being pinned is that the score is the evidence
       // and nothing else, which a half-thousandth of floating-point does not qualify — and a
       // real unexplained contribution would be a whole facet's weight, orders above this.
-      expect(scoreAgainst(clinician, needsFor(query))).toBeCloseTo(
+      expect(scoreAgainst(clinician, needsFor(query, clinicians))).toBeCloseTo(
         evidence.reduce((sum, n) => sum + n.weight, 0),
         2,
       );
@@ -115,7 +117,7 @@ describe("W221 the ranking and the explanation are one computation", () => {
     // clinician id is the thing that made adding a GP an engineering task, and its absence is
     // what lets the onboarding interview be the only place a profile is authored.
     const source = await import("node:fs").then((fs) =>
-      fs.readFileSync(new URL("../demo/clinicians.ts", import.meta.url), "utf8"),
+      fs.readFileSync(new URL("./rank.ts", import.meta.url), "utf8"),
     );
     expect(source).not.toContain("focusSignals");
     for (const clinician of clinicians) {
@@ -125,9 +127,9 @@ describe("W221 the ranking and the explanation are one computation", () => {
   });
 
   it("scores a clinician only on facets they declared", () => {
-    const needs = readNeeds("titration and a longer first appointment");
+    const needs = readNeeds("bipolar and a longer first appointment");
     for (const clinician of eachOf(clinicians, "the roster")) {
-      for (const need of matchEvidence(clinician, "titration and a longer first appointment")) {
+      for (const need of matchEvidence(clinician, "bipolar and a longer first appointment", clinicians)) {
         if (need.facet.kind === "care") expect(clinician.careAreas).toContain(need.facet.area);
         if (need.facet.kind === "manner") expect(clinician.manner).toContain(need.facet.trait);
       }
@@ -137,17 +139,13 @@ describe("W221 the ranking and the explanation are one computation", () => {
 });
 
 describe("W221 what the roster declares", () => {
-  it("gives every clinician a declared manner trait, or a dated note that theirs is pending", () => {
+  it("gives every clinician a declared manner trait, in the discipline's own vocabulary", () => {
     // A clinician with no declared manner can never match "will they understand me", which is
-    // half of what somebody is asking. The onboarding interview must not be able to finish
-    // without one — and a clinician listed AHEAD of their interview (O34) carries a dated
-    // `mannerPending` note instead, so the gap is visible state rather than a silent hole.
+    // half of what somebody is asking. The ported `Clinician` has no `mannerPending` note (Wattle
+    // lists no real person ahead of their declarations), so the fixture roster must declare.
     for (const clinician of eachOf(clinicians, "the roster")) {
-      if (clinician.manner.length === 0) {
-        expect(clinician.mannerPending, `${clinician.id} declares no manner and no pending note`).toBeTruthy();
-        expect(clinician.mannerPending).toMatch(/^\d{4}-\d{2}-\d{2}/);
-      }
-      for (const trait of clinician.manner) expect(MANNER_TRAITS).toContain(trait);
+      expect(clinician.manner.length, `${clinician.id} declares no manner`).toBeGreaterThan(0);
+      for (const trait of clinician.manner) expect(mannerTraits()).toContain(trait);
     }
   });
 
@@ -168,23 +166,24 @@ describe("O1 languages go through the one pipeline (F2)", () => {
     // tie it. Both halves are asserted: the speakers lead, and the finder says the order means
     // something. The tie half of this guarantee moved to the test below, which uses a language
     // the whole roster actually shares.
-    const query = "a GP who speaks Urdu";
-    expect(rankClinicians(query).slice(0, 2).map((c) => c.id).sort()).toEqual(["anubhav-saxena", "anusha-saxena"]);
-    expect(matchQuality(query)).toBe("informed");
+    // Arabic is declared by exactly one fixture entry, so the ask is heard AND it orders the list.
+    const query = "a psychiatrist who speaks Arabic";
+    expect(rankClinicians(query, clinicians)[0]!.id).toBe("fixture-okafor");
+    expect(matchQuality(query, clinicians)).toBe("informed");
   });
 
   it("reads an inflected language mention the substring matcher was never tested on", () => {
-    const needs = needsFor("an Urdu-speaking GP please");
-    expect(needs.some((n) => n.label === "Urdu-speaking")).toBe(true);
+    const needs = needsFor("an Arabic-speaking psychiatrist please", clinicians);
+    expect(needs.some((n) => n.label === "Arabic-speaking")).toBe(true);
   });
 
   it("scores what the card says: language evidence is never explanation-only", () => {
-    const query = "a GP who speaks Urdu";
+    const query = "a psychiatrist who speaks Arabic";
     for (const clinician of eachOf(clinicians, "the roster")) {
-      const evidence = matchEvidence(clinician, query);
+      const evidence = matchEvidence(clinician, query, clinicians);
       const spoken = evidence.filter((n) => n.facet.kind === "language");
       // Every language on the card contributed to the score...
-      expect(scoreAgainst(clinician, needsFor(query))).toBe(evidence.reduce((s, n) => s + n.weight, 0));
+      expect(scoreAgainst(clinician, needsFor(query, clinicians))).toBe(evidence.reduce((s, n) => s + n.weight, 0));
       // ...and only speakers carry it.
       for (const need of spoken) {
         if (need.facet.kind !== "language") continue;
@@ -198,25 +197,26 @@ describe("O1 languages go through the one pipeline (F2)", () => {
     // O252: Hindi used to be the shared language, because the roster was the two GPs who speak
     // it. On eleven it separates, so the property is pinned where it is still true — on the two
     // GPs for Hindi, and on the whole roster for the language every entry declares.
-    const gps = clinicians.filter((c) => professionOf(c) === "gp");
-    expect(matchQuality("a GP who speaks Hindi", gps)).toBe("tied");
+    // On a pair who both declare Arabic the ask ties; on the full roster one holds it and it orders.
+    const pair = [clinicians[0]!, { ...clinicians[1]!, languages: ["English", "Arabic"] }];
+    expect(matchQuality("a psychiatrist who speaks Arabic", pair)).toBe("tied");
     expect(clinicians.every((c) => c.languages.includes("English"))).toBe(true);
-    expect(matchQuality("a GP who speaks Hindi")).toBe("informed");
+    expect(matchQuality("a psychiatrist who speaks Arabic", clinicians)).toBe("informed");
   });
 
   it("recognises a governed language nobody declares and reports an unserved request", () => {
     // The shared onboarding/matching vocabulary lets the product name its own roster gap.
-    expect(needsFor("a GP who speaks Tamil").filter((n) => n.facet.kind === "language"))
+    expect(needsFor("a psychiatrist who speaks Farsi", clinicians).filter((n) => n.facet.kind === "language"))
       .toHaveLength(1);
-    expect(matchQuality("a GP who speaks Tamil")).toBe("unserved");
+    expect(matchQuality("a psychiatrist who speaks Farsi", clinicians)).toBe("unserved");
   });
 
   it("never treats English as a match reason", () => {
-    expect(languageNeeds("an English speaking GP", ["English", "Hindi"])).toEqual([]);
+    expect(languageNeeds("an English speaking psychiatrist", ["English", "Hindi"])).toEqual([]);
   });
 
   it("counts an asked language once however it is cased or repeated", () => {
-    const needs = languageNeeds("urdu URDU Urdu", ["Urdu", "urdu"]);
+    const needs = languageNeeds("arabic ARABIC Arabic", ["Arabic", "arabic"]);
     expect(needs).toHaveLength(1);
   });
 });
@@ -230,44 +230,43 @@ describe("O2 breadth has a price (F1)", () => {
    * half of an "often" one. Both are the clinician's or the roster's own data, both sayable.
    */
   it("discounts a facet by how much of the roster declares it, but never to zero", () => {
-    // Synthetic holder split: Hindi is declared by both, Urdu by one. Equal authored weight,
-    // unequal separation, without adding a fictitious clinician to the public roster.
+    // Synthetic holder split: Arabic is declared by both, Vietnamese by one. Equal authored
+    // weight, unequal separation.
     const roster = [
       clinicians[0]!,
-      { ...clinicians[1]!, id: "hindi-only", languages: ["English", "Hindi"] },
+      { ...clinicians[1]!, id: "both-languages", languages: ["English", "Arabic", "Vietnamese"] },
     ];
-    const needs = needsFor("a GP who speaks Hindi and Urdu", roster);
-    const hindi = needs.find((n) => n.label === "Hindi-speaking")!;
-    const urdu = needs.find((n) => n.label === "Urdu-speaking")!;
-    expect(urdu.weight).toBeGreaterThan(hindi.weight);
-    expect(hindi.weight).toBeGreaterThan(0);
+    const needs = needsFor("a psychiatrist who speaks Arabic and Vietnamese", roster);
+    const arabic = needs.find((n) => n.label === "Arabic-speaking")!;
+    const vietnamese = needs.find((n) => n.label === "Vietnamese-speaking")!;
+    expect(vietnamese.weight).toBeGreaterThan(arabic.weight);
+    expect(arabic.weight).toBeGreaterThan(0);
   });
 
   it("a facet the whole roster declares cannot change the relative order", () => {
-    // Asserted on the Beecroft pair, where Hindi genuinely is universal (see the tie test:
-    // the O34 roster as a whole no longer shares a language).
-    const beecroft = clinicians.filter((c) => c.suburb === "Beecroft");
-    const withoutUniversal = rankClinicians("a GP who speaks Urdu", beecroft).map((c) => c.id);
-    const withUniversal = rankClinicians("a GP who speaks Urdu and also Hindi", beecroft).map((c) => c.id);
+    // Asserted on a pair where Arabic genuinely is universal.
+    const pair = [clinicians[0]!, { ...clinicians[1]!, languages: ["English", "Arabic", "Vietnamese"] }];
+    const withoutUniversal = rankClinicians("a psychiatrist who speaks Vietnamese", pair).map((c) => c.id);
+    const withUniversal = rankClinicians("a psychiatrist who speaks Vietnamese and also Arabic", pair).map((c) => c.id);
     expect(withUniversal).toEqual(withoutUniversal);
   });
 
   it("a 'sometimes' declaration answers at half the weight of an 'often' one", () => {
     const base = clinicians[0]!;
-    const often = { ...base, careAreas: ["titration" as const], careAreasSometimes: [] };
-    const sometimes = { ...base, careAreas: [], careAreasSometimes: ["titration" as const] };
-    const needs = needsFor("my dose needs titration");
-    const sleep = needs.filter((n) => n.facet.kind === "care" && n.facet.area === "titration");
+    const often = { ...base, careAreas: ["bipolar"], careAreasSometimes: [] };
+    const sometimes = { ...base, careAreas: [], careAreasSometimes: ["bipolar"] };
+    const needs = needsFor("I need help with bipolar", clinicians);
+    const sleep = needs.filter((n) => n.facet.kind === "care" && n.facet.area === "bipolar");
     expect(sleep).toHaveLength(1);
     expect(scoreAgainst(sometimes, sleep)).toBe(scoreAgainst(often, sleep) / 2);
   });
 
   it("the card's evidence carries the earned weight, not the authored one", () => {
     const base = clinicians[0]!;
-    const sometimes = { ...base, careAreas: [], careAreasSometimes: ["titration" as const] };
-    const evidence = matchEvidence(sometimes, "my dose needs titration");
-    const claimed = evidence.find((n) => n.facet.kind === "care" && n.facet.area === "titration")!;
-    expect(scoreAgainst(sometimes, needsFor("my dose needs titration"))).toBe(claimed.weight);
+    const sometimes = { ...base, careAreas: [], careAreasSometimes: ["bipolar"] };
+    const evidence = matchEvidence(sometimes, "I need help with bipolar", clinicians);
+    const claimed = evidence.find((n) => n.facet.kind === "care" && n.facet.area === "bipolar")!;
+    expect(scoreAgainst(sometimes, needsFor("I need help with bipolar", clinicians))).toBe(claimed.weight);
   });
 });
 
@@ -279,8 +278,8 @@ describe("O5 stated importance is the reader's datum (F6)", () => {
    * marker detection on our own appended answer sentences, not a reading of the person.
    */
   it("weighs a clarifier-confirmed facet above the same facet mentioned in passing", () => {
-    const confirmed = needsFor("I want the first appointment by phone");
-    const mentioned = needsFor("by phone");
+    const confirmed = needsFor("I want the first appointment by phone", clinicians);
+    const mentioned = needsFor("by phone", clinicians);
     const key = "pref:telehealth-first";
     const weightOf = (needs: ReturnType<typeof needsFor>) =>
       needs.find((n) => facetKey(n.facet) === key)!.weight;
@@ -291,10 +290,10 @@ describe("O5 stated importance is the reader's datum (F6)", () => {
   });
 
   it("turns an unmatched request into an informed order when the answer separates the roster", () => {
-    expect(matchQuality("hello")).toBe("unmatched");
-    // The clarifier UI appends the answer verbatim; only one GP is telehealth-first.
+    expect(matchQuality("hello", clinicians)).toBe("unmatched");
+    // The clarifier UI appends the answer verbatim; two of six are telehealth-first.
     const afterTap = "hello, I want the first appointment by phone";
-    expect(matchQuality(afterTap)).toBe("informed");
-    expect(rankClinicians(afterTap)[0]!.id).toBe("anubhav-saxena");
+    expect(matchQuality(afterTap, clinicians)).toBe("informed");
+    expect(rankClinicians(afterTap, clinicians)[0]!.telehealthFirstAppointment).toBe(true);
   });
 });

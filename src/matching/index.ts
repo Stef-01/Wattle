@@ -84,13 +84,31 @@ export function filterReason(
  * from the others' or the next-best concept is used (PRD §8.1.5).
  */
 function headlines(cards: ReadonlyArray<{ evidence: Evidence[] }>): string[] {
+  const labels = cards.map((card) => [...new Set(card.evidence.map((item) => item.label))]);
+  const picked: (string | null)[] = labels.map(() => null);
   const used = new Set<string>();
-  return cards.map((card) => {
-    const pick = card.evidence.find((item) => !used.has(item.label)) ?? card.evidence[0];
-    if (!pick) return "Listed for this specialty";
-    used.add(pick.label);
-    return `In common: ${pick.label}`;
+  labels.forEach((options, index) => {
+    let pick = options.find((label) => !used.has(label));
+    if (pick === undefined && options[0] !== undefined) {
+      // Every concept this card holds is taken. An earlier card holding the same concept may
+      // have a second-best of its own; if so it moves, and this card keeps its only concept.
+      const wanted = options[0];
+      const holder = picked.findIndex((label, j) => j < index && label === wanted);
+      const alternative = holder >= 0 ? labels[holder]!.find((label) => !used.has(label)) : undefined;
+      if (holder >= 0 && alternative !== undefined) {
+        picked[holder] = alternative;
+        used.add(alternative);
+        pick = wanted;
+      } else {
+        pick = wanted;
+      }
+    }
+    if (pick !== undefined) {
+      used.add(pick);
+      picked[index] = pick;
+    }
   });
+  return picked.map((label) => (label === null ? "Listed for this specialty" : `In common: ${label}`));
 }
 
 export function match(
@@ -167,7 +185,9 @@ export function match(
       evidence,
       missed,
     };
-    const km = origin && !clinician.telehealthFirstAppointment ? nearestKm(clinician, origin) : null;
+    // The figure is shown whenever the doctor has rooms; whether it SORTS them is the
+    // telehealth-first rule in rankCliniciansNear (PRD §4.12), not this line.
+    const km = origin ? nearestKm(clinician, origin) : null;
     if (km !== null) card.distanceKm = Math.round(km * 10) / 10;
     return card;
   });
