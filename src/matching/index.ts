@@ -1,16 +1,22 @@
-// The matching pipeline (PRD §8.1): sentence → intent → hard filters → tiered rank → order
-// honesty → rationale. Written for the port on 2026-10-15 on top of the functions ported from
-// adhd.me/src/matching and adhd.me/src/demo/clinicians.ts; the pipeline shape itself is PRD §8.
+// The matching pipeline (PRD §8.1, writing-block.md Tasks 5 and 6): sentence → intent → Layer 1
+// (hard filters, tiered clinical rank) → Layer 2 (human-fit reorder inside each clinical band)
+// → order honesty → explanations. Written for the port on 2026-10-15 on top of the functions
+// ported from adhd.me/src/matching and adhd.me/src/demo/clinicians.ts; the two-layer shape is
+// the plan's, and lives in layer1.ts and layer2.ts.
 //
 // Every number here is explainable from a declaration: the ranker holds no per-doctor
-// coefficient, the evidence rows carry the tier of the declaration they rest on, and the order
-// note says whether the order was earned.
+// coefficient, the evidence rows carry the tier of the declaration they rest on, every reason
+// names the field it rests on, and the order note says whether the order was earned.
 
 import type { Clinician } from "./clinician";
 import { evidenceFor, toClinician } from "./adapter";
 import { clarifiers } from "./clarify";
-import { hardAsks, isEmergency, lexiconFor, type Lexicon } from "./needs";
+import { hardAsks, isEmergency, lexiconFor, lexiconForSlug, type Lexicon } from "./needs";
+import { CARE_GUIDANCE, clinicalFitFor, extractIntent, layer1Filter, REACH_KM } from "./layer1";
+import { DEFAULT_WEIGHTS, rerank, type WeightsInput } from "./layer2";
 import {
+  CAPACITY_ORDER,
+  capacityGrade,
   closedBooksNote,
   matchEvidence,
   matchQuality,
@@ -26,8 +32,9 @@ import type { Discipline } from "@/src/disciplines/load";
 import type { SuburbPoint } from "@/src/geo/suburbs";
 import type { Doctor, Evidence, FilterReason, MatchResult, Place, Ranked } from "./types";
 
-/** In-person reach: beyond this a doctor is out of reach unless they consult by telehealth. */
-export const REACH_KM = 30;
+export { REACH_KM, CARE_GUIDANCE } from "./layer1";
+export { DEFAULT_WEIGHTS, ZERO_WEIGHTS, NO_PROFILE_REASON, normaliseWeights, rerank, humanFitFor, type HumanFitWeights, type WeightsInput } from "./layer2";
+export { extractIntent, clinicalFitFor, layer1Filter, specialtiesFor, isMandatory, urgencyOf, SPECIALTY_LABELS } from "./layer1";
 
 /** How many results the screen shows. */
 export const RESULTS_SHOWN = 3;
@@ -48,7 +55,19 @@ export const FILTER_REASON_COPY: Record<FilterReason, string> = {
   "no-telehealth": "telehealth only",
   "out-of-reach": `within ${REACH_KM} km`,
   "registration-not-current": "a current registration",
+  "gender-mismatch": "the gender you asked for",
+  "language-mismatch": "a language they consult in",
 };
+
+/** The discipline a match runs under: a loaded yaml, or its slug. */
+export type DisciplineChoice = "mvp" | "psychiatry" | Discipline;
+
+export interface MatchOptions {
+  discipline: DisciplineChoice;
+  /** Layer-2 weights; `DEFAULT_WEIGHTS` when absent. Any subset, see `WeightsInput`. */
+  weights?: Readonly<WeightsInput>;
+  today?: Date;
+}
 
 function originOf(place: Place | null | undefined): SuburbPoint | null {
   if (!place) return null;
@@ -56,9 +75,9 @@ function originOf(place: Place | null | undefined): SuburbPoint | null {
 }
 
 /**
- * Hard filters, each with a named reason the UI can show (PRD §8.1.2). Population is not
- * filtered yet: the lexicon reads conditions, manner, constraints and languages, and a
- * population read lands with the next vocabulary pass.
+ * The ported hard filters, kept under their original name for callers and tests that read a
+ * single-specialty roster. `match()` runs `layer1Filter`, which adds the intent's specialty
+ * set and the mandatory constraints.
  */
 export function filterReason(
   doctor: Doctor,
@@ -111,20 +130,53 @@ function headlines(cards: ReadonlyArray<{ evidence: Evidence[] }>): string[] {
   return picked.map((label) => (label === null ? "Listed for this specialty" : `In common: ${label}`));
 }
 
+/** The slice a screen shows, with headlines that differ card to card. Pure; call after `rerank`. */
+export function shown(survivors: readonly Ranked[], count: number = RESULTS_SHOWN): Ranked[] {
+  const top = survivors.slice(0, count);
+  const titles = headlines(top.map((card) => ({ evidence: card.evidence.filter((item) => item.kind !== "capacity") })));
+  return top.map((card, index) => ({ ...card, headline: titles[index]! }));
+}
+
+function resolveDiscipline(choice: DisciplineChoice): { discipline: Discipline; lexicon: Lexicon } {
+  if (typeof choice === "string") {
+    const lexicon = lexiconForSlug(choice);
+    return { discipline: lexicon.discipline, lexicon };
+  }
+  return { discipline: choice, lexicon: lexiconFor(choice) };
+}
+
+function isDiscipline(value: Discipline | MatchOptions): value is Discipline {
+  return "slug" in value && "conditions" in value;
+}
+
+/**
+ * The pipeline. Two call shapes: the ported `match(sentence, place, doctors, discipline, today)`
+ * and the plan's `match(sentence, place, doctors, { discipline: "mvp", weights })`. Both return
+ * the Layer-2 ordered list with the clinical-fit and human-fit explanations on every result.
+ */
+export function match(sentence: string, place: Place | null | undefined, doctors: readonly Doctor[], discipline: Discipline, today?: Date, options?: Partial<MatchOptions>): MatchResult;
+export function match(sentence: string, place: Place | null | undefined, doctors: readonly Doctor[], options: MatchOptions): MatchResult;
 export function match(
   sentence: string,
   place: Place | null | undefined,
   doctors: readonly Doctor[],
-  discipline: Discipline,
-  today: Date = new Date(),
+  disciplineOrOptions: Discipline | MatchOptions,
+  todayArg?: Date,
+  extra: Partial<MatchOptions> = {},
 ): MatchResult {
-  const lexicon: Lexicon = lexiconFor(discipline);
+  // A loaded Discipline as the fourth argument wins over a slug in `extra`: the caller's object
+  // is the vocabulary the roster was built against.
+  const options: MatchOptions = isDiscipline(disciplineOrOptions) ? { ...extra, discipline: disciplineOrOptions } : disciplineOrOptions;
+  const { discipline, lexicon } = resolveDiscipline(options.discipline);
+  const today = todayArg ?? options.today ?? new Date();
+  const weights = options.weights ?? DEFAULT_WEIGHTS;
 
   if (isEmergency(sentence, lexicon)) {
     return {
       order: "unmatched",
       orderNote: EMERGENCY_NOTE,
       results: [],
+      survivors: [],
       excluded: [],
       clarifiers: [],
       emergency: { note: EMERGENCY_NOTE },
@@ -133,12 +185,13 @@ export function match(
 
   const origin = originOf(place);
   const asks = hardAsks(sentence, lexicon);
+  const { intent } = extractIntent(sentence, lexicon);
   const byId = new Map<string, Doctor>();
   const roster: Clinician[] = [];
   const excluded: MatchResult["excluded"] = [];
   for (const doctor of doctors) {
     const clinician = toClinician(doctor);
-    const reason = filterReason(doctor, clinician, discipline, asks, origin);
+    const reason = layer1Filter(doctor, clinician, intent, asks, origin);
     if (reason) {
       excluded.push({ doctor, reason });
       continue;
@@ -147,6 +200,8 @@ export function match(
     roster.push(clinician);
   }
 
+  const guidance = intent.urgency === "urgent" ? { careGuidance: CARE_GUIDANCE } : {};
+
   if (roster.length === 0) {
     const counts = new Map<FilterReason, number>();
     for (const { reason } of excluded) counts.set(reason, (counts.get(reason) ?? 0) + 1);
@@ -154,18 +209,27 @@ export function match(
       order: "unserved",
       orderNote: "Nobody listed today answers every part of what you asked for. That is a gap in our listing, not in what you asked for.",
       results: [],
+      survivors: [],
       excluded,
       unserved: [...counts.entries()].map(([reason, restoreCount]) => ({ ask: FILTER_REASON_COPY[reason], restoreCount })),
       clarifiers: [],
+      intent,
+      ...guidance,
     };
   }
 
   const order = matchQuality(sentence, roster, lexicon);
   const needs = needsFor(sentence, roster, lexicon);
   const ranked = rankCliniciansNear(sentence, origin, roster, today, lexicon);
-  const top = ranked.slice(0, RESULTS_SHOWN);
 
-  const cards = top.map((clinician) => {
+  // The Layer-1 band is the tier vector rankClinicians sorts on plus the capacity grade: the
+  // exact tie inside which distance already reordered, and the only place Layer 2 may reorder.
+  const bandOf = (clinician: Clinician) => {
+    const profile = rankingProfile(clinician, needs);
+    return `${profile.constraintCoverage}|${profile.constraintScore}|${profile.careScore}|${profile.mannerScore}|${profile.coverage}|${CAPACITY_ORDER[capacityGrade(clinician, today)]}`;
+  };
+
+  const layer1: Ranked[] = ranked.map((clinician, position) => {
     const doctor = byId.get(clinician.id)!;
     const profile = rankingProfile(clinician, needs);
     const evidence: Evidence[] = matchEvidence(clinician, sentence, roster, lexicon).map((need) => ({
@@ -178,12 +242,16 @@ export function match(
     }));
     const closed = closedBooksNote(clinician, sentence, roster, lexicon);
     if (closed) evidence.push({ label: closed, kind: "capacity", tier: doctor.capacity.tier });
-    const card: Omit<Ranked, "headline"> = {
+    const card: Ranked = {
       doctor,
       score: profile.weightedScore,
       tiers: { access: profile.constraintScore, fit: profile.careScore, manner: profile.mannerScore, coverage: profile.coverage },
       evidence,
       missed,
+      headline: "",
+      clinicalFit: clinicalFitFor(doctor, intent, discipline),
+      humanFit: { score: 0, reasons: [], basis: "none" },
+      layer1: { band: bandOf(clinician), position },
     };
     // The figure is shown whenever the doctor has rooms; whether it SORTS them is the
     // telehealth-first rule in rankCliniciansNear (PRD §4.12), not this line.
@@ -191,19 +259,23 @@ export function match(
     if (km !== null) card.distanceKm = Math.round(km * 10) / 10;
     return card;
   });
-  const titles = headlines(cards.map((card) => ({ evidence: card.evidence.filter((item) => item.kind !== "capacity") })));
-  const results: Ranked[] = cards.map((card, index) => ({ ...card, headline: titles[index]! }));
+
+  const survivors = rerank(layer1, intent, weights, discipline);
+  const results = shown(survivors);
 
   const result: MatchResult = {
     order,
     orderNote: orderNote(sentence, roster, { nearest: origin !== null, lexicon }),
     results,
+    survivors,
     excluded,
     clarifiers: clarifiers(sentence, roster, 3, lexicon).map((clarifier) => ({
       facet: clarifier.facetKey,
       question: clarifier.prompt,
       options: [clarifier.answer],
     })),
+    intent,
+    ...guidance,
   };
   if (order === "unserved") {
     result.unserved = unservedNeeds(sentence, roster, lexicon).map((need) => ({ ask: need.label, restoreCount: 0 }));

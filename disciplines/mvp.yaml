@@ -1,0 +1,290 @@
+# Cross-specialty MVP vocabulary (writing-block.md §2): women's health, mental health and
+# overlooked chronic conditions, matched across the Ahpra specialties that appropriately treat
+# each rather than forced into one. Same loader and cue discipline as psychiatry.yaml.
+#
+# CUE DISCIPLINE. Multi-word cues wherever a bare word has an ordinary-English reading: the
+# port's false-positive register (src/matching/known-fps.ts) measured "ice", "flat", "checking",
+# "court", "memory", "free", "patient" firing on sentences about ice packs, flats, websites,
+# courthouses and free appointments. None of those bare words appears below; where psychiatry
+# kept them this file carries the narrowed pair ("feel flat", "checking rituals").
+#
+# SPECIALTIES. `specialties:` on each condition = the Ahpra specialties / fields of specialty
+# practice that treat it. The Layer-1 filter keeps a doctor whose specialty is in the union over
+# the asked conditions and excludes the rest as "wrong-specialty". The mapping is a founder
+# decision (CLAUDE.md: the yaml is the founder's vocabulary) and is listed for sign-off in the
+# 2026-10-15 log entry.
+slug: mvp
+label: Doctor
+register: ahpra
+referral_required: false         # varies by specialty; GP needs none, the rest need a GP referral for the rebate
+capacity_semantics: waitlist
+fee_model: mixed
+
+populations:
+  - id: child
+    cues: [child, kid, son, daughter, "year old", primary school, "my boy", "my girl", "my little one"]
+    age: [0, 12]
+  - id: adolescent
+    cues: [teen, teenager, adolescent, high school, year 10, year 11, year 12]
+    age: [12, 18]
+  - id: adult
+    cues: [adult, myself, husband, wife, partner]
+  - id: older-adult
+    cues: [mum, dad, mother, father, grandmother, grandfather, nan, elderly, "in her 70s", "in his 70s", "in her 80s", "in his 80s", aged care]
+  - id: perinatal
+    cues: [pregnant, pregnancy, postnatal, postpartum, newborn, after the birth, since the birth, breastfeeding, antenatal, "new mum", "after having my baby", "since having my baby", "trying to conceive", ivf, fertility]
+
+conditions:
+  # ---- Women's health -------------------------------------------------------------------
+  - id: endometriosis
+    label: Endometriosis
+    specialties: [obstetrics-gynaecology, general-practice, pain-medicine]
+    cues: [endometriosis, endo, adenomyosis, "painful periods", "period pain", "heavy periods", "pain with sex", dysmenorrhoea, laparoscopy, "endo excision"]
+  - id: pcos
+    label: Polycystic ovary syndrome
+    specialties: [obstetrics-gynaecology, endocrinology, general-practice]
+    cues: [pcos, "polycystic ovary", "polycystic ovaries", "irregular periods", "missed periods", hirsutism, "insulin resistance"]
+  - id: perinatal-mh
+    label: Perinatal mental health
+    specialties: [psychiatry, obstetrics-gynaecology, general-practice]
+    cues: ["postpartum depression", "postnatal depression", "postpartum anxiety", "postnatal anxiety", pnd, "perinatal depression", "perinatal anxiety", "perinatal mental health", "antenatal depression", "antenatal anxiety", "after the baby", "since the baby", "since the birth", "birth trauma", "baby blues", "not bonding with my baby"]
+  - id: pelvic-pain
+    label: Persistent pelvic pain
+    specialties: [obstetrics-gynaecology, pain-medicine, general-practice]
+    cues: ["pelvic pain", "chronic pelvic pain", "persistent pelvic pain", vulvodynia, vaginismus, "pelvic floor", "bladder pain", "interstitial cystitis", "pain down there"]
+  - id: menopause
+    label: Menopause and perimenopause
+    specialties: [obstetrics-gynaecology, endocrinology, general-practice]
+    cues: [menopause, menopausal, perimenopause, perimenopausal, "hot flushes", "hot flashes", "night sweats", hrt, "hormone therapy", "hormone replacement", "early menopause", "surgical menopause"]
+  # ---- Mental health --------------------------------------------------------------------
+  - id: adhd
+    label: ADHD
+    specialties: [psychiatry, paediatrics, general-practice]
+    cues: [adhd, "attention deficit", "adhd assessment", "adhd diagnosis", "adhd medication", "can't focus", "cannot focus", "trouble focusing", inattentive, hyperactive, "executive function", "adult adhd", stimulant, "stimulant medication"]
+  - id: depression
+    label: Depression
+    specialties: [psychiatry, general-practice]
+    cues: [depression, depressed, "low mood", "can't get out of bed", hopeless, antidepressant, antidepressants, "feel flat", "feeling flat", "feel numb", "no motivation", "lost interest in everything"]
+  - id: anxiety
+    label: Anxiety
+    specialties: [psychiatry, general-practice]
+    cues: [anxiety, anxious, "panic attack", "panic attacks", "panic disorder", "constant worry", "worrying all the time", phobia, "social anxiety", "health anxiety", "generalised anxiety"]
+  - id: bipolar
+    label: Bipolar disorder
+    specialties: [psychiatry]
+    cues: [bipolar, manic, mania, hypomania, "mood swings", "mood stabiliser", "mood stabilizer"]
+  - id: psychosis
+    label: Psychosis and schizophrenia
+    specialties: [psychiatry]
+    cues: [psychosis, psychotic, schizophrenia, schizoaffective, "hearing voices", hallucinations, delusions, antipsychotic, antipsychotics, "first episode psychosis"]
+  - id: personality
+    label: Personality disorders
+    specialties: [psychiatry]
+    cues: [borderline, bpd, "personality disorder", eupd, "emotional dysregulation", "emotionally unstable", dbt, "dialectical behaviour therapy"]
+  - id: trauma
+    label: Trauma and PTSD
+    specialties: [psychiatry, general-practice]
+    cues: [trauma, ptsd, "complex trauma", cptsd, "c-ptsd", flashbacks, "childhood abuse", "sexual assault", "domestic violence", "family violence", veteran, "first responder", "emdr"]
+  - id: eating-disorders
+    label: Eating disorders
+    specialties: [psychiatry, paediatrics, general-practice]
+    cues: ["eating disorder", anorexia, bulimia, "binge eating", arfid, "restricting food", "restricting my eating", purging, "disordered eating", "body image"]
+  - id: ocd
+    label: OCD
+    specialties: [psychiatry, general-practice]
+    cues: [ocd, "obsessive compulsive", "intrusive thoughts", "checking rituals", compulsions, "obsessive thoughts"]
+  - id: substance-use
+    label: Alcohol and drug use
+    specialties: [psychiatry, general-practice]
+    cues: ["drinking too much", "drink too much", "alcohol dependence", "alcohol problem", "drug use", "drug dependence", cannabis, methamphetamine, "ice addiction", addiction, "drug and alcohol", detox, "gambling problem", "problem gambling"]
+  - id: autism
+    label: Autism assessment
+    specialties: [psychiatry, paediatrics]
+    cues: [autism, autistic, asd, asperger, aspergers, "autism assessment", "autism diagnosis", "on the spectrum", "sensory overload", "sensory issues"]
+  - id: sleep
+    label: Sleep
+    specialties: [psychiatry, respiratory-sleep-medicine, general-practice]
+    cues: [insomnia, "can't sleep", "cannot sleep", "sleep problems", "trouble sleeping", "sleep apnoea", "sleep apnea", nightmares, "sleep study"]
+  # ---- Overlooked chronic conditions ----------------------------------------------------
+  - id: chronic-pain
+    label: Persistent pain
+    specialties: [pain-medicine, rheumatology, rehabilitation-medicine, psychiatry, general-practice]
+    cues: ["chronic pain", "persistent pain", "pain for years", "pain every day", "daily pain", "constant pain", "nerve pain", "neuropathic pain", "back pain", "chronic back pain", "pain management", "pain clinic", "pain specialist", "widespread pain", "pain all over", migraines, "chronic migraine", "chronic headaches", "crps", "complex regional pain"]
+  - id: chronic-fatigue
+    label: Chronic fatigue and ME/CFS
+    specialties: [general-practice, rehabilitation-medicine, immunology-allergy, infectious-diseases]
+    cues: ["chronic fatigue", "chronic fatigue syndrome", "me/cfs", mecfs, "myalgic encephalomyelitis", "post-exertional malaise", "post exertional malaise", "exhausted all the time", "tired all the time", "no energy for months", "crashing after activity", "bedbound", "housebound"]
+  - id: fibromyalgia
+    label: Fibromyalgia
+    specialties: [rheumatology, pain-medicine, general-practice]
+    cues: [fibromyalgia, fibro, "fibromyalgia diagnosis", "tender points", "widespread muscle pain", "aching all over"]
+  - id: long-covid
+    label: Long COVID
+    specialties: [general-practice, respiratory-sleep-medicine, rehabilitation-medicine, infectious-diseases]
+    cues: ["long covid", "long-covid", "post covid", "post-covid", "since covid", "since i had covid", "after covid", "covid never went away", "brain fog since covid", "breathless since covid"]
+  - id: pots
+    label: POTS and dysautonomia
+    specialties: [cardiology, neurology, general-practice]
+    cues: [pots, "postural tachycardia", "postural orthostatic", dysautonomia, "autonomic dysfunction", "heart races when i stand", "heart racing when standing", "dizzy when i stand", "dizzy when standing", "faint when i stand", "fainting when standing", "tilt table"]
+  - id: fnd
+    label: Functional neurological disorder
+    specialties: [neurology, psychiatry, rehabilitation-medicine]
+    cues: [fnd, "functional neurological", "functional neurological disorder", "functional seizures", "non-epileptic seizures", "dissociative seizures", "functional movement disorder", "conversion disorder", "functional weakness"]
+  - id: hypermobility
+    label: Hypermobility and EDS
+    specialties: [rheumatology, clinical-genetics, rehabilitation-medicine, general-practice]
+    cues: [hypermobility, hypermobile, "ehlers danlos", "ehlers-danlos", eds, heds, "joint hypermobility", "joints dislocate", "joints pop out", "double jointed", "hypermobility spectrum"]
+  - id: ibs
+    label: Irritable bowel syndrome
+    specialties: [gastroenterology, general-practice]
+    cues: [ibs, "irritable bowel", "irritable bowel syndrome", "gut problems", "gut issues", "bloating and pain", "bowel problems", "constipation and diarrhoea", "low fodmap", fodmap, "functional gut"]
+
+approaches:
+  - id: medication-led
+    label: Medication-led
+    cues: [medication, meds, prescribe, prescription, titration, "manage my meds"]
+  - id: psychotherapy-led
+    label: Psychotherapy-led
+    cues: [therapy, "talk therapy", psychotherapy, cbt, schema, psychodynamic, "talk to someone", "don't want medication", "no medication"]
+  - id: combined
+    label: Medication and therapy
+    cues: ["medication and therapy", "both medication and therapy"]
+  - id: multidisciplinary
+    label: Multidisciplinary
+    cues: [multidisciplinary, "team approach", "allied health", physio, physiotherapy, "pain program", "pain programme"]
+  - id: surgical
+    label: Surgical
+    cues: [surgery, surgical, laparoscopy, excision, operation]
+
+refused_cues:
+  - pattern: "(no|not|don't want|without|rather not|avoid) (medication|meds|drugs|pills)"
+    refuses: [medication-led]
+  - pattern: "(no|not|don't want|rather not) (telehealth|video|online|zoom)"
+    refuses: [telehealth]
+  - pattern: "(not|don't want|no) (a )?(man|male)"
+    sets: { gender: woman }
+  - pattern: "(not|don't want|no) (a )?(woman|female)"
+    sets: { gender: man }
+
+constraints:
+  telehealth_only: [telehealth only, online only, video only, "can't travel", "cannot travel", "no travel", "housebound", "bedbound"]
+  telehealth_preferred: [telehealth, video, online, zoom, phone appointment, from home]
+  in_person: [in person, face to face, "in the room", "not online"]
+  bulk_bills: [bulk bill, bulk-bill, bulk billed, bulk billing, "can't afford", "cannot afford", "no gap", "on a pension", centrelink, healthcare card, concession, "low income", "no money", "free appointment"]
+  gap_ok: [happy to pay, "don't mind paying", private, "can pay"]
+  woman: [woman, female, lady, "she"]
+  man: [man, male, "he"]
+  referral_in_hand: [have a referral, "got a referral", "gp referred", "my gp gave me", "referral letter"]
+  urgent: [urgent, urgently, asap, "as soon as possible", "this week", "can't wait", "cannot wait", "getting worse fast", "getting worse quickly", "need to be seen soon", "need to see someone soon", "rapidly getting worse"]
+
+emergency_cues:
+  - "(want|going|plan|planning) to (die|kill myself|end it|end my life)"
+  - "suicid"
+  - "overdos"
+  - "(hurt|harm) (myself|someone)"
+  - "chest pain"
+  - "can't breathe"
+  - "cannot breathe"
+  - "unconscious"
+  - "not breathing"
+  - "taken (all|too many) (pills|tablets)"
+  - "heavy bleeding"
+  - "bleeding heavily"
+  - "(thoughts|thinking) of (hurting|harming) (my|the) baby"
+
+# Layer-1 manner (declared on the doctor record, ranks in the contributory tier).
+manner:
+  - id: direct
+    label: Direct
+    cues: [direct, "straight talking", blunt, "tell it like it is", "no nonsense"]
+  - id: gentle
+    label: Gentle
+    cues: [gentle, warm, kind, "takes time", calm, "softly spoken"]
+  - id: collaborative
+    label: Collaborative
+    cues: [collaborative, "collaborative approach", "involve me", "explain things", "my say", "work together", "shared decision"]
+  - id: lgbtq-affirming
+    label: LGBTQ+ affirming
+    cues: [lgbt, lgbtq, lgbtqia, queer, "trans", transgender, "non-binary", gay, lesbian, affirming]
+  - id: culturally-safe
+    label: Culturally safe
+    cues: [aboriginal, "torres strait", indigenous, "first nations", "culturally safe", "my culture", "understands my background"]
+  - id: neurodiversity-affirming
+    label: Neurodiversity-affirming
+    cues: ["neurodiversity affirming", "neurodiversity-affirming", "doesn't pathologise", "strengths based"]
+
+# Layer-2 human fit (plan Task 6): preference cues → closed labels. Read against the doctor's
+# declared communication labels, the labels derived from their philosophy at build time
+# (src/matching/personal-labels.ts), their manner, and the presence of lived experience or
+# research. Each id is a label a surface may say back; the cues are the patient's words.
+human_fit:
+  - id: collaborative
+    label: Collaborative
+    cues: [collaborative, "collaborative approach", "work together", "work with me", "partner with me", "shared decision", "involve me in decisions", "involve me", "my say", "decide together", "team with me"]
+  - id: listens
+    label: Listens and takes you seriously
+    cues: ["nobody listens", "no one listens", "noone listens", "not listened to", "actually listens", "really listens", "listens to me", "listen to me", dismissed, dismiss, dismissive, "dismiss how i feel", "dismiss how i'm feeling", "taken seriously", "take me seriously", "takes me seriously", "believes me", "believe me", "feel heard", "be heard", "not in my head", "all in my head", "not believed", "fobbed off", "brushed off", "written off", "ignored by doctors", "gaslit", "medical gaslighting"]
+  - id: evidence-based
+    label: Evidence-based
+    cues: ["evidence based", "evidence-based", "based on evidence", "follows the evidence", "scientific approach", "the science", "latest guidelines", "guideline based"]
+  - id: holistic
+    label: Whole-person care
+    cues: [holistic, "whole person", "whole-person", "big picture", "looks at everything", "not just the symptoms", "not just symptoms", "lifestyle as well", "mind and body", "treats the whole me", "integrative"]
+  - id: direct
+    label: Direct
+    cues: [direct, "straight talking", "straight talker", blunt, "tell it like it is", "tells it like it is", "no nonsense", "straight answers", "straight with me", "honest with me"]
+  - id: gentle
+    label: Gentle
+    cues: [gentle, warm, kind, "takes time", calm, "softly spoken", "patient with me", "not rushed", "doesn't rush", "won't rush me", "unhurried", "compassionate", "caring"]
+  - id: lived-experience
+    label: Lived experience
+    cues: ["lived experience", "understands what living with", "understands what it's like", "understands what its like", "knows what it's like", "knows what its like", "been through it", "been through it themselves", "been there themselves", "has it themselves", "lives with it too", "lives with it themselves", "personal experience of", "from the inside", "first hand", "first-hand", "understands what living with a chronic condition"]
+  - id: lgbtq-affirming
+    label: LGBTQ+ affirming
+    cues: [lgbt, lgbtq, lgbtqia, queer, "trans", transgender, "non-binary", gay, lesbian, affirming, "gender affirming", "gender-affirming", "safe for queer people"]
+  - id: culturally-safe
+    label: Culturally safe
+    cues: [aboriginal, "torres strait", indigenous, "first nations", "culturally safe", "cultural safety", "my culture", "understands my background", "understands my religion", "same background as me", "speaks my language"]
+  - id: neurodiversity-affirming
+    label: Neurodiversity-affirming
+    cues: ["neurodiversity affirming", "neurodiversity-affirming", "neuroaffirming", "doesn't pathologise", "strengths based", "strengths-based", "gets neurodivergent people", "understands neurodivergent", "understands autistic", "understands adhd brains"]
+  - id: research-active
+    label: Research-active
+    cues: ["up to date with research", "up to date with the research", "up-to-date with research", "latest research", "does research", "involved in research", "publishes research", "researcher", "academic", "knows the research", "current research", "cutting edge", "new treatments", "newest treatments", "clinical trials"]
+  - id: long-appointments
+    label: Longer appointments
+    cues: ["long appointments", "longer appointments", "long appointment", "longer appointment", "longer first appointment", "double appointment", "double slot", "extended appointment", "enough time", "time to talk", "time to explain", "not a ten minute", "not ten minutes", "not rushed through"]
+  - id: trauma-informed
+    label: Trauma-informed
+    cues: ["trauma informed", "trauma-informed", "trauma aware", "trauma-aware", "understands trauma", "sensitive to trauma", "gentle with my history", "safe with my history", "asks before touching", "explains before examining"]
+
+languages:
+  cues:
+    arabic: [arabic, lebanese, syrian]
+    mandarin: [mandarin, chinese]
+    cantonese: [cantonese]
+    vietnamese: [vietnamese]
+    greek: [greek]
+    italian: [italian]
+    hindi: [hindi]
+    punjabi: [punjabi]
+    urdu: [urdu]
+    spanish: [spanish]
+    korean: [korean]
+    tagalog: [tagalog, filipino]
+    farsi: [farsi, persian]
+    turkish: [turkish]
+    auslan: [auslan, deaf, sign language]
+
+forbidden_public_terms:
+  - "ADHD specialist"
+  - "endometriosis specialist"
+  - "pain specialist"          # "pain medicine physician" is the Ahpra field
+  - "best doctor"
+  - "leading"
+  - "top rated"
+  - "vyvanse"
+  - "ritalin"
+  - "concerta"
+  - "lithium"
+  - "sertraline"

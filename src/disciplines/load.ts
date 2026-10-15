@@ -4,12 +4,18 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
-import type { Population } from "@/src/matching/types";
+import { isSpecialtyField, type Population, type SpecialtyField } from "@/src/matching/types";
 
 export interface CueGroup {
   id: string;
   label: string;
   cues: string[];
+}
+
+/** A condition with the specialties that appropriately treat it (`conditions[].specialties`). */
+export interface ConditionGroup extends CueGroup {
+  /** Empty when the yaml names none: the condition then puts no specialty filter on the roster. */
+  specialties: SpecialtyField[];
 }
 
 export interface PopulationCues {
@@ -32,9 +38,11 @@ export interface Discipline {
   slug: string;
   label: string;
   populations: PopulationCues[];
-  conditions: CueGroup[];
+  conditions: ConditionGroup[];
   approaches: CueGroup[];
   manner: CueGroup[];
+  /** Preference cues → closed human-fit labels (yaml `human_fit`). Read by Layer 2; empty when the yaml has none. */
+  humanFit: CueGroup[];
   /** Constraint facet (telehealth_only, bulk_bills, woman, ...) to cue phrases. */
   constraints: Record<string, string[]>;
   refusedCues: RefusedCue[];
@@ -75,6 +83,22 @@ function record(value: unknown, where: string): Record<string, string[]> {
   return out;
 }
 
+function conditionGroups(value: unknown, where: string): ConditionGroup[] {
+  const base = groups(value, where);
+  return base.map((group, i) => {
+    const raw = (value as { specialties?: unknown }[])[i]?.specialties;
+    const specialties: SpecialtyField[] = [];
+    if (raw !== undefined) {
+      if (!Array.isArray(raw)) throw new Error(`${where}.${group.id}: specialties must be a list`);
+      for (const item of raw) {
+        if (!isSpecialtyField(item)) throw new Error(`${where}.${group.id}: unknown specialty "${String(item)}"`);
+        if (!specialties.includes(item)) specialties.push(item);
+      }
+    }
+    return { ...group, specialties };
+  });
+}
+
 export function parseDiscipline(text: string): Discipline {
   const doc = parse(text) as Record<string, unknown>;
   if (!doc || typeof doc !== "object") throw new Error("discipline: empty document");
@@ -109,9 +133,10 @@ export function parseDiscipline(text: string): Discipline {
     slug,
     label: String(doc.label ?? slug),
     populations,
-    conditions: groups(doc.conditions, "conditions"),
+    conditions: conditionGroups(doc.conditions, "conditions"),
     approaches: groups(doc.approaches, "approaches"),
     manner: groups(doc.manner, "manner"),
+    humanFit: doc.human_fit === undefined ? [] : groups(doc.human_fit, "human_fit"),
     constraints: record(doc.constraints ?? {}, "constraints"),
     refusedCues,
     emergencyCues,
