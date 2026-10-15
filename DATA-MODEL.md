@@ -147,3 +147,22 @@ coverage(discipline, state, mmm):
 ```
 
 This table is the product's honesty report and is public.
+
+## MVP additions (2026-10-15)
+
+Migration `supabase/migrations/0002_mvp_tables.sql`. Same rules as above: every row carries a source and a tier or evidence status; anon reads `published_*` views only; `practitioners` and `practitioner_roles` are the "provider" and "provider role" entities named in the writing-block plan.
+
+| Table | Key | Purpose | Enums |
+|---|---|---|---|
+| `specialties` | slug, `parent_id` | Ahpra specialties and fields as a tree; college areas flagged `ahpra_recognised=false` | — |
+| `conditions` | `slug` | Patient-need vocabulary with `synonyms[]` for the lexical matcher | category: womens-health / mental-health / chronic-overlooked / other |
+| `provider_clinical_focus` | practitioner × condition | Documented clinical interest with tier and source | strength: primary / secondary / sometimes |
+| `provider_services` | practitioner_role | Telehealth, bulk billing, referral, languages, age groups, wait-time text, accepting new patients + `declared_at` | telehealth: none / some / first-appointment / only; accepting: yes / waitlist / no / unknown |
+| `publications` | `doi` unique | Title, year, venue, OpenAlex and PubMed ids, topics, source URL | authorship_verified: unverified / identifier-matched / doctor-confirmed |
+| `personal_profiles` | practitioner | Philosophy, purpose, lived experience (opt-in), hobbies, book, film, podcast, intro video; consent and approval timestamps | status: draft / doctor-approved / illustrative (draft never published) |
+| `field_evidence` | entity × field | Source, source URL, verification and freshness timestamps for any field | evidence_status: verified / documented / inferred / illustrative |
+| `provider_claims` | practitioner | Ownership claim by email domain (address never stored) or posted code | method: ahpra+domain-email / posted-code; status: pending / verified / rejected / revoked |
+| `match_evaluations` | — | SHA-256 of the query (text never stored), extracted intent, results, rater, top-3 relevance (0–3), unsupported claims, hard-filter failures | category as `conditions` |
+| `provider_embeddings` | practitioner × kind × model | pgvector `vector(384)`, HNSW cosine index, built offline and never in the request path | kind: clinical / personal |
+
+`evidence_status` maps onto the three badges: verified → register, documented → declared, inferred → found; illustrative rows belong only to `synthetic` practitioners. `provider_claims` sits beside the v0.1 `claims` table (methods practice_email / posted_code / pca); the MVP flow writes `provider_claims`, and the two will be merged once the PCA method ships.
