@@ -1,0 +1,179 @@
+# Psychiatry discipline configuration. Read by the extractor, the ranker, the
+# profile sections and the copy linter. RESEARCH-PLAN.md §3.1.
+slug: psychiatry
+label: Psychiatrist
+register: ahpra
+ahpra_specialty: Psychiatry
+referral_required: true          # for the Medicare rebate
+capacity_semantics: waitlist     # open / waitlist (weeks) / closed
+fee_model: mbs-item-gap          # initial 296/291, review 300-308; MCF typical fee fallback
+
+populations:
+  - id: child
+    cues: [child, kid, son, daughter, "year old", "yo", primary school, "my boy", "my girl"]
+    age: [0, 12]
+  - id: adolescent
+    cues: [teen, teenager, adolescent, high school, "15", "16", "17", year 10, year 11, year 12]
+    age: [12, 18]
+  - id: adult
+    cues: [adult, "I am", "I'm", myself, me, husband, wife, partner]
+  - id: older-adult
+    cues: [mum, dad, mother, father, grandmother, grandfather, nan, pop, elderly, dementia, "70s", "80s", aged care]
+  - id: perinatal
+    cues: [pregnant, pregnancy, postnatal, postpartum, newborn, after the birth, breastfeeding, antenatal]
+
+conditions:
+  - id: adhd-assessment
+    label: ADHD assessment
+    cues: [adhd, add, attention deficit, "can't focus", inattentive, hyperactive, stimulant, vyvanse, ritalin, concerta, dexamphetamine]
+  - id: autism-assessment
+    label: Autism assessment
+    cues: [autism, autistic, asd, asperger, neurodivergent, sensory, "on the spectrum"]
+  - id: anxiety
+    label: Anxiety
+    cues: [anxiety, anxious, panic, panic attack, worry, worrying, phobia, social anxiety, gad]
+  - id: depression
+    label: Depression
+    cues: [depression, depressed, low mood, "can't get out of bed", hopeless, antidepressant, sertraline, ssri, flat]
+  - id: bipolar
+    label: Bipolar
+    cues: [bipolar, manic, mania, hypomania, mood stabiliser, lithium]
+  - id: psychosis
+    label: Psychosis and schizophrenia
+    cues: [psychosis, psychotic, schizophrenia, hearing voices, hallucinations, delusions, antipsychotic, clozapine]
+  - id: eating-disorders
+    label: Eating disorders
+    cues: [eating disorder, anorexia, bulimia, binge eating, arfid, restricting, purging]
+  - id: perinatal-mh
+    label: Perinatal mental health
+    cues: [postnatal depression, pnd, perinatal, antenatal depression, after the baby, since the birth]
+  - id: trauma
+    label: Trauma and PTSD
+    cues: [trauma, ptsd, complex trauma, cptsd, flashbacks, abuse, assault, veteran, first responder]
+  - id: ocd
+    label: OCD
+    cues: [ocd, obsessive, compulsive, intrusive thoughts, checking, rituals]
+  - id: personality
+    label: Personality disorders
+    cues: [borderline, bpd, personality disorder, eupd, dbt]
+  - id: substance-use
+    label: Alcohol and drug use
+    cues: [alcohol, drinking, drugs, cannabis, ice, meth, addiction, dependence, detox, gambling]
+  - id: older-adult-mh
+    label: Older adult mental health
+    cues: [dementia, memory, elderly, geriatric, old age, aged care]
+  - id: child-adolescent
+    label: Child and adolescent psychiatry
+    cues: [child psychiatrist, adolescent psychiatrist, camhs, school refusal, behaviour at school]
+  - id: forensic
+    label: Forensic
+    cues: [court, legal, forensic, medico-legal, parole, charges]
+  - id: second-opinion
+    label: Second opinion
+    cues: [second opinion, review my diagnosis, review my medication, "not sure about my diagnosis"]
+  - id: sleep
+    label: Sleep
+    cues: [insomnia, "can't sleep", sleep, nightmares]
+  - id: grief
+    label: Grief and adjustment
+    cues: [grief, bereavement, "passed away", died, divorce, redundancy, adjustment]
+
+approaches:
+  - id: medication-led
+    label: Medication-led
+    cues: [medication, meds, prescribe, prescription, titration, "manage my meds"]
+  - id: psychotherapy-led
+    label: Psychotherapy-led
+    cues: [therapy, talk therapy, psychotherapy, cbt, schema, psychodynamic, "talk to someone", "don't want medication", "no medication"]
+  - id: combined
+    label: Medication and therapy
+    cues: [both, combined, "medication and therapy"]
+  - id: neurodevelopmental
+    label: Neurodevelopmental
+    cues: [neurodevelopmental, developmental, learning difficulties, dyslexia]
+  - id: tms-ect
+    label: TMS and ECT
+    cues: [tms, ect, treatment resistant, "nothing has worked"]
+
+# Refusals: cue → the vocabulary id that must NOT be matched when the cue is negated.
+refused_cues:
+  - pattern: "(no|not|don't want|without|rather not|avoid) (medication|meds|drugs|pills)"
+    refuses: [medication-led]
+  - pattern: "(no|not|don't want|rather not) (telehealth|video|online|zoom)"
+    refuses: [telehealth]
+  - pattern: "(not|don't want|no) (a )?(man|male)"
+    sets: { gender: woman }
+  - pattern: "(not|don't want|no) (a )?(woman|female)"
+    sets: { gender: man }
+
+constraints:
+  telehealth_only: [telehealth only, online only, video only, "can't travel", remote, "no travel"]
+  telehealth_preferred: [telehealth, video, online, zoom, phone appointment, from home]
+  in_person: [in person, face to face, "in the room", "not online"]
+  bulk_bills: [bulk bill, bulk-bill, bulk billed, bulk billing, "can't afford", "no gap", "free", "on a pension", centrelink, healthcare card, concession, "low income", "no money"]
+  gap_ok: [happy to pay, "don't mind paying", private, "can pay"]
+  woman: [woman, female, lady, "she"]
+  man: [man, male, "he"]
+  referral_in_hand: [have a referral, "got a referral", "gp referred", "my gp gave me", "referral letter"]
+  urgent: [urgent, urgently, asap, "as soon as possible", crisis, "this week", "can't wait"]
+
+emergency_cues:
+  - "(want|going|plan|planning) to (die|kill myself|end it|end my life)"
+  - "suicid"
+  - "overdos"
+  - "(hurt|harm) (myself|someone)"
+  - "chest pain"
+  - "can't breathe"
+  - "unconscious"
+  - "not breathing"
+  - "taken (all|too many) (pills|tablets)"
+
+manner:
+  - id: direct
+    label: Direct
+    cues: [direct, straight talking, blunt, "tell it like it is", no nonsense]
+  - id: gentle
+    label: Gentle
+    cues: [gentle, warm, kind, patient, "takes time", calm, softly spoken]
+  - id: collaborative
+    label: Collaborative
+    cues: [collaborative, listens, "listen to me", "involve me", "explain things", "my say"]
+  - id: lgbtq-affirming
+    label: LGBTQ+ affirming
+    cues: [lgbt, lgbtq, queer, trans, transgender, non-binary, gay, lesbian, affirming]
+  - id: culturally-safe
+    label: Culturally safe
+    cues: [aboriginal, torres strait, indigenous, first nations, culturally safe, "my culture", "understands my background"]
+  - id: neurodiversity-affirming
+    label: Neurodiversity-affirming
+    cues: [neurodiversity affirming, "doesn't pathologise", strengths based]
+
+languages:
+  cues:
+    arabic: [arabic, lebanese, syrian]
+    mandarin: [mandarin, chinese]
+    cantonese: [cantonese]
+    vietnamese: [vietnamese]
+    greek: [greek]
+    italian: [italian]
+    hindi: [hindi]
+    punjabi: [punjabi]
+    urdu: [urdu]
+    spanish: [spanish]
+    korean: [korean]
+    tagalog: [tagalog, filipino]
+    farsi: [farsi, persian]
+    turkish: [turkish]
+    auslan: [auslan, deaf, sign language]
+
+# Copy the linter refuses on any public surface for this discipline (s.133; TGA).
+forbidden_public_terms:
+  - "ADHD specialist"      # not an Ahpra specialty; "psychiatrist with an interest in ADHD"
+  - "best psychiatrist"
+  - "leading"
+  - "top rated"
+  - "vyvanse"              # medicine brand names never appear on public surfaces
+  - "ritalin"
+  - "concerta"
+  - "lithium"
+  - "sertraline"

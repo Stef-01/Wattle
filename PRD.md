@@ -118,7 +118,7 @@ sentence ─► intent extraction ─► hard filters ─► tiered rank ─► 
           closed schema          named reasons   doctor-side hook (P2)
 ```
 
-1. **Intent extraction.** An LLM call with a closed output schema per specialty: `specialty`, `conditions[]`, `population` (child / adolescent / adult / older / perinatal), `constraints` (language, gender, telehealth, billing, max distance), `manner[]`, `urgency`, `referral_in_hand`. Anything outside the vocabulary is dropped, not invented. Extraction is deterministic at temperature 0 and cached by sentence hash. The sentence is never stored with an identifier; the extraction is.
+1. **Intent extraction.** Lexical, not an LLM call (Wattle runs on subscription with no API keys, and ADHD.ME showed a closed vocabulary with synonym cues reads a sentence well enough). Output is a closed schema per specialty: `specialty`, `conditions[]`, `population` (child / adolescent / adult / older / perinatal), `constraints` (language, gender, telehealth, billing, max distance), `manner[]`, `urgency`, `referral_in_hand`. Each vocabulary term carries cue phrases and refused cues (negations, "not", "other than"). Anything outside the vocabulary is dropped, not invented. Extraction is deterministic and unit-tested against the golden set. The sentence is never stored with an identifier; the extraction is.
 2. **Hard filters**, each with a named reason the UI can show: wrong specialty, not accepting and no waitlist, wrong age group, billing mismatch when the patient said "bulk-billing only", no telehealth when "telehealth only", out of reach (> 30 km in-person, or "either" and no telehealth), registration not current.
 3. **Tiered rank** (ADHD.ME's rule set, generalised):
    - Tier A: access constraints met (language, gender, telehealth, billing).
@@ -201,7 +201,7 @@ The goal is substantially better than healthdirect and Google, not a publishable
 - Next.js 15 / React 19 / TypeScript strict / Tailwind 4; Newsreader over Inter; wattle palette. Same house as ADHD.ME and wattletech.au. No ADHD.ME code is copied; the matcher is re-derived from the rules in §4 and §8.
 - Supabase Postgres with PostGIS (geo) and pgvector (profile embeddings). Entities are FHIR-shaped (`Practitioner`, `PractitionerRole`, `Organization`, `Location`, `HealthcareService`) so NHSD, PCA and HCAPD ingest and export without remodelling.
 - Ingestion is a Python pipeline of per-source adapters with a required `legal_basis` field; an adapter without one does not run. Scheduled through the existing fleet pattern (claude CLI and Task Scheduler on subscription, no API keys).
-- Intent extraction and rationale drafting use Claude at temperature 0 with the closed schema enforced by tool use; outputs are validated against the vocabulary before they touch the ranker.
+- Intent extraction and rationale are lexical and deterministic (closed vocabulary with cue phrases); no model call sits in the request path and no API key exists in the deploy.
 - CI gates: typecheck, text budget, s.133/TGA linter, contrast, golden-set evaluation, coverage snapshot.
 
 ## 13. Legal posture (summary; detail in `research/raw/05-legal-competitive-strategy.md`)
