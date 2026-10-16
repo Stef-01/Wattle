@@ -166,7 +166,7 @@ function applyFacts(record: DoctorRecord, d: ResearchedDoctor, src: SourceRef, d
     record.declared.capacity = true;
   }
   if (d.focus_tags?.length) record.focusTags = found(Array.from(new Set([...record.focusTags.value, ...d.focus_tags])), src);
-  const scope = (d.focus_tags ?? []).find((t) => /only/i.test(t) && !/^not /i.test(t));
+  const scope = (d.focus_tags ?? []).find((t) => / only$/i.test(t.trim()) && !/^not /i.test(t));
   if (scope) record.scopeNote = `Sees ${scope.replace(/\s+only$/i, "")} only`;
   const mannerIds = new Set(discipline.manner.map((m) => m.id));
   const manner = (d.personal?.communication ?? []).filter((id) => mannerIds.has(id));
