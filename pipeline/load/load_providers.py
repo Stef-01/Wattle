@@ -327,6 +327,7 @@ def build(records: list[dict], yaml_sources: dict, run_stamp: str) -> dict[str, 
     source_counts: Counter = Counter()
     practitioners, locations, roles, observations, focus = [], OrderedDict(), [], [], []
     loc_obs_seen: set[tuple] = set()
+    role_seen: set[uuid.UUID] = set()
 
     for r in records:
         src = primary_source(r)
@@ -382,8 +383,11 @@ def build(records: list[dict], yaml_sources: dict, run_stamp: str) -> dict[str, 
             booking = {"via": "phone", "phone": l["phone"]} if l.get("phone") else None
             if l.get("website"):
                 booking = dict(booking or {"via": "website"}, url=l["website"])
-            roles.append({"id": u5("role", str(pid), str(lid)), "practitioner_id": pid, "location_id": lid,
-                          "primary": i == 0, "booking": booking})
+            role_id = u5("role", str(pid), str(lid))
+            if role_id not in role_seen:  # a record can list one place twice (e.g. with and without a phone)
+                role_seen.add(role_id)
+                roles.append({"id": role_id, "practitioner_id": pid, "location_id": lid,
+                              "primary": i == 0, "booking": booking})
             for field in ("phone", "website"):
                 if l.get(field) and (lid, field, l[field]) not in loc_obs_seen:
                     loc_obs_seen.add((lid, field, l[field]))
