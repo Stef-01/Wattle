@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { search } from "@/src/data/api";
 import { DEFAULT_WEIGHTS, type Chip, type SearchResponse, type Weights } from "@/src/data/search-types";
 import type { DoctorRecord } from "@/src/data/types";
 import { DoctorCard } from "./DoctorCard";
@@ -23,9 +24,7 @@ const SLIDERS: Array<{ key: keyof Weights; label: string }> = [
 ];
 
 async function fetchMatch(ask: Ask): Promise<SearchResponse> {
-  const res = await fetch("/api/match", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(ask) });
-  if (!res.ok) throw new Error(String(res.status));
-  return (await res.json()) as SearchResponse;
+  return search(ask);
 }
 
 export function Results() {

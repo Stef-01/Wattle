@@ -1,6 +1,7 @@
 // Shared logic for the Figma patient screens P01–P05 (file NEbiukDE3TyWFptwaCBhwV).
 // Everything shown comes from the match response: closed-vocabulary reasons, declared facts,
 // and the chips the sentence reached. Nothing here invents a fee, a year count or a photo.
+import { search } from "@/src/data/api";
 import type { Card, Chip, SearchRequest, SearchResponse } from "@/src/data/search-types";
 import type { DoctorRecord } from "@/src/data/types";
 import { getRequest, newRequestId, pushRecent, setRequest, type StoredRequest } from "@/src/ui/store";
@@ -14,9 +15,7 @@ export const EXAMPLES = ["Endometriosis, someone who listens", "A psychiatrist f
 export async function runMatch(input: { sentence: string; suburb?: string; removed?: string[]; anywhere?: boolean; id?: string }): Promise<StoredRequest> {
   const suburb = input.anywhere ? "" : (input.suburb ?? DEFAULT_SUBURB);
   const body: SearchRequest = { sentence: input.sentence, suburb, removed: input.removed ?? [] };
-  const res = await fetch("/api/match", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-  if (!res.ok) throw new Error(`match ${res.status}`);
-  const response = (await res.json()) as SearchResponse;
+  const response: SearchResponse = await search(body);
   const req: StoredRequest = {
     id: input.id ?? newRequestId(),
     sentence: input.sentence,

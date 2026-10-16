@@ -2,10 +2,11 @@
 // Pieces the C01–C08 screens share that the kit does not carry (Roboto-medium titles, the 58 px field,
 // the 44 r14 small pill, the 4 px progress bar, the step header). Icons are the Figma assets in public/figma/c.
 import Link from "next/link";
+import { asset } from "@/src/ui/base-path";
 import type { ReactNode } from "react";
 import { Circle } from "@/src/ui/kit";
 
-export const ASSET = "/figma/c";
+export const ASSET = asset("/figma/c");
 
 /** A Figma SVG at its own size. */
 export function Asset({ name, size, className }: { name: string; size: number; className?: string }) {

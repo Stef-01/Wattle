@@ -7,6 +7,7 @@ import { Body, Circle, Divider, Fade, FigmaIcon, HeadingTabs, Hint, Row, Stat, i
 import { HeroScreen, Space } from "./bits";
 import { conditionLabels, drName, drShort, feeOf, joinLabels, papersLine, personalStatusLabel, placeOf, pronouns } from "./facts";
 import { BookmarkCircle, ContactCta } from "./ProfileClient";
+import { doctorSlug } from "@/src/data/doctor-slug";
 
 function Hero({ d, photo }: { d: DoctorRecord; photo: string | null }) {
   const fee = feeOf(d);
@@ -64,7 +65,7 @@ function Stats({ d }: { d: DoctorRecord }) {
 
 export function Profile({ doctor: d, labels, photo = null }: { doctor: DoctorRecord; labels: Record<string, string>; photo?: string | null }) {
   const personal = d.personal && d.personal.status !== "draft" ? d.personal : null;
-  const id = encodeURIComponent(d.id);
+  const id = doctorSlug(d.id);
   const conditions = conditionLabels(d, labels);
   const papers = papersLine(d);
   const pr = pronouns(d);

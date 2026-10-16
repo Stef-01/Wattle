@@ -3,6 +3,8 @@
 // /me (name, join as a doctor, about). Each sits under the TabBar with its own dot.
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { lookup } from "@/src/data/api";
+import { doctorHref } from "@/src/data/doctor-slug";
 import type { DoctorRecord } from "@/src/data/types";
 import { Body, Divider, FieldBox, FigmaIcon, PhotoCard, Row, Screen, SectionTitle, TabBar } from "@/src/ui/kit";
 import { getName, getRecent, getRequest, getSavedIds, setName, setRequest, toggleSavedId, type RecentSearch } from "@/src/ui/store";
@@ -48,8 +50,7 @@ export function Saved() {
     const saved = getSavedIds();
     setIds(saved);
     if (saved.length === 0) return;
-    fetch(`/doctor/lookup?ids=${encodeURIComponent(saved.join(","))}`)
-      .then((r) => (r.ok ? (r.json() as Promise<DoctorRecord[]>) : Promise.resolve([])))
+    lookup(saved)
       .then(setDoctors)
       .catch(() => setDoctors([]));
   }, []);
@@ -72,7 +73,7 @@ export function Saved() {
             fee={feeOf(d) ?? undefined}
             photo={null}
             height={240}
-            href={`/doctor/${encodeURIComponent(d.id)}`}
+            href={doctorHref(d.id)}
             topRight={
               <button type="button" aria-label="Remove bookmark" onClick={(e) => { e.preventDefault(); remove(d.id); }} className="inline-flex size-11 items-center justify-center rounded-full bg-caption text-white backdrop-blur-[20px]">
                 <FigmaIcon name="bookmark" size={22} />

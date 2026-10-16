@@ -2,6 +2,7 @@
 // P01 Splash (225:10): green gradient, Lobster wordmark + leaf, "Doctors who listen".
 // Tapping anywhere goes home; the flag stops "/" sending the reader back here.
 import "@fontsource/lobster/400.css";
+import { asset } from "@/src/ui/base-path";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { markSplashSeen } from "@/src/ui/store";
@@ -29,7 +30,7 @@ export function Splash() {
           wattle
         </span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/figma/leaf.svg" alt="" width={34} height={34} className="block size-[34px]" />
+        <img src={asset("/figma/leaf.svg")} alt="" width={34} height={34} className="block size-[34px]" />
       </div>
       <p className="absolute left-1/2 top-[474px] w-[300px] -translate-x-1/2 text-center text-[20px] font-medium leading-normal text-[#e8e8e8]">Doctors who listen</p>
     </main>

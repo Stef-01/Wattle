@@ -10,6 +10,7 @@ import { ArrowLeft, Body, Bookmark, Circle, Clock, Cta, File, Gap, HeadingTabs, 
 import { getCurrentRequest, isSavedId, toggleSavedId } from "@/src/ui/store";
 import { Dock } from "./Dock";
 import { familyOf, feeOf, hasTelehealth, needsReferral, paragraphFor, placeLine, yearsOf } from "./lib";
+import { doctorHref } from "@/src/data/doctor-slug";
 
 const RANKS = 3;
 
@@ -124,7 +125,7 @@ export function Match({ rank }: { rank: number }) {
         </PhotoCard>
       </div>
       <Gap h={40} />
-      <HeadingTabs items={[{ label: "Why you’ll connect", active: true }, { label: "Profile", href: `/doctor/${encodeURIComponent(d.id)}` }]} />
+      <HeadingTabs items={[{ label: "Why you’ll connect", active: true }, { label: "Profile", href: doctorHref(d.id) }]} />
       <Gap h={32} />
       {stats.length > 0 ? (
         <>
@@ -140,7 +141,7 @@ export function Match({ rank }: { rank: number }) {
       ) : null}
       <Body>{paragraphFor(card, labels)}</Body>
       <Dock>
-        <Cta fixed={false} href={`/doctor/${encodeURIComponent(d.id)}`}>
+        <Cta fixed={false} href={doctorHref(d.id)}>
           Get to know Dr {familyOf(d)}
         </Cta>
       </Dock>

@@ -1,14 +1,15 @@
 // P06 Profile / P11 Partial profile (Figma 226:58 / 226:366). One route; the screen branches on
 // whether the doctor has a doctor-approved or illustrative personal profile.
 import { notFound } from "next/navigation";
-import { getDoctor, getDoctors, mvpDiscipline } from "@/src/data/providers";
+import { doctorIdFromParam } from "@/src/data/doctor-slug";
+import { getDoctor, mvpDiscipline } from "@/src/data/providers";
 import { Profile } from "@/src/ui/screens/patient-b/Profile";
+import { doctorParams } from "./params";
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const doctors = await getDoctors();
-  return doctors.slice(0, 40).map((d) => ({ id: d.id }));
+  return doctorParams();
 }
 
 function conditionLabelMap(): Record<string, string> {
@@ -19,13 +20,13 @@ function conditionLabelMap(): Record<string, string> {
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const d = await getDoctor(decodeURIComponent(id));
+  const d = await getDoctor(doctorIdFromParam(id));
   return { title: d ? `${d.name.display} · Wattle` : "Doctor · Wattle" };
 }
 
 export default async function DoctorPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const d = await getDoctor(decodeURIComponent(id));
+  const d = await getDoctor(doctorIdFromParam(id));
   if (!d) notFound();
   return <Profile doctor={d} labels={conditionLabelMap()} />;
 }

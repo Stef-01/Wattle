@@ -1,11 +1,15 @@
-// Full-journey screenshot walk at 430x932 against a running `pnpm start` (port 3300).
-// Usage: node qa/figma/walk.mjs  → qa/figma/walk/*.png + sheet.png
+// Full-journey screenshot walk at 430x932 against a running `pnpm start` (port 3300), or any
+// deployment: BASE=https://stef-01.github.io/Wattle-Health node qa/figma/walk.mjs. Hrefs the
+// page renders already carry that base path, so they are opened as is.
+// Usage: node qa/figma/walk.mjs  → qa/figma/walk/*.png + walk.json (+ sheet.png with sharp;
+// python qa/figma/sheet.py composes one with PIL otherwise).
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
-const BASE = process.env.BASE ?? "http://localhost:3300";
-const OUT = path.resolve("qa/figma/walk");
+const BASE = (process.env.BASE ?? "http://localhost:3300").replace(/\/$/, "");
+const ORIGIN = new URL(BASE).origin;
+const OUT = path.resolve(process.env.OUT ?? "qa/figma/walk");
 fs.mkdirSync(OUT, { recursive: true });
 const SENTENCE = "I've had chronic pelvic pain for years. I feel like nobody listens. I want someone experienced with endometriosis who takes a collaborative approach, and ideally someone who understands what living with a chronic condition feels like.";
 
@@ -21,32 +25,34 @@ async function shot(name) {
   shots.push({ name, file, url: page.url() });
   console.log(name, page.url());
 }
+/** An app route ("/match/2") under BASE; a rendered href ("/Wattle-Health/doctor/x") under the origin. */
+const go = (route) => page.goto(route.startsWith(new URL(BASE).pathname) && new URL(BASE).pathname !== "/" ? `${ORIGIN}${route}` : `${BASE}${route}`);
 
-await page.goto(`${BASE}/splash`); await shot("P01-splash");
-await page.goto(`${BASE}/`); await page.evaluate(() => localStorage.setItem("wattle.splash.seen", "true")); await page.goto(`${BASE}/`); await shot("P02-home");
+await go("/splash"); await shot("P01-splash");
+await go("/"); await page.evaluate(() => localStorage.setItem("wattle.splash.seen", "true")); await go("/"); await shot("P02-home");
 await page.fill("textarea", SENTENCE); await shot("P02-home-filled");
 await page.click("text=Find my doctor"); await page.waitForURL(/\/heard/); await page.waitForTimeout(800); await shot("P03-heard");
 await page.click("text=Meet your matches"); await page.waitForURL(/\/match\/1/); await page.waitForTimeout(800); await shot("P04-match-1");
-await page.goto(`${BASE}/match/2`); await shot("P04-match-2");
-await page.goto(`${BASE}/results`); await page.waitForTimeout(800); await shot("P05-results");
-await page.goto(`${BASE}/match/1`); await page.waitForTimeout(600);
-const first = await page.locator("a[href^='/doctor/']").first().getAttribute("href");
-await page.goto(`${BASE}${first}`); await page.waitForTimeout(600); await shot("P06-profile");
-await page.goto(`${BASE}${first}/expertise`); await shot("P07-expertise");
-await page.goto(`${BASE}${first}/why`); await shot("P09-why");
-await page.goto(`${BASE}/adjust`); await shot("P08-adjust");
-await page.goto(`${BASE}/results/none`); await shot("P10-nomatch");
-await page.goto(`${BASE}/saved`); await shot("tab-saved");
-await page.goto(`${BASE}/recent`); await shot("tab-recent");
-await page.goto(`${BASE}/me`); await shot("tab-me");
-await page.goto(`${BASE}/join`); await shot("C01-join");
-await page.goto(`${BASE}/join/verify`); await shot("C02-verify");
-await page.goto(`${BASE}/join/practice`); await shot("C03-practice");
-await page.goto(`${BASE}/join/interview`); await shot("C04-interview");
-await page.goto(`${BASE}/join/interview/3`); await shot("C05-question");
+await go("/match/2"); await shot("P04-match-2");
+await go("/results"); await page.waitForTimeout(800); await shot("P05-results");
+await go("/match/1"); await page.waitForTimeout(600);
+const first = (await page.locator("a[href*='/doctor/']").first().getAttribute("href")).replace(/\/$/, "");
+await go(first); await page.waitForTimeout(600); await shot("P06-profile");
+await go(`${first}/expertise`); await shot("P07-expertise");
+await go(`${first}/why`); await shot("P09-why");
+await go("/adjust"); await shot("P08-adjust");
+await go("/results/none"); await shot("P10-nomatch");
+await go("/saved"); await shot("tab-saved");
+await go("/recent"); await shot("tab-recent");
+await go("/me"); await shot("tab-me");
+await go("/join"); await shot("C01-join");
+await go("/join/verify"); await shot("C02-verify");
+await go("/join/practice"); await shot("C03-practice");
+await go("/join/interview"); await shot("C04-interview");
+await go("/join/interview/3"); await shot("C05-question");
 await page.fill("textarea", "um I ask people to tell me the whole story before we talk about options, most have been rushed before"); await page.click("text=Next"); await page.waitForURL(/\/join\/draft\/3/); await page.waitForTimeout(500); await shot("C06-draft");
-await page.goto(`${BASE}/join/share`); await shot("C07-share");
-await page.goto(`${BASE}/join/review`); await shot("C08-review");
+await go("/join/share"); await shot("C07-share");
+await go("/join/review"); await shot("C08-review");
 await browser.close();
 
 // contact sheet: 6 per row, each 215x466

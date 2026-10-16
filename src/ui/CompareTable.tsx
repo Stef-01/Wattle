@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { sourceLabel, topicsOf, type DoctorRecord } from "@/src/data/types";
 import { clearCompare, getCompare } from "./store";
+import { doctorHref } from "@/src/data/doctor-slug";
 
 type Cell = string;
 const SPECIALTY: Record<string, string> = { psychiatry: "Psychiatrist", paediatrics: "Paediatrician", "obstetrics-gynaecology": "Obstetrician and gynaecologist" };
@@ -48,7 +49,7 @@ export function CompareTable() {
             <th className="w-28 p-2 text-left text-xs text-ink-soft" />
             {pair.map((d) => (
               <th key={d.id} className="p-2 text-left align-top">
-                <Link href={`/doctor/${encodeURIComponent(d.id)}`} className="display text-lg underline-offset-4 hover:underline">{d.name.display}</Link>
+                <Link href={doctorHref(d.id)} className="display text-lg underline-offset-4 hover:underline">{d.name.display}</Link>
               </th>
             ))}
           </tr>

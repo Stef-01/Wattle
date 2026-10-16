@@ -8,12 +8,13 @@ import { Body, Divider, Fade, FigmaIcon, Pill, Pills, Screen, SourceRow, TopBar 
 import { Space } from "./bits";
 import { niceSource, TIER_WORD, verifiedPublications } from "./facts";
 import { ContactCta } from "./ProfileClient";
+import { doctorSlug } from "@/src/data/doctor-slug";
 
 type Tab = "Conditions" | "Research" | "Training";
 
 export function Expertise({ doctor: d, labels }: { doctor: DoctorRecord; labels: Record<string, string> }) {
   const [tab, setTab] = useState<Tab>("Conditions");
-  const id = encodeURIComponent(d.id);
+  const id = doctorSlug(d.id);
   const pubs = verifiedPublications(d);
   const ids = d.conditions.value;
   const conditions = ids.length > 0 ? ids.map((c) => labels[c] ?? c.replace(/-/g, " ")) : d.focusTags.value;

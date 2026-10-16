@@ -2,6 +2,7 @@
 // Every screen is a 430-wide white phone frame; on desktop it sits centred on #1b1b1b.
 // Measurements come from the Rules frame (225:145) and P02/P04 design context.
 import Link from "next/link";
+import { asset } from "@/src/ui/base-path";
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, Heart, Home, User } from "./icons";
 
@@ -300,7 +301,7 @@ export function TabBar({ active }: { active: (typeof TABS)[number]["href"] }) {
 /** A downloaded Figma icon from public/figma/b, at its exported size. */
 export function FigmaIcon({ name, size, className }: { name: string; size: number; className?: string }) {
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={`/figma/b/${name}.svg`} alt="" width={size} height={size} aria-hidden="true" className={cx("block shrink-0", className)} />;
+  return <img src={asset(`/figma/b/${name}.svg`)} alt="" width={size} height={size} aria-hidden="true" className={cx("block shrink-0", className)} />;
 }
 
 /** Row with a 34 r6 icon box, 16/14 text and an 18 px external-link to the source (P07 Research, P09 reasons). */

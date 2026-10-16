@@ -1,46 +1,43 @@
-// POST /adjust/rerank. Reranks the Layer-1 survivors of a request with the person's "what matters
-// most" choices. Runs on the server because the discipline vocabulary is read from disk; the
-// rerank itself is `rerank(survivors, intent, weights, discipline)` from src/matching, pure over
-// the list it is given. Without survivors in the body the request is matched first (same call
-// as /api/match) and the survivors returned so the next adjustment needs no search.
-import { NextResponse } from "next/server";
+// Rerank the Layer-1 survivors of a request with the person's "what matters most" choices.
+// Pure over the roster and vocabulary it is handed: POST /adjust/rerank feeds it the server
+// roster, the static build feeds it src/generated/roster.json in the browser. Without survivors
+// in the body the request is matched first (same call as the search) and the survivors
+// returned so the next adjustment needs no search.
 import { match, rerank, shown, type HumanFitWeights } from "@/src/matching";
 import type { Intent, Ranked } from "@/src/matching/types";
-import { getDoctors, mvpDiscipline } from "@/src/data/providers";
-import { resolveSuburb } from "@/src/data/places";
-import type { Card, FitBand, SearchResponse } from "@/src/data/search-types";
-import type { DoctorRecord } from "@/src/data/types";
-import type { RerankBody, RerankOut } from "@/src/ui/screens/patient-b/rerank-client";
+import type { Discipline } from "@/src/disciplines/load";
+import { resolveSuburb } from "./places";
+import { toCard } from "./search-core";
+import type { Card, SearchResponse } from "./search-types";
+import type { DoctorRecord } from "./types";
 
-export const dynamic = "force-dynamic";
-
-const BAND: Record<Ranked["clinicalFit"]["band"], FitBand> = { documented: "strong", plausible: "some", listed: "listed" };
-
-function toCard(r: Ranked, byId: Map<string, DoctorRecord>): Card | null {
-  const doctor = byId.get(r.doctor.id);
-  if (!doctor) return null;
-  const card: Card = {
-    doctor,
-    headline: r.headline,
-    score: r.score,
-    clinicalFit: { band: BAND[r.clinicalFit.band] ?? "listed", reasons: r.clinicalFit.reasons.map((x) => x.text) },
-    humanFit: { score: r.humanFit.score, reasons: r.humanFit.reasons.map((x) => x.text), basis: r.humanFit.basis },
-    evidence: r.evidence,
-    missed: r.missed,
-  };
-  if (r.distanceKm !== undefined) card.distanceKm = r.distanceKm;
-  return card;
+export interface RerankEdits {
+  /** Drop survivors further than this with no telehealth. */
+  maxKm?: number;
+  telehealthOnly?: boolean;
+  anyGender?: boolean;
+  /** Closed human-fit labels to add to the intent (yaml `human_fit` ids). */
+  humanFit?: string[];
 }
 
-export async function POST(request: Request): Promise<Response> {
-  let body: RerankBody;
-  try {
-    body = (await request.json()) as RerankBody;
-  } catch {
-    return NextResponse.json({ error: "bad request" }, { status: 400 });
-  }
-  const doctors = await getDoctors();
-  const discipline = mvpDiscipline();
+export interface RerankBody {
+  ask?: { sentence: string; suburb: string; removed: string[] };
+  survivors?: Ranked[];
+  intent?: Intent;
+  weights?: Partial<HumanFitWeights>;
+  edits?: RerankEdits;
+  chips?: SearchResponse["chips"];
+}
+
+export interface RerankOut {
+  response: SearchResponse;
+  survivors: Ranked[];
+  intent: Intent;
+}
+
+export class RerankBadRequest extends Error {}
+
+export function rerankWith(doctors: readonly DoctorRecord[], discipline: Discipline, body: RerankBody): RerankOut {
   const byId = new Map(doctors.map((d) => [d.id, d]));
 
   let survivors: Ranked[] | undefined = Array.isArray(body.survivors) ? body.survivors : undefined;
@@ -51,7 +48,7 @@ export async function POST(request: Request): Promise<Response> {
 
   if (!survivors || !intent) {
     if (!body.ask || typeof body.ask.sentence !== "string" || !body.ask.sentence.trim()) {
-      return NextResponse.json({ error: "ask or survivors required" }, { status: 400 });
+      throw new RerankBadRequest("ask or survivors required");
     }
     const typed = (body.ask.suburb ?? "").trim();
     const place = typed ? resolveSuburb(typed, doctors) : null;
@@ -90,6 +87,5 @@ export async function POST(request: Request): Promise<Response> {
     place: placeOut,
     rosterSize: doctors.length,
   };
-  const out: RerankOut = { response, survivors: reranked, intent: edited };
-  return NextResponse.json(out);
+  return { response, survivors: reranked, intent: edited };
 }

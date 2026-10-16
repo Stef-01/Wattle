@@ -14,6 +14,7 @@ import { Space } from "./bits";
 const NO_PROFILE_REASON = "No personal profile yet";
 import { drShort, humanReason, sourceForReason } from "./facts";
 import { fetchRerank } from "./rerank-client";
+import { doctorSlug } from "@/src/data/doctor-slug";
 
 type State = { kind: "loading" } | { kind: "none" } | { kind: "absent" } | { kind: "ready"; ranked: Ranked };
 
@@ -61,7 +62,7 @@ export function Why({ doctor: d }: { doctor: DoctorRecord }) {
     };
   }, [d.id]);
 
-  const id = encodeURIComponent(d.id);
+  const id = doctorSlug(d.id);
   const clinical = state.kind === "ready" ? state.ranked.clinicalFit.reasons : [];
   const human = state.kind === "ready" ? state.ranked.humanFit : null;
   const personal = human ? human.reasons.filter((r) => r.text !== NO_PROFILE_REASON) : [];

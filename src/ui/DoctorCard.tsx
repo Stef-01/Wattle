@@ -2,6 +2,7 @@
 import Link from "next/link";
 import type { Card } from "@/src/data/search-types";
 import { Band, ObservedBadge } from "./Badge";
+import { doctorHref } from "@/src/data/doctor-slug";
 
 const SPECIALTY: Record<string, string> = { psychiatry: "Psychiatrist", paediatrics: "Paediatrician", "obstetrics-gynaecology": "Obstetrician and gynaecologist" };
 
@@ -39,7 +40,7 @@ export function DoctorCard({
         </div>
         <div>
           <h2 id={`${d.id}-name`} className="text-2xl">
-            <Link href={`/doctor/${encodeURIComponent(d.id)}`} className="underline-offset-4 hover:underline">
+            <Link href={doctorHref(d.id)} className="underline-offset-4 hover:underline">
               {d.name.display}
             </Link>
           </h2>
@@ -67,7 +68,7 @@ export function DoctorCard({
       </p>
 
       <div className="flex flex-wrap gap-2">
-        <Link href={`/doctor/${encodeURIComponent(d.id)}`} className="flex min-h-11 items-center rounded-full bg-foliage px-4 text-sm font-medium text-paper">
+        <Link href={doctorHref(d.id)} className="flex min-h-11 items-center rounded-full bg-foliage px-4 text-sm font-medium text-paper">
           Profile
         </Link>
         <button type="button" onClick={onSave} aria-pressed={saved} className={`min-h-11 rounded-full border px-4 text-sm ${saved ? "border-foliage bg-mist text-foliage" : "border-line"}`}>

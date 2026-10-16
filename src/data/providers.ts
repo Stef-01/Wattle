@@ -299,6 +299,11 @@ function loadPersonal(): Map<string, PersonalProfile> {
 
 let cache: DoctorRecord[] | null = null;
 
+/** The file-backed roster exactly as getDoctors() serves it without Supabase; scripts/build-static-data.mts writes it to src/generated/roster.json. */
+export function buildRoster(): DoctorRecord[] {
+  return withIllustrative(fromJsonl());
+}
+
 function fromJsonl(): DoctorRecord[] {
   const discipline = mvpDiscipline();
   const pubs = loadPublications();
@@ -427,7 +432,7 @@ export async function getDoctors(): Promise<DoctorRecord[]> {
     const rows = await fromSupabase(env);
     if (rows) return withIllustrative(rows);
   }
-  if (!cache) cache = withIllustrative(fromJsonl());
+  if (!cache) cache = buildRoster();
   return cache;
 }
 
