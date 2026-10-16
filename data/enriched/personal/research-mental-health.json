@@ -1,0 +1,449 @@
+{
+  "category": "mental-health",
+  "researched_at": "2026-10-16",
+  "doctors": [
+    {
+      "name": "Dr Chris Soo",
+      "given": "Chris",
+      "family": "Soo",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "The ADHD Doctor (Robina Specialist Suites)",
+        "address": "Suite 5/18 Campus Crescent, Robina QLD 4226",
+        "suburb": "Robina",
+        "postcode": "4226",
+        "phone": "1800 343 191",
+        "website": "https://theadhddoctor.com.au/"
+      },
+      "telehealth": "some",
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": 20,
+      "conditions": ["adhd", "autism", "anxiety", "depression", "trauma", "sleep"],
+      "populations": ["child", "adolescent", "adult"],
+      "focus_tags": ["ADHD and AuDHD across the lifespan", "complex presentations", "medication troubleshooting", "neuroaffirming care", "one-clinician continuity"],
+      "personal": {
+        "philosophy_of_care": "Evidence-based, person-centred, neuroaffirming ADHD care from a clinician who combines deep expertise with genuine kindness and takes the time to work out what is really going on. The practice is built around a single principle: getting the diagnosis right, because the right diagnosis changes everything.",
+        "why_medicine": null,
+        "communication_approach": "Careful listening, clear explanations and calm clinical reasoning; one clinician the whole way through rather than being handed around; collaborative conversations so patients understand the why, not just the what.",
+        "communication": ["lived-experience", "neurodiversity-affirming", "evidence-based", "holistic", "collaborative", "listens", "long-appointments"],
+        "lived_experience": "Describes himself as a lived-experience AuDHD clinician; says the practice aims to deliver care the way the team would want it themselves.",
+        "hobbies": [],
+        "outside_medicine": "Adjunct Associate Professor at Bond University and Adjunct Senior Lecturer at Griffith University; founder of the clinician-education platform ADHD Clinical Mastery; regular speaker on ABC Radio, HealthEd and RACGP conferences.",
+        "quotes": [
+          {
+            "text": "He is a lived-experience AuDHD clinician with particular expertise in supporting people with ADHD and AuDHD, including complex presentations where diagnostic clarity, comorbidity, and safe treatment really matter.",
+            "about": "lived"
+          },
+          {
+            "text": "We understand what you're going through and aim to deliver care the way we'd want it ourselves — respectful, collaborative, and practical",
+            "about": "approach"
+          },
+          {
+            "text": "You bring your story. We bring the structure to make sense of it.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://theadhddoctor.com.au/",
+        "page_title": "The ADHD Doctor",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 4
+    },
+    {
+      "name": "Dr Richard Hostiadi",
+      "given": "Richard",
+      "family": "Hostiadi",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "Nurtured Thoughts",
+        "address": "4 Rakeevan Road, Graceville QLD 4075",
+        "suburb": "Graceville",
+        "postcode": "4075",
+        "phone": "(07) 3056 0921",
+        "website": "https://www.nurturedthoughtspsychology.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": 1950,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": null,
+      "conditions": ["adhd", "depression", "anxiety"],
+      "populations": ["adult"],
+      "focus_tags": ["adult ADHD assessment and ongoing management", "men's mental health", "occupational health and ADHD in working adults", "lifestyle medicine for ADHD"],
+      "personal": {
+        "philosophy_of_care": "A lifestyle-medicine and occupational-health lens on adult ADHD, shaped by years as a registered nurse, a claims-industry worker and a Navy Reserve medical officer who understands high-pressure and physically demanding jobs.",
+        "why_medicine": "Came to medicine after several years as a Registered Nurse at St Vincent's Hospital in Sydney and earlier work in workers' compensation, life insurance and disability claims.",
+        "communication_approach": null,
+        "communication": ["holistic", "evidence-based"],
+        "lived_experience": null,
+        "hobbies": ["Running half and full marathons", "HYROX events and obstacle course races", "Trekked to Everest Base Camp", "Time with the family dog"],
+        "outside_medicine": "Lives with his wife and two young boys; Medical Officer in the Royal Australian Navy Reserve.",
+        "quotes": [
+          {
+            "text": "Outside medicine, Richard enjoys maintaining an active lifestyle and has completed multiple half marathons, full marathons, HYROX events, obstacle course races and the Everest Base Camp trek.",
+            "about": "hobbies"
+          },
+          {
+            "text": "He lives with his wife and two young boys and enjoys spending time with his family and their dog.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Before studying medicine, Richard worked as a Registered Nurse at St Vincent's Hospital in Sydney across a range of clinical areas for several years.",
+            "about": "why"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.nurturedthoughtspsychology.com.au/practitioners/richard-hostiadi",
+        "page_title": "Nurtured Thoughts - Dr Richard Hostiadi",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 4
+    },
+    {
+      "name": "Dr Sally McLeod",
+      "given": "Sally",
+      "family": "McLeod",
+      "specialty": "general-practice",
+      "gender": "woman",
+      "practice": {
+        "name": "Nurtured Thoughts",
+        "address": "4 Rakeevan Road, Graceville QLD 4075",
+        "suburb": "Graceville",
+        "postcode": "4075",
+        "phone": "(07) 3056 0921",
+        "website": "https://www.nurturedthoughtspsychology.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": 1950,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": 10,
+      "conditions": ["adhd", "autism", "anxiety", "depression", "menopause"],
+      "populations": ["adolescent", "adult"],
+      "focus_tags": ["ADHD in women and girls, including late diagnosis", "late-identified ADHD in professionals", "perimenopause and ADHD", "autism, anxiety and depression in neurodivergence"],
+      "personal": {
+        "philosophy_of_care": "Passionate about helping adolescents and adults better understand how their brain works, through thorough evidence-based assessments and practical, individualised plans built together with the patient.",
+        "why_medicine": null,
+        "communication_approach": "Warm and approachable; takes time to listen and aims for a supportive, non-judgemental space where patients feel genuinely heard.",
+        "communication": ["listens", "collaborative", "evidence-based", "gentle", "neurodiversity-affirming"],
+        "lived_experience": null,
+        "hobbies": ["Reading", "Music", "Bushwalking", "Camping", "Travelling to remote parts of Australia"],
+        "outside_medicine": "Mother of three sons; University of Queensland graduate who trained at the Mater in South Brisbane.",
+        "quotes": [
+          {
+            "text": "Outside of medicine, Sally enjoys spending time with her three sons. She loves reading, music, and the outdoors, particularly bushwalking, camping and travelling to remote parts of Australia.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Sally has a special interest in ADHD and is passionate about helping adolescents and adults better understand how their brain works.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.nurturedthoughtspsychology.com.au/practitioners/sally-mcleod",
+        "page_title": "Nurtured Thoughts - Dr Sally McLeod",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Parisa Loxham",
+      "given": "Parisa",
+      "family": "Loxham",
+      "specialty": "psychiatry",
+      "gender": "woman",
+      "practice": {
+        "name": "The Primrose Clinic",
+        "address": "M3-96, The Wharf Mooloolaba, 123 Parkyn Parade, Mooloolaba QLD 4557",
+        "suburb": "Mooloolaba",
+        "postcode": "4557",
+        "phone": "0485 931 066",
+        "website": "https://primroseclinic.com.au/"
+      },
+      "telehealth": "only",
+      "referral_required": true,
+      "fee_initial_dollars": 880,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": null,
+      "conditions": ["adhd", "autism", "anxiety", "depression", "perinatal-mh", "menopause"],
+      "populations": ["child", "adolescent", "adult", "perinatal"],
+      "focus_tags": ["ADHD and autism across all ages", "women's health psychiatry", "child psychiatry", "athletes and high-performance settings", "burnout"],
+      "personal": {
+        "philosophy_of_care": "Quality evidence-based care through a kind, whole-person approach, integrating medication with psychodynamic insight and practical, lifestyle-informed guidance tailored to real life.",
+        "why_medicine": "Co-founded Primrose with another psychiatrist and mother after seeing how mental health needs around perinatal care, reproductive transitions, midlife and the pressures of parenthood and work are too often overlooked.",
+        "communication_approach": "The clinic promises to listen, avoid rushing, and take time to truly understand the whole person, with longer consultations so patients never feel rushed.",
+        "communication": ["holistic", "evidence-based", "listens", "long-appointments", "gentle"],
+        "lived_experience": "A mother; the practice was founded by two psychiatrists who are mothers.",
+        "hobbies": ["Yoga (200-hour Yoga Alliance teacher training, Hawaii)", "CrossFit (Level 1 Trainer)", "Personal training (certified in London)"],
+        "outside_medicine": "Trained in the UK before specialising in Brisbane; member of the International Society for Sports Psychiatry and a Fellow of the Australian College of Nutritional and Environmental Medicine.",
+        "quotes": [
+          {
+            "text": "Outside of medicine, her background in movement and mind–body disciplines includes: 200-hour Yoga Teacher Training – Yoga Alliance (Hawaii), CrossFit Level 1 Trainer MD Certification (USA), Personal Trainer Certification (London)",
+            "about": "hobbies"
+          },
+          {
+            "text": "Primrose was founded by two female psychiatrists and mothers who witnessed firsthand how mental health needs — particularly during perinatal care, reproductive transitions, midlife changes, and the pressures of parenthood and work — are too often overlooked.",
+            "about": "why"
+          },
+          {
+            "text": "We listen, avoid rushing, and work with you on various concerns, including women's health psychiatry, ADHD, autism, and both child and adult psychiatry.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://primroseclinic.com.au/",
+        "page_title": "Telehealth Psychiatry - The Primrose Clinic",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Bonnie Law",
+      "given": "Bonnie",
+      "family": "Law",
+      "specialty": "psychiatry",
+      "gender": "woman",
+      "practice": {
+        "name": "The Primrose Clinic",
+        "address": "M3-96, The Wharf Mooloolaba, 123 Parkyn Parade, Mooloolaba QLD 4557",
+        "suburb": "Mooloolaba",
+        "postcode": "4557",
+        "phone": "0485 931 066",
+        "website": "https://primroseclinic.com.au/"
+      },
+      "telehealth": "only",
+      "referral_required": true,
+      "fee_initial_dollars": 880,
+      "taking_new_patients": true,
+      "languages": ["English", "Cantonese", "Mandarin (understands)"],
+      "years_in_specialty": null,
+      "conditions": ["adhd", "autism", "anxiety", "depression", "substance-use", "perinatal-mh"],
+      "populations": ["adult", "perinatal"],
+      "focus_tags": ["adult psychiatry", "women's health psychiatry", "ADHD", "burnout", "psychiatrist-led workplace advisory"],
+      "personal": {
+        "philosophy_of_care": "Compassionate, patient-focused telehealth psychiatry that invests time in understanding the whole person, their body and their life, with consistent long-term therapeutic relationships.",
+        "why_medicine": "Co-founded Primrose as one of two psychiatrists and mothers who saw how mental health needs through parenthood, midlife and work pressures are often overlooked.",
+        "communication_approach": null,
+        "communication": ["listens", "long-appointments", "holistic", "research-active", "culturally-safe"],
+        "lived_experience": "A mother; co-founded the clinic on the strength of that experience.",
+        "hobbies": ["Writing poetry", "Decluttering her home"],
+        "outside_medicine": "Speaks fluent Cantonese and understands Mandarin; has published research on alcohol dependence treatment and on speech after stroke.",
+        "quotes": [
+          {
+            "text": "In her spare time, she enjoys writing poetry and decluttering her home—a calming balance between creativity and order.",
+            "about": "hobbies"
+          },
+          {
+            "text": "She speaks fluent Cantonese and is able to understand Mandarin Chinese.",
+            "about": "lived"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://primroseclinic.com.au/",
+        "page_title": "Telehealth Psychiatry - The Primrose Clinic",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Rebecca Kriukelis",
+      "given": "Rebecca",
+      "family": "Kriukelis",
+      "specialty": "paediatrics",
+      "gender": "woman",
+      "practice": {
+        "name": "Child Development Network",
+        "address": "Suite D, Level 2, 19 Lang Parade, Milton QLD 4064",
+        "suburb": "Milton",
+        "postcode": "4064",
+        "phone": "(07) 3369 3369",
+        "website": "https://cd.net.au/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": null,
+      "conditions": ["adhd", "autism"],
+      "populations": ["child", "adolescent"],
+      "focus_tags": ["developmental delay and behavioural difficulties in early childhood", "autism spectrum disorder", "ADHD", "specific learning disorders"],
+      "personal": {
+        "philosophy_of_care": "Passionate about helping children from infancy to adolescence and working alongside families to support each child's health, development and wellbeing; prioritises getting to know her patients.",
+        "why_medicine": "Came to paediatrics via a pharmacy degree at UQ and medicine at Griffith, then dual fellowship training in developmental-behavioural and general paediatrics across South-East Queensland hospitals.",
+        "communication_approach": "Draws on her own parenting to bring empathy to families and the everyday demands and broader hopes parents hold for their children.",
+        "communication": ["holistic", "listens", "collaborative"],
+        "lived_experience": "Mother of three; says her own experience of parenting gives her greater empathy for the families she works with.",
+        "hobbies": [],
+        "outside_medicine": "Mother of three children.",
+        "quotes": [
+          {
+            "text": "As a mother of three children, I understand the everyday demands associated with parenting as well as parents' broader hopes for their children.",
+            "about": "lived"
+          },
+          {
+            "text": "My own personal experience has given me greater empathy for the families I work with and the challenges of parenting in the world today.",
+            "about": "lived"
+          },
+          {
+            "text": "I prioritise getting to know my patients and find great fulfillment in seeing a child reach their full potential while supporting families on this journey.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://cd.net.au/our-team/developmental-paediatrics/dr-rebecca-kriukelis",
+        "page_title": "Dr Rebecca Kriukelis - Child Development Network",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Natalie Durup",
+      "given": "Natalie",
+      "family": "Durup",
+      "specialty": "paediatrics",
+      "gender": "woman",
+      "practice": {
+        "name": "Paeds in a Pod (Sippy Downs, Sunshine Coast)",
+        "address": "Correspondence: Suite 1, 12 Annerley Road, Woolloongabba QLD 4102; consults in Sippy Downs",
+        "suburb": "Sippy Downs",
+        "postcode": "4556",
+        "phone": "(07) 3177 2000",
+        "website": "https://paedsinapod.com.au/professional/dr-natalie-durup-paediatrician-sunshine-coast-developmental-autism-adhd-children-teenager-development/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": null,
+      "conditions": ["adhd", "autism", "trauma"],
+      "populations": ["child", "adolescent"],
+      "focus_tags": ["ADHD", "autism (ADOS certified)", "developmental delays and learning difficulties", "behavioural challenges", "complex cases involving trauma", "child protection"],
+      "personal": {
+        "philosophy_of_care": "A holistic, family-centred approach, working closely with parents, caregivers, educators and other health professionals to get the best outcome for each child.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": ["holistic", "collaborative", "research-active", "trauma-informed"],
+        "lived_experience": "Busy mum of two young children.",
+        "hobbies": ["Hiking", "Connecting with nature", "Painting"],
+        "outside_medicine": "Mum of two young children; trained at Otago and Starship Children's Hospital in New Zealand before moving to the Sunshine Coast.",
+        "quotes": [
+          {
+            "text": "Outside of her professional work, Dr Durup is a busy mum of two young children. She enjoys hiking, connecting with nature, and painting, balancing her professional dedication with family life.",
+            "about": "hobbies"
+          },
+          {
+            "text": "She takes a holistic, family-centred approach, working closely with parents, caregivers, educators, and other health professionals to achieve the best outcomes for each child.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://paedsinapod.com.au/professional/dr-natalie-durup-paediatrician-sunshine-coast-developmental-autism-adhd-children-teenager-development/",
+        "page_title": "Dr Natalie Durup - Paeds in a pod",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Shirley-Anne Oelofse",
+      "given": "Shirley-Anne",
+      "family": "Oelofse",
+      "specialty": "general-practice",
+      "gender": "woman",
+      "practice": {
+        "name": "The Gosforth Clinic",
+        "address": "Level 4, Ocean Central Building, 2 Ocean Street, Maroochydore QLD 4558",
+        "suburb": "Maroochydore",
+        "postcode": "4558",
+        "phone": "(07) 5451 1800",
+        "website": "https://gosforthclinic.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": 28,
+      "conditions": ["adhd", "autism"],
+      "populations": ["adult"],
+      "focus_tags": ["adult ADHD support, education and advice", "families with ADHD across the lifespan", "optimal brain functioning"],
+      "personal": {
+        "philosophy_of_care": "Supports, educates and advises adults diagnosed with ADHD, complementing the psychiatrist's clinical care, with a long-standing focus on whole families living with ADHD.",
+        "why_medicine": "Qualified as a GP in South Africa in 1998 and developed a special interest in families with ADHD, running an ADHD practice across the lifespan there for five years before moving to the Sunshine Coast in 2020.",
+        "communication_approach": null,
+        "communication": ["holistic"],
+        "lived_experience": null,
+        "hobbies": ["Bush walking", "Bird watching", "Reading", "Watching movies"],
+        "outside_medicine": "Moved from South Africa to the Sunshine Coast in January 2020; presents on ADHD to both professionals and consumers.",
+        "quotes": [
+          {
+            "text": "She enjoys bush walking, bird watching, reading and watching movies.",
+            "about": "hobbies"
+          },
+          {
+            "text": "She ran a medical practice for ADHD across the lifespan in South Africa for 5 years before moving to the Sunshine Coast in January 2020.",
+            "about": "why"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://gosforthclinic.com.au/our-practice/",
+        "page_title": "Our Practice - Gosforth Clinic",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    }
+  ],
+  "excluded_candidates": [
+    {
+      "name": "Dr Kieran Forster",
+      "specialty": "psychiatry",
+      "url": "https://drkieranforster.com.au/",
+      "reason": "Richest personal page found (visual artist exhibiting since 1995, pre-medicine background in fine art, law and philosophy, 'depth process' psychotherapy practice) but the site states he is currently not accepting new patients.",
+      "personal_richness": 5
+    },
+    {
+      "name": "Dr Renee Denham",
+      "specialty": "psychiatry",
+      "url": "https://www.goodgroupclinic.au/dr-renee-denham",
+      "reason": "Not currently accepting new patients or referrals; bio is professional only."
+    },
+    {
+      "name": "Dr Sean Tracey",
+      "specialty": "psychiatry",
+      "url": "https://www.goodgroupclinic.au/dr-sean-tracey",
+      "reason": "No capacity for new referrals; bio is professional only."
+    },
+    {
+      "name": "Dr Matt Harvey",
+      "specialty": "general-practice",
+      "url": "https://www.drmattharvey.com.au/",
+      "reason": "Neurodivergent-focused specialist GP in Brisbane, but his site says the clinic has closed for health reasons."
+    }
+  ]
+}
