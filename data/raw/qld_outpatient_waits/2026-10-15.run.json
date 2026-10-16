@@ -1,0 +1,113 @@
+{
+  "source": "qld_outpatient_waits",
+  "started_at": "2026-10-15T22:29:30+00:00",
+  "fetches": [
+    {
+      "url": "https://www.data.qld.gov.au/dataset/elective-surgery",
+      "dataset": "elective-surgery",
+      "licence": "CC-BY-4.0",
+      "by_specialty_resources": 20
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/49a1a9ef-ca67-4568-8b90-b08cb9c94bd5/download/es_quarterly_byspecialty_sep25.csv",
+      "title": "September 2025 – Elective Surgery by Speciality – Summary 2",
+      "period": "2025-09",
+      "rows": 303
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/8e360cf9-4547-417d-a9fe-1e3d34d6a6d9/download/es_quarterly_byspecialty_jun25.csv",
+      "title": "June 2025 – Elective Surgery by Speciality – Summary 2",
+      "period": "2025-06",
+      "rows": 306
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/f025082b-2805-4261-a591-be0c50f8c425/download/es_quarterly_byspecialty_mar25.csv",
+      "title": "March 2025 – Elective Surgery by Speciality – Summary 2",
+      "period": "2025-03",
+      "rows": 304
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/ff8d1c4d-e7f1-4656-afb9-fe6b7059e82c/download/es_quarterly_byspecialty_dec24.csv",
+      "title": "December 2024 – Elective Surgery by Speciality – Summary 2",
+      "period": "2024-12",
+      "rows": 635
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/0c287203-2773-4fef-b014-deafac4a06ec/download/es_quarterly2sep24.csv",
+      "title": "September 2024 – Elective Surgery by Speciality – Summary 2",
+      "period": "2024-09",
+      "rows": 635
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/c7947da0-4e85-42a8-9167-a807dadad966/download/es_quarterly2jun24.csv",
+      "title": "June 2024 – Elective Surgery by Speciality – Summary 2",
+      "period": "2024-06",
+      "rows": 635
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/15056867-6258-4cb0-9005-f5955592d568/download/es_quarterly2mar24.csv",
+      "title": "March 2024 – Elective Surgery by Speciality – Summary 2",
+      "period": "2024-03",
+      "rows": 647
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/8a8420ed-30c8-4b15-a7ba-b1af7fa6bbe3/download/es_quarterly2dec23.csv",
+      "title": "December 2023 – Elective Surgery by Speciality– Summary 2",
+      "period": "2023-12",
+      "rows": 647
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/ce82d20d-8cd3-409e-855d-6f50cd8c68d4/download/es_quarterly2sep23.csv",
+      "title": "September 2023 – Elective Surgery by Speciality – Summary 2",
+      "period": "2023-09",
+      "rows": 647
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/1b9b9f22-8986-4769-ac0c-70c69082648c/download/es_quarterly2jun23.csv",
+      "title": "June 2023 – Elective Surgery by Speciality – Summary 2",
+      "period": "2023-06",
+      "rows": 647
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/184290b7-4e29-4c68-99f6-c1c5ad879d7c/download/es_quarterly2mar23.csv",
+      "title": "March 2023 – Elective Surgery by Speciality – Summary 2",
+      "period": "2023-03",
+      "rows": 647
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/6ce4723e-9ad0-475f-ab53-326e8a95cea2/download/es_quarterly2sep22.csv",
+      "title": "September 2022 – Elective Surgery by Speciality – Summary 2",
+      "period": "2022-09",
+      "rows": 647
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T22:29:44+00:00",
+  "records": 6700,
+  "output": "data/raw/qld_outpatient_waits/2026-10-15.jsonl",
+  "output_sha256": "4f7084f9effbb417a3f96dc579ccd214fc1a72183dfb8ddb90e9b5cec3fafb19",
+  "files_parsed": 12,
+  "xls_skipped": [
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/9077730a-a7fd-4216-b221-8fec1e41be14/download/es_quarterly2dec22.xlsx",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/7ac7a993-2efe-4e44-9944-4debc628955f/download/esquarterly2jun22.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/fd1ce959-293c-43a2-b519-d2af40819ff1/download/esquarterly2mar22.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/f307e2d2-3830-4172-8b8b-7fbb98064056/download/esquarterly2dec21.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/5071ac86-55bb-4e86-b504-c09465617c2f/download/esquarterly2sep21.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/240955db-f3f2-40d0-a940-bd9947f75397/download/esquarterly2jun21.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/ac6425fd-2029-4177-92a6-bb498e3ebf04/download/esquarterly2mar21.xls",
+    "https://www.data.qld.gov.au/dataset/d660d925-400f-42ba-8245-a08bfc18abf4/resource/f23a5798-25a2-4658-9471-aac6e6ee87e1/download/esmonthly2dec20.xls"
+  ],
+  "not_published": {
+    "specialist_outpatient_waits_by_hospital_by_specialty": {
+      "status": "not published as open data",
+      "where_it_exists": "Power BI embeds on www.performance.health.qld.gov.au (statewide report 7be54f8d-7ad7-4c87-88f3-18ca98eda29d; per-facility report 47b84e59-33ff-47eb-8205-ccbb15197067)",
+      "ckan_search": "package_search q='specialist outpatient' -> 0 packages (2026-10-15); q='outpatient' -> 2 unrelated packages",
+      "page": "https://www.performance.health.qld.gov.au/statewide-performance/planned-care/specialist-appointments-performance",
+      "next_step": "request the quarterly specialist outpatient extract from Queensland Health Statistical Services Branch (the public report is derived from the same extract)"
+    }
+  },
+  "robots": {
+    "www.data.qld.gov.au": "User-agent: * | Disallow: /dataset/rate/ | Disallow: /dataset/*/history | Disallow: /api/ | Disallow: /en/storage/ | Disallow: /storage/ | Disallow: /_tracking | Disallow: /ar/ | Disallow: /bg/ | Disallow: /ca | Disallow: /cs_CZ/ | Disallow: /da_DK/"
+  },
+  "user_agent": "WattleHealthBot/0.1 (+https://github.com/Stef-01/Wattle-Health)"
+}

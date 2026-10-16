@@ -30,7 +30,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _base import JsonlWriter, arg, log, now_iso, squash, strip_tags  # noqa: E402
-from qld_common import LEGAL_DATA_QLD, fetch, fetch_text, robots_quotes  # noqa: E402
+from qld_common import LEGAL_DATA_QLD, dataset_resources, decode_csv, fetch, robots_quotes  # noqa: E402
 
 SOURCE = "qld_outpatient_waits"
 ES_DATASET = "https://www.data.qld.gov.au/dataset/elective-surgery"
@@ -51,27 +51,24 @@ MONTHS = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, "jul": 7, 
 
 def resources() -> list[dict[str, str]]:
     """By-specialty quarterly CSV/XLS resources on the elective-surgery dataset page."""
-    page = fetch_text(ES_DATASET)
+    ds = dataset_resources(ES_DATASET)
     out = []
-    for m in re.finditer(r'<a[^>]+href="(/dataset/[0-9a-f-]+/resource/[0-9a-f-]+/download/([^"]+))"[^>]*>', page):
-        href, fname = m.group(1), m.group(2).lower()
-        title = re.search(r'title="([^"]*)"', m.group(0))
-        title = squash(strip_tags(title.group(1))) if title else fname
-        if "_desc" in fname or "description" in title.lower():
+    for r in ds["resources"]:
+        fname = (r["url"] or "").rsplit("/", 1)[-1].lower()
+        title = r["name"].lower()
+        if "_desc" in fname or "description" in title:
             continue
-        by_specialty = "speciality" in title.lower() or "specialty" in title.lower() or "summary 2" in title.lower() or re.search(r"quarterly2|byspecialty", fname)
-        if not by_specialty:
+        if not ("speciality" in title or "specialty" in title or "summary 2" in title or re.search(r"quarterly2|byspecialty", fname)):
             continue
         mm = re.search(r"(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[-_ ]?(\d{2})(?!\d)", fname)
         period = f"20{mm.group(2)}-{MONTHS[mm.group(1)]:02d}" if mm else None
-        out.append({"url": "https://www.data.qld.gov.au" + href, "title": title, "file": fname, "period": period})
+        out.append({"url": r["url"], "title": r["name"], "file": fname, "period": period, "format": r["format"], "licence": ds["licence"]})
     out.sort(key=lambda r: r["period"] or "", reverse=True)
     return out
 
 
 def parse_csv(blob: bytes) -> list[dict[str, str]]:
-    text = blob.decode("utf-8-sig", "replace")
-    return [{squash(k): squash(v) for k, v in row.items() if k} for row in csv.DictReader(io.StringIO(text))]
+    return [{squash(k): squash(v) for k, v in row.items() if k} for row in csv.DictReader(io.StringIO(decode_csv(blob)))]
 
 
 def to_float(s: str | None) -> float | None:
@@ -94,8 +91,8 @@ def main() -> int:
     n_files = 0
     skipped = []
     for r in res:
-        if not r["file"].endswith(".csv"):
-            skipped.append(r["url"])  # 2020-21 quarters are .xls (binary BIFF); not parsed with stdlib
+        if r["format"] != "CSV" and not r["file"].endswith(".csv"):
+            skipped.append(r["url"])  # 2020-22 quarters are .xls/.xlsx; the CSV series starts March 2023
             continue
         try:
             rows = parse_csv(fetch(r["url"]))

@@ -1,0 +1,76 @@
+{
+  "source": "qld_health_facilities",
+  "started_at": "2026-10-15T22:30:14+00:00",
+  "fetches": [
+    {
+      "url": "https://www.data.qld.gov.au/datastore/dump/ee37a52f-0874-4023-91f5-6a640f4f3712?format=json",
+      "dataset": "hospital-performance",
+      "licence": "https://creativecommons.org/licenses/by/4.0/",
+      "rows": 40
+    },
+    {
+      "url": "https://www.data.qld.gov.au/dataset/21091016-bb06-4032-abf4-4608be0871ff/resource/7de61fec-6670-4cad-a163-d955f0102cef/download/queensland_public_hospitals.xlsx",
+      "dataset": "queensland-public-hospitals",
+      "licence": "https://creativecommons.org/licenses/by/4.0/",
+      "rows": 197
+    },
+    {
+      "url": "https://www.health.qld.gov.au/services",
+      "facilities_listed": 259
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T22:34:04+00:00",
+  "records": 435,
+  "output": "data/raw/qld_health_facilities/2026-10-15.jsonl",
+  "output_sha256": "2ceb1b493d6f19b4dd63ace05bec9558ca8e4a3e166666bf193f044bd9813073",
+  "source_counts": {
+    "squiz_datastore_facilities": 356,
+    "hospital_performance_facilities": 40,
+    "queensland_public_hospitals_2021": 190,
+    "services_index": 259,
+    "services_index_pages_fetched": 30
+  },
+  "merged_facilities": 435,
+  "field_fill": {
+    "address": 393,
+    "postcode": 393,
+    "lat": 363,
+    "phone": 294,
+    "website": 410,
+    "services": 316,
+    "facility_code": 262
+  },
+  "hhs_counts": {
+    "cairns-and-hinterland": 36,
+    "central-queensland": 23,
+    "central-west": 24,
+    "childrens-health-queensland": 51,
+    "darling-downs": 35,
+    "gold-coast": 8,
+    "mackay": 25,
+    "metro-north": 17,
+    "metro-south": 31,
+    "north-west": 23,
+    "south-west": 24,
+    "sunshine-coast": 27,
+    "torres-and-cape": 39,
+    "townsville": 25,
+    "unknown": 0,
+    "west-moreton": 28,
+    "wide-bay": 17
+  },
+  "robots": {
+    "au-e375edfd.datastore.squiz.cloud": "robots.txt HTTP 404 (no robots file; treated as allow)",
+    "www.data.qld.gov.au": "User-agent: * | Disallow: /dataset/rate/ | Disallow: /dataset/*/history | Disallow: /api/ | Disallow: /en/storage/ | Disallow: /storage/ | Disallow: /_tracking | Disallow: /ar/ | Disallow: /bg/ | Disallow: /ca | Disallow: /cs_CZ/ | Disallow: /da_DK/",
+    "www.health.qld.gov.au": "User-agent: * | Disallow: /*results_per_page= | Disallow: /search | Disallow: /dxp-search-integration/",
+    "metronorth.health.qld.gov.au": "User-agent: * | Crawl-delay: 10 | Disallow: /wp-admin/ | Allow: /wp-admin/admin-ajax.php | Disallow: /wp-json/",
+    "www.goldcoast.health.qld.gov.au": "User-Agent: * | Allow: / | Disallow: /admin/ | Disallow: /dev/ | Disallow: /studio/ | Disallow: /api/ | Sitemap: https://www.goldcoast.health.qld.gov.au/sitemap.xml"
+  },
+  "user_agent": "WattleHealthBot/0.1 (+https://github.com/Stef-01/Wattle-Health)",
+  "licences": {
+    "data.qld.gov.au datasets": "CC BY 4.0",
+    "health.qld.gov.au / HHS sites": "CC BY-ND 4.0 (facts only)",
+    "squiz datastore JSON": "same content as HHS sites (facts only)"
+  }
+}

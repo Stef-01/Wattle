@@ -30,9 +30,9 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _base import AdapterError, JsonlWriter, arg, log, now_iso, sha256_file, squash, strip_tags  # noqa: E402
 from qld_common import (  # noqa: E402
-    HHS_ID_TO_HOST, HHS_ID_TO_NAME, LEGAL_DATASTORE, LEGAL_DATA_QLD, LEGAL_HEALTH_QLD, address_in, datastore,
-    facility_type, fetch, fetch_json, fetch_text, hhs_from_host, hhs_from_name, latlng_in, norm_name, phone_in,
-    robots_quotes,
+    HHS_ID_TO_HOST, HHS_ID_TO_NAME, LEGAL_DATASTORE, LEGAL_DATA_QLD, LEGAL_HEALTH_QLD, address_in, dataset_resources,
+    datastore, facility_type, fetch, fetch_json, fetch_text, hhs_from_host, hhs_from_name, latlng_in, norm_name,
+    phone_in, robots_quotes,
 )
 
 SOURCE = "qld_health_facilities"
@@ -84,31 +84,16 @@ def from_datastore() -> list[dict[str, Any]]:
 
 # ----------------------------------------------------------------- source 2: hospital-performance
 
-def _dataset_resources(dataset_url: str) -> dict[str, str]:
-    """{resource title: absolute download/dump URL} from a data.qld.gov.au dataset page."""
-    page = fetch_text(dataset_url)
-    out: dict[str, str] = {}
-    for m in re.finditer(r'<a[^>]+href="([^"]+)"[^>]*>', page):
-        href = m.group(1)
-        if "/download/" in href or "/datastore/dump/" in href:
-            title = re.search(r'title="([^"]*)"', m.group(0))
-            key = squash(strip_tags(title.group(1))) if title else href.rsplit("/", 1)[-1]
-            out[key] = href if href.startswith("http") else "https://www.data.qld.gov.au" + href
-    # datastore dumps are listed as /datastore/dump/<rid> next to the resource; map by resource title
-    for m in re.finditer(r'href="/dataset/[^"]*?/resource/([0-9a-f-]{36})"[^>]*title="([^"]*)"', page):
-        rid, title = m.group(1), squash(strip_tags(m.group(2)))
-        out.setdefault(title, f"https://www.data.qld.gov.au/datastore/dump/{rid}")
-    return out
-
-
 def from_hospital_performance(w: JsonlWriter) -> list[dict[str, Any]]:
-    res = _dataset_resources(HP_DATASET)
-    url = res.get("Facilities") or "https://www.data.qld.gov.au/datastore/dump/ee37a52f-0874-4023-91f5-6a640f4f3712"
+    ds = dataset_resources(HP_DATASET)
+    url = next((r["url"] for r in ds["resources"] if r["name"] == "Facilities"), None)
+    if not url:
+        raise AdapterError("hospital-performance: no 'Facilities' resource on dataset page")
     url = url.split("?")[0] + "?format=json"
     data = fetch_json(url)
     fields = [f["id"] for f in data["fields"]]
     rows = [dict(zip(fields, r)) for r in data["records"]]
-    w.note_fetch(url, dataset="hospital-performance", licence="CC-BY-4.0", rows=len(rows))
+    w.note_fetch(url, dataset="hospital-performance", licence=ds["licence"], rows=len(rows))
     out = []
     for r in rows:
         addr = address_in(r.get("Address") or "")
@@ -153,13 +138,13 @@ def _xlsx_rows(blob: bytes) -> list[list[str]]:
 
 
 def from_public_hospitals(w: JsonlWriter) -> list[dict[str, Any]]:
-    res = _dataset_resources(QPH_DATASET)
-    url = next((u for t, u in res.items() if u.lower().endswith(".xlsx")), None)
+    ds = dataset_resources(QPH_DATASET)
+    url = next((r["url"] for r in ds["resources"] if r["format"] == "XLSX"), None)
     if not url:
         raise AdapterError("queensland-public-hospitals: no xlsx resource on dataset page")
     blob = fetch(url)
     rows = _xlsx_rows(blob)
-    w.note_fetch(url, dataset="queensland-public-hospitals", licence="CC-BY-4.0", rows=len(rows))
+    w.note_fetch(url, dataset="queensland-public-hospitals", licence=ds["licence"], rows=len(rows))
     out = []
     hdr_seen = False
     for r in rows:
@@ -245,8 +230,11 @@ def merge(groups: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
 
     for group in groups:
         for rec in group:
-            code = rec.get("facility_code")
-            code = code.zfill(5) if code and code.isdigit() else code
+            # Queensland facility codes are numeric (zero-padded to 5). The datastore fills the
+            # field with placeholders ("NASF", "NA", "SF-NA", "1") for non-hospital sites; those
+            # are not keys.
+            code = (rec.get("facility_code") or "").strip()
+            code = code.zfill(5) if code.isdigit() and len(code) >= 2 else None
             rec["facility_code"] = code
             key_n = norm_name(rec["name"])
             target = (by_code.get(code) if code else None) or by_name.get(key_n)
@@ -258,7 +246,8 @@ def merge(groups: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
                 by_code[code] = target
             by_name.setdefault(key_n, target)
     for t in merged:
-        t.setdefault("facility_type", None)
+        for k in ("hhs", "hhs_name", "facility_type", "address", "suburb", "postcode", "lat", "lng", "phone", "website"):
+            t.setdefault(k, None)
         if not t["facility_type"]:
             t["facility_type"] = facility_type(t["name"])
         if t.get("hhs") and not t.get("hhs_name"):

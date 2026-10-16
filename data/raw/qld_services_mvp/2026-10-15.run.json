@@ -1,0 +1,64 @@
+{
+  "source": "qld_services_mvp",
+  "started_at": "2026-10-15T22:24:22+00:00",
+  "fetches": [
+    {
+      "url": "https://au-e375edfd.datastore.squiz.cloud/service-locations",
+      "mvp_locations": 313
+    },
+    {
+      "url": "https://www.health.qld.gov.au/clinical-practice/referrals/statewide-specialist-services/persistent-pain-management/persistent-pain-clinics",
+      "services": 6
+    },
+    {
+      "url": "https://www.childrens.health.qld.gov.au/__data/assets/file/0025/191347/cymhs-statewide-catchment-list.csv",
+      "rows": 2156,
+      "clinics": 52,
+      "source_last_updated": "March 2026"
+    }
+  ],
+  "failures": [],
+  "finished_at": "2026-10-15T22:25:28+00:00",
+  "records": 382,
+  "output": "data/raw/qld_services_mvp/2026-10-15.jsonl",
+  "output_sha256": "7f690f9b38070c8f8a6a675bb8ecd0cd3e886c7923a11779b792888262ab2421",
+  "by_category": {
+    "child_development": 41,
+    "cymhs": 157,
+    "endometriosis_pelvic_pain": 54,
+    "menopause": 93,
+    "perinatal_mental_health": 12,
+    "persistent_pain": 25
+  },
+  "field_fill": {
+    "address": 324,
+    "lat": 316,
+    "phone": 382,
+    "referral": 356,
+    "opening_hours": 292,
+    "website": 382
+  },
+  "not_published": {
+    "me_cfs": {
+      "status": "no Queensland Health clinical service published",
+      "page": "https://www.health.qld.gov.au/public-health/topics/neurological-gateway/mecfs",
+      "what_the_page_lists": "Emerge Australia 1800 865 321 and ME/CFS Australia (charities); HHS referral pages route ME/CFS to General Medicine 'complex or undifferentiated medical problems'"
+    },
+    "menopause": {
+      "status": "no dedicated public menopause clinic published",
+      "what_exists": "rural women's health clinics (nurse-led) list menopause among topics; RBWH and other gynaecology services list 'menopausal health' in scope; both captured here where the page says so"
+    },
+    "find_a_specialist": {
+      "status": "Queensland Health publishes no clinician-level directory; services are listed per HHS site, not per doctor"
+    }
+  },
+  "robots": {
+    "au-e375edfd.datastore.squiz.cloud": "robots.txt HTTP 404 (no robots file; treated as allow)",
+    "www.health.qld.gov.au": "User-agent: * | Disallow: /*results_per_page= | Disallow: /search | Disallow: /dxp-search-integration/",
+    "www.childrens.health.qld.gov.au": "User-agent: * | Disallow: /*?sq_content_src= | Disallow: /*_recache | Disallow: /*_edit | Disallow: /*_admin | Disallow: /*_login | Disallow: /*_performance | Disallow: /*_design | Disallow: /*start_rank= | Disallow: /search",
+    "metronorth.health.qld.gov.au": "User-agent: * | Crawl-delay: 10 | Disallow: /wp-admin/ | Allow: /wp-admin/admin-ajax.php | Disallow: /wp-json/",
+    "www.townsville.health.qld.gov.au": "User-agent: * | Disallow: /templates/oracle/plugins/custom.php | Disallow: /templates/oracle/_events.php | Disallow: /templates/oracle/_dates.php",
+    "www.goldcoast.health.qld.gov.au": "User-Agent: * | Allow: / | Disallow: /admin/ | Disallow: /dev/ | Disallow: /studio/ | Disallow: /api/ | Sitemap: https://www.goldcoast.health.qld.gov.au/sitemap.xml"
+  },
+  "user_agent": "WattleHealthBot/0.1 (+https://github.com/Stef-01/Wattle-Health)"
+}

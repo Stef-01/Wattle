@@ -98,9 +98,20 @@ HHS_NAME_TO_ID = {v[1].lower(): v[0] for v in HHS_HOSTS.values()}
 HHS_NAME_TO_ID.update({
     "children's health queensland": "childrens-health-queensland",
     "childrens health queensland": "childrens-health-queensland",
+    "children's health": "childrens-health-queensland",
     "torres and cape york": "torres-and-cape",
+    "torres & cape": "torres-and-cape",
     "cairns & hinterland": "cairns-and-hinterland",
+    "mackay & whitsundays": "mackay",
 })
+
+
+def decode_csv(blob: bytes) -> str:
+    """Queensland Health spreadsheets exported as CSV are usually cp1252, sometimes UTF-8."""
+    try:
+        return blob.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return blob.decode("cp1252", "replace")
 
 
 def hhs_from_host(url: str) -> tuple[str | None, str | None]:
@@ -113,8 +124,9 @@ def hhs_from_host(url: str) -> tuple[str | None, str | None]:
 
 
 def hhs_from_name(name: str) -> str | None:
-    n = squash(name).lower().replace(" hospital and health service", "").replace(" health", "")
-    return HHS_NAME_TO_ID.get(n) or HHS_NAME_TO_ID.get(squash(name).lower())
+    raw = squash(name).lower().replace("’", "'")
+    n = raw.replace(" hospital and health service", "").replace(" health", "")
+    return HHS_NAME_TO_ID.get(raw) or HHS_NAME_TO_ID.get(n) or HHS_NAME_TO_ID.get(n.replace("&", "and"))
 
 
 # ----------------------------------------------------------------- fetching
@@ -185,9 +197,11 @@ def fetch(url: str, *, timeout: float = 120.0, headers: dict[str, str] | None = 
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
         except urllib.error.HTTPError as e:
-            if e.code in (429, 500, 502, 503, 504) and attempt < retries:
+            # 403: the Cloudflare front of health.qld.gov.au / CHQ intermittently scores a
+            # first urllib request as a bot and lets the retry through; one retry after 8 s.
+            if e.code in (403, 429, 500, 502, 503, 504) and attempt < retries:
                 last_err = e
-                time.sleep(5.0 * (attempt + 1))
+                time.sleep(8.0 * (attempt + 1))
                 continue
             raise AdapterError(f"HTTP {e.code} for {url}") from e
         except (urllib.error.URLError, TimeoutError, OSError) as e:
@@ -205,6 +219,34 @@ def fetch_text(url: str, **kw: Any) -> str:
 
 def fetch_json(url: str, **kw: Any) -> Any:
     return json.loads(fetch(url, headers={"Accept": "application/json"}, **kw).decode("utf-8", "replace"))
+
+
+# ----------------------------------------------------------------- data.qld.gov.au dataset pages
+
+def dataset_resources(dataset_url: str) -> dict[str, Any]:
+    """Resources of a data.qld.gov.au dataset from the schema.org JSON-LD on its HTML page
+    (robots.txt disallows the CKAN /api/ path for crawlers, the page is allowed).
+    Returns {"licence": url, "name": str, "resources": [{name, url, format, description}]}."""
+    page = fetch_text(dataset_url)
+    m = re.search(r'<script type="application/ld\+json">(.*?)</script>', page, re.S)
+    if not m:
+        raise AdapterError(f"{dataset_url}: no JSON-LD block on dataset page")
+    graph = json.loads(_html.unescape(m.group(1)))
+    nodes = graph.get("@graph", [graph]) if isinstance(graph, dict) else graph
+    out: dict[str, Any] = {"licence": None, "name": None, "resources": []}
+    for n in nodes:
+        t = n.get("@type")
+        if t in ("schema:Dataset", "Dataset"):
+            out["licence"] = n.get("schema:license") or n.get("license")
+            out["name"] = n.get("schema:name") or n.get("name")
+        elif t in ("schema:DataDownload", "DataDownload"):
+            out["resources"].append({
+                "name": squash(n.get("schema:name") or n.get("name") or ""),
+                "url": n.get("schema:url") or n.get("url") or n.get("contentUrl"),
+                "format": (n.get("schema:encodingFormat") or n.get("encodingFormat") or "").upper(),
+                "description": squash(n.get("schema:description") or n.get("description") or ""),
+            })
+    return out
 
 
 # ----------------------------------------------------------------- Squiz datastore
@@ -238,7 +280,7 @@ def service_url(hhs_id: str, service_path: str, location_path: str | None = None
 # ----------------------------------------------------------------- text helpers
 
 PHONE_RE = re.compile(
-    r"(?<![\d])(?:\(?0[2-9]\)?[ \-]?\d{4}[ \-]?\d{4}|1[38]00[ \-]?\d{3}[ \-]?\d{3}|13[ \-]?\d{2}[ \-]?\d{2}|13[ \-]?\d{4}|04\d{2}[ \-]?\d{3}[ \-]?\d{3})(?![\d])"
+    r"(?<![\d])(?:\(?0[2-9]\)?[ \-]?\d{4}[ \-]?\d{4}|1[38]00[ \-]?\d{3}[ \-]?\d{3}|13[ \-]?\d{2}[ \-]?\d{2}|13[ \-]?\d{4}|04\d{2}[ \-]?\d{3}[ \-]?\d{3}|[3-7]\d{3}[ \-]\d{4})(?![\d])"
 )
 ADDR_RE = re.compile(
     r"(\d+[A-Za-z]?(?:\s*[-–/]\s*\d+[A-Za-z]?)?\s+[A-Za-z][A-Za-z' .]{2,60}?(?:Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Parade|Pde|Highway|Hwy|Terrace|Tce|Lane|Place|Pl|Way|Crescent|Cres|Court|Ct|Esplanade|Boulevard|Blvd)\.?)\s*,?\s+([A-Z][A-Za-z' ]{2,40}?)\s*,?\s+(?:QLD|Qld)\s*,?\s*(\d{4})\b"
@@ -273,12 +315,12 @@ def phone_in(s: str | None) -> str | None:
         digits = re.sub(r"\D", "", raw)
         if digits == "000" or digits.startswith("134325"):  # Triple Zero / 13 HEALTH are not the service
             continue
+        if digits.startswith(("1300", "1800")) and len(digits) == 10:
+            return f"{digits[:4]} {digits[4:7]} {digits[7:]}"
         if len(digits) == 10:
             return f"{digits[:2]} {digits[2:6]} {digits[6:]}"
         if len(digits) == 8 and raw.strip().startswith(("3", "4", "5", "7")):
             return f"07 {digits[:4]} {digits[4:]}"
-        if digits.startswith(("1300", "1800")) and len(digits) == 10:
-            return f"{digits[:4]} {digits[4:7]} {digits[7:]}"
         if len(digits) == 6 and digits.startswith("13"):
             return f"13 {digits[2:4]} {digits[4:]}"
         return raw.strip()
@@ -316,9 +358,15 @@ def norm_name(s: str) -> str:
 
 def section(html_: str, heading_re: str) -> str | None:
     """Text under the first <h2>/<h3> matching heading_re, up to the next heading."""
-    m = re.search(r"<(h[23])[^>]*>(?:(?!</\1>).)*?" + heading_re + r"(?:(?!</\1>).)*?</\1>(.*?)(?=<h[23]\b|$)",
-                  html_, re.S | re.I)
-    return squash(strip_tags(m.group(2))) if m else None
+    rx = re.compile(heading_re, re.I)
+    heads = list(re.finditer(r"<(h[23])\b[^>]*>(.*?)</\1>", html_, re.S | re.I))
+    for i, h in enumerate(heads):
+        if rx.search(strip_tags(h.group(2))):
+            end = heads[i + 1].start() if i + 1 < len(heads) else len(html_)
+            body = squash(strip_tags(html_[h.end():end]))
+            if body:
+                return body
+    return None
 
 
 def facility_type(name: str) -> str:
