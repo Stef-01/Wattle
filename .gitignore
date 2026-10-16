@@ -3,7 +3,7 @@ node_modules/
 .env*
 __pycache__/
 *.pyc
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 next-env.d.ts
 *.tmp
 data/load/
