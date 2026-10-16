@@ -4,6 +4,7 @@
 import { search } from "@/src/data/api";
 import type { Card, Chip, SearchRequest, SearchResponse } from "@/src/data/search-types";
 import type { DoctorRecord } from "@/src/data/types";
+import { regionOf } from "@/src/ui/screens/patient-b/facts";
 import { getRequest, newRequestId, pushRecent, setRequest, type StoredRequest } from "@/src/ui/store";
 
 export const DEFAULT_SUBURB = "Brisbane";
@@ -86,7 +87,8 @@ export function placeLine(card: Card): string | null {
   const suburb = suburbOf(card);
   if (!suburb) return null;
   const inBrisbane = card.distanceKm !== undefined && card.distanceKm <= REACH_KM;
-  return `${suburb}, ${inBrisbane ? "Brisbane" : (card.doctor.rooms[0]?.state ?? "QLD")}`;
+  const room = card.doctor.rooms[0];
+  return `${suburb}, ${inBrisbane ? "Brisbane" : room ? regionOf(room) : "QLD"}`;
 }
 
 /** Declared or found fee, never invented. */

@@ -1,6 +1,6 @@
 // Facts the P06–P11 screens render, each read from the record and never invented.
 // No fs here: client components import this file.
-import type { DoctorRecord, Publication } from "@/src/data/types";
+import type { DoctorRecord, Publication, Room } from "@/src/data/types";
 import { asList, sourceLabel } from "@/src/data/types";
 import type { Reason, Tier } from "@/src/matching/types";
 
@@ -27,10 +27,18 @@ export function primaryRoom(d: Pick<DoctorRecord, "rooms">) {
   return d.rooms.find((r) => r.state === "QLD") ?? d.rooms[0] ?? null;
 }
 
+/** Region of a Queensland room by latitude: Sunshine Coast north of Caboolture, Gold Coast south of Logan, else Brisbane. */
+export function regionOf(r: Pick<Room, "state" | "lat">): string {
+  if (r.state !== "QLD") return r.state;
+  if (r.lat !== null && r.lat > -27.0) return "Sunshine Coast";
+  if (r.lat !== null && r.lat < -27.7) return "Gold Coast";
+  return "Brisbane";
+}
+
 export function placeOf(d: Pick<DoctorRecord, "rooms">): string {
   const r = primaryRoom(d);
   if (!r) return "Queensland";
-  const city = r.state === "QLD" ? "Brisbane" : r.state;
+  const city = regionOf(r);
   return r.suburb.toLowerCase() === city.toLowerCase() ? r.suburb : `${r.suburb}, ${city}`;
 }
 
@@ -198,7 +206,7 @@ export function hobbyChips(d: Pick<DoctorRecord, "personal">, max = 4): string[]
   return asList(p.hobbies)
     .map((h) => h.split(/[,(;]/)[0]!.trim())
     .filter(Boolean)
-    .map((h) => (h.split(/\s+/).length > 6 ? `${h.split(/\s+/).slice(0, 5).join(" ")}…` : h))
+    .map((h) => (h.split(/\s+/).length > 8 ? `${h.split(/\s+/).slice(0, 7).join(" ")}…` : h))
     .slice(0, max);
 }
 
