@@ -224,6 +224,7 @@ export function hobbyChips(d: Pick<DoctorRecord, "personal">, max = 4): string[]
 /** "Open to new patients", "Telehealth", "$280" and "Referral needed", only what the record states. */
 export function practicalChips(d: DoctorRecord): string[] {
   const out: string[] = [];
+  if (d.scopeNote) out.push(d.scopeNote);
   if (d.declared.capacity && d.capacity.value === "open") out.push("Open to new patients");
   if (d.declared.capacity && d.capacity.value === "waitlist") out.push(d.waitlistWeeks ? `${d.waitlistWeeks.value}-week wait` : "Waitlist");
   if (d.declared.telehealth && d.telehealth.value !== "none") out.push(d.telehealth.value === "only" ? "Telehealth only" : "Telehealth");

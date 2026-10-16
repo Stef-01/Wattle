@@ -43,6 +43,8 @@ export interface DoctorRecord extends Doctor {
   declared: { telehealth: boolean; capacity: boolean; languages: boolean };
   waitTimeText: string | null;
   rooms: Room[];
+  /** A stated limit on who the practice sees ("healthcare workers and carers only"), shown wherever the doctor is. */
+  scopeNote?: string;
   sources: SourceRef[];
   publications: Publication[];
 }

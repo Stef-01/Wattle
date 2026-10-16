@@ -1,0 +1,1047 @@
+{
+  "category": "brisbane-second-pass",
+  "researched_at": "2026-10-16",
+  "doctors": [
+    {
+      "telehealth": "yes",
+      "referral_required": true,
+      "fee_initial_dollars": 760,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": 20,
+      "name": "Dr Shannon Morton",
+      "given": "Shannon",
+      "family": "Morton",
+      "specialty": "psychiatry",
+      "gender": "woman",
+      "practice": {
+        "name": "Clinic of the Cracked Cup",
+        "address": "Brisbane CBD (boutique rooms a short walk from Central Station; street address not published)",
+        "suburb": "Brisbane City",
+        "postcode": "4000",
+        "phone": null,
+        "website": "https://www.crackedcupclinic.com/"
+      },
+      "conditions": [
+        "trauma",
+        "depression",
+        "anxiety",
+        "adhd",
+        "autism"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "healthcare workers and carers only",
+        "burnout and moral injury",
+        "long-term psychotherapy",
+        "neurodivergent professionals",
+        "not assessment-only ADHD or autism",
+        "retreats and workshops"
+      ],
+      "personal": {
+        "philosophy_of_care": "Built on kintsugi and wabi-sabi: cracks and struggles, repaired with care and insight, become the strongest parts of a person's story. A refuge for over-functioning helpers rather than a place for polished surfaces; no pressure to be fine, no gold stars for soldiering on.",
+        "why_medicine": null,
+        "communication_approach": "Creativity, warmth, a quirky personality and irreverent dark humour; spaces where people can put down their armour and piece themselves back together. Written in the first person on the practice site.",
+        "communication": [
+          "trauma-informed",
+          "holistic",
+          "neurodiversity-affirming",
+          "long-appointments",
+          "lived-experience",
+          "gentle"
+        ],
+        "lived_experience": "Co-founded a lived-experience, neuro-affirming workplace; describes herself as a cracked cup in a cracked system.",
+        "hobbies": [
+          "Writing novels",
+          "Art of all trades",
+          "Gardening",
+          "Amateur foodie",
+          "Live theatre and street art",
+          "Nature and animals"
+        ],
+        "outside_medicine": "Mother of two teenagers, a python called Penelope and an Italian Greyhound called Noodle; novelist and artist; self-described good-trouble maker and systems disruptor who champions the underdog.",
+        "quotes": [
+          {
+            "text": "She is a mother of two spirited teenagers, a python called Penelope, and an avant garde Italian Greyhound called Noodle.",
+            "about": "hobbies"
+          },
+          {
+            "text": "In her spare time, she is also a novelist, an artist of all trades and master of few, the unapologetic owner of many doom piles, and a devoted nature and animal lover.",
+            "about": "hobbies"
+          },
+          {
+            "text": "My therapeutic approach draws on something I call mental kintsugi. The art of repairing emotional cracks with compassion and meaning instead of shame or silence.",
+            "about": "approach"
+          },
+          {
+            "text": "If you are over it, undone, or just holding it together with caffeine and dark humour, you are welcome here.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.crackedcupclinic.com/",
+        "page_title": "Clinic of the Cracked Cup | Psychotherapy and Psychiatry Services for Healthcare Workers and Carers",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 5
+    },
+    {
+      "telehealth": "some",
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Nirosha Jayawardana",
+      "given": "Nirosha",
+      "family": "Jayawardana",
+      "specialty": "psychiatry",
+      "gender": "woman",
+      "practice": {
+        "name": "Toowong Specialist Clinic",
+        "address": "Ground and Level 2, 54 Jephson Street, Toowong QLD 4066",
+        "suburb": "Toowong",
+        "postcode": "4066",
+        "phone": "07 3720 9700",
+        "website": "https://www.toowongclinic.com.au/"
+      },
+      "conditions": [
+        "anxiety",
+        "depression",
+        "bipolar",
+        "trauma",
+        "personality",
+        "eating-disorders"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "complex trauma",
+        "tele-psychiatry for regional Queensland",
+        "supported decision making",
+        "recovery goals set by the patient",
+        "wait approx 2 months"
+      ],
+      "personal": {
+        "philosophy_of_care": "Empowerment of the patient in setting both personal and clinical recovery goals, with supported decision making.",
+        "why_medicine": null,
+        "communication_approach": "Described on the clinic page as approachable and dedicated.",
+        "communication": [
+          "collaborative",
+          "listens"
+        ],
+        "lived_experience": null,
+        "hobbies": [
+          "Writing children's storybooks",
+          "Community and charitable work"
+        ],
+        "outside_medicine": "Holds a law degree and was active against domestic violence and for the rights of men, women and children; author of children's storybooks; Senior Lecturer at Griffith University and a Queensland Health consultant psychiatrist.",
+        "quotes": [
+          {
+            "text": "Nirosha also holds a law degree, which she was actively involved against domestic violence and preserving rights of the men, women and children.",
+            "about": "other"
+          },
+          {
+            "text": "She was the author of children storybooks and actively involved in the community and has taken many charitable activities.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Nirosha is passionate about empowerment of the patient in determining both personal and clinical recovery goals, and supported decision making.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.toowongclinic.com.au/the-team",
+        "page_title": "The Team | Toowong Specialist Clinic",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": "some",
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English",
+        "Mandarin",
+        "Cantonese"
+      ],
+      "years_in_specialty": 10,
+      "name": "Dr Chaston Wu",
+      "given": "Chaston",
+      "family": "Wu",
+      "specialty": "psychiatry",
+      "gender": "man",
+      "practice": {
+        "name": "Belmont Consulting Suites (Belmont Private Hospital)",
+        "address": "1220 Creek Road, Carina Heights QLD 4152",
+        "suburb": "Carina Heights",
+        "postcode": "4152",
+        "phone": "07 3258 5744",
+        "website": "https://belmontprivate.com.au/healthcare-team/chaston-wu/"
+      },
+      "conditions": [
+        "anxiety",
+        "bipolar",
+        "depression",
+        "personality",
+        "psychosis",
+        "trauma"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "exercise, nutrition and meditation as interventions",
+        "psychotherapy",
+        "ketamine-assisted therapy",
+        "inpatient admissions at Belmont Private"
+      ],
+      "personal": {
+        "philosophy_of_care": "Evidence-based, holistic interventions such as exercise, nutrition and meditation alongside psychotherapy and medication-assisted therapies; patient-centred care grounded in understanding, compassion and collaboration.",
+        "why_medicine": "Chose psychiatry out of a deep curiosity to understand the human mind, emotions, consciousness and relationships.",
+        "communication_approach": null,
+        "communication": [
+          "holistic",
+          "collaborative",
+          "culturally-safe",
+          "evidence-based"
+        ],
+        "lived_experience": "Born in Australia, spent much of his childhood overseas before finishing high school in Brisbane; credits this with adaptability and connecting with people from many backgrounds.",
+        "hobbies": [
+          "Painting",
+          "Brazilian jiu-jitsu and Muay Thai",
+          "Fitness and yoga",
+          "Motorcycle riding"
+        ],
+        "outside_medicine": "Honorary adjunct assistant professor at Bond University.",
+        "quotes": [
+          {
+            "text": "Outside of work, he enjoys painting, martial arts (Brazilian jiu-jitsu and Muay Thai), fitness, yoga and motorcycle riding.",
+            "about": "hobbies"
+          },
+          {
+            "text": "His choice to pursue psychiatry was driven by a deep curiosity to understand the human mind, emotions, consciousness, and relationships.",
+            "about": "why"
+          },
+          {
+            "text": "Born in Australia, Dr Wu spent much of his childhood overseas before completing high school in Brisbane, developing adaptability and a deep appreciation for diverse cultures.",
+            "about": "lived"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://belmontprivate.com.au/healthcare-team/chaston-wu/",
+        "page_title": "Dr Chaston Wu | Belmont Private Hospital",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from a hospital 'our specialists' profile page; short quotations attributed; no images copied"
+      },
+      "personal_richness": 4
+    },
+    {
+      "telehealth": "some",
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English",
+        "Cantonese",
+        "Mandarin"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Tommy Wong",
+      "given": "Tommy",
+      "family": "Wong",
+      "specialty": "psychiatry",
+      "gender": "man",
+      "practice": {
+        "name": "Belmont Consulting Suites (Belmont Private Hospital)",
+        "address": "1220 Creek Road, Carina QLD 4152",
+        "suburb": "Carina",
+        "postcode": "4152",
+        "phone": "07 3055 9544",
+        "website": "https://aurorahealth.com.au/healthcare-team/tommy-wong/"
+      },
+      "conditions": [
+        "adhd",
+        "anxiety",
+        "depression",
+        "bipolar",
+        "trauma"
+      ],
+      "populations": [
+        "adolescent",
+        "adult"
+      ],
+      "focus_tags": [
+        "adult ADHD assessment and holistic management",
+        "culturally sensitive care",
+        "inpatient admissions at Belmont Private",
+        "UQ associate lecturer"
+      ],
+      "personal": {
+        "philosophy_of_care": "Treatment plans tailored to the unique background and life goals of each person; works collaboratively on adult ADHD to optimise functional outcomes.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": [
+          "collaborative",
+          "culturally-safe",
+          "holistic"
+        ],
+        "lived_experience": "Originally from Hong Kong; fluent in Cantonese and Mandarin as well as English.",
+        "hobbies": [
+          "Badminton",
+          "Staying active"
+        ],
+        "outside_medicine": "Associate Lecturer with the UQ School of Medicine, teaching and mentoring medical students and psychiatry trainees.",
+        "quotes": [
+          {
+            "text": "In his spare time, Dr Wong is a passionate badminton player and enjoys staying active.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Originally from Hong Kong, Dr Wong is fluent in Cantonese and Mandarin in addition to English.",
+            "about": "lived"
+          },
+          {
+            "text": "Dr Wong also has a particular focus on the assessment and holistic management of Adult ADHD, working collaboratively with patients to optimise their functional outcomes.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://aurorahealth.com.au/healthcare-team/tommy-wong/",
+        "page_title": "Dr Tommy Wong | Aurora Healthcare",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from a hospital 'our specialists' profile page; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Jin (Robin) Kang",
+      "given": "Jin (Robin)",
+      "family": "Kang",
+      "specialty": "pain-medicine",
+      "gender": "man",
+      "practice": {
+        "name": "Brisbane Rehab (Nicholson Street Specialist Centre)",
+        "address": "Level 9, Suite 304, 83 Nicholson Street, Greenslopes QLD 4120",
+        "suburb": "Greenslopes",
+        "postcode": "4120",
+        "phone": "(07) 3394 2778",
+        "website": "https://brisbanerehab.com.au/"
+      },
+      "conditions": [
+        "chronic-pain"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "spinal and neuropathic pain",
+        "interventional pain medicine",
+        "multidisciplinary rehabilitation",
+        "anaesthetist background"
+      ],
+      "personal": {
+        "philosophy_of_care": "Integrates interventional techniques with other therapeutic modalities to give personalised, empathetic care; aims to improve quality of life through evidence-based, compassionate, patient-centred practice.",
+        "why_medicine": "After several years as an anaesthetist he developed a passion for the multidisciplinary care of pain patients, which led him to train as a pain specialist.",
+        "communication_approach": null,
+        "communication": [
+          "holistic",
+          "evidence-based",
+          "gentle"
+        ],
+        "lived_experience": null,
+        "hobbies": [
+          "Snow sports",
+          "Family time"
+        ],
+        "outside_medicine": "Father of two young children in Brisbane; trained in New Zealand with a fellowship in the UK.",
+        "quotes": [
+          {
+            "text": "Outside of his professional life, Dr. Kang enjoys spending quality time with his family, including his two young children, in Brisbane. He particularly enjoys snow sports and cherishing family moments.",
+            "about": "hobbies"
+          },
+          {
+            "text": "After spending several years as an anesthetist, Dr. Kang developed a passion for the multidisciplinary care of pain patients and this led him to further his training as a pain specialist.",
+            "about": "why"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.greenslopesprivate.com.au/Our-Doctors/Specialists/greenslopes-private-hospital/pain-medicine/108958/dr-jin-robin-kang",
+        "page_title": "Dr Jin (Robin) Kang - Pain medicine | Greenslopes Private Hospital",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from a hospital 'our specialists' profile page; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr David Pietsch",
+      "given": "David",
+      "family": "Pietsch",
+      "specialty": "rheumatology",
+      "gender": "man",
+      "practice": {
+        "name": "River City Rheumatology",
+        "address": "105 Main Street, Kangaroo Point QLD 4169",
+        "suburb": "Kangaroo Point",
+        "postcode": "4169",
+        "phone": "(07) 3391 7500",
+        "website": "https://www.rivercityrheumatology.com.au/"
+      },
+      "conditions": [
+        "fibromyalgia",
+        "chronic-pain"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "general rheumatology",
+        "rheumatoid arthritis and gout research",
+        "chronic autoimmune conditions",
+        "former RBWH chief medical registrar",
+        "ARA committee member"
+      ],
+      "personal": {
+        "philosophy_of_care": "Working in partnership with patients to optimise their chronic autoimmune conditions.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": [
+          "collaborative",
+          "research-active"
+        ],
+        "lived_experience": "Raised in regional Queensland before moving to Brisbane for medicine.",
+        "hobbies": [
+          "Parks and beaches with a toddler and a groodle"
+        ],
+        "outside_medicine": "Parent of a toddler; teaches medical students and junior doctors.",
+        "quotes": [
+          {
+            "text": "Outside of work, you'll find him chasing a toddler and groodle across local parks and beaches.",
+            "about": "hobbies"
+          },
+          {
+            "text": "He was raised in regional Queensland before moving to Brisbane to study medicine at the University of Queensland.",
+            "about": "lived"
+          },
+          {
+            "text": "David enjoys all aspects of general rheumatology and is passionate about working in partnership with patients to optimise their chronic autoimmune conditions.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.rivercityrheumatology.com.au/our-doctors",
+        "page_title": "Our Doctors | River City Rheumatology",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": 5,
+      "name": "Dr Aravi Loganathan",
+      "given": "Aravi",
+      "family": "Loganathan",
+      "specialty": "rheumatology",
+      "gender": "man",
+      "practice": {
+        "name": "River City Rheumatology",
+        "address": "105 Main Street, Kangaroo Point QLD 4169",
+        "suburb": "Kangaroo Point",
+        "postcode": "4169",
+        "phone": "(07) 3391 7500",
+        "website": "https://www.rivercityrheumatology.com.au/"
+      },
+      "conditions": [
+        "fibromyalgia",
+        "chronic-pain"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "inflammatory arthritis",
+        "connective tissue disease",
+        "gout",
+        "psoriatic arthritis and myositis research",
+        "Director of Clinical Training for Rheumatology in Queensland"
+      ],
+      "personal": {
+        "philosophy_of_care": null,
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": [
+          "research-active",
+          "evidence-based"
+        ],
+        "lived_experience": "Grew up in Brisbane; Ken Muirden Overseas Training Fellowship at the Royal National Hospital for Rheumatic Diseases in the UK.",
+        "hobbies": [
+          "Cricket",
+          "Rugby",
+          "Soccer",
+          "Family time"
+        ],
+        "outside_medicine": "Senior Lecturer at UQ; public appointment at Logan Hospital; passionate about medical education.",
+        "quotes": [
+          {
+            "text": "In his free time, he enjoys cricket, rugby, soccer and spending time with his family in Brisbane where he grew up.",
+            "about": "hobbies"
+          },
+          {
+            "text": "He is passionate about medical education and is the Director of Clinical Training for Rheumatology in Queensland and a Senior Lecturer at the University of Queensland.",
+            "about": "other"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.rivercityrheumatology.com.au/our-doctors",
+        "page_title": "Our Doctors | River City Rheumatology",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English",
+        "Sinhalese"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Ravini De Silva",
+      "given": "Ravini",
+      "family": "De Silva",
+      "specialty": "rheumatology",
+      "gender": "woman",
+      "practice": {
+        "name": "RD Rheumatology (Darin Centre)",
+        "address": "Suite 4, Level 1, 631 Logan Road, Greenslopes QLD 4120",
+        "suburb": "Greenslopes",
+        "postcode": "4120",
+        "phone": "(07) 3186 9138",
+        "website": "https://rdrheumatology.com.au/"
+      },
+      "conditions": [
+        "fibromyalgia",
+        "chronic-pain"
+      ],
+      "populations": [
+        "adult"
+      ],
+      "focus_tags": [
+        "inflammatory arthritis",
+        "lupus and vasculitis",
+        "autoinflammatory disorders",
+        "medical education at QEII and UQ",
+        "also consults at Springfield"
+      ],
+      "personal": {
+        "philosophy_of_care": "Compassionate, evidence-based care with clear communication, guiding patients through every step of their health journey.",
+        "why_medicine": null,
+        "communication_approach": "A compassionate, inclusive and culturally sensitive approach; fluent in English and Sinhalese.",
+        "communication": [
+          "culturally-safe",
+          "evidence-based",
+          "gentle"
+        ],
+        "lived_experience": null,
+        "hobbies": [
+          "Reading",
+          "Choreographing and dancing",
+          "Arts and crafts",
+          "Family time"
+        ],
+        "outside_medicine": "Associate Lecturer and examiner for UQ medical exams; attends EULAR, ARA and APLAR conferences.",
+        "quotes": [
+          {
+            "text": "Outside of medicine, she enjoys spending quality time with her family, reading, choreographing and dancing, and engaging in arts and crafts.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Dr. De Silva is fluent in both English and Sinhalese, and brings a compassionate, inclusive, and culturally sensitive approach to her care.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://rdrheumatology.com.au/specialist/",
+        "page_title": "RD Rheumatology | Dr. Ravini De Silva - Rheumatologist Specialist",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English",
+        "Sinhala"
+      ],
+      "years_in_specialty": 4,
+      "name": "Dr Imali Yapa Kulatunga",
+      "given": "Imali",
+      "family": "Yapa Kulatunga",
+      "specialty": "paediatrics",
+      "gender": "woman",
+      "practice": {
+        "name": "Paeds in a Pod",
+        "address": "Suite 1, 12 Annerley Road, Woolloongabba QLD 4102",
+        "suburb": "Woolloongabba",
+        "postcode": "4102",
+        "phone": "(07) 3177 2000",
+        "website": "https://drikulatunga.au/"
+      },
+      "conditions": [
+        "adhd",
+        "autism",
+        "anxiety",
+        "sleep"
+      ],
+      "populations": [
+        "child",
+        "adolescent"
+      ],
+      "focus_tags": [
+        "dual-trained general and developmental paediatrician",
+        "Griffiths developmental assessments",
+        "learning difficulties and behaviour",
+        "also consults at Ashgrove",
+        "birth to 16 years"
+      ],
+      "personal": {
+        "philosophy_of_care": "Warm, patient-focused care for children from birth to 16, supporting development, behaviour, learning and socialisation at every stage.",
+        "why_medicine": null,
+        "communication_approach": "Admires children's resilience in facing health and developmental challenges; connects with families from diverse backgrounds in English and Sinhala.",
+        "communication": [
+          "gentle",
+          "culturally-safe",
+          "listens"
+        ],
+        "lived_experience": "Trained in Sri Lanka and moved to Australia in 2009, then trained in paediatrics in Perth.",
+        "hobbies": [
+          "Exploring Australia's outdoors",
+          "Family time"
+        ],
+        "outside_medicine": null,
+        "quotes": [
+          {
+            "text": "Outside of work, she loves spending time with her family and exploring Australia's great outdoors.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Known for her warm and patient-focused approach, Dr Kulatunga enjoys working with children and admires their resilience in facing health and developmental challenges.",
+            "about": "approach"
+          },
+          {
+            "text": "Dr Kulatunga completed her Bachelor of Medicine and Bachelor of Surgery (MBBS) in Sri Lanka and moved to Australia in 2009.",
+            "about": "lived"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://paedsinapod.com.au/professional/dr-imali-yapa-kulatunga-paediatrician-woolloongabba-brisbane-developmental-general-adhd-autism-anxiety-sleep/",
+        "page_title": "Dr Imali Yapa Kulatunga - Paeds in a pod",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": "some",
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Yaw Shing Chong",
+      "given": "Yaw Shing",
+      "family": "Chong",
+      "specialty": "paediatrics",
+      "gender": "man",
+      "practice": {
+        "name": "Haven Paediatrics",
+        "address": "Suite 308, 621 Gympie Road, Chermside QLD 4032",
+        "suburb": "Chermside",
+        "postcode": "4032",
+        "phone": "(07) 3505 6444",
+        "website": "https://havenpaediatrics.com.au/"
+      },
+      "conditions": [
+        "anxiety",
+        "depression",
+        "adhd",
+        "autism"
+      ],
+      "populations": [
+        "child",
+        "adolescent"
+      ],
+      "focus_tags": [
+        "infant health",
+        "neurodevelopment",
+        "complex care needs and genetic syndromes",
+        "worked with CYMHS at Queensland Children's Hospital",
+        "rural and regional Queensland experience"
+      ],
+      "personal": {
+        "philosophy_of_care": "Practical, patient-centred paediatrics with clear communication and collaborative decision-making so families feel supported and confident.",
+        "why_medicine": null,
+        "communication_approach": "Prides himself on clear communication and collaborative decision-making; brings an understanding of culturally diverse family values.",
+        "communication": [
+          "collaborative",
+          "culturally-safe",
+          "listens"
+        ],
+        "lived_experience": "Originally from Malaysia.",
+        "hobbies": [
+          "Building Lego",
+          "Time with his partner and their two French Bulldogs, Louis and Freya"
+        ],
+        "outside_medicine": null,
+        "quotes": [
+          {
+            "text": "Outside of work, he enjoys building Lego and spending time with his partner and their two French Bulldogs, Louis and Freya.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Originally from Malaysia, Yaw Shing brings a strong understanding of culturally diverse family values and healthcare expectations into his practice.",
+            "about": "lived"
+          },
+          {
+            "text": "Yaw Shing takes a practical, patient-centred approach and prides himself on clear communication and collaborative decision-making, ensuring families feel supported and confident in their child's care.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://havenpaediatrics.com.au/paediatricians/dr-yaw-shing-chong/",
+        "page_title": "Dr Yaw Shing Chong - Haven Paediatrics",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    },
+    {
+      "telehealth": "some",
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": null,
+      "name": "Dr Daniel Jak",
+      "given": "Daniel",
+      "family": "Jak",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "Kenmore Family Medical Practice",
+        "address": "Suite 1 & 9, 2081 Moggill Road, Kenmore QLD 4069",
+        "suburb": "Kenmore",
+        "postcode": "4069",
+        "phone": "(07) 3378 2988",
+        "website": "https://www.kenmorefamilymedical.com.au/"
+      },
+      "conditions": [
+        "adhd"
+      ],
+      "populations": [
+        "child",
+        "adolescent",
+        "adult"
+      ],
+      "focus_tags": [
+        "neurodiverse conditions, primarily ADHD",
+        "paediatrics",
+        "veterans' health",
+        "minor procedures",
+        "former ADF member and physiotherapist",
+        "practice books four patients an hour"
+      ],
+      "personal": {
+        "philosophy_of_care": "Supporting families through each stage of their journey with compassionate, expert care, drawing on his own experience as a parent and a veteran to understand what patients need.",
+        "why_medicine": "Served in the Australian Defence Force before medicine and credits it as the foundation of the discipline that carried him through a physiotherapy degree and then medicine.",
+        "communication_approach": null,
+        "communication": [
+          "lived-experience",
+          "gentle",
+          "neurodiversity-affirming"
+        ],
+        "lived_experience": "Draws on lived experience as both a parent of four and a military veteran.",
+        "hobbies": [
+          "Golf",
+          "Gardening",
+          "Coaching soccer"
+        ],
+        "outside_medicine": "Father to four young children and active in the western-suburbs community where he lives.",
+        "quotes": [
+          {
+            "text": "Dr Daniel is the father to 4 young children and an active member in the local western suburbs community where he lives. He enjoys various passions and hobbies outside of work including golf and gardening as well as coaching soccer.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Prior to commencing a career in medicine, Dr Jak served in the Australian Defence Force, which he credits as being the foundation of the discipline that enabled him to go on to complete both his Bachelor of Physiotherapy and subsequent Doctor of Medicine degrees.",
+            "about": "why"
+          },
+          {
+            "text": "Other special areas of interest include paediatrics and veterans health care, where he draws on lived experience as both a parent and a military veteran to allow himself to better understand the needs of his patients.",
+            "about": "lived"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.kenmorefamilymedical.com.au/",
+        "page_title": "Kenmore Family Medical | Your Kenmore GP Doctors",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 4
+    },
+    {
+      "telehealth": "some",
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": [
+        "English"
+      ],
+      "years_in_specialty": 45,
+      "name": "Dr Simone Peacock",
+      "given": "Simone",
+      "family": "Peacock",
+      "specialty": "general-practice",
+      "gender": "woman",
+      "practice": {
+        "name": "Kenmore Family Medical Practice",
+        "address": "Suite 1 & 9, 2081 Moggill Road, Kenmore QLD 4069",
+        "suburb": "Kenmore",
+        "postcode": "4069",
+        "phone": "(07) 3378 2988",
+        "website": "https://www.kenmorefamilymedical.com.au/"
+      },
+      "conditions": [
+        "anxiety",
+        "depression",
+        "menopause"
+      ],
+      "populations": [
+        "adult",
+        "older-adult"
+      ],
+      "focus_tags": [
+        "women's health and mental health",
+        "Royal Flying Doctor Service to the Gulf and western Queensland",
+        "teaches UQ medical students",
+        "science communication and journalism qualifications",
+        "practice books four patients an hour"
+      ],
+      "personal": {
+        "philosophy_of_care": "A generalist, long-relationship family practice with special interests in women's health and mental health.",
+        "why_medicine": null,
+        "communication_approach": "Described by colleagues for her experience and gregarious personality; qualified in science communication and journalism.",
+        "communication": [
+          "holistic",
+          "direct"
+        ],
+        "lived_experience": "Emigrated from South Africa at age ten and grew up in the Kenmore area, where she still lives.",
+        "hobbies": [
+          "Travel",
+          "Skiing",
+          "Trekking: Everest Base Camp, Kilimanjaro, Nepal and Kokoda"
+        ],
+        "outside_medicine": "Since 2006 has flown with the Royal Flying Doctor Service to remote communities; ran a servicewomen's health clinic at Enoggera Barracks for 12 years.",
+        "quotes": [
+          {
+            "text": "In her spare time Simone enjoys travel, skiing and is an experienced trekker including Everest Base Camp, Kilimanjaro/ Nepal and Kokoda.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Simone emigrated from South Africa at age ten and is a genuine local having grown up in the local area and continues to live here.",
+            "about": "lived"
+          },
+          {
+            "text": "While maintaining a generalist practice her special interests are women's health and mental health.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.kenmorefamilymedical.com.au/",
+        "page_title": "Kenmore Family Medical | Your Kenmore GP Doctors",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied"
+      },
+      "personal_richness": 3
+    }
+  ],
+  "excluded_candidates": [
+    {
+      "name": "Dr Jessica Koentjoro",
+      "url": "https://havenpaediatrics.com.au/paediatricians/dr-jessica-koentjoro/",
+      "reason": "Rich personal bio (architecture before medicine, aerial arts studio) but acute/newborn paediatrics with no target-condition focus; no closed condition id fits."
+    },
+    {
+      "name": "Dr Rebecca Kerr",
+      "url": "https://www.ihealthcentre.com.au/indooroopilly/dr-rebecca-kerr/",
+      "reason": "First-person bio with neurodiversity focus, but books closed to new ADHD patients."
+    },
+    {
+      "name": "Dr Katherine Kelly",
+      "url": "https://drkkelly.au/",
+      "reason": "Only one personal line (outdoors with three young children); personal_richness 2."
+    },
+    {
+      "name": "Dr Valeria Spivak",
+      "url": "https://www.drvaleriaspivak.com.au/",
+      "reason": "Books closed; bio is credential-only."
+    },
+    {
+      "name": "Dr Amritash Rai",
+      "url": "https://dramritashrai.com.au/about-dr-amritash-rai",
+      "reason": "Not accepting new patients; Gold Coast and Hervey Bay rooms."
+    },
+    {
+      "name": "Dr Geraldine Goodison",
+      "url": "https://www.drgeraldinegoodison.com/about-me",
+      "reason": "First-person page but training and practice history only; no hobbies, family or why-medicine."
+    },
+    {
+      "name": "Dr Andrew Finch",
+      "url": "https://www.brisbanenorthrheumatology.com/",
+      "reason": "One first-person sentence on relationships; no personal content; Albany Creek."
+    },
+    {
+      "name": "Dr Mehdi Samani",
+      "url": "https://adhdbrisbane.com.au/about-dr-samani",
+      "reason": "Credential-only professional bio."
+    },
+    {
+      "name": "Dr Josh Geffen",
+      "url": "https://www.ramsaymentalhealth.com.au/en/our-locations/Mental-health-clinics/qld-locations/newfarm/find-a-psychiatrist-link-to-search/",
+      "reason": "Adult ADHD and media work but no personal content (hobbies, family, why medicine)."
+    },
+    {
+      "name": "Dr Georgia Williams",
+      "url": "https://www.toowongclinic.com.au/the-team",
+      "reason": "Accountant and solicitor before medicine is the only personal line; richness 2."
+    },
+    {
+      "name": "Dr Claire McNaught",
+      "url": "https://www.toowongclinic.com.au/the-team",
+      "reason": "Senior psychiatry registrar, not a consultant; otherwise a rich bio (rural upbringing, drawn to psychiatry in internship, LGBTIQ+ ally)."
+    },
+    {
+      "name": "Dr Greg Watson",
+      "url": "https://www.toowongclinic.com.au/the-team",
+      "reason": "Senior psychiatry registrar, not a consultant; rich bio (finance and teaching in Japan before medicine)."
+    },
+    {
+      "name": "Dr Tomas Heard",
+      "url": "https://www.toowongclinic.com.au/the-team",
+      "reason": "Only a professional-interest line on exercise, nutrition and sleep."
+    },
+    {
+      "name": "Dr Paul Wallman",
+      "url": "https://greenhousepaediatrics.com.au/about-us/meet-the-team/",
+      "reason": "Greenhouse Paediatrics is in Perth, WA."
+    },
+    {
+      "name": "Dr Nick Chiang",
+      "url": "https://brisbanerehab.com.au/home/",
+      "reason": "Credential-only bio on practice and own site."
+    },
+    {
+      "name": "Dr Jacqueline Evans",
+      "url": "https://brisbanepainmedicine.com/service/dr-jacqueline-evans/",
+      "reason": "Credential-only bio."
+    },
+    {
+      "name": "Dr Lisa Carroll",
+      "url": "https://drlisacarroll.com.au/",
+      "reason": "Credential-only bio."
+    },
+    {
+      "name": "Dr Anna Kermond",
+      "url": "https://www.rivercityrheumatology.com.au/our-doctors",
+      "reason": "Rural Queensland origin only; no hobbies, family or why-medicine; richness 2."
+    },
+    {
+      "name": "Inhabit Health psychiatrists (Sidhu, Roberts, Whitehead, McAulay, Schilling, Wheatley)",
+      "url": "https://www.inhabithealth.com.au/team",
+      "reason": "All six individual pages are credential-only; three have closed books."
+    },
+    {
+      "name": "Oxford Clinic psychiatrists (Duke, McFadden, Benson, Goodwin, Batts, Stoyanov, Zemek)",
+      "url": "https://oxfordclinic.com.au/our-team/",
+      "reason": "Individual pages checked; all credential-only."
+    },
+    {
+      "name": "Bellmount House doctors (Petroff, Jessop, Foley, McLennan, Lindsay)",
+      "url": "https://bellmounthouse.com.au/our-team/",
+      "reason": "Credential-only bios; only the receptionist has a personal line."
+    },
+    {
+      "name": "Like Minds Health (Reddel, Stankevicius)",
+      "url": "https://www.likemindshealth.com.au/our-team",
+      "reason": "Credential-only bios."
+    },
+    {
+      "name": "Think Health Specialists psychiatrists",
+      "url": "https://thinkhealth.au/psychiatrists-brisbane/",
+      "reason": "Short professional blurbs; the detail page returns 404."
+    },
+    {
+      "name": "Queensland Specialist Centre psychiatrists",
+      "url": "https://qldspecialist.com/",
+      "reason": "Credential cards only; page carries Google reviews, which are out of scope."
+    }
+  ]
+}
