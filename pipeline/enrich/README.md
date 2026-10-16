@@ -18,7 +18,7 @@ python pipeline/enrich/test_enrich.py                             # unit tests, 
 
 1. Discover candidates with `/autocomplete/authors` (0 credits), hydrate each with `GET /authors/{id}` (0 credits).
 2. Score each candidate: name 0-3 (surname must match or the candidate scores 0), +2 Australian institution, +1 home-state institution, +1 per overlapping topic (max 3), reject 0 works, -2 above 1,500 works. Profiles sharing an ORCID count as one identity.
-3. `authorship_verified = "identifier-matched"` only when exactly one identity scores >= 6, has an Australian institution and shares at least one topic with the specialty. Otherwise `"unverified"`: top candidates are kept for human review and no works are attached.
+3. `authorship_verified = "identifier-matched"` only when exactly one identity scores >= 6, its last-known institution is Australian (a past Australian affiliation alone is review material), the given name matches in full (or the institution is in the doctor's state), it shares at least one topic with the specialty, and at least half of its most-cited works are on the specialty (OpenAlex sometimes conflates several people in one profile). Otherwise `"unverified"`: top candidates are kept for human review and no works are attached.
 4. For matched authors, the 10 most-cited works (`/works?filter=author.id:` , 1 credit) and a Crossref title check on the first 3 DOIs.
 
 ## OpenAlex budget

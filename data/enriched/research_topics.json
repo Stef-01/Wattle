@@ -1,0 +1,6197 @@
+{
+ "generated_at": "2026-10-16T02:27:54+00:00",
+ "input": "data/enriched/publications/2026-10-16.jsonl",
+ "doctors_in_input": 876,
+ "doctors_with_topics": 201,
+ "field_note": "inferred_research_topics are OpenAlex topic labels counted across each doctor's most-cited works. They are inferred research topics only: not clinical interests, not declared by the doctor, and not evidence of clinical quality. Source: OpenAlex (CC0).",
+ "doctors": {
+  "obstetrics-gynaecology:adriana-olog": {
+   "name": "Dr. Adriana Olog",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5006541781",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Birth, Development, and Health",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Vascular anomalies and interventions",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:akram-khalil": {
+   "name": "Dr. Akram Khalil",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5070419216",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ergonomics and Musculoskeletal Disorders",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Occupational health in dentistry",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:akwasi-amoako": {
+   "name": "Dr. Akwasi Amoako",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5065312830",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Cannabis and Cannabinoid Research",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Reproductive System and Pregnancy",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Sperm and Testicular Function",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:albert-jung": {
+   "name": "Dr Albert Jung",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5022380902",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:alexa-bendall": {
+   "name": "Dr. Alexa Bendall",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5031538808",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Neonatal and fetal brain pathology",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Nutrition and Health Studies",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:alexandra-mowat": {
+   "name": "Dr Alexandra Mowat",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5059783819",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Surgical Simulation and Training",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:alison-mcdougall": {
+   "name": "Dr. Alison McDougall",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5089048870",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:alka-kothari": {
+   "name": "Associate Professor. Alka Kothari",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5067334728",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal Mental Health During Pregnancy and Postpartum",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Child Abuse and Trauma",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Clinical Reasoning and Diagnostic Skills",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:amy-mellor": {
+   "name": "Dr Amy Mellor",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5078217439",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Musculoskeletal Disorders and Rehabilitation",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Ophthalmology and Visual Health Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:anders-faber-swensson": {
+   "name": "Dr. Anders Faber-Swensson",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5051539479",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Cardiovascular Health and Disease Prevention",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Cardiovascular Issues in Pregnancy",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:andreas-obermair": {
+   "name": "Professor. Andreas Obermair",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5000735679",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Cancer, Hypoxia, and Metabolism",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:anna-burrows": {
+   "name": "Dr. Anna Burrows",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5111943524",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Fetal and Pediatric Neurological Disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Prenatal Screening and Diagnostics",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Spinal Dysraphism and Malformations",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:anusch-yazdani": {
+   "name": "A/Prof Anusch Yazdani",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5038582418",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Sperm and Testicular Function",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Male Reproductive Health Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Reproductive Biology and Fertility",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:anusha-sudhahar": {
+   "name": "Dr Anusha Sudhahar",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5002277357",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Teratomas and Epidermoid Cysts",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:ben-kroon": {
+   "name": "Dr. Ben Kroon",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5057506280",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Sperm and Testicular Function",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Reproductive Biology and Fertility",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Artificial Intelligence Applications",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:brooke-o-brien": {
+   "name": "Dr Brooke O'Brien",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5086536493",
+   "works_considered": 9,
+   "inferred_research_topics": [
+    {
+     "topic": "Hypothalamic control of reproductive hormones",
+     "works": 2,
+     "share": 0.22
+    },
+    {
+     "topic": "Menstrual Health and Disorders",
+     "works": 2,
+     "share": 0.22
+    },
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 2,
+     "share": 0.22
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 0.22
+    },
+    {
+     "topic": "Sexual Differentiation and Disorders",
+     "works": 2,
+     "share": 0.22
+    }
+   ]
+  },
+  "obstetrics-gynaecology:carol-breeze": {
+   "name": "Dr. Carol Breeze",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5056831958",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Academic Writing and Publishing",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Medical research and treatments",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:chelsea-watt": {
+   "name": "Dr Chelsea Watt",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5002243355",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Pregnancy-related medical research",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:christopher-hegerty": {
+   "name": "Dr. Christopher Hegerty",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5074915452",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 3,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:clare-boothroyd": {
+   "name": "Dr. Clare Boothroyd",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5080977579",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Reproductive Biology and Fertility",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Acupuncture Treatment Research Studies",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:collette-sheridan": {
+   "name": "Dr. Collette Sheridan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5113664808",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Biosensors and Analytical Detection",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Birth, Development, and Health",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Education in Rural Contexts",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Global Health Workforce Issues",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:darren-po": {
+   "name": "Dr Darren Po",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5010453611",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Anorectal Disease Treatments and Outcomes",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:david-baartz": {
+   "name": "Dr. David Baartz",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5086133996",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Gestational Trophoblastic Disease Studies",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Testicular diseases and treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 3,
+     "share": 0.3
+    }
+   ]
+  },
+  "obstetrics-gynaecology:david-shaker": {
+   "name": "A/Prof David Shaker",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5079296669",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Reproductive Biology and Fertility",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:deanne-vagg": {
+   "name": "Dr Deanne Vagg",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5069985895",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:di-poad": {
+   "name": "Dr Di Poad",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5002031808",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Interprofessional Education and Collaboration",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Obesity and Health Practices",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:dianne-poad": {
+   "name": "Dr. Dianne Poad",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5027844386",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Adrenal and Paraganglionic Tumors",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Cardiovascular Issues in Pregnancy",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Neonatal Respiratory Health Research",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Neonatal and fetal brain pathology",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:donald-angstetra": {
+   "name": "A/Prof Donald Angstetra",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5023742195",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Grit, Self-Efficacy, and Motivation",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Healthcare professionals’ stress and burnout",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Stress and Burnout Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Attachment and Relationship Dynamics",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Breastfeeding Practices and Influences",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:dora-ng": {
+   "name": "Dr Dora Ng",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5007460310",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Diabetes Management and Research",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Diabetes, Cardiovascular Risks, and Lipoproteins",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:elisha-broom": {
+   "name": "Dr. Elisha Broom",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5043627816",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Cardiac Arrhythmias and Treatments",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Cardiac electrophysiology and arrhythmias",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Chromatin Remodeling and Cancer",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Congenital Heart Disease Studies",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:ellen-yeung": {
+   "name": "Dr Ellen Yeung",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5047953165",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 8,
+     "share": 1.0
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 6,
+     "share": 0.75
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 5,
+     "share": 0.62
+    },
+    {
+     "topic": "Enhanced Recovery After Surgery",
+     "works": 1,
+     "share": 0.12
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "obstetrics-gynaecology:gabriel-james": {
+   "name": "Dr Gabriel James",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5006287136",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Alcohol Consumption and Health Effects",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Alcoholism and Thiamine Deficiency",
+     "works": 3,
+     "share": 0.38
+    },
+    {
+     "topic": "Reproductive System and Pregnancy",
+     "works": 3,
+     "share": 0.38
+    },
+    {
+     "topic": "Advanced Proteomics Techniques and Applications",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 2,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:georgia-heathcote": {
+   "name": "Dr Georgia Heathcote",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5068828801",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Biology and Fertility",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:gino-pecoraro": {
+   "name": "Associate Professor. Gino Pecoraro",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5091085783",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Blood Coagulation and Thrombosis Mechanisms",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal Mental Health During Pregnancy and Postpartum",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:glenda-mclaren": {
+   "name": "Dr Glenda McLaren",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5003124353",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Minimally Invasive Surgical Techniques",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Surgical Simulation and Training",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:greet-hoet": {
+   "name": "Dr. Greet Hoet",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5063809019",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Cancer Risks and Factors",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:hannah-ao": {
+   "name": "Prof Hannah Krause AO",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5081711709",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Surgical Sutures and Adhesives",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:hannah-krause": {
+   "name": "Dr. Hannah Krause",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5081711709",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Surgical Sutures and Adhesives",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:helen-sherrell": {
+   "name": "Dr. Helen Sherrell",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5076584861",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ethics in Clinical Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Neonatal and fetal brain pathology",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:huda-safa": {
+   "name": "Dr Huda Safa",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5060992213",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Birth, Development, and Health",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Fatty Acid Research and Health",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Historical Medical Research and Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Syphilis Diagnosis and Treatment",
+     "works": 3,
+     "share": 0.3
+    }
+   ]
+  },
+  "obstetrics-gynaecology:ian-etherington": {
+   "name": "Dr Ian Etherington",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5111791456",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Women's cancer prevention and management",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Genital Health and Disease",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Reproductive tract infections research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "AI in cancer detection",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:ivana-rizzuto": {
+   "name": "Dr Ivana Rizzuto",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5016228426",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Cancer Risks and Factors",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:james-nicklin": {
+   "name": "Professor. James Nicklin",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5013066879",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:jay-iyer": {
+   "name": "A/Prof Jay Iyer",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5043624370",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Urinary Bladder and Prostate Research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:jens-odendahl": {
+   "name": "Dr. Jens Odendahl",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5042693537",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Bacterial Infections and Vaccines",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Neonatal Respiratory Health Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Neonatal and Maternal Infections",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:jessica-phillips-yelland": {
+   "name": "Dr. Jessica Phillips-Yelland",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5089538229",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Intraperitoneal and Appendiceal Malignancies",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Occupational and environmental lung diseases",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:jill-hunady": {
+   "name": "Dr Jill Hunady",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5046055137",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive tract infections research",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Primary Care and Health Outcomes",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:johanna-laporte": {
+   "name": "Dr. Johanna Laporte",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5089812935",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Prenatal Screening and Diagnostics",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:julie-buchanan": {
+   "name": "Dr Julie Buchanan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5074631259",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Infection Control in Healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Surgical site infection prevention",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Urinary Bladder and Prostate Research",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kanapathippillai-sivanesan": {
+   "name": "Dr. Kanapathippillai Sivanesan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5008814656",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Urinary Bladder and Prostate Research",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:karl-kristensen": {
+   "name": "Dr. Karl Kristensen",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5065492721",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Pregnancy-related medical research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Neurological Complications and Syndromes",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 3,
+     "share": 0.3
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kassam-mahomed": {
+   "name": "Associate Professor. Kassam Mahomed",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5033145667",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Iron Metabolism and Disorders",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Trace Elements in Health",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Birth, Development, and Health",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kellie-tathem": {
+   "name": "Dr Kellie Tathem",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5091576920",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kelly-haspel": {
+   "name": "Dr. Kelly van den Haspel",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5098314178",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Health Literacy and Information Accessibility",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Social Media in Health Education",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kristen-moloney": {
+   "name": "Dr. Kristen Moloney",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5069600262",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Healthcare Systems and Technology",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Surgical Simulation and Training",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kurinji-kannan": {
+   "name": "Dr Kurinji Kannan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5103565941",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Hernia repair and management",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Urinary Bladder and Prostate Research",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Case Reports on Hematomas",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:kym-warhurst": {
+   "name": "Dr. Kym Warhurst",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5133458349",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Health Policy Implementation Science",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Clinical practice guidelines implementation",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Healthcare Quality and Management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:lee-minuzzo": {
+   "name": "Dr. Lee Minuzzo",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5024695524",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Cardiovascular Issues in Pregnancy",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:lewis-perrin": {
+   "name": "Professor. Lewis Perrin",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5047181576",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "PARP inhibition in cancer therapy",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:liam-dunn": {
+   "name": "Dr. Liam Dunn",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5058582028",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Neonatal and fetal brain pathology",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:lilantha-wedisinghe": {
+   "name": "Dr. Lilantha Wedisinghe",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5057778989",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Blood transfusion and management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Clinical practice guidelines implementation",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Menstrual Health and Disorders",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:luke-waldrip": {
+   "name": "Dr. Luke Waldrip",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5068337941",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Bone Tumor Diagnosis and Treatments",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Clinical Laboratory Practices and Quality Control",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Diabetes, Cardiovascular Risks, and Lipoproteins",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Estrogen and related hormone effects",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:malcolm-frazer": {
+   "name": "Associate Professor. Malcolm Frazer",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5111916851",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Urinary Bladder and Prostate Research",
+     "works": 10,
+     "share": 1.0
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Sexual function and dysfunction studies",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Urinary Tract Infections Management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:marcelo-nascimento": {
+   "name": "Dr. Marcelo Nascimento",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5111720662",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Intraperitoneal and Appendiceal Malignancies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:mark-erian": {
+   "name": "Associate Professor. Mark Erian",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5109262673",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Hemostasis and retained surgical items",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Anorectal Disease Treatments and Outcomes",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Appendicitis Diagnosis and Management",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:matthew-mcknoulty": {
+   "name": "Dr Matthew McKnoulty",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5058614569",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Blood donation and transfusion practices",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:mayooran-veerasingham": {
+   "name": "Dr Mayooran Veerasingham",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5046957155",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Urologic and reproductive health conditions",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:meg-willis": {
+   "name": "Dr. Meg Willis",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5027864647",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Bariatric Surgery and Outcomes",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Body Contouring and Surgery",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "COVID-19 Impact on Reproduction",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:melissa-acreman": {
+   "name": "Dr. Melissa Acreman",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5089678951",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Prenatal Screening and Diagnostics",
+     "works": 6,
+     "share": 0.75
+    },
+    {
+     "topic": "Genomics and Rare Diseases",
+     "works": 5,
+     "share": 0.62
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.38
+    },
+    {
+     "topic": "Genetic and Clinical Aspects of Sex Determination and Chromosomal Abnormalities",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "obstetrics-gynaecology:melissa-buttini": {
+   "name": "Dr. Melissa Buttini",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5037219181",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Gut microbiota and health",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Reproductive tract infections research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:michael-rice": {
+   "name": "Dr. Michael Rice",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5136567567",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 6,
+     "share": 1.0
+    },
+    {
+     "topic": "Health Policy Implementation Science",
+     "works": 6,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Patient Safety and Medication Errors",
+     "works": 2,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:mikhail-sarofim": {
+   "name": "Assoc. Prof. Mikhail Sarofim",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5082054902",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Minimally Invasive Surgical Techniques",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Surgical Simulation and Training",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 3,
+     "share": 0.3
+    }
+   ]
+  },
+  "obstetrics-gynaecology:naguesh-gaunekar": {
+   "name": "Dr Naguesh Naik Gaunekar",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5032909040",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 4,
+     "share": 1.0
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 4,
+     "share": 1.0
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:namiko-aleker": {
+   "name": "Dr Namiko Aleker",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5092757519",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:natalie-shaddock": {
+   "name": "Dr Natalie Shaddock",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5002038695",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Anesthesia and Sedative Agents",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 2,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:neroli-ngenda": {
+   "name": "Dr Neroli Ngenda",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5036034417",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Genital Health and Disease",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Laser Applications in Dentistry and Medicine",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Menopause: Health Impacts and Treatments",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Oral Health Pathology and Treatment",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:nicole-ho": {
+   "name": "Dr. Nicole Ho",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5015136814",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 10,
+     "share": 1.0
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 10,
+     "share": 1.0
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Pregnancy-related medical research",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:nikki-whelan": {
+   "name": "Dr. Nikki Whelan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5050106569",
+   "works_considered": 7,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Blood Pressure and Hypertension Studies",
+     "works": 1,
+     "share": 0.14
+    },
+    {
+     "topic": "Diabetes Management and Research",
+     "works": 1,
+     "share": 0.14
+    }
+   ]
+  },
+  "obstetrics-gynaecology:nimithri-cabraal": {
+   "name": "Dr. Nimithri Cabraal",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5056926913",
+   "works_considered": 7,
+   "inferred_research_topics": [
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Intraperitoneal and Appendiceal Malignancies",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Lymphatic System and Diseases",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 1,
+     "share": 0.14
+    },
+    {
+     "topic": "Breast Cancer Treatment Studies",
+     "works": 1,
+     "share": 0.14
+    }
+   ]
+  },
+  "obstetrics-gynaecology:nisha-jagasia": {
+   "name": "Dr. Nisha Jagasia",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5085846787",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Breast Cancer Treatment Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:peter-ganter": {
+   "name": "Dr. Peter Ganter",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5075025230",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Plant and fungal interactions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Prenatal Screening and Diagnostics",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:phoebe-hong": {
+   "name": "Dr Phoebe Hong",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5089252451",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Hernia repair and management",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Urological Disorders and Treatments",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:piksi-singh": {
+   "name": "Dr Piksi Singh",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5065559605",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 6,
+     "share": 0.75
+    },
+    {
+     "topic": "Cervical Cancer and HPV Research",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Cancer survivorship and care",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "obstetrics-gynaecology:rachael-nugent": {
+   "name": "Dr Rachael Nugent",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5077376211",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Breastfeeding Practices and Influences",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:rebecca-kimble": {
+   "name": "Professor. Rebecca Kimble",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5026374702",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Sexual Differentiation and Disorders",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Blood Coagulation and Thrombosis Mechanisms",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Blood transfusion and management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Congenital Ear and Nasal Anomalies",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:renuka-sekar": {
+   "name": "Dr. Renuka Sekar",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5004931175",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Birth, Development, and Health",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:robert-cincotta": {
+   "name": "Associate Professor. Robert Cincotta",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5066974784",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Neonatal Respiratory Health Research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:robyn-aldridge": {
+   "name": "Dr Robyn Aldridge",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5047766357",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Clinical practice guidelines implementation",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Blood Pressure and Hypertension Studies",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:russell-land": {
+   "name": "Dr. Russell Land",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5112067737",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Uterine Myomas and Treatments",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Cancer Risks and Factors",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sabaratnam-ganeshananthan": {
+   "name": "Dr. Sabaratnam Ganeshananthan",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5080819970",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Cerebral Venous Sinus Thrombosis",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Immunodeficiency and Autoimmune Disorders",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Myasthenia Gravis and Thymoma",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sally-cohen": {
+   "name": "Dr Sally Cohen",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5042866960",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Gestational Trophoblastic Disease Studies",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:samantha-scherman": {
+   "name": "Dr. Samantha Scherman",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5075303426",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ureteral procedures and complications",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Urinary and Genital Oncology Studies",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:samuel-purcell": {
+   "name": "Dr. Samuel Purcell",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5027071259",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Iron Metabolism and Disorders",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Hemoglobinopathies and Related Disorders",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Plant Micronutrient Interactions and Effects",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Trace Elements in Health",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sapna-dilgir": {
+   "name": "Dr Sapna Dilgir",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5020633315",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Pelvic floor disorders treatments",
+     "works": 5,
+     "share": 0.62
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Menstrual Health and Disorders",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Sex and Gender in Healthcare",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Agriculture Sustainability and Environmental Impact",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sarika-bhadange": {
+   "name": "Dr Sarika Bhadange",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5006115189",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Congenital Heart Disease Studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Hypothalamic control of reproductive hormones",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Menstrual Health and Disorders",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sebastian-jacob-rogers": {
+   "name": "Dr Sebastian Jacob-Rogers",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5070224415",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Autism Spectrum Disorder Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Family and Disability Support Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:shannyn-rosser": {
+   "name": "Dr. Shannyn Rosser",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5090464786",
+   "works_considered": 9,
+   "inferred_research_topics": [
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 3,
+     "share": 0.33
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.33
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 3,
+     "share": 0.33
+    },
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 2,
+     "share": 0.22
+    },
+    {
+     "topic": "Pharmacogenetics and Drug Metabolism",
+     "works": 2,
+     "share": 0.22
+    }
+   ]
+  },
+  "obstetrics-gynaecology:shaun-mcgrath": {
+   "name": "Dr. Shaun McGrath",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5001659191",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:shih-han-tsai": {
+   "name": "Dr Shih-han Tsai",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5109391812",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Teratomas and Epidermoid Cysts",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:shveta-kapoor": {
+   "name": "Dr. Shveta Kapoor",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5084431671",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sinead-barry": {
+   "name": "Dr. Sinead Barry",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5016318990",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Chronic Obstructive Pulmonary Disease (COPD) Research",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Cystic Fibrosis Research Advances",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Body Composition Measurement Techniques",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Cardiovascular and exercise physiology",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:soheil-farnaghi": {
+   "name": "Dr Soheil Farnaghi",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5015682139",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Complementary and Alternative Medicine Studies",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Congenital Anomalies and Fetal Surgery",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Fetal and Pediatric Neurological Disorders",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:sonia-anwar": {
+   "name": "Dr Sonia Anwar",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5076670218",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:stacey-davie": {
+   "name": "Dr Stacey Davie",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5016891621",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Endometrial and Cervical Cancer Treatments",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Patient Safety and Medication Errors",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Sleep and related disorders",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Cardiac, Anesthesia and Surgical Outcomes",
+     "works": 1,
+     "share": 0.17
+    }
+   ]
+  },
+  "obstetrics-gynaecology:stephanie-omage": {
+   "name": "Dr. Stephanie Omage",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5057305308",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Breastfeeding Practices and Influences",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Infant Nutrition and Health",
+     "works": 3,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:stephen-elgey": {
+   "name": "Dr. Stephen Elgey",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5018229431",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Cardiovascular Issues in Pregnancy",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Pneumothorax, Barotrauma, Emphysema",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "obstetrics-gynaecology:stephen-soong": {
+   "name": "Dr Stephen Soong",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5031070372",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Assisted Reproductive Technology and Twin Pregnancy",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Infant Development and Preterm Care",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:tal-jacobson": {
+   "name": "Dr Tal Jacobson",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5020687234",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Medical Imaging and Pathology Studies",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Urologic and reproductive health conditions",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "obstetrics-gynaecology:tania-widmer": {
+   "name": "Dr Tania Widmer",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5056888929",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Neonatal Healthcare",
+     "works": 3,
+     "share": 0.5
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 3,
+     "share": 0.5
+    },
+    {
+     "topic": "HIV/AIDS Research and Interventions",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Reproductive tract infections research",
+     "works": 2,
+     "share": 0.33
+    }
+   ]
+  },
+  "obstetrics-gynaecology:tapasi-bagchi": {
+   "name": "Dr. Tapasi Bagchi",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5041544458",
+   "works_considered": 7,
+   "inferred_research_topics": [
+    {
+     "topic": "Gynecological conditions and treatments",
+     "works": 4,
+     "share": 0.57
+    },
+    {
+     "topic": "Menstrual Health and Disorders",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Sexual Differentiation and Disorders",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Hypothalamic control of reproductive hormones",
+     "works": 2,
+     "share": 0.29
+    }
+   ]
+  },
+  "obstetrics-gynaecology:tawhid-hassanien": {
+   "name": "Dr. Tawhid Hassanien",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5085202906",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Medical History and Innovations",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:thangeswaran-rudra": {
+   "name": "Associate Professor. Thangeswaran Rudra",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5059178754",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Maternal and fetal healthcare",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Pregnancy and preeclampsia studies",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Blood transfusion and management",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Preterm Birth and Chorioamnionitis",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "obstetrics-gynaecology:vanessa-lusink": {
+   "name": "Dr Vanessa Lusink",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5001216139",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 4,
+     "share": 1.0
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Reproductive System and Pregnancy",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Ectopic Pregnancy Diagnosis and Management",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Endometriosis Research and Treatment",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "obstetrics-gynaecology:wai-yip": {
+   "name": "Dr. Wai Lum Yip",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5075186428",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Gestational Trophoblastic Disease Studies",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Ovarian cancer diagnosis and treatment",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Testicular diseases and treatments",
+     "works": 2,
+     "share": 1.0
+    }
+   ]
+  },
+  "obstetrics-gynaecology:wendell-rosevear": {
+   "name": "Dr. Wendell Rosevear",
+   "specialty": "obstetrics-gynaecology",
+   "openalex_author_id": "A5082930344",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Health and Contraception",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Reproductive Health and Technologies",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "paediatrics:alberto-pinzon-charry": {
+   "name": "A/Prof Alberto Pinzon-Charry",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5002796574",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Immunotherapy and Immune Responses",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Malaria Research and Control",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Cancer Immunotherapy and Biomarkers",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Immune cells in cancer",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Immune responses and vaccinations",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:amy-whittaker": {
+   "name": "Dr Amy Whittaker",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5021868795",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Asthma and respiratory diseases",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Chronic Obstructive Pulmonary Disease (COPD) Research",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Acute Kidney Injury Research",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Chronic Kidney Disease and Diabetes",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Infant Nutrition and Health",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:chris-toumpas": {
+   "name": "Dr Chris Toumpas",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5027386483",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Cytomegalovirus and herpesvirus research",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Hearing Loss and Rehabilitation",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Hearing, Cochlea, Tinnitus, Genetics",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Clinical Reasoning and Diagnostic Skills",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "paediatrics:dylan-wilson": {
+   "name": "Dr Dylan Wilson",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5140678653",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Cardiac Imaging and Diagnostics",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Cardiovascular Disease and Adiposity",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Cardiovascular Function and Risk Factors",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "paediatrics:elizabeth-silva": {
+   "name": "Dr Elizabeth da Silva",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5046344509",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Essential Oils and Antimicrobial Activity",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Psidium guajava Extracts and Applications",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Hepatitis B Virus Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Immune responses and vaccinations",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Immunodeficiency and Autoimmune Disorders",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:garry-inglis": {
+   "name": "Dr Garry Inglis",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5110838676",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Neonatal and Maternal Infections",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Central Venous Catheters and Hemodialysis",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Neonatal Respiratory Health Research",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Nosocomial Infections in ICU",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Respiratory Support and Mechanisms",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:jason-yates": {
+   "name": "Dr Jason Yates",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5006351985",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Diabetes Management and Research",
+     "works": 5,
+     "share": 0.62
+    },
+    {
+     "topic": "Diabetes Management and Education",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Diabetes and associated disorders",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Genetic and Clinical Aspects of Sex Determination and Chromosomal Abnormalities",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Ovarian function and disorders",
+     "works": 2,
+     "share": 0.25
+    }
+   ]
+  },
+  "paediatrics:mariana-melo": {
+   "name": "Dr Mariana Melo",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5145197191",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Genomics and Rare Diseases",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Immunodeficiency and Autoimmune Disorders",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Metabolism and Genetic Disorders",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Asthma and respiratory diseases",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Chronic Obstructive Pulmonary Disease (COPD) Research",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "paediatrics:melanie-aldridge": {
+   "name": "Dr Melanie Aldridge",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5047524716",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Growth Hormone and Insulin-like Growth Factors",
+     "works": 3,
+     "share": 0.38
+    },
+    {
+     "topic": "Diabetes Management and Research",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Diabetes and associated disorders",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Renal Diseases and Glomerulopathies",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Bacterial Infections and Vaccines",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "paediatrics:naomi-chellew": {
+   "name": "Dr Naomi Chellew",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5046604340",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Pediatric health and respiratory diseases",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Pneumonia and Respiratory Infections",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Respiratory and Cough-Related Research",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "paediatrics:peter-bourke": {
+   "name": "Dr Peter Bourke",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5026320334",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Malaria Research and Control",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Erythrocyte Function and Pathophysiology",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "HIV Research and Treatment",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Allergic Rhinitis and Sensitization",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Asthma and respiratory diseases",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "paediatrics:peter-mcnaughton": {
+   "name": "Dr Peter McNaughton",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5026512164",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Immunodeficiency and Autoimmune Disorders",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Hematopoietic Stem Cell Transplantation",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Transplantation: Methods and Outcomes",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "T-cell and B-cell Immunology",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "interferon and immune responses",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:sophie-willcocks": {
+   "name": "Dr Sophie Willcocks",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5060930844",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Autoimmune and Inflammatory Disorders Research",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Immunodeficiency and Autoimmune Disorders",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Inflammasome and immune disorders",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Drug-Induced Adverse Reactions",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Food Allergy and Anaphylaxis Research",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "paediatrics:tony-huynh": {
+   "name": "Dr Tony Huynh",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5054501308",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Genomics and Rare Diseases",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Metabolism and Genetic Disorders",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Muscle Physiology and Disorders",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Neurogenetic and Muscular Disorders Research",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Adrenal Hormones and Disorders",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "paediatrics:victoria-matheson": {
+   "name": "Dr Victoria Matheson",
+   "specialty": "paediatrics",
+   "openalex_author_id": "A5090235782",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Child and Adolescent Health",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Health disparities and outcomes",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Public Health and Social Inequalities",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:alice-chang": {
+   "name": "Dr Alice Chang",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5080766422",
+   "works_considered": 7,
+   "inferred_research_topics": [
+    {
+     "topic": "COVID-19 and Mental Health",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Primary Care and Health Outcomes",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Telemedicine and Telehealth Implementation",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Anatomy and Medical Technology",
+     "works": 1,
+     "share": 0.14
+    }
+   ]
+  },
+  "psychiatry:alison-roberts": {
+   "name": "Dr Alison Roberts",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5019490338",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Diabetes Management and Research",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Diabetes and associated disorders",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Diabetes Management and Education",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Gestational Diabetes Research and Management",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Health Policy Implementation Science",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:anand-choudhary": {
+   "name": "Dr Anand Choudhary",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5112045256",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Dental Radiography and Imaging",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Face recognition and analysis",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Forensic Anthropology and Bioarchaeology Studies",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Health Promotion and Cardiovascular Prevention",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:anastasia-braun": {
+   "name": "Dr Anastasia Braun",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5030220298",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal Mental Health During Pregnancy and Postpartum",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Maternal and Perinatal Health Interventions",
+     "works": 2,
+     "share": 0.4
+    },
+    {
+     "topic": "Autism Spectrum Disorder Research",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Bariatric Surgery and Outcomes",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Child Abuse and Trauma",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:andrea-stimming": {
+   "name": "Dr Andrea Stimming",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5092262239",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Attention Deficit Hyperactivity Disorder",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Health Policy Implementation Science",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Indigenous Health, Education, and Rights",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:andrew-khoo": {
+   "name": "Dr Andrew Khoo",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5109995234",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Posttraumatic Stress Disorder Research",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Opioid Use Disorder Treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Migration, Health and Trauma",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Pharmaceutical Practices and Patient Outcomes",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:basem-dall": {
+   "name": "Dr Basem Dall",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5042939439",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychopathy, Forensic Psychiatry, Sexual Offending",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Suicide and Self-Harm Studies",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:benjamin-hadikusumo": {
+   "name": "Dr Benjamin Hadikusumo",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5030040171",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Health and Medical Education",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Pharmacovigilance and Adverse Drug Reactions",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:bianca-dinu": {
+   "name": "Dr Bianca Dinu",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5030030227",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Personality Disorders and Psychopathology",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Psychotherapy Techniques and Applications",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:bradley-ng": {
+   "name": "Dr Bradley Ng",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5069020812",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Anesthesia and Sedative Agents",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Cerebral Venous Sinus Thrombosis",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:brenton-eyre-watt": {
+   "name": "Dr Brenton Eyre-Watt",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5076239837",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Suicide and Self-Harm Studies",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Therapeutic Uses of Natural Elements",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:bruce-lawford": {
+   "name": "Prof Bruce Lawford",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5001014678",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Neurotransmitter Receptor Influence on Behavior",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Genetic Associations and Epidemiology",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Posttraumatic Stress Disorder Research",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Substance Abuse Treatment and Outcomes",
+     "works": 3,
+     "share": 0.3
+    }
+   ]
+  },
+  "psychiatry:carlos-hojaij": {
+   "name": "Prof Carlos Hojaij",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5043851975",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Mental Health and Psychiatry",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Psychology and Mental Health",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Anesthesia and Pain Management",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Ethics and bioethics in healthcare",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:catherine-llewellyn": {
+   "name": "Dr Catherine Llewellyn",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5072409738",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Appreciative Inquiry and Organizational Change",
+     "works": 1,
+     "share": 0.17
+    },
+    {
+     "topic": "Child and Adolescent Health",
+     "works": 1,
+     "share": 0.17
+    },
+    {
+     "topic": "Child and Adolescent Psychosocial and Emotional Development",
+     "works": 1,
+     "share": 0.17
+    },
+    {
+     "topic": "Complementary and Alternative Medicine Studies",
+     "works": 1,
+     "share": 0.17
+    },
+    {
+     "topic": "Health Literacy and Information Accessibility",
+     "works": 1,
+     "share": 0.17
+    }
+   ]
+  },
+  "psychiatry:chaston-wu": {
+   "name": "Dr Chaston Wu",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5111088615",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Cannabis and Cannabinoid Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Forensic Toxicology and Drug Analysis",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Mindfulness and Compassion Interventions",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:chia-hsu": {
+   "name": "Dr Chia Jie Hsu",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5035689589",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Child Welfare and Adoption",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Drug-Induced Hepatotoxicity and Protection",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Medicinal Plant Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Pharmacogenetics and Drug Metabolism",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:chinna-samy": {
+   "name": "Dr Chinna Samy",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5069088046",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Healthcare Systems and Technology",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:conor-o-luanaigh": {
+   "name": "Dr Conor O'Luanaigh",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5043230014",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Alcoholism and Thiamine Deficiency",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Intensive Care Unit Cognitive Disorders",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Pain Management and Opioid Use",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:daniel-dagge": {
+   "name": "Dr Daniel Dagge",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5093210070",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:daniel-wysoczanski": {
+   "name": "Dr Daniel Wysoczanski",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5010358602",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Diabetes Treatment and Management",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Pharmacology and Obesity Treatment",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "psychiatry:erich-ting": {
+   "name": "Dr Erich Ting",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5065478300",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:evelyn": {
+   "name": "Dr Evelyn Ma",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5017385315",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Chronic Obstructive Pulmonary Disease (COPD) Research",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Mental Health and Psychiatry",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Prenatal Substance Exposure Effects",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Smoking Behavior and Cessation",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:george-blair-west": {
+   "name": "Dr George Blair-West",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5081562516",
+   "works_considered": 7,
+   "inferred_research_topics": [
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Suicide and Self-Harm Studies",
+     "works": 3,
+     "share": 0.43
+    },
+    {
+     "topic": "Health Services Management and Policy",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Homicide, Infanticide, and Child Abuse",
+     "works": 2,
+     "share": 0.29
+    },
+    {
+     "topic": "Citation",
+     "works": 1,
+     "share": 0.14
+    }
+   ]
+  },
+  "psychiatry:georgina-brunton": {
+   "name": "Dr Georgina Brunton",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5041160925",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Dietetics, Nutrition, and Education",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Eating Disorders and Behaviors",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Nutrition, Health and Food Behavior",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:geraldine-goodison": {
+   "name": "Dr Geraldine Goodison",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5013029320",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Cardiac electrophysiology and arrhythmias",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Complementary and Alternative Medicine Studies",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:helen-hoey": {
+   "name": "Dr Helen Hoey",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5083281165",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 5,
+     "share": 0.83
+    },
+    {
+     "topic": "Neurotransmitter Receptor Influence on Behavior",
+     "works": 3,
+     "share": 0.5
+    },
+    {
+     "topic": "Stress Responses and Cortisol",
+     "works": 3,
+     "share": 0.5
+    },
+    {
+     "topic": "Cardiac Health and Mental Health",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Child Abuse and Trauma",
+     "works": 1,
+     "share": 0.17
+    }
+   ]
+  },
+  "psychiatry:helen-siddle": {
+   "name": "Dr Helen Siddle",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5029071353",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "COVID-19 and Mental Health",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Psychometric Methodologies and Testing",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:jagannathan-alagarsamy": {
+   "name": "Dr Jagannathan Alagarsamy",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5049673820",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:jim-rodney": {
+   "name": "Dr Jim Rodney",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5032845737",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 3,
+     "share": 1.0
+    },
+    {
+     "topic": "Child and Adolescent Psychosocial and Emotional Development",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Psychology and Mental Health",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Psychological Treatments and Disorders",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:joel-adams-bedford": {
+   "name": "Dr Joel Adams-Bedford",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5037531649",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Injury Epidemiology and Prevention",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Posttraumatic Stress Disorder Research",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:jon-paul-khoo": {
+   "name": "Dr Jon-Paul Khoo",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5078619821",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Health and Epidemiology",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Insurance, Mortality, Demography, Risk Management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:jon-teo": {
+   "name": "Dr Jon Paul Teo",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5004239399",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Cultural, Psychoanalytic, and Sociopolitical Reflections",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Medical Research and Practices",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Mental Health and Psychiatry",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:joshua-flavell": {
+   "name": "Dr Joshua Flavell",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5068340328",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Dementia and Cognitive Impairment Research",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Historical and Modern Theater Studies",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Amyotrophic Lateral Sclerosis Research",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Autoimmune Neurological Disorders and Treatments",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Peripheral Neuropathies and Disorders",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:joshua-geffen": {
+   "name": "Dr Joshua Geffen",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5079363585",
+   "works_considered": 5,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 4,
+     "share": 0.8
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 4,
+     "share": 0.8
+    },
+    {
+     "topic": "Attention Deficit Hyperactivity Disorder",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.2
+    },
+    {
+     "topic": "Health Services Management and Policy",
+     "works": 1,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:julanne-frater": {
+   "name": "Dr Julanne Frater",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5060965963",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Genetic Associations and Epidemiology",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Obsessive-Compulsive Spectrum Disorders",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Aging and Gerontology Research",
+     "works": 1,
+     "share": 0.12
+    },
+    {
+     "topic": "Cardiovascular Syncope and Autonomic Disorders",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "psychiatry:julian-dodemaide": {
+   "name": "Dr Julian Dodemaide",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5035723714",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Hemoglobinopathies and Related Disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Iron Metabolism and Disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Neurological diseases and metabolism",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:kai-chen": {
+   "name": "Dr Kai Yang Chen",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5073076221",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Fibromyalgia and Chronic Fatigue Syndrome Research",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Long-Term Effects of COVID-19",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Opioid Use Disorder Treatment",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Pain Management and Opioid Use",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Substance Abuse Treatment and Outcomes",
+     "works": 2,
+     "share": 0.25
+    }
+   ]
+  },
+  "psychiatry:kevin-rourke": {
+   "name": "Dr Kevin Rourke",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5015786165",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Ethics and bioethics in healthcare",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Personality Disorders and Psychopathology",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Personality Traits and Psychology",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:khue-tran": {
+   "name": "Dr Khue Tran",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5143240820",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Blood transfusion and management",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Periodontal Regeneration and Treatments",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Trauma, Hemostasis, Coagulopathy, Resuscitation",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:margaret-bylett": {
+   "name": "Dr Margaret Bylett",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5067316864",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Counseling Practices and Supervision",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Psychotherapy Techniques and Applications",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:mary-jessop": {
+   "name": "Dr Mary Jessop",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5108612207",
+   "works_considered": 6,
+   "inferred_research_topics": [
+    {
+     "topic": "Family Support in Illness",
+     "works": 3,
+     "share": 0.5
+    },
+    {
+     "topic": "Family Caregiving in Mental Illness",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Hallucinations in medical conditions",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Posttraumatic Stress Disorder Research",
+     "works": 2,
+     "share": 0.33
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 2,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:milind-pant": {
+   "name": "Dr Milind Pant",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5026819795",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Health Promotion and Cardiovascular Prevention",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Healthcare Quality and Management",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Mental Health and Psychiatry",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:naveen-allha": {
+   "name": "Dr Naveen Allha",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5073768863",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Epilepsy research and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Immunotoxicology and immune responses",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Tryptophan and brain disorders",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:neeraj-gill": {
+   "name": "Prof Neeraj Gill",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5006202067",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Health, Medicine and Society",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Indigenous Health, Education, and Rights",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:oreste-theodoratos": {
+   "name": "Dr Oreste Theodoratos",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5030466647",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Child and Adolescent Psychosocial and Emotional Development",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Down syndrome and intellectual disability research",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Family and Disability Support Research",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:paboda-ratnayake": {
+   "name": "Dr Paboda Ratnayake",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5023633263",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "BRCA gene mutations in cancer",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Patient-Provider Communication in Healthcare",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Family Support in Illness",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Genetic factors in colorectal cancer",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:paul-pun": {
+   "name": "Dr Paul Pun",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5008202545",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychosomatic Disorders and Their Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Fibromyalgia and Chronic Fatigue Syndrome Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Organ Transplantation Techniques and Outcomes",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Autism Spectrum Disorder Research",
+     "works": 1,
+     "share": 0.1
+    },
+    {
+     "topic": "Cancer survivorship and care",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:peter-devadason": {
+   "name": "Dr Peter Devadason",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5085284979",
+   "works_considered": 3,
+   "inferred_research_topics": [
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 2,
+     "share": 0.67
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 0.33
+    },
+    {
+     "topic": "Innovations in Medical Education",
+     "works": 1,
+     "share": 0.33
+    }
+   ]
+  },
+  "psychiatry:peter-parry": {
+   "name": "Dr Peter Parry",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5082843133",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Personality Disorders and Psychopathology",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Child and Adolescent Psychosocial and Emotional Development",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Pharmacovigilance and Adverse Drug Reactions",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:philip-mosley": {
+   "name": "Dr Philip Mosley",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5067618902",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Obsessive-Compulsive Spectrum Disorders",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Transcranial Magnetic Stimulation Studies",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Dementia and Cognitive Impairment Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Nursing care and research",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:raguraman-janakiraman": {
+   "name": "Dr Raguraman Janakiraman",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5050163267",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychosomatic Disorders and Their Treatments",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:ramya-thanigaivel": {
+   "name": "Dr Ramya Thanigaivel",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5085423191",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Maternal Mental Health During Pregnancy and Postpartum",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Pregnancy and Medication Impact",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:rang-rattehalli": {
+   "name": "Dr Rang Rattehalli",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5058286878",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 6,
+     "share": 0.6
+    },
+    {
+     "topic": "Mental Health and Psychiatry",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:ravinder-sohal": {
+   "name": "Dr Ravinder Sohal",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5022804818",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Amino Acid Enzymes and Metabolism",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Tryptophan and brain disorders",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:rodney-marsh": {
+   "name": "Dr Rodney Marsh",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5026511628",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Parkinson's Disease Mechanisms and Treatments",
+     "works": 9,
+     "share": 0.9
+    },
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 8,
+     "share": 0.8
+    },
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 7,
+     "share": 0.7
+    },
+    {
+     "topic": "Transcranial Magnetic Stimulation Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Dementia and Cognitive Impairment Research",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:saibal-guha": {
+   "name": "Dr Saibal Guha",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5049203373",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Obsessive-Compulsive Spectrum Disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:sandhya-kachhap": {
+   "name": "Dr Sandhya Kachhap",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5071699796",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:scott-newman": {
+   "name": "Dr Scott Newman",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5061609027",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Caribbean and African Literature and Culture",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Postcolonial and Cultural Literary Studies",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Sound Studies and Aurality",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "African history and culture studies",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Diverse Musicological Studies",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "psychiatry:shailendhra-bethi": {
+   "name": "Dr Shailendhra Bethi",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5055713787",
+   "works_considered": 4,
+   "inferred_research_topics": [
+    {
+     "topic": "Psychiatric care and mental health services",
+     "works": 3,
+     "share": 0.75
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 2,
+     "share": 0.5
+    },
+    {
+     "topic": "Competency Development and Evaluation",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Emergency and Acute Care Studies",
+     "works": 1,
+     "share": 0.25
+    },
+    {
+     "topic": "Interprofessional Education and Collaboration",
+     "works": 1,
+     "share": 0.25
+    }
+   ]
+  },
+  "psychiatry:shama-kanodia": {
+   "name": "Dr Shama Kanodia",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5034034025",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Obsessive-Compulsive Spectrum Disorders",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:soman-elangovan": {
+   "name": "Prof Soman Elangovan",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5091018567",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Transcranial Magnetic Stimulation Studies",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Artificial Intelligence in Healthcare and Education",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Artificial Intelligence in Healthcare",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Machine Learning in Healthcare",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:theo-theodoros": {
+   "name": "Dr Theo Theodoros",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5005910394",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Pharmaceutical Practices and Patient Outcomes",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Mental Health Treatment and Access",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Poisoning and overdose treatments",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:timothy-leow": {
+   "name": "Dr Timothy Leow",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5058067792",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Mindfulness and Compassion Interventions",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Evasion and Academic Success Factors",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Higher Education Research Studies",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Posttraumatic Stress Disorder Research",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Workplace Violence and Bullying",
+     "works": 2,
+     "share": 0.2
+    }
+   ]
+  },
+  "psychiatry:tomas-heard": {
+   "name": "Dr Tomas Heard",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5066215008",
+   "works_considered": 8,
+   "inferred_research_topics": [
+    {
+     "topic": "Neurological disorders and treatments",
+     "works": 4,
+     "share": 0.5
+    },
+    {
+     "topic": "Medicine",
+     "works": 3,
+     "share": 0.38
+    },
+    {
+     "topic": "Obsessive-Compulsive Spectrum Disorders",
+     "works": 2,
+     "share": 0.25
+    },
+    {
+     "topic": "Actinomycetales infections and treatment",
+     "works": 1,
+     "share": 0.12
+    },
+    {
+     "topic": "Botulinum Toxin and Related Neurological Disorders",
+     "works": 1,
+     "share": 0.12
+    }
+   ]
+  },
+  "psychiatry:tracey-lang": {
+   "name": "Dr Tracey Lang",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5081226373",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Personality Disorders and Psychopathology",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Personality Traits and Psychology",
+     "works": 2,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:valeria-spivak": {
+   "name": "Dr Valeria Spivak",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5084635087",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 2,
+     "share": 1.0
+    },
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Muscle and Compartmental Disorders",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Schizophrenia research and treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Treatment of Major Depression",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:velimir-kovacevic": {
+   "name": "Dr Velimir Kovacevic",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5065683334",
+   "works_considered": 1,
+   "inferred_research_topics": [
+    {
+     "topic": "Disability Rights and Representation",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Healthcare Decision-Making and Restraints",
+     "works": 1,
+     "share": 1.0
+    },
+    {
+     "topic": "Hearing Impairment and Communication",
+     "works": 1,
+     "share": 1.0
+    }
+   ]
+  },
+  "psychiatry:venura-palihawadana": {
+   "name": "Dr Venura Palihawadana",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5087598260",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Bipolar Disorder and Treatment",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Personality Disorders and Psychopathology",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Personality Traits and Psychology",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Physical Activity and Health",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Sports Performance and Training",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:veronica-stanganelli": {
+   "name": "Dr Veronica Stanganelli",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5022433598",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Suicide and Self-Harm Studies",
+     "works": 5,
+     "share": 0.5
+    },
+    {
+     "topic": "Homicide, Infanticide, and Child Abuse",
+     "works": 4,
+     "share": 0.4
+    },
+    {
+     "topic": "Grief, Bereavement, and Mental Health",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Child and Adolescent Psychosocial and Emotional Development",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Attachment and Relationship Dynamics",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  },
+  "psychiatry:vladan-ljubisavljevic": {
+   "name": "Dr Vladan Ljubisavljevic",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5001672049",
+   "works_considered": 2,
+   "inferred_research_topics": [
+    {
+     "topic": "Alcoholism and Thiamine Deficiency",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Cancer-related cognitive impairment studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Electroconvulsive Therapy Studies",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Historical Psychiatry and Medical Practices",
+     "works": 1,
+     "share": 0.5
+    },
+    {
+     "topic": "Intensive Care Unit Cognitive Disorders",
+     "works": 1,
+     "share": 0.5
+    }
+   ]
+  },
+  "psychiatry:wole-akosile": {
+   "name": "Associate Professor Wole Akosile",
+   "specialty": "psychiatry",
+   "openalex_author_id": "A5045674882",
+   "works_considered": 10,
+   "inferred_research_topics": [
+    {
+     "topic": "Global Health and Epidemiology",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Insurance, Mortality, Demography, Risk Management",
+     "works": 3,
+     "share": 0.3
+    },
+    {
+     "topic": "Cardiac Health and Mental Health",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Global Maternal and Child Health",
+     "works": 2,
+     "share": 0.2
+    },
+    {
+     "topic": "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+     "works": 1,
+     "share": 0.1
+    }
+   ]
+  }
+ }
+}

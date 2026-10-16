@@ -9,9 +9,10 @@ Pipeline per doctor
   3. score      surname + given name, Australian institution, home-state institution,
                 topic overlap with the doctor's specialty and directory tags, works_count sanity
   4. verify     authorship_verified = "identifier-matched" only when exactly ONE identity scores
-                >= THRESHOLD, its institution is Australian and it shares >= 1 topic with the
-                specialty; otherwise "unverified" (top candidates kept for human review,
-                no works attached)
+                >= THRESHOLD, its last-known institution is Australian, its given name matches in
+                full (or the institution is in the doctor's state) and it shares >= 1 topic with
+                the specialty, and at least half of its most-cited works are on the specialty;
+                otherwise "unverified" (top candidates kept for human review, no works attached)
   5. works      for identifier-matched authors, the 10 most-cited works
   6. crossref   the first 3 DOIs are looked up on Crossref and the titles compared
 
@@ -327,7 +328,9 @@ def score(rec: dict, author: dict, state: str | None) -> dict:
     au = any(cc == "AU" for _, cc in insts)
     last_known = [n for n, _ in (author.get("last_known_institutions") and
                                  [(i.get("display_name") or "", i.get("country_code")) for i in author["last_known_institutions"]] or [])]
-    au_last_known = any((i.get("country_code") or "").upper() == "AU" for i in author.get("last_known_institutions") or [])
+    lki = author.get("last_known_institutions") or []
+    # no last-known institution on the profile: fall back to the affiliation history
+    au_last_known = ((lki[0].get("country_code") or "").upper() == "AU") if lki else au
     hints = STATE_INSTITUTION_HINTS.get(state or "", ())
     state_hit = any(h in fold(n) for n, cc in insts if cc == "AU" for h in hints)
     overlap = topic_overlap(doctor_terms(rec), author_topic_names(author))
@@ -341,7 +344,7 @@ def score(rec: dict, author: dict, state: str | None) -> dict:
         reasons.append(name_why)
         if au:
             pts += 2
-            reasons.append("AU institution" + ("" if au_last_known else " (past affiliation only)"))
+            reasons.append("AU institution" + ("" if au_last_known else " (past affiliation only; now abroad)"))
         if state_hit:
             pts += 1
             reasons.append(f"{state} institution")
@@ -365,6 +368,8 @@ def score(rec: dict, author: dict, state: str | None) -> dict:
         "topic_overlap": overlap[:5],
         "score": pts,
         "au_institution": au,
+        "au_last_known": au_last_known,
+        "state_institution": state_hit,
         "reasons": reasons,
     }
 
@@ -537,7 +542,12 @@ def enrich_one(http: Http, rec: dict, state: str | None, search_fallback: bool) 
     cands.sort(key=lambda c: (-c["score"], -(c["works_count"] or 0)))
     out["candidates"] = [c for c in cands if c["score"] > 0][:5] or cands[:3]
     above = [c for c in cands if c["score"] >= THRESHOLD]
-    if len(above) == 1 and above[0]["au_institution"] and above[0]["topic_overlap"] and name_ok(above[0]):
+    if len(above) == 1 and above[0]["au_institution"] and not above[0]["au_last_known"]:
+        # primary last-known institution abroad: the common-name false positives (a namesake
+        # overseas whose profile absorbed an Australian line) live here, so review material.
+        # Genuine emigres and recent arrivals land here too; they are listed in candidates.
+        out["match_note"] = "last-known institution is outside Australia; human review"
+    elif len(above) == 1 and above[0]["au_institution"] and above[0]["topic_overlap"] and name_ok(above[0]):
         c = above[0]
         works = fetch_works(http, c["id"], doctor_terms(rec))
         on = sum(1 for w in works if w["on_specialty"])
