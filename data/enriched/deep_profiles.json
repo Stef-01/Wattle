@@ -1,0 +1,442 @@
+{
+ "generated_at": "2026-10-16T02:53:28+00:00",
+ "inputs": {
+  "publications": "data/enriched/publications/2026-10-16.jsonl",
+  "topics": "data/enriched/research_topics.json",
+  "vocabulary": "disciplines/mvp.yaml"
+ },
+ "criteria": {
+  "state": "QLD",
+  "min_identifier_matched_publications": 3,
+  "min_clinical_tags": 3,
+  "ranking": "distinct sources desc, publications desc, tags desc; round-robin across specialties"
+ },
+ "field_note": "clinical_interest_ids come from the directory's own focus tags matched to the closed vocabulary; research_topic_ids come from OpenAlex topic labels on identifier-matched works. Inferred signals only: not declared by the doctor and not evidence of clinical quality.",
+ "qld_identifier_matched_considered": 195,
+ "qualifying_by_specialty": {
+  "obstetrics-gynaecology": 21,
+  "psychiatry": 30
+ },
+ "missing_specialties": [
+  "paediatrics"
+ ],
+ "count": 15,
+ "doctors": [
+  {
+   "id": "psychiatry:neeraj-gill",
+   "name": "Prof Neeraj Gill",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 25,
+   "publication_count": 10,
+   "openalex_author_id": "A5006202067",
+   "top_research_topics": [
+    "Psychiatric care and mental health services",
+    "Health, Medicine and Society",
+    "Healthcare Decision-Making and Restraints",
+    "Indigenous Health, Education, and Rights",
+    "Mental Health Treatment and Access"
+   ],
+   "clinical_interest_ids": [
+    "depression",
+    "anxiety",
+    "bipolar",
+    "psychosis",
+    "chronic-pain",
+    "fnd"
+   ],
+   "research_topic_ids": [],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 25 clinical focus tags"
+  },
+  {
+   "id": "obstetrics-gynaecology:david-shaker",
+   "name": "A/Prof David Shaker",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "mater",
+    "ramsay",
+    "ranzcog_find"
+   ],
+   "tag_count": 8,
+   "publication_count": 10,
+   "openalex_author_id": "A5079296669",
+   "top_research_topics": [
+    "Pelvic floor disorders treatments",
+    "Gestational Diabetes Research and Management",
+    "Maternal and Perinatal Health Interventions",
+    "Reproductive Biology and Fertility",
+    "Reproductive Health and Technologies"
+   ],
+   "clinical_interest_ids": [
+    "endometriosis"
+   ],
+   "research_topic_ids": [
+    "pelvic-pain"
+   ],
+   "evidence_summary": "3 sources; 10 identifier-matched publications; 8 clinical focus tags; research on persistent pelvic pain"
+  },
+  {
+   "id": "psychiatry:bradley-ng",
+   "name": "Dr Bradley Ng",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 20,
+   "publication_count": 10,
+   "openalex_author_id": "A5069020812",
+   "top_research_topics": [
+    "Electroconvulsive Therapy Studies",
+    "Healthcare Decision-Making and Restraints",
+    "Psychiatric care and mental health services",
+    "Anesthesia and Sedative Agents",
+    "Cerebral Venous Sinus Thrombosis"
+   ],
+   "clinical_interest_ids": [
+    "depression",
+    "anxiety",
+    "chronic-pain"
+   ],
+   "research_topic_ids": [],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 20 clinical focus tags"
+  },
+  {
+   "id": "obstetrics-gynaecology:stacey-davie",
+   "name": "Dr Stacey Davie",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "mater",
+    "ramsay",
+    "ranzcog_find"
+   ],
+   "tag_count": 10,
+   "publication_count": 6,
+   "openalex_author_id": "A5016891621",
+   "top_research_topics": [
+    "Endometrial and Cervical Cancer Treatments",
+    "Endometriosis Research and Treatment",
+    "Patient Safety and Medication Errors",
+    "Sleep and related disorders",
+    "Cardiac, Anesthesia and Surgical Outcomes"
+   ],
+   "clinical_interest_ids": [
+    "pelvic-pain",
+    "menopause"
+   ],
+   "research_topic_ids": [
+    "endometriosis",
+    "sleep"
+   ],
+   "evidence_summary": "3 sources; 6 identifier-matched publications; 10 clinical focus tags; research on endometriosis, sleep"
+  },
+  {
+   "id": "psychiatry:joshua-flavell",
+   "name": "Dr Joshua Flavell",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 20,
+   "publication_count": 10,
+   "openalex_author_id": "A5068340328",
+   "top_research_topics": [
+    "Dementia and Cognitive Impairment Research",
+    "Historical and Modern Theater Studies",
+    "Amyotrophic Lateral Sclerosis Research",
+    "Autoimmune Neurological Disorders and Treatments",
+    "Peripheral Neuropathies and Disorders"
+   ],
+   "clinical_interest_ids": [
+    "adhd",
+    "anxiety",
+    "bipolar",
+    "trauma",
+    "autism"
+   ],
+   "research_topic_ids": [],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 20 clinical focus tags"
+  },
+  {
+   "id": "obstetrics-gynaecology:donald-angstetra",
+   "name": "A/Prof Donald Angstetra",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "mater",
+    "ranzcog_find"
+   ],
+   "tag_count": 13,
+   "publication_count": 10,
+   "openalex_author_id": "A5023742195",
+   "top_research_topics": [
+    "Grit, Self-Efficacy, and Motivation",
+    "Healthcare professionals’ stress and burnout",
+    "Stress and Burnout Research",
+    "Attachment and Relationship Dynamics",
+    "Breastfeeding Practices and Influences"
+   ],
+   "clinical_interest_ids": [
+    "endometriosis",
+    "pelvic-pain"
+   ],
+   "research_topic_ids": [],
+   "evidence_summary": "2 sources; 10 identifier-matched publications; 13 clinical focus tags"
+  },
+  {
+   "id": "psychiatry:raguraman-janakiraman",
+   "name": "Dr Raguraman Janakiraman",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 20,
+   "publication_count": 10,
+   "openalex_author_id": "A5050163267",
+   "top_research_topics": [
+    "Psychosomatic Disorders and Their Treatments",
+    "Schizophrenia research and treatment",
+    "Treatment of Major Depression",
+    "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+    "Electroconvulsive Therapy Studies"
+   ],
+   "clinical_interest_ids": [
+    "adhd",
+    "depression",
+    "anxiety",
+    "bipolar",
+    "psychosis",
+    "autism",
+    "chronic-pain"
+   ],
+   "research_topic_ids": [
+    "psychosis",
+    "depression",
+    "anxiety"
+   ],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 20 clinical focus tags; research on psychosis and schizophrenia, depression, anxiety"
+  },
+  {
+   "id": "obstetrics-gynaecology:alexandra-mowat",
+   "name": "Dr Alexandra Mowat",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "ramsay",
+    "ranzcog_find"
+   ],
+   "tag_count": 9,
+   "publication_count": 10,
+   "openalex_author_id": "A5059783819",
+   "top_research_topics": [
+    "Pelvic floor disorders treatments",
+    "Uterine Myomas and Treatments",
+    "Hernia repair and management",
+    "Surgical Simulation and Training",
+    "Assisted Reproductive Technology and Twin Pregnancy"
+   ],
+   "clinical_interest_ids": [
+    "pelvic-pain",
+    "ibs"
+   ],
+   "research_topic_ids": [
+    "pelvic-pain"
+   ],
+   "evidence_summary": "2 sources; 10 identifier-matched publications; 9 clinical focus tags; research on persistent pelvic pain"
+  },
+  {
+   "id": "psychiatry:soman-elangovan",
+   "name": "Prof Soman Elangovan",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 18,
+   "publication_count": 10,
+   "openalex_author_id": "A5091018567",
+   "top_research_topics": [
+    "Transcranial Magnetic Stimulation Studies",
+    "Artificial Intelligence in Healthcare and Education",
+    "Artificial Intelligence in Healthcare",
+    "Electroconvulsive Therapy Studies",
+    "Machine Learning in Healthcare"
+   ],
+   "clinical_interest_ids": [
+    "adhd",
+    "depression",
+    "anxiety",
+    "bipolar",
+    "psychosis"
+   ],
+   "research_topic_ids": [
+    "depression"
+   ],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 18 clinical focus tags; research on depression"
+  },
+  {
+   "id": "obstetrics-gynaecology:anusch-yazdani",
+   "name": "A/Prof Anusch Yazdani",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "mater",
+    "ranzcog_find"
+   ],
+   "tag_count": 7,
+   "publication_count": 10,
+   "openalex_author_id": "A5038582418",
+   "top_research_topics": [
+    "Reproductive Health and Technologies",
+    "Sperm and Testicular Function",
+    "Assisted Reproductive Technology and Twin Pregnancy",
+    "Male Reproductive Health Studies",
+    "Reproductive Biology and Fertility"
+   ],
+   "clinical_interest_ids": [
+    "endometriosis",
+    "pelvic-pain"
+   ],
+   "research_topic_ids": [],
+   "evidence_summary": "2 sources; 10 identifier-matched publications; 7 clinical focus tags"
+  },
+  {
+   "id": "psychiatry:timothy-leow",
+   "name": "Dr Timothy Leow",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 17,
+   "publication_count": 10,
+   "openalex_author_id": "A5058067792",
+   "top_research_topics": [
+    "Mindfulness and Compassion Interventions",
+    "Evasion and Academic Success Factors",
+    "Higher Education Research Studies",
+    "Posttraumatic Stress Disorder Research",
+    "Workplace Violence and Bullying"
+   ],
+   "clinical_interest_ids": [
+    "adhd",
+    "anxiety",
+    "trauma",
+    "substance-use"
+   ],
+   "research_topic_ids": [
+    "trauma"
+   ],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 17 clinical focus tags; research on trauma and ptsd"
+  },
+  {
+   "id": "obstetrics-gynaecology:rachael-nugent",
+   "name": "Dr Rachael Nugent",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "ramsay",
+    "ranzcog_find"
+   ],
+   "tag_count": 6,
+   "publication_count": 10,
+   "openalex_author_id": "A5077376211",
+   "top_research_topics": [
+    "Maternal and Perinatal Health Interventions",
+    "Anesthesia and Pain Management",
+    "Breastfeeding Practices and Influences",
+    "Gestational Diabetes Research and Management",
+    "Maternal and fetal healthcare"
+   ],
+   "clinical_interest_ids": [
+    "endometriosis",
+    "pelvic-pain"
+   ],
+   "research_topic_ids": [
+    "chronic-pain"
+   ],
+   "evidence_summary": "2 sources; 10 identifier-matched publications; 6 clinical focus tags; research on persistent pain"
+  },
+  {
+   "id": "psychiatry:rodney-marsh",
+   "name": "Dr Rodney Marsh",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 15,
+   "publication_count": 10,
+   "openalex_author_id": "A5026511628",
+   "top_research_topics": [
+    "Parkinson's Disease Mechanisms and Treatments",
+    "Neurological disorders and treatments",
+    "Anxiety, Depression, Psychometrics, Treatment, Cognitive Processes",
+    "Transcranial Magnetic Stimulation Studies",
+    "Dementia and Cognitive Impairment Research"
+   ],
+   "clinical_interest_ids": [
+    "depression",
+    "chronic-pain",
+    "fnd"
+   ],
+   "research_topic_ids": [
+    "depression",
+    "anxiety"
+   ],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 15 clinical focus tags; research on depression, anxiety"
+  },
+  {
+   "id": "obstetrics-gynaecology:tal-jacobson",
+   "name": "Dr Tal Jacobson",
+   "specialty": "obstetrics-gynaecology",
+   "sources": [
+    "mater",
+    "ranzcog_find"
+   ],
+   "tag_count": 6,
+   "publication_count": 10,
+   "openalex_author_id": "A5020687234",
+   "top_research_topics": [
+    "Ectopic Pregnancy Diagnosis and Management",
+    "Endometriosis Research and Treatment",
+    "Gynecological conditions and treatments",
+    "Medical Imaging and Pathology Studies",
+    "Urologic and reproductive health conditions"
+   ],
+   "clinical_interest_ids": [
+    "endometriosis",
+    "pelvic-pain"
+   ],
+   "research_topic_ids": [
+    "endometriosis"
+   ],
+   "evidence_summary": "2 sources; 10 identifier-matched publications; 6 clinical focus tags; research on endometriosis"
+  },
+  {
+   "id": "psychiatry:rang-rattehalli",
+   "name": "Dr Rang Rattehalli",
+   "specialty": "psychiatry",
+   "sources": [
+    "ranzcp-find"
+   ],
+   "tag_count": 14,
+   "publication_count": 10,
+   "openalex_author_id": "A5058286878",
+   "top_research_topics": [
+    "Schizophrenia research and treatment",
+    "Mental Health and Psychiatry",
+    "Treatment of Major Depression",
+    "Historical Psychiatry and Medical Practices",
+    "Psychiatric care and mental health services"
+   ],
+   "clinical_interest_ids": [
+    "adhd",
+    "depression",
+    "anxiety",
+    "bipolar",
+    "psychosis",
+    "trauma"
+   ],
+   "research_topic_ids": [
+    "psychosis",
+    "depression"
+   ],
+   "evidence_summary": "1 source; 10 identifier-matched publications; 14 clinical focus tags; research on psychosis and schizophrenia, depression"
+  }
+ ]
+}

@@ -88,7 +88,7 @@ export function Matches() {
               </div>
             </PhotoCard>
             <Gap h={16} />
-            <Body className="text-[16px]">{lineFor(card, res?.conditionLabels ?? {})}</Body>
+            <Body className="text-[16px]">{d.synthetic ? "Example. " : ""}{lineFor(card, res?.conditionLabels ?? {})}</Body>
           </div>
         );
       })}

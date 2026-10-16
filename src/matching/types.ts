@@ -18,9 +18,10 @@ export interface Observed<T> {
 
 /**
  * The specialties the roster holds today and the data layer keys its tables on. A doctor's
- * `specialty` is one of these.
+ * `specialty` is one of these. The last three are held only by illustrative (fictional) profiles
+ * in data/illustrative/ until real general-practice, pain and rheumatology records are ingested.
  */
-export type Specialty = "psychiatry" | "paediatrics" | "obstetrics-gynaecology";
+export type Specialty = "psychiatry" | "paediatrics" | "obstetrics-gynaecology" | "general-practice" | "pain-medicine" | "rheumatology";
 
 /**
  * Every Ahpra specialty / field of specialty practice the cross-specialty vocabulary

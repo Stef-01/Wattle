@@ -59,6 +59,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   openalex: "OpenAlex",
   supabase: "Wattle",
   claim: "the doctor",
+  illustrative: "Illustrative example",
 };
 
 export function sourceLabel(source: string): string {

@@ -13,6 +13,7 @@ import type { Capacity, Observed, Population, Telehealth, Location } from "@/src
 /** The three specialties the MVP lists. */
 export type MvpSpecialty = "psychiatry" | "paediatrics" | "obstetrics-gynaecology";
 import type { DoctorRecord, PersonalProfile, Publication, Room, SourceRef } from "./types";
+import { illustrativeEnabled, loadIllustrative } from "./illustrative";
 
 const ROOT = process.cwd();
 const SPECIALTIES: MvpSpecialty[] = ["psychiatry", "paediatrics", "obstetrics-gynaecology"];
@@ -128,7 +129,7 @@ function capacityOf(raw: Raw): { capacity: Capacity; weeks?: number; declared: b
   return { capacity: "unknown", declared: false };
 }
 
-function toRecord(raw: Raw, discipline: Discipline, pubs: Map<string, { publications: Publication[]; topics: string[] }>, personal: Map<string, PersonalProfile>): DoctorRecord | null {
+function toRecord(raw: Raw, discipline: Discipline, pubs: Map<string, { publications: Publication[]; topics: string[] }>, personal: Map<string, PersonalProfile>, deep: Map<string, DeepProfile> = loadDeepProfiles()): DoctorRecord | null {
   const rooms: Room[] = raw.locations
     .filter((l) => l.suburb && l.state && !/not practi/i.test(l.suburb))
     .map((l, i) => ({
@@ -185,6 +186,14 @@ function toRecord(raw: Raw, discipline: Discipline, pubs: Map<string, { publicat
     publications: enriched?.publications ?? [],
   };
   if (enriched && enriched.topics.length > 0) record.researchTopics = { value: enriched.topics, tier: "found", source: "openalex", observedAt: primary.observedAt.slice(0, 10) };
+  // Deeply enriched profiles (pipeline/enrich/deep_profiles.py): condition ids from the source's
+  // focus tags and from identifier-matched publications, so Layer 2's "clinical interests" and
+  // "research" signals fire. Closed vocabulary only; never prose from a source.
+  const d = deep.get(raw.id);
+  if (d) {
+    if (d.clinical.length > 0) record.clinicalInterests = observed(d.clinical, primary);
+    if (d.research.length > 0) record.researchTopics = { value: d.research, tier: "found", source: "openalex", observedAt: d.observedAt };
+  }
   if (raw.languages.length > 0) record.languages = observed(raw.languages, primary);
   if (cap.weeks !== undefined) record.waitlistWeeks = observed(cap.weeks, primary);
   if (raw.specialty === "psychiatry") record.referralRequired = observed(true, primary);
@@ -224,6 +233,28 @@ function loadPublications(): Map<string, { publications: Publication[]; topics: 
       out.set(row.provider_id, { publications, topics: row.research_topics ?? row.topics ?? [] });
     }
   }
+  return out;
+}
+
+type DeepProfile = { clinical: string[]; research: string[]; observedAt: string };
+
+type RawDeep = { generated_at?: string; doctors?: Array<{ id: string; clinical_interest_ids?: string[]; research_topic_ids?: string[] }> };
+
+let deepCache: Map<string, DeepProfile> | null = null;
+
+/** data/enriched/deep_profiles.json → id → closed condition ids. Empty when the file is absent. */
+function loadDeepProfiles(): Map<string, DeepProfile> {
+  if (deepCache) return deepCache;
+  const out = new Map<string, DeepProfile>();
+  const file = path.join(ROOT, "data", "enriched", "deep_profiles.json");
+  if (existsSync(file)) {
+    const parsed = JSON.parse(readFileSync(file, "utf8")) as RawDeep;
+    const observedAt = (parsed.generated_at ?? "2026-10-15").slice(0, 10);
+    for (const row of parsed.doctors ?? []) {
+      out.set(row.id, { clinical: row.clinical_interest_ids ?? [], research: row.research_topic_ids ?? [], observedAt });
+    }
+  }
+  deepCache = out;
   return out;
 }
 
@@ -272,14 +303,22 @@ function fromJsonl(): DoctorRecord[] {
   const discipline = mvpDiscipline();
   const pubs = loadPublications();
   const personal = loadPersonal();
+  const deep = loadDeepProfiles();
   const out: DoctorRecord[] = [];
   for (const specialty of SPECIALTIES) {
     for (const raw of readJsonl<Raw>(path.join(ROOT, "data", "providers", `${specialty}.jsonl`))) {
-      const record = toRecord(raw, discipline, pubs, personal);
+      const record = toRecord(raw, discipline, pubs, personal, deep);
       if (record) out.push(record);
     }
   }
   return out;
+}
+
+/** The fictional illustrative profiles, when the environment includes them (see illustrative.ts). */
+function withIllustrative(doctors: DoctorRecord[]): DoctorRecord[] {
+  if (!illustrativeEnabled()) return doctors;
+  const ids = new Set(doctors.map((d) => d.id));
+  return [...doctors, ...loadIllustrative(mvpDiscipline(), ROOT).filter((d) => !ids.has(d.id))];
 }
 
 // ---------------------------------------------------------------- Supabase (published_* views)
@@ -381,14 +420,14 @@ async function fromSupabase(env: { url: string; key: string }): Promise<DoctorRe
   }
 }
 
-/** Every real doctor with a Queensland room. Cached per server process. */
+/** Every real doctor with a Queensland room, plus the labelled illustrative examples when enabled. Cached per server process. */
 export async function getDoctors(): Promise<DoctorRecord[]> {
   const env = supabaseEnv();
   if (env) {
     const rows = await fromSupabase(env);
-    if (rows) return rows;
+    if (rows) return withIllustrative(rows);
   }
-  if (!cache) cache = fromJsonl();
+  if (!cache) cache = withIllustrative(fromJsonl());
   return cache;
 }
 
