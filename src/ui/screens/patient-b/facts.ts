@@ -1,7 +1,7 @@
 // Facts the P06–P11 screens render, each read from the record and never invented.
 // No fs here: client components import this file.
 import type { DoctorRecord, Publication } from "@/src/data/types";
-import { sourceLabel } from "@/src/data/types";
+import { asList, sourceLabel } from "@/src/data/types";
 import type { Reason, Tier } from "@/src/matching/types";
 
 /** "Dr. Jane Smith" → "Dr Jane Smith"; a bare name gets no honorific added. */
@@ -90,6 +90,7 @@ export function personalStatusLabel(d: Pick<DoctorRecord, "personal" | "name">):
   const p = d.personal;
   if (!p || p.status === "draft") return null;
   if (p.status === "doctor-approved") return `Approved by ${drShort(d)}${p.approvedAt ? ` ${p.approvedAt.slice(0, 10)}` : ""}`;
+  if (p.status === "published") return `${drShort(d)}’s own words, ${p.sourceName ?? "practice website"}${p.observedAt ? `, ${p.observedAt.slice(0, 10)}` : ""}`;
   return "Illustrative example, not this doctor’s words";
 }
 
@@ -152,4 +153,72 @@ export function contactOf(d: DoctorRecord): { phone: string | null; website: str
     website: withSite?.website ?? d.booking.url ?? null,
     room: room ? [room.name, room.suburb].filter(Boolean).join(", ") : null,
   };
+}
+
+/* ------------------------------------------------------ profile v3 (2026-10-16) */
+
+/** Plain-English title for a specialty, as patients say it. Pain medicine is an Ahpra specialty. */
+export const SPECIALTY_TITLE: Record<string, string> = {
+  psychiatry: "Psychiatrist",
+  paediatrics: "Paediatrician",
+  "obstetrics-gynaecology": "Gynaecologist",
+  "general-practice": "GP",
+  "pain-medicine": "Pain medicine physician",
+  rheumatology: "Rheumatologist",
+};
+export const specialtyTitle = (s: string): string => SPECIALTY_TITLE[s] ?? s.replace(/-/g, " ");
+
+/** The personal block a screen may show: anything but a draft. */
+export function personalOf(d: Pick<DoctorRecord, "personal">): NonNullable<DoctorRecord["personal"]> | null {
+  return d.personal && d.personal.status !== "draft" ? d.personal : null;
+}
+
+/** First-person-ish words: one quote under `max` words, preferring what they say about why or how, then the philosophy. */
+export function quoteOf(d: Pick<DoctorRecord, "personal">, max = 28): { text: string; about: string } | null {
+  const p = personalOf(d);
+  if (!p) return null;
+  const words = (t: string) => t.trim().split(/\s+/).length;
+  const order = ["approach", "why", "lived", "other", "hobbies"];
+  const quotes = (p.quotes ?? []).filter((q) => words(q.text) <= max).sort((a, b) => order.indexOf(a.about) - order.indexOf(b.about));
+  if (quotes[0]) return quotes[0];
+  const fallback = p.philosophyOfCare ?? p.philosophy ?? p.communicationApproach ?? p.whyMedicine ?? null;
+  return fallback ? { text: clip(fallback, 150), about: "approach" } : null;
+}
+
+export function clip(text: string, chars: number): string {
+  return text.length > chars ? `${text.slice(0, chars - 1).trimEnd()}…` : text;
+}
+
+/** Hobbies as short chips (first clause of each, under 5 words where possible). */
+export function hobbyChips(d: Pick<DoctorRecord, "personal">, max = 4): string[] {
+  const p = personalOf(d);
+  if (!p) return [];
+  return asList(p.hobbies)
+    .map((h) => h.split(/[,(;]/)[0]!.trim())
+    .filter(Boolean)
+    .map((h) => (h.split(/\s+/).length > 6 ? `${h.split(/\s+/).slice(0, 5).join(" ")}…` : h))
+    .slice(0, max);
+}
+
+/** "Open to new patients", "Telehealth", "$280" and "Referral needed", only what the record states. */
+export function practicalChips(d: DoctorRecord): string[] {
+  const out: string[] = [];
+  if (d.declared.capacity && d.capacity.value === "open") out.push("Open to new patients");
+  if (d.declared.capacity && d.capacity.value === "waitlist") out.push(d.waitlistWeeks ? `${d.waitlistWeeks.value}-week wait` : "Waitlist");
+  if (d.declared.telehealth && d.telehealth.value !== "none") out.push(d.telehealth.value === "only" ? "Telehealth only" : "Telehealth");
+  const fee = feeOf(d);
+  if (fee) out.push(`${fee} first visit`);
+  if (d.referralRequired?.value === true) out.push("Referral needed");
+  return out;
+}
+
+export const yearsLine = (d: DoctorRecord): string | null => (typeof d.yearsInSpecialty?.value === "number" ? `${d.yearsInSpecialty.value} yrs` : null);
+
+/** Where the words came from, for the profile footer. */
+export function wordsSource(d: Pick<DoctorRecord, "personal" | "name">): { text: string; href: string | null } | null {
+  const p = personalOf(d);
+  if (!p) return null;
+  if (p.status === "published") return { text: `${drShort(d)}’s own words, from ${p.sourceName ?? "their practice website"}, ${p.observedAt ?? ""}`.trim(), href: p.sourceUrl ?? null };
+  if (p.status === "doctor-approved") return { text: `Written and approved by ${drShort(d)}${p.approvedAt ? `, ${p.approvedAt.slice(0, 10)}` : ""}`, href: null };
+  return { text: "Illustrative example. Not a real doctor’s words.", href: null };
 }

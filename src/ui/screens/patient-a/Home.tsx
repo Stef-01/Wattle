@@ -1,11 +1,11 @@
 "use client";
 // P02 Home (225:17): greeting + avatar, the sentence field with mic and send, "Try" examples,
-// "Recent" rows, "Find my doctor" CTA over the tab bar. Submit runs POST /api/match and goes to
-// /heard with the response parked under a request id.
+// "Recent" rows, "Find my doctor" CTA over the tab bar. Submit runs POST /api/match and goes
+// straight to /results (one field, one gate, then cards) with the response parked under a request id.
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock, Cta, Divider, FieldBox, Gap, Pill, Pills, Row, Screen, SectionTitle, TabBar, Title, Mic, initialsOf } from "@/src/ui/kit";
-import { getDraft, getName, getRecent, setDraft, splashSeen, type RecentSearch } from "@/src/ui/store";
+import { getDraft, getName, getRecent, getRequest as getRecentRequest, setDraft, setRequest, splashSeen, type RecentSearch } from "@/src/ui/store";
 import { Dock } from "./Dock";
 import { EXAMPLES, runMatch } from "./lib";
 
@@ -48,7 +48,7 @@ export function Home() {
     try {
       setDraft(s);
       await runMatch({ sentence: s });
-      router.push("/heard");
+      router.push("/results");
     } catch {
       setError("Could not search just now.");
       setBusy(false);
@@ -141,7 +141,7 @@ export function Home() {
           <Gap h={8} />
           {recent.map((r) => (
             <div key={r.id}>
-              <Row icon={<Clock size={17} />} title={r.label} sub={`${r.matches} ${r.matches === 1 ? "match" : "matches"}`} href={`/heard?req=${encodeURIComponent(r.id)}`} />
+              <Row icon={<Clock size={17} />} title={r.label} sub={`${r.matches} ${r.matches === 1 ? "match" : "matches"}`} href={`/results`} onClick={() => { const q = getRecentRequest(r.id); if (q) setRequest(q); }} />
               <Divider />
             </div>
           ))}

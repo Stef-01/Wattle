@@ -170,6 +170,11 @@ export function humanFitFor(doctor: Doctor, intent: Intent, weightsInput: Readon
   const enjoys = personal?.enjoysServing ?? [];
   if (intent.population && enjoys.includes(intent.population)) {
     add({ text: `Says they particularly enjoy working with ${POPULATION_WORDS[intent.population]}`, field: "personal.enjoysServing", label: intent.population }, weights.populations);
+  } else if (personal && intent.population && doctor.populations.value.includes(intent.population)) {
+    // Added 2026-10-16: for a doctor WITH a profile, a declared population is the next best thing
+    // to "enjoys serving", so a paediatrician who sees children outranks a psychiatrist who lists
+    // adults only inside the same band. No profile stays neutral (score 0), as the rule says.
+    add({ text: `Sees ${POPULATION_WORDS[intent.population]}`, field: "populations", label: intent.population, tier: doctor.populations.tier }, weights.populations);
   }
   for (const id of intent.conditions) {
     if (enjoys.includes(id)) {

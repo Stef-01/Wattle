@@ -129,7 +129,7 @@ describe("Layer 2 invariants, for all inputs", () => {
             if (field === "personal.livedExperience") return w.livedExperience;
             if (field === "researchTopics") return w.research;
             if (field === "clinicalInterests") return w.clinicalInterests;
-            if (field === "personal.enjoysServing") return w.populations;
+            if (field === "personal.enjoysServing" || field === "populations") return w.populations;
             if (field === "personal") return 0;
             return w.philosophy;
           };

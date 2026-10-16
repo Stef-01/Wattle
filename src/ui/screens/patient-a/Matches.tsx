@@ -1,14 +1,18 @@
 "use client";
-// P05 Your matches (226:9): the ranked cards, 405 tall, heart bookmark top-right, a small caption
-// (name, suburb), one line from the reasons under each, the order-honesty note, then the tab bar.
-// Empty: the P10 "No strong match yet" section inline with the counts the engine reported.
+// Results (2026-10-16, v3): what we heard as a pill strip you can edit in place, two inline
+// toggles (telehealth only, all of Queensland), then the ranked cards. Empty: the "No strong
+// match yet" options with the counts the engine reported. Flow is Home → here → profile.
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { SearchResponse } from "@/src/data/search-types";
-import { Body, Circle, Cta, Divider, Gap, Heart, MapPin, PhotoCard, Row, Screen, SectionTitle, TabBar } from "@/src/ui/kit";
-import { getCurrentRequest, getSavedIds, toggleSavedId, type StoredRequest } from "@/src/ui/store";
+import { Body, Cta, Divider, Gap, Pill, Row, Screen, TabBar, TogglePill } from "@/src/ui/kit";
+import { getCurrentRequest, getSavedIds, setDraft, toggleSavedId, type StoredRequest } from "@/src/ui/store";
 import { Dock } from "./Dock";
-import { lineFor, REACH_KM, restoreCounts, runMatch, suburbOf } from "./lib";
+import { DoctorCard } from "./DoctorCard";
+import { heardPills, REACH_KM, restoreCounts, runMatch, withoutPill } from "./lib";
+
+const TELE = /,?\s*telehealth only\s*$/i;
 
 export function Matches() {
   const router = useRouter();
@@ -34,71 +38,78 @@ export function Matches() {
     }
   }
 
+  async function drop(pillId: string) {
+    if (!req || busy) return;
+    setBusy(true);
+    try {
+      setReq(await withoutPill(req, pillId));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const res: SearchResponse | null = req?.response ?? null;
   const cards = res?.cards ?? [];
+  const labels = res?.conditionLabels ?? {};
   const place = (res?.place.suburb ?? req?.suburb ?? "Brisbane").replace(/ City$/, "");
+  const pills = req ? heardPills(req) : [];
+  const teleOnly = req ? TELE.test(req.sentence) : false;
+  const anywhere = req?.anywhere === true;
 
   return (
     <Screen padBottom="pb-[110px]">
-      <SectionTitle right="Adjust" rightHref="/adjust">
-        Your matches
-      </SectionTitle>
+      <div className="flex items-center justify-between">
+        <h1 className="display text-[24px] text-ink">{cards.length > 0 ? `${cards.length} ${cards.length === 1 ? "doctor" : "doctors"} for you` : "Your matches"}</h1>
+        <Link href="/adjust" className="press-dim text-[14px] font-medium text-accent">Adjust</Link>
+      </div>
+      {req ? (
+        <>
+          <Gap h={12} />
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]" aria-label="What we heard">
+            {pills.map((p) => (
+              <Pill key={p.id} small on={p.must} onClick={p.removable ? () => void drop(p.id) : undefined}>
+                {p.label}{p.removable ? " ×" : ""}
+              </Pill>
+            ))}
+            <Link href="/" onClick={() => setDraft(req.sentence)} className="press inline-flex h-11 shrink-0 items-center rounded-pill px-4 text-[14px] font-medium text-accent">
+              Edit
+            </Link>
+          </div>
+          <Gap h={12} />
+          <div className="flex gap-2">
+            <TogglePill on={teleOnly} onChange={(v) => void rerun({ sentence: v ? `${req.sentence.replace(TELE, "")}, telehealth only` : req.sentence.replace(TELE, "") })}>
+              Telehealth only
+            </TogglePill>
+            <TogglePill on={anywhere} onChange={(v) => void rerun({ anywhere: v })}>
+              {anywhere ? "All of Queensland" : `${REACH_KM} km of ${place}`}
+            </TogglePill>
+          </div>
+          {res?.emergency ? (
+            <>
+              <Gap h={16} />
+              <Body className="text-[16px]">{res.emergency.note}</Body>
+            </>
+          ) : null}
+        </>
+      ) : null}
       <Gap h={24} />
       {missing ? <Body>No search yet.</Body> : null}
       {res && cards.length === 0 ? (
-        <Empty res={res} place={place} busy={busy} onWiden={() => void rerun({ anywhere: true })} onTelehealth={() => void rerun({ sentence: `${req!.sentence}, telehealth only` })} onChange={() => router.push("/heard")} onClosest={() => void rerun({ anywhere: true })} />
+        <Empty res={res} place={place} busy={busy} onWiden={() => void rerun({ anywhere: true })} onTelehealth={() => void rerun({ sentence: `${req!.sentence}, telehealth only` })} onChange={() => router.push("/")} onClosest={() => void rerun({ anywhere: true })} />
       ) : null}
-      {cards.map((card, i) => {
-        const d = card.doctor;
-        const isSaved = saved.includes(d.id);
-        const suburb = suburbOf(card);
-        return (
-          <div key={d.id}>
-            {i > 0 ? <div style={{ height: 28 }} aria-hidden="true" /> : null}
-            <PhotoCard
-              name={d.name.display}
-              photo={null}
-              height={405}
-              caption={false}
-              href={`/match/${i + 1}`}
-              topRight={
-                <span
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSaved(toggleSavedId(d.id));
-                  }}
-                >
-                  <Circle over label={isSaved ? "Remove from saved" : "Save"}>
-                    <Heart size={22} fill={isSaved ? "currentColor" : "none"} />
-                  </Circle>
-                </span>
-              }
-            >
-              <div className="absolute left-5 top-[310px] flex h-[75px] w-[224px] items-center rounded-[15px] bg-caption px-4 py-3 text-white shadow-[0_5px_4.5px_rgba(0,0,0,0.1)] backdrop-blur-[20px]">
-                <span className="flex min-w-0 flex-1 flex-col gap-2">
-                  <span className="truncate text-[16px] font-medium leading-normal">{d.name.display}</span>
-                  {suburb ? (
-                    <span className="inline-flex items-center gap-1.5 text-[14px] leading-normal text-caption-text">
-                      <MapPin size={16} />
-                      <span className="truncate">{suburb}</span>
-                    </span>
-                  ) : null}
-                </span>
-              </div>
-            </PhotoCard>
-            <Gap h={16} />
-            <Body className="text-[16px]">{d.synthetic ? "Example. " : ""}{lineFor(card, res?.conditionLabels ?? {})}</Body>
-          </div>
-        );
-      })}
+      <div className="flex flex-col gap-4" style={busy ? { opacity: 0.5, transition: "opacity 150ms ease" } : { transition: "opacity 150ms ease" }}>
+        {cards.map((card, i) => (
+          <DoctorCard key={card.doctor.id} card={card} labels={labels} index={i} saved={saved.includes(card.doctor.id)} onSave={() => setSaved(toggleSavedId(card.doctor.id))} />
+        ))}
+      </div>
       {res && cards.length > 0 ? (
         <>
-          <div style={{ height: 28 }} aria-hidden="true" />
-          <p className="text-[14px] leading-normal text-grey">{res.orderNote}</p>
+          <Gap h={16} />
+          <p className="caption text-[13px] leading-normal text-grey">{res.orderNote}</p>
+          {res.careGuidance ? <p className="pt-3 text-[14px] leading-normal text-grey">{res.careGuidance}</p> : null}
         </>
       ) : null}
-      <div className="frame-fixed pointer-events-none bottom-[88px] z-[9] h-[50px] bg-gradient-to-b from-white/0 to-white" aria-hidden="true" />
+      <div className="frame-fixed pointer-events-none bottom-[88px] z-[9] h-[40px] bg-gradient-to-b from-white/0 to-white" aria-hidden="true" />
       <TabBar active="/" />
     </Screen>
   );
@@ -114,7 +125,7 @@ function Empty({ res, place, busy, onWiden, onTelehealth, onChange, onClosest }:
         Within {REACH_KM} km of {place}
       </p>
       <Gap h={24} />
-      <Row title={`Widen to 50 km${count(n.widen, " doctors")}`} onClick={onWiden} />
+      <Row title={`Widen to all of Queensland${count(n.widen, " doctors")}`} onClick={onWiden} />
       <Divider />
       <Row title={`Include telehealth only${count(n.telehealth, "")}`} onClick={onTelehealth} />
       <Divider />

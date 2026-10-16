@@ -38,9 +38,12 @@ describe("the gazetteer covers what the roster claims", () => {
       s.lat > -28.3 && s.lat < -27.7 && s.lon > 153.15 && s.lon < 153.6;
     // O252: inner Brisbane, where GOALS Psychology is. Brisbane City used to be the single named
     // exception; a box is the same guard once there is more than one point in it.
-    const inBrisbane = (s: SuburbPoint) => s.lat > -27.6 && s.lat < -27.35 && s.lon > 152.9 && s.lon < 153.2;
+    // Widened 2026-10-16 to greater Brisbane (Caboolture to Logan, Ipswich to the bay) for the
+    // researched practices in src/geo/brisbane.ts, plus a Sunshine Coast box.
+    const inBrisbane = (s: SuburbPoint) => s.lat > -27.7 && s.lat < -27.05 && s.lon > 152.7 && s.lon < 153.3;
+    const inSunshineCoast = (s: SuburbPoint) => s.lat > -26.9 && s.lat < -26.3 && s.lon > 152.9 && s.lon < 153.2;
     for (const s of SUBURBS) {
-      expect(inSydney(s) || inEasternSuburbs(s) || inGoldCoast(s) || inBrisbane(s), `${s.suburb} is outside every focus area`).toBe(true);
+      expect(inSydney(s) || inEasternSuburbs(s) || inGoldCoast(s) || inBrisbane(s) || inSunshineCoast(s), `${s.suburb} is outside every focus area`).toBe(true);
       expect(s.postcode).toMatch(/^\d{4}$/);
     }
   });

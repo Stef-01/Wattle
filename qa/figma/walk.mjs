@@ -11,7 +11,7 @@ const BASE = (process.env.BASE ?? "http://localhost:3300").replace(/\/$/, "");
 const ORIGIN = new URL(BASE).origin;
 const OUT = path.resolve(process.env.OUT ?? "qa/figma/walk");
 fs.mkdirSync(OUT, { recursive: true });
-const SENTENCE = "I've had chronic pelvic pain for years. I feel like nobody listens. I want someone experienced with endometriosis who takes a collaborative approach, and ideally someone who understands what living with a chronic condition feels like.";
+const SENTENCE = "I've had chronic pelvic pain for years. I feel like nobody listens. I want someone experienced with endometriosis who takes a collaborative approach.";
 
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
@@ -31,13 +31,14 @@ const go = (route) => page.goto(route.startsWith(new URL(BASE).pathname) && new 
 await go("/splash"); await shot("P01-splash");
 await go("/"); await page.evaluate(() => localStorage.setItem("wattle.splash.seen", "true")); await go("/"); await shot("P02-home");
 await page.fill("textarea", SENTENCE); await shot("P02-home-filled");
-await page.click("text=Find my doctor"); await page.waitForURL(/\/heard/); await page.waitForTimeout(800); await shot("P03-heard");
-await page.click("text=Meet your matches"); await page.waitForURL(/\/match\/1/); await page.waitForTimeout(800); await shot("P04-match-1");
-await go("/match/2"); await shot("P04-match-2");
-await go("/results"); await page.waitForTimeout(800); await shot("P05-results");
-await go("/match/1"); await page.waitForTimeout(600);
+await page.click("text=Find my doctor"); await page.waitForURL(/\/results/); await page.waitForTimeout(900); await shot("P05-results");
 const first = (await page.locator("a[href*='/doctor/']").first().getAttribute("href")).replace(/\/$/, "");
-await go(first); await page.waitForTimeout(600); await shot("P06-profile");
+await go(first); await page.waitForTimeout(700); await shot("P06-profile");
+await page.evaluate(() => window.scrollBy(0, 700)); await page.waitForTimeout(300); await shot("P06-profile-2");
+for (const t of ["Research", "Practical", "Why this match"]) { const b = page.getByRole("button", { name: new RegExp(`^${t}`) }); if (await b.count()) await b.first().click(); }
+await page.waitForTimeout(400); await shot("P06-profile-open");
+await page.getByRole("button", { name: /Call .*rooms/ }).first().click(); await page.waitForTimeout(500); await shot("P06-contact");
+await go("/heard"); await shot("P03-heard");
 await go(`${first}/expertise`); await shot("P07-expertise");
 await go(`${first}/why`); await shot("P09-why");
 await go("/adjust"); await shot("P08-adjust");

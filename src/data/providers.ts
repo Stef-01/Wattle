@@ -14,6 +14,7 @@ import type { Capacity, Observed, Population, Telehealth, Location } from "@/src
 export type MvpSpecialty = "psychiatry" | "paediatrics" | "obstetrics-gynaecology";
 import type { DoctorRecord, PersonalProfile, Publication, Room, SourceRef } from "./types";
 import { illustrativeEnabled, loadIllustrative } from "./illustrative";
+import { withPublished } from "./published";
 
 const ROOT = process.cwd();
 const SPECIALTIES: MvpSpecialty[] = ["psychiatry", "paediatrics", "obstetrics-gynaecology"];
@@ -301,7 +302,7 @@ let cache: DoctorRecord[] | null = null;
 
 /** The file-backed roster exactly as getDoctors() serves it without Supabase. */
 export function buildRoster(): DoctorRecord[] {
-  return withIllustrative(fromJsonl());
+  return withIllustrative(withPublished(fromJsonl(), mvpDiscipline()));
 }
 
 function fromJsonl(): DoctorRecord[] {
@@ -430,7 +431,7 @@ export async function getDoctors(): Promise<DoctorRecord[]> {
   const env = supabaseEnv();
   if (env) {
     const rows = await fromSupabase(env);
-    if (rows) return withIllustrative(rows);
+    if (rows) return withIllustrative(withPublished(rows, mvpDiscipline()));
   }
   if (!cache) cache = buildRoster();
   return cache;

@@ -7,6 +7,7 @@ import { Children, type CSSProperties, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, Heart, Home, User } from "./icons";
 
 export * from "./icons";
+export * from "./bits";
 
 const cx = (...parts: Array<string | false | null | undefined>) => parts.filter(Boolean).join(" ");
 
@@ -251,7 +252,7 @@ export function PhotoCard({ name, place, fee, photo, height = 460, caption = tru
 /* ----------------------------------------------------------------- cta */
 
 /** CTA 373x66 r20 #1B1B1B, fixed to the frame bottom. `arrow` shows the trailing arrow. */
-export function Cta({ children, href, onClick, type = "button", arrow = true, icon, disabled, fixed = true, secondary }: { children: ReactNode; href?: string; onClick?: () => void; type?: "button" | "submit"; arrow?: boolean; icon?: ReactNode; disabled?: boolean; fixed?: boolean; secondary?: ReactNode }) {
+export function Cta({ children, href, onClick, type = "button", arrow = true, icon, disabled, fixed = true, secondary, note }: { children: ReactNode; href?: string; onClick?: () => void; type?: "button" | "submit"; arrow?: boolean; icon?: ReactNode; disabled?: boolean; fixed?: boolean; secondary?: ReactNode; note?: ReactNode }) {
   const cls = cx(
     "press flex h-[66px] w-full items-center justify-center gap-5 rounded-cta bg-ink text-[20px] font-medium text-white shadow-cta",
     disabled && "opacity-50",
@@ -270,7 +271,8 @@ export function Cta({ children, href, onClick, type = "button", arrow = true, ic
   if (!fixed) return button;
   return (
     <div className="frame-fixed pointer-events-none bottom-0 z-20">
-      <div className="frame-pad pointer-events-auto flex items-center gap-3 pb-[26px] pt-3">
+      {note ? <p className="frame-pad caption pointer-events-auto pb-2 text-center text-[12px] text-grey">{note}</p> : null}
+      <div className="frame-pad pointer-events-auto flex items-center gap-3 pb-[26px] pt-1">
         {secondary}
         {button}
       </div>

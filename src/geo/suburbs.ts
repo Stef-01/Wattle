@@ -26,6 +26,7 @@
 // ranking last. The two areas are hundreds of kilometres apart on purpose: distances are always
 // computed within an area, and a search resolves to whichever point the person names.
 
+import { BRISBANE } from "./brisbane";
 import { GOLD_COAST } from "./gold-coast";
 
 export interface SuburbPoint {
@@ -56,6 +57,7 @@ export const SUBURBS: readonly SuburbPoint[] = [
   { suburb: "Sydney", postcode: "2000", lat: -33.8688, lon: 151.2093 },
   // Focus area 2 — the Gold Coast, QLD: every suburb, from `./gold-coast` (O251).
   ...GOLD_COAST,
+  ...BRISBANE,
   // Focus area 4 — inner Brisbane, QLD (O252): GOALS Psychology, Fortitude Valley. Brisbane City
   // already sat in the Gold Coast table as a place people type; this is a room somebody visits.
   { suburb: "Fortitude Valley", postcode: "4006", lat: -27.4570, lon: 153.0340 },

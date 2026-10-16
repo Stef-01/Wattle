@@ -1,127 +1,192 @@
-// P06 Profile (226:58) and P11 Partial profile (226:366), one component branching on
-// `personal.status`. Server component: the record is read once, the client bits are small.
-// Hero 374x460 r25.5 at y=28, caption 331x104 r15, content at y=528, CTA 373x66 at y=810.
+// Doctor profile (v3, 2026-10-16). Order after the Headway / Grow / One Medical benchmark:
+// hero facts → the doctor's own words → how they work → outside the clinic → lived experience →
+// conditions → research → practical → why this match → where the words came from → call.
+// Everything visible comes from the record; long lists fold, prose clamps, nothing is invented.
+// Server component; the client bits (bookmark, clamp, disclosures, contact sheet) are small.
 import type { DoctorRecord } from "@/src/data/types";
 import { asList } from "@/src/data/types";
-import { Body, Circle, Divider, Fade, FigmaIcon, HeadingTabs, Hint, Row, Stat, initialsOf } from "@/src/ui/kit";
+import { Avatar, Chip, Chips, Circle, Clamp, Disclosure, FigmaIcon, Labelled, SourceRow } from "@/src/ui/kit";
 import { HeroScreen, Space } from "./bits";
-import { conditionLabels, drName, drShort, feeOf, joinLabels, papersLine, personalStatusLabel, placeOf, pronouns } from "./facts";
+import { clip, conditionLabels, drName, drShort, feeOf, hobbyChips, personalOf, placeOf, practicalChips, primaryRoom, pronouns, specialtyTitle, verifiedPublications, wordsSource, yearsLine } from "./facts";
 import { BookmarkCircle, ContactCta } from "./ProfileClient";
-import { doctorSlug } from "@/src/data/doctor-slug";
+import { ConditionChips } from "./ProfileBits";
+import { WhyInline } from "./WhyInline";
 
-function Hero({ d, photo }: { d: DoctorRecord; photo: string | null }) {
-  const fee = feeOf(d);
+function Header({ d }: { d: DoctorRecord }) {
   const name = drName(d);
+  const room = primaryRoom(d);
+  const line = [specialtyTitle(d.specialty), room?.name ?? null].filter(Boolean).join(" · ");
   return (
-    <div className="relative h-[460px] w-full overflow-hidden rounded-card shadow-photo" style={{ background: photo ? undefined : "#d9d9d9" }}>
-      {photo ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={photo} alt="" className="absolute inset-0 size-full object-cover" />
-      ) : (
-        <span className="absolute inset-0 flex items-center justify-center font-inter text-[24px] font-semibold text-grey">{initialsOf(name)}</span>
-      )}
-      <div className="absolute left-[21px] top-[18px]">
-        <Circle over href="/results" label="Back"><FigmaIcon name="arrow-left-22" size={22} /></Circle>
-      </div>
-      <div className="absolute right-[21px] top-[18px]">
+    <>
+      <div className="flex h-11 items-center justify-between">
+        <Circle href="/results" label="Back"><FigmaIcon name="arrow-left-22" size={22} /></Circle>
         <BookmarkCircle id={d.id} />
       </div>
-      <div className={`absolute inset-x-[21px] top-[327px] flex h-[104px] items-center gap-2.5 rounded-[15px] px-4 py-[18px] text-white shadow-[0_5px_4.5px_rgba(0,0,0,0.1)] ${photo ? "bg-caption backdrop-blur-[20px]" : "bg-[#1d1d1d]"}`}>
-        <span className="flex min-w-0 flex-1 flex-col gap-2.5">
-          <span className={`truncate font-inter font-semibold leading-normal ${name.length > 17 ? "text-[20px]" : "text-[24px]"}`}>{name}</span>
-          <span className="inline-flex items-center gap-1.5 text-[18px] leading-normal text-caption-text">
-            <FigmaIcon name="map-pin-18" size={18} />
-            <span className="truncate">{placeOf(d)}</span>
-          </span>
-        </span>
-        {fee ? (
-          <span className="flex shrink-0 flex-col items-end gap-1.5 leading-normal">
-            <span className="text-[16px] text-caption-text">Fee</span>
-            <span className="text-[24px] font-medium">{fee}</span>
-          </span>
-        ) : null}
+      <Space h={24} />
+      <div className="flex items-center gap-4">
+        <Avatar name={name} size={72} tone="ink" />
+        <div className="flex min-w-0 flex-col gap-1">
+          <h1 className="display text-[24px] leading-tight text-ink">{name}{d.synthetic ? " (example)" : ""}</h1>
+          <p className="text-[14px] leading-snug text-grey">{line}</p>
+          <p className="text-[14px] text-grey">{placeOf(d)}</p>
+        </div>
       </div>
+    </>
+  );
+}
+
+function Facts({ d }: { d: DoctorRecord }) {
+  const facts = [yearsLine(d), ...practicalChips(d)].filter(Boolean) as string[];
+  if (facts.length === 0) return null;
+  return (
+    <Chips>
+      {facts.map((f) => (
+        <Chip key={f} tone="line">{f}</Chip>
+      ))}
+    </Chips>
+  );
+}
+
+function Words({ d }: { d: DoctorRecord }) {
+  const p = personalOf(d);
+  if (!p) return null;
+  const pr = pronouns(d);
+  const philosophy = p.philosophyOfCare ?? p.philosophy ?? null;
+  const approach = p.communicationApproach ?? null;
+  const why = p.whyMedicine ?? null;
+  const lived = asList(p.livedExperience)[0] ?? null;
+  const hobbies = hobbyChips(d, 6);
+  const outside = p.outsideMedicine ?? null;
+  const quotes = (p.quotes ?? []).filter((q) => q.about === "hobbies" || q.about === "lived" || q.about === "why");
+  const hobbyQuote = quotes.find((q) => q.about === "hobbies")?.text ?? null;
+  const styles = (p.communication ?? []).map((c) => c.replace(/-/g, " "));
+  return (
+    <div className="flex flex-col gap-7">
+      {philosophy ? (
+        <Labelled label="In their words">
+          <Clamp text={`“${philosophy}”`} />
+        </Labelled>
+      ) : null}
+      {why ? (
+        <Labelled label="Why medicine">
+          <Clamp text={why} />
+        </Labelled>
+      ) : null}
+      {approach || styles.length ? (
+        <Labelled label={`How ${pr.subject} ${pr.practises}`}>
+          {styles.length ? (
+            <Chips>
+              {styles.map((s) => (
+                <Chip key={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</Chip>
+              ))}
+            </Chips>
+          ) : null}
+          {approach ? <p className="text-[16px] leading-[1.5] text-charcoal">{clip(approach, 220)}</p> : null}
+        </Labelled>
+      ) : null}
+      {hobbies.length || outside ? (
+        <Labelled label="Outside the clinic">
+          {hobbies.length ? (
+            <Chips>
+              {hobbies.map((h) => (
+                <Chip key={h}>{h}</Chip>
+              ))}
+            </Chips>
+          ) : null}
+          {outside ? <p className="text-[16px] leading-[1.5] text-charcoal">{outside}</p> : hobbyQuote ? <p className="text-[16px] leading-[1.5] text-charcoal">{clip(hobbyQuote, 200)}</p> : null}
+        </Labelled>
+      ) : null}
+      {lived ? (
+        <Labelled label="Lived experience">
+          <p className="text-[16px] leading-[1.5] text-charcoal">{clip(lived, 220)}</p>
+        </Labelled>
+      ) : null}
     </div>
   );
 }
 
-function Stats({ d }: { d: DoctorRecord }) {
-  const years = d.yearsInSpecialty?.value;
-  const tele = d.declared.telehealth ? (d.telehealth.value === "none" ? "In person" : "Telehealth") : null;
-  const referral = d.referralRequired?.value === true ? "Referral" : null;
-  const items: { icon: string; label: string }[] = [];
-  if (typeof years === "number") items.push({ icon: "clock", label: `${years} yrs` });
-  if (tele) items.push({ icon: "video", label: tele });
-  if (referral) items.push({ icon: "file", label: referral });
-  if (items.length === 0) return <Stat icon={<FigmaIcon name="file" size={17} />}>Not declared</Stat>;
+function Practical({ d }: { d: DoctorRecord }) {
+  const room = primaryRoom(d);
+  const fee = feeOf(d);
+  const rows: { k: string; v: string }[] = [];
+  if (fee) rows.push({ k: "First visit", v: fee });
+  if (d.declared.telehealth) rows.push({ k: "Telehealth", v: d.telehealth.value === "none" ? "In person only" : d.telehealth.value === "only" ? "Telehealth only" : d.telehealth.value === "first-appointment" ? "First visit by video" : "Available" });
+  if (d.referralRequired) rows.push({ k: "Referral", v: d.referralRequired.value ? "GP referral needed" : "Not needed" });
+  if (d.waitTimeText) rows.push({ k: "Wait", v: d.waitTimeText });
+  if (d.languages?.value.length) rows.push({ k: "Languages", v: d.languages.value.join(", ") });
+  if (room) rows.push({ k: "Rooms", v: [room.name, room.address, `${room.suburb} ${room.postcode}`.trim()].filter(Boolean).join(", ") });
+  if (rows.length === 0) return null;
   return (
-    <div className={`flex items-start ${items.length === 3 ? "justify-between" : "gap-10"}`}>
-      {items.map((s) => (
-        <Stat key={s.label} icon={<FigmaIcon name={s.icon} size={17} />}>{s.label}</Stat>
+    <Disclosure title="Practical" sub={rows.slice(0, 3).map((r) => r.v).join(" · ")}>
+      <dl className="flex flex-col gap-2">
+        {rows.map((r) => (
+          <div key={r.k} className="flex gap-4 text-[15px]">
+            <dt className="w-24 shrink-0 text-grey">{r.k}</dt>
+            <dd className="text-charcoal">{r.v}</dd>
+          </div>
+        ))}
+      </dl>
+    </Disclosure>
+  );
+}
+
+function Research({ d }: { d: DoctorRecord }) {
+  const pubs = verifiedPublications(d);
+  if (pubs.length === 0) return null;
+  return (
+    <Disclosure title="Research" sub={`${pubs.length} verified ${pubs.length === 1 ? "paper" : "papers"}`}>
+      {pubs.slice(0, 5).map((p) => (
+        <SourceRow key={p.title} icon={<FigmaIcon name="book" size={17} />} title={clip(p.title, 90)} sub={[p.venue, p.year].filter(Boolean).join(", ") || "Venue not recorded"} href={p.url} />
       ))}
-    </div>
+      {pubs.length > 5 ? <p className="pt-2 text-[13px] text-grey">And {pubs.length - 5} more, identifier-matched on OpenAlex.</p> : null}
+    </Disclosure>
   );
 }
 
 export function Profile({ doctor: d, labels, photo = null }: { doctor: DoctorRecord; labels: Record<string, string>; photo?: string | null }) {
-  const personal = d.personal && d.personal.status !== "draft" ? d.personal : null;
-  const id = doctorSlug(d.id);
+  void photo;
+  const personal = personalOf(d);
   const conditions = conditionLabels(d, labels);
-  const papers = papersLine(d);
+  const source = wordsSource(d);
   const pr = pronouns(d);
+  const referral = d.referralRequired?.value === true;
 
-  if (!personal) {
-    // P11: no personal profile yet. Grey hero, two heading tabs, stats, one honest line, CTA.
-    const lists = conditions.length > 0 ? `Lists ${joinLabels(conditions, 2, true)}.` : "No clinical focus listed yet.";
-    return (
-      <HeroScreen>
-        <Hero d={d} photo={photo} />
-        <Space h={40} />
-        <HeadingTabs items={[{ label: "Why you’ll connect", active: true }, { label: "Profile", href: `/doctor/${id}/expertise` }]} />
-        <Space h={32} />
-        <Stats d={d} />
-        <Space h={34} />
-        <Body>
-          {lists} {pr.hasnt} shared how {pr.subject} {pr.practises} yet.
-        </Body>
-        <ContactCta doctor={d} label={`Get to know ${drShort(d)}`} />
-      </HeroScreen>
-    );
-  }
-
-  // P06: a personal profile the doctor approved, or an illustrative example, labelled as such.
-  const quote = personal.philosophy ?? personal.philosophyOfCare ?? personal.communicationApproach ?? personal.whyMedicine ?? personal.purpose ?? null;
-  const practises = personal.communication?.length ? joinLabels(personal.communication.map((c) => c.replace(/-/g, " ")), 2) : "In their words";
-  const outside = asList(personal.hobbies)[0] ?? personal.outsideMedicine ?? null;
-  const expertise = [conditions.length ? joinLabels(conditions, 2) : "No clinical focus listed yet", papers].filter(Boolean).join(", ");
   return (
-    <HeroScreen>
-      <Hero d={d} photo={photo} />
-      <Space h={40} />
-      <HeadingTabs items={[{ label: "Overview", active: true }, { label: "Expertise", href: `/doctor/${id}/expertise` }, { label: "Care", href: `/doctor/${id}/why` }]} />
-      <Space h={26} />
-      <Stats d={d} />
-      <Space h={26} />
-      {quote ? (
-        <>
-          <Body>“{quote.length > 110 ? `${quote.slice(0, 107).trimEnd()}…` : quote}”</Body>
-          <Space h={6} />
-          <Hint>{personalStatusLabel(d)}</Hint>
-        </>
+    <HeroScreen padBottom="pb-[150px]">
+      <Header d={d} />
+      <Space h={20} />
+      <Facts d={d} />
+      <Space h={28} />
+      {personal ? (
+        <Words d={d} />
+      ) : (
+        <p className="text-[16px] leading-[1.5] text-grey">
+          {pr.hasnt} shared how {pr.subject} {pr.practises} yet. What is here comes from the public listing.
+        </p>
+      )}
+      <Space h={28} />
+      <Labelled label="Sees">
+        <ConditionChips items={conditions} />
+      </Labelled>
+      <Space h={16} />
+      <div className="border-t border-divider">
+        <Research d={d} />
+        <Practical d={d} />
+        <WhyInline doctor={d} />
+      </div>
+      <Space h={20} />
+      {source ? (
+        <p className="caption text-[12px] leading-normal text-grey">
+          {source.text}
+          {source.href ? (
+            <>
+              {" "}
+              <a href={source.href} target="_blank" rel="noreferrer" className="text-accent">Source</a>
+            </>
+          ) : null}
+        </p>
       ) : null}
-      <Space h={18} />
-      <Row title="Clinical expertise" sub={expertise} href={`/doctor/${id}/expertise`} />
-      <Divider />
-      <Row title={`How ${pr.subject} ${pr.practises}`} sub={practises} href={`/doctor/${id}/why`} />
-      <Divider />
-      {outside ? (
-        <>
-          <Row title="Outside medicine" sub={outside.length > 48 ? `${outside.slice(0, 45).trimEnd()}…` : outside} chevron={false} />
-          <Divider />
-        </>
-      ) : null}
-      <Fade />
-      <ContactCta doctor={d} label="Contact practice" />
+      <ContactCta doctor={d} label={`Call ${drShort(d)}’s rooms`} note={referral ? "Ask your GP for a referral first." : undefined} />
     </HeroScreen>
   );
 }

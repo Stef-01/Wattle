@@ -3,8 +3,9 @@
 // `synthetic: true`, `realPerson: false`, `personal.status: "illustrative"`, and every surface
 // labels it so (CLAUDE.md). No publications: a paper is never invented. Server only (fs).
 //
-// Included when WATTLE_INCLUDE_ILLUSTRATIVE is "1"/"true"; excluded when "0"/"false"; when
-// unset, on in development and when NEXT_PUBLIC_DEMO=1, off otherwise (production).
+// Included only when WATTLE_INCLUDE_ILLUSTRATIVE is "1"/"true". Off by default since
+// 2026-10-16: 29 real Queensland doctors with published personal bios (src/data/published.ts)
+// replaced the fictional fallback, and a fictional card must never outrank a real one.
 
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -41,8 +42,7 @@ const SOURCE = "illustrative";
 export function illustrativeEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   const flag = (env.WATTLE_INCLUDE_ILLUSTRATIVE ?? "").trim().toLowerCase();
   if (flag === "1" || flag === "true" || flag === "on") return true;
-  if (flag === "0" || flag === "false" || flag === "off") return false;
-  return env.NODE_ENV !== "production" || env.NEXT_PUBLIC_DEMO === "1";
+  return false;
 }
 
 function declared<T>(value: T, observedAt: string): Observed<T> {

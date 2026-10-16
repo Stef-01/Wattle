@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { lookup } from "@/src/data/api";
 import { doctorHref } from "@/src/data/doctor-slug";
 import type { DoctorRecord } from "@/src/data/types";
-import { Body, Divider, FieldBox, FigmaIcon, PhotoCard, Row, Screen, SectionTitle, TabBar } from "@/src/ui/kit";
+import { Avatar, Body, Chip, Chips, Divider, FieldBox, FigmaIcon, Heart, Row, Screen, SectionTitle, TabBar } from "@/src/ui/kit";
+import Link from "next/link";
 import { getName, getRecent, getRequest, getSavedIds, setName, setRequest, toggleSavedId, type RecentSearch } from "@/src/ui/store";
 import { Space } from "./bits";
-import { drName, placeOf, feeOf } from "./facts";
+import { drName, placeOf, practicalChips, quoteOf, specialtyTitle } from "./facts";
 
 const day = (iso: string) => {
   const d = new Date(iso);
@@ -64,24 +65,11 @@ export function Saved() {
       <SectionTitle>Saved</SectionTitle>
       <Space h={24} />
       {ids && ids.length === 0 ? <Body>Nothing saved yet.</Body> : null}
-      {doctors.map((d, i) => (
-        <div key={d.id}>
-          {i > 0 ? <Space h={28} /> : null}
-          <PhotoCard
-            name={drName(d)}
-            place={placeOf(d)}
-            fee={feeOf(d) ?? undefined}
-            photo={null}
-            height={240}
-            href={doctorHref(d.id)}
-            topRight={
-              <button type="button" aria-label="Remove bookmark" onClick={(e) => { e.preventDefault(); remove(d.id); }} className="inline-flex size-11 items-center justify-center rounded-full bg-caption text-white backdrop-blur-[20px]">
-                <FigmaIcon name="bookmark" size={22} />
-              </button>
-            }
-          />
-        </div>
-      ))}
+      <div className="flex flex-col gap-4">
+        {doctors.map((d, i) => (
+          <SavedCard key={d.id} doctor={d} index={i} onRemove={() => remove(d.id)} />
+        ))}
+      </div>
       <TabBar active="/saved" />
     </Screen>
   );
@@ -118,5 +106,35 @@ export function Me() {
       <p className="text-[14px] leading-[1.5] text-grey">One sentence finds Queensland doctors who list what you need. Every fact names its source and date. Nothing is rated or ranked by opinion.</p>
       <TabBar active="/me" />
     </Screen>
+  );
+}
+
+function SavedCard({ doctor: d, index, onRemove }: { doctor: DoctorRecord; index: number; onRemove: () => void }) {
+  const name = drName(d);
+  const quote = quoteOf(d);
+  const practical = practicalChips(d);
+  return (
+    <article className="rise relative rounded-[20px] border border-hairline bg-white p-5" style={{ "--i": index } as React.CSSProperties}>
+      <button type="button" aria-label="Remove from saved" onClick={onRemove} className="press absolute right-4 top-4 inline-flex size-10 items-center justify-center rounded-full bg-accent-soft text-accent">
+        <Heart size={20} fill="currentColor" />
+      </button>
+      <Link href={doctorHref(d.id)} className="press press-soft block">
+        <div className="flex items-center gap-4 pr-12">
+          <Avatar name={name} size={56} />
+          <div className="flex min-w-0 flex-col gap-1">
+            <h3 className="display truncate text-[19px] leading-tight text-ink">{name}</h3>
+            <p className="truncate text-[14px] text-grey">{[specialtyTitle(d.specialty), placeOf(d)].join(" · ")}</p>
+          </div>
+        </div>
+        {quote ? <p className="mt-4 text-[16px] leading-[1.5] text-charcoal">“{quote.text}”</p> : null}
+        {practical.length > 0 ? (
+          <Chips className="mt-3">
+            {practical.map((f) => (
+              <Chip key={f} tone="line">{f}</Chip>
+            ))}
+          </Chips>
+        ) : null}
+      </Link>
+    </article>
   );
 }

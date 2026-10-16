@@ -81,9 +81,19 @@ export interface PersonalProfile {
   outsideMedicine?: string;
   /** Closed `human_fit` labels derived from the free-text fields at build time (personal-labels.ts). */
   labels?: string[];
-  /** `draft` is unpublished (no consent yet) and reads as no profile. */
-  status: "draft" | "doctor-approved" | "illustrative";
+  /**
+   * `draft` is unpublished (no consent yet) and reads as no profile. `published` is the doctor's
+   * own words as they put them on their practice website (found tier): real, attributed to
+   * `sourceUrl`, and never edited beyond trimming.
+   */
+  status: "draft" | "doctor-approved" | "illustrative" | "published";
   approvedAt?: string;
+  /** For `published`: where the words were found, and when. */
+  sourceUrl?: string;
+  sourceName?: string;
+  observedAt?: string;
+  /** Short verbatim passages (under 60 words) from the same page, each tagged with what it is about. */
+  quotes?: { text: string; about: "hobbies" | "why" | "approach" | "lived" | "other" }[];
 }
 
 export type Population = "infant" | "child" | "adolescent" | "adult" | "older-adult" | "perinatal";
@@ -244,7 +254,7 @@ export interface HumanFit {
   score: number;
   reasons: Reason[];
   /** Where the personal data came from; "none" means no profile and a neutral score. */
-  basis: "doctor-approved" | "illustrative" | "none";
+  basis: "doctor-approved" | "illustrative" | "published" | "none";
 }
 
 export interface Ranked {
