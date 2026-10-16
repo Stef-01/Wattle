@@ -83,9 +83,11 @@ export function Home() {
     <Screen padBottom="pb-[190px]">
       <div className="flex items-center justify-between">
         <Title sub="Who are you looking for?">Hi, {display}</Title>
-        <span aria-hidden="true" className="inline-flex size-[50px] shrink-0 items-center justify-center rounded-full bg-charcoal font-inter text-[18px] font-semibold text-white">
-          {initials}
-        </span>
+        {initials ? (
+          <span aria-hidden="true" className="inline-flex size-[50px] shrink-0 items-center justify-center rounded-full bg-charcoal font-inter text-[18px] font-semibold text-white">
+            {initials}
+          </span>
+        ) : null}
       </div>
       <Gap h={38} />
       <form

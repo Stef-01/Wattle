@@ -9,7 +9,7 @@ import { doctorHref } from "@/src/data/doctor-slug";
 import { Avatar, Chip, Chips, Heart } from "@/src/ui/kit";
 import { drName, personalOf, practicalChips, quoteOf, specialtyTitle, yearsLine } from "@/src/ui/screens/patient-b/facts";
 import { listedOnly, matchChips } from "./card";
-import { placeLine } from "./lib";
+import { placeLine, suburbOf } from "./lib";
 
 function clinicalLine(card: Card, labels: Record<string, string>): string {
   if (listedOnly(card)) return `Listed under ${specialtyTitle(card.doctor.specialty).toLowerCase()}; no documented focus on this yet.`;
@@ -20,8 +20,9 @@ function clinicalLine(card: Card, labels: Record<string, string>): string {
 export function DoctorCard({ card, labels, saved, onSave, index = 0 }: { card: Card; labels: Record<string, string>; saved: boolean; onSave: () => void; index?: number }) {
   const d: DoctorRecord = card.doctor;
   const name = drName(d);
-  const place = placeLine(card);
-  const km = card.distanceKm !== undefined ? `${Math.round(card.distanceKm)} km` : null;
+  const near = card.distanceKm !== undefined && card.distanceKm <= 20;
+  const place = near ? suburbOf(card) : placeLine(card);
+  const km = card.distanceKm !== undefined ? `${Math.max(1, Math.round(card.distanceKm))} km` : d.telehealth.value === "only" ? "Telehealth" : null;
   const head = [specialtyTitle(d.specialty), place, km].filter(Boolean).join(" · ");
   const chips = matchChips(card);
   const quote = quoteOf(d);
@@ -55,7 +56,7 @@ export function DoctorCard({ card, labels, saved, onSave, index = 0 }: { card: C
           </Chips>
         ) : null}
         <p className="mt-4 text-[16px] leading-[1.5] text-charcoal">{quote ? `“${quote.text}”` : clinicalLine(card, labels)}</p>
-        {quote && personal ? <p className="caption mt-1 text-[12px] text-grey">{personal.status === "illustrative" ? "Illustrative example" : "Their own words"}</p> : null}
+        {quote && personal ? <p className="caption mt-1 text-[12px] text-grey">{personal.status === "illustrative" ? "Illustrative example" : personal.status === "published" ? `From ${personal.sourceName ?? "their practice website"}` : "In their words"}</p> : null}
         {practical.length > 0 ? <p className="mt-3 text-[13px] text-grey">{practical.join(" · ")}</p> : null}
       </Link>
     </article>

@@ -117,7 +117,7 @@ function Practical({ d }: { d: DoctorRecord }) {
   if (room) rows.push({ k: "Rooms", v: [room.name, room.address, `${room.suburb} ${room.postcode}`.trim()].filter(Boolean).join(", ") });
   if (rows.length === 0) return null;
   return (
-    <Disclosure title="Practical" sub={rows.slice(0, 3).map((r) => r.v).join(" · ")}>
+    <Disclosure title="Practical" sub={clip(rows.filter((r) => r.k !== "Rooms").slice(0, 3).map((r) => r.v).join(" · ") || rows[0]!.v, 64)}>
       <dl className="flex flex-col gap-2">
         {rows.map((r) => (
           <div key={r.k} className="flex gap-4 text-[15px]">

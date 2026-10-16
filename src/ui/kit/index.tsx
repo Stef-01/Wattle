@@ -270,9 +270,10 @@ export function Cta({ children, href, onClick, type = "button", arrow = true, ic
   );
   if (!fixed) return button;
   return (
-    <div className="frame-fixed pointer-events-none bottom-0 z-20">
+    <div className="frame-fixed pointer-events-none bottom-0 z-20 bg-white">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-12 h-12 bg-gradient-to-b from-white/0 to-white" />
       {note ? <p className="frame-pad caption pointer-events-auto pb-2 text-center text-[12px] text-grey">{note}</p> : null}
-      <div className="frame-pad pointer-events-auto flex items-center gap-3 pb-[26px] pt-1">
+      <div className="frame-pad pointer-events-auto flex items-center gap-3 pb-[26px] pt-2">
         {secondary}
         {button}
       </div>

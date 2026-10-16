@@ -60,6 +60,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   supabase: "Wattle",
   claim: "the doctor",
   illustrative: "Illustrative example",
+  "practice-website": "their practice website",
 };
 
 export function sourceLabel(source: string): string {

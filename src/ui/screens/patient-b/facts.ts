@@ -178,11 +178,13 @@ export function quoteOf(d: Pick<DoctorRecord, "personal">, max = 28): { text: st
   const p = personalOf(d);
   if (!p) return null;
   const words = (t: string) => t.trim().split(/\s+/).length;
-  const order = ["approach", "why", "lived", "other", "hobbies"];
-  const quotes = (p.quotes ?? []).filter((q) => words(q.text) <= max).sort((a, b) => order.indexOf(a.about) - order.indexOf(b.about));
+  const order = ["approach", "why", "lived", "other"];
+  const quotes = (p.quotes ?? []).filter((q) => words(q.text) <= max && q.about !== "hobbies").sort((a, b) => order.indexOf(a.about) - order.indexOf(b.about));
   if (quotes[0]) return quotes[0];
   const fallback = p.philosophyOfCare ?? p.philosophy ?? p.communicationApproach ?? p.whyMedicine ?? null;
-  return fallback ? { text: clip(fallback, 150), about: "approach" } : null;
+  if (fallback) return { text: clip(fallback, 150), about: "approach" };
+  const hobby = (p.quotes ?? []).find((q) => q.about === "hobbies" && words(q.text) <= max);
+  return hobby ?? null;
 }
 
 export function clip(text: string, chars: number): string {

@@ -10,12 +10,7 @@ export const DEFAULT_SUBURB = "Brisbane";
 export const REACH_KM = 20;
 
 /** The "Try" examples on P02. Each one surfaces Queensland doctors with published personal profiles. */
-export const EXAMPLES = [
-  "Endometriosis and pelvic pain, someone who really listens",
-  "Late-diagnosed ADHD, a doctor with lived experience",
-  "Menopause, longer appointments, the whole picture",
-  "Fibromyalgia, I feel dismissed, whole-person care",
-];
+export const EXAMPLES = ["Endometriosis, someone who listens", "ADHD, lived experience", "Menopause, longer appointments", "Fibromyalgia, whole-person care"];
 
 export async function runMatch(input: { sentence: string; suburb?: string; removed?: string[]; anywhere?: boolean; id?: string }): Promise<StoredRequest> {
   const suburb = input.anywhere ? "" : (input.suburb ?? DEFAULT_SUBURB);

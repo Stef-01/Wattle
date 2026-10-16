@@ -54,6 +54,13 @@ await go("/join/interview/3"); await shot("C05-question");
 await page.fill("textarea", "um I ask people to tell me the whole story before we talk about options, most have been rushed before"); await page.click("text=Next"); await page.waitForURL(/\/join\/draft\/3/); await page.waitForTimeout(500); await shot("C06-draft");
 await go("/join/share"); await shot("C07-share");
 await go("/join/review"); await shot("C08-review");
+// Laptop: the 560 px reading column on white.
+const lap = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+await lap.goto(`${BASE}/`); await lap.evaluate(() => localStorage.setItem("wattle.splash.seen", "true")); await lap.goto(`${BASE}/`);
+await lap.fill("textarea", SENTENCE); await lap.click("text=Find my doctor"); await lap.waitForURL(/\/results/); await lap.waitForTimeout(900);
+await lap.screenshot({ path: path.join(OUT, "99-laptop-results.png") }); shots.push({ name: "laptop-results", file: path.join(OUT, "99-laptop-results.png"), url: lap.url() });
+await lap.goto(`${ORIGIN}${first}`); await lap.waitForTimeout(700);
+await lap.screenshot({ path: path.join(OUT, "99-laptop-profile.png") }); shots.push({ name: "laptop-profile", file: path.join(OUT, "99-laptop-profile.png"), url: lap.url() });
 await browser.close();
 
 // contact sheet: 6 per row, each 215x466
