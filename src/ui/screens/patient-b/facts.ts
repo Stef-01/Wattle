@@ -1,0 +1,135 @@
+// Facts the P06–P11 screens render, each read from the record and never invented.
+// No fs here: client components import this file.
+import type { DoctorRecord, Publication } from "@/src/data/types";
+import { sourceLabel } from "@/src/data/types";
+import type { Reason, Tier } from "@/src/matching/types";
+
+/** "Dr. Jane Smith" → "Dr Jane Smith"; a bare name gets no honorific added. */
+export function drName(d: Pick<DoctorRecord, "name">): string {
+  return d.name.display.replace(/^Dr\.\s*/i, "Dr ").replace(/\s+/g, " ").trim();
+}
+
+/** "Dr Smith" for headings and CTAs. Falls back to the display name when no family name is known. */
+export function drShort(d: Pick<DoctorRecord, "name">): string {
+  return d.name.family ? `Dr ${d.name.family}` : drName(d);
+}
+
+/** Gendered pronouns only when the record declares a gender; otherwise "they". */
+export function pronouns(d: Pick<DoctorRecord, "gender">): { subject: string; practises: string; hasnt: string } {
+  const g = d.gender?.value;
+  if (g === "woman") return { subject: "she", practises: "practises", hasnt: "Hasn’t" };
+  if (g === "man") return { subject: "he", practises: "practises", hasnt: "Hasn’t" };
+  return { subject: "they", practises: "practise", hasnt: "Haven’t" };
+}
+
+/** First Queensland room, else the first room. */
+export function primaryRoom(d: Pick<DoctorRecord, "rooms">) {
+  return d.rooms.find((r) => r.state === "QLD") ?? d.rooms[0] ?? null;
+}
+
+export function placeOf(d: Pick<DoctorRecord, "rooms">): string {
+  const r = primaryRoom(d);
+  if (!r) return "Queensland";
+  const city = r.state === "QLD" ? "Brisbane" : r.state;
+  return r.suburb.toLowerCase() === city.toLowerCase() ? r.suburb : `${r.suburb}, ${city}`;
+}
+
+/** Declared or found fee as dollars, or null. Never estimated. */
+export function feeOf(d: Pick<DoctorRecord, "fees">): string | null {
+  const first = d.fees?.value?.[0];
+  if (!first || !Number.isFinite(first.amountCents)) return null;
+  return `$${Math.round(first.amountCents / 100)}`;
+}
+
+/** Only publications whose authorship is identifier-matched or doctor-confirmed reach the record. */
+export function verifiedPublications(d: Pick<DoctorRecord, "publications">): Publication[] {
+  return d.publications.filter((p) => p.verification === "identifier-matched" || p.verification === "doctor-confirmed");
+}
+
+export function papersLine(d: Pick<DoctorRecord, "publications">): string | null {
+  const n = verifiedPublications(d).length;
+  if (n === 0) return null;
+  return n === 1 ? "1 paper" : `${n} papers`;
+}
+
+/** The doctor's closed condition ids as yaml labels; falls back to the source's own tags. */
+export function conditionLabels(d: Pick<DoctorRecord, "conditions" | "focusTags">, labels: Record<string, string>): string[] {
+  const ids = d.conditions.value.map((id) => labels[id] ?? id.replace(/-/g, " "));
+  if (ids.length > 0) return ids;
+  return d.focusTags.value;
+}
+
+/** Sentence-cased, comma-joined, lower-cased after the first item ("Endometriosis, pelvic pain"). */
+export function joinLabels(items: string[], max = 3, lowerAll = false): string {
+  const shown = items.slice(0, max).map((s, i) => (i === 0 && !lowerAll ? s : s.charAt(0).toLowerCase() + s.slice(1)));
+  if (shown.length === 2) return `${shown[0]} and ${shown[1]}`;
+  return shown.join(", ");
+}
+
+/** Source ids that have no entry in SOURCE_LABELS read as a name, not a slug ("healthscope" → "Healthscope"). */
+export function niceSource(source: string): string {
+  const known = sourceLabel(source);
+  if (known !== source) return known;
+  return source.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export const TIER_WORD: Record<Tier, string> = { register: "register", declared: "declared", found: "found" };
+
+export interface SourceNote {
+  text: string;
+  href: string | null;
+}
+
+/** "RANZCOG, found 2026-10-15" for a tier badge on one line. */
+export function sourceNote(source: string, tier: Tier, date: string | undefined, href?: string | null): SourceNote {
+  const day = (date ?? "").slice(0, 10);
+  return { text: `${niceSource(source)}, ${TIER_WORD[tier]}${day ? ` ${day}` : ""}`, href: href ?? null };
+}
+
+export function personalStatusLabel(d: Pick<DoctorRecord, "personal" | "name">): string | null {
+  const p = d.personal;
+  if (!p || p.status === "draft") return null;
+  if (p.status === "doctor-approved") return `Approved by ${drShort(d)}${p.approvedAt ? ` ${p.approvedAt.slice(0, 10)}` : ""}`;
+  return "Illustrative example, not this doctor’s words";
+}
+
+/** Where a reason's evidence lives on the record, as a one-line source note. */
+export function sourceForReason(d: DoctorRecord, reason: Reason): SourceNote {
+  const f = reason.field;
+  const primary = d.sources[0];
+  if (f.startsWith("personal")) {
+    const label = personalStatusLabel(d) ?? "No personal profile yet";
+    return { text: label, href: null };
+  }
+  if (f === "researchTopics" || f === "publications") {
+    const pubs = verifiedPublications(d);
+    const years = pubs.map((p) => p.year).filter((y): y is number => typeof y === "number");
+    const span = years.length ? (Math.min(...years) === Math.max(...years) ? `${years[0]}` : `${Math.min(...years)} to ${Math.max(...years)}`) : "";
+    return { text: `OpenAlex, identifier-matched${span ? ` ${span}` : ""}`, href: pubs[0]?.url ?? null };
+  }
+  if (f === "conditions" || f === "clinicalInterests" || f === "focusTags" || f === "conditionsSometimes") {
+    const o = d.conditions;
+    return sourceNote(o.source, reason.tier ?? o.tier, o.observedAt, o.sourceUrl);
+  }
+  if (f === "manner" && d.manner) return sourceNote(d.manner.source, d.manner.tier, d.manner.observedAt, d.manner.sourceUrl);
+  if (f === "approaches" && d.approaches) return sourceNote(d.approaches.source, d.approaches.tier, d.approaches.observedAt, d.approaches.sourceUrl);
+  if (f === "telehealth") return sourceNote(d.telehealth.source, d.telehealth.tier, d.telehealth.observedAt, d.telehealth.sourceUrl);
+  if (f === "populations") return sourceNote(d.populations.source, d.populations.tier, d.populations.observedAt, d.populations.sourceUrl);
+  if (f === "register" || f === "specialty") {
+    if (d.register) return sourceNote("ahpra", "register", d.register.status.observedAt, d.register.registerUrl);
+  }
+  if (primary) return sourceNote(primary.source, reason.tier ?? "found", primary.observedAt, primary.sourceUrl);
+  return { text: "Source not recorded", href: null };
+}
+
+/** Practice contact facts from the rooms: phone and website, each with where it came from. */
+export function contactOf(d: DoctorRecord): { phone: string | null; website: string | null; room: string | null } {
+  const withPhone = d.rooms.find((r) => r.phone);
+  const withSite = d.rooms.find((r) => r.website);
+  const room = primaryRoom(d);
+  return {
+    phone: withPhone?.phone ?? d.booking.phone ?? null,
+    website: withSite?.website ?? d.booking.url ?? null,
+    room: room ? [room.name, room.suburb].filter(Boolean).join(", ") : null,
+  };
+}

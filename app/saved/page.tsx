@@ -1,8 +1,7 @@
-import { SavedList } from "@/src/ui/SavedList";
+import { Saved } from "@/src/ui/screens/patient-b/Tabs";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Saved · Wattle Health" };
+export const metadata = { title: "Saved · Wattle" };
 
 export default function SavedPage() {
-  return <SavedList />;
+  return <Saved />;
 }

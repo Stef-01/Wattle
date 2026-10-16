@@ -293,3 +293,62 @@ export function TabBar({ active }: { active: (typeof TABS)[number]["href"] }) {
     </nav>
   );
 }
+
+/* ---------------------------------------------------- patient-b additions (P06–P11) */
+// New exports only. Measured from P06 226:58, P07 226:132, P09 226:257 and P10 226:308.
+
+/** A downloaded Figma icon from public/figma/b, at its exported size. */
+export function FigmaIcon({ name, size, className }: { name: string; size: number; className?: string }) {
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={`/figma/b/${name}.svg`} alt="" width={size} height={size} aria-hidden="true" className={cx("block shrink-0", className)} />;
+}
+
+/** Row with a 34 r6 icon box, 16/14 text and an 18 px external-link to the source (P07 Research, P09 reasons). */
+export function SourceRow({ icon, title, sub, href }: { icon: ReactNode; title: ReactNode; sub?: ReactNode; href?: string | null }) {
+  return (
+    <div className="flex w-full items-center gap-[14px] py-[14px]">
+      <span className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-[6px] bg-surface text-charcoal">{icon}</span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="text-[16px] font-medium leading-normal text-charcoal">{title}</span>
+        {sub ? <span className="text-[14px] leading-normal text-grey">{sub}</span> : null}
+      </span>
+      {href ? (
+        <a href={href} target="_blank" rel="noreferrer" aria-label="Source" className="shrink-0 text-grey">
+          <FigmaIcon name="external" size={18} />
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
+/** Check item in a wrapping grid (P07 Conditions): 34 r6 box with tick + 16 px label. */
+export function CheckItem({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span className="inline-flex size-[34px] shrink-0 items-center justify-center rounded-[6px] bg-surface"><FigmaIcon name="check" size={17} /></span>
+      <span className="flex flex-col">
+        <span className="text-[16px] font-medium leading-normal text-grey">{children}</span>
+        {sub ? <span className="text-[12px] leading-normal text-grey">{sub}</span> : null}
+      </span>
+    </span>
+  );
+}
+
+/** The 70 px white fade above a fixed CTA (P06/P07 228:15). */
+export function Fade() {
+  return <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 bottom-[118px] z-10 mx-auto h-[70px] w-full max-w-[430px] bg-gradient-to-b from-white/0 to-white sm:absolute" />;
+}
+
+/** Bottom sheet over the frame (contact handoff). */
+export function Sheet({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-30 mx-auto w-full max-w-[430px] sm:absolute" role="dialog" aria-modal="true" aria-label={title}>
+      <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-ink/40" />
+      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-[25.5px] bg-white px-7 pb-[34px] pt-6">
+        <h2 className="display text-[20px] text-charcoal">{title}</h2>
+        {children}
+      </div>
+    </div>
+  );
+}
