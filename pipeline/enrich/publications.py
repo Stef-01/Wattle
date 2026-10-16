@@ -329,8 +329,12 @@ def score(rec: dict, author: dict, state: str | None) -> dict:
     last_known = [n for n, _ in (author.get("last_known_institutions") and
                                  [(i.get("display_name") or "", i.get("country_code")) for i in author["last_known_institutions"]] or [])]
     lki = author.get("last_known_institutions") or []
-    # no last-known institution on the profile: fall back to the affiliation history
-    au_last_known = ((lki[0].get("country_code") or "").upper() == "AU") if lki else au
+    # no last-known institution on the profile: fall back to the most recent affiliation
+    if lki:
+        au_last_known = (lki[0].get("country_code") or "").upper() == "AU"
+    else:
+        affs = author.get("affiliations") or []
+        au_last_known = bool(affs) and (((affs[0].get("institution") or {}).get("country_code") or "").upper() == "AU")
     hints = STATE_INSTITUTION_HINTS.get(state or "", ())
     state_hit = any(h in fold(n) for n, cc in insts if cc == "AU" for h in hints)
     overlap = topic_overlap(doctor_terms(rec), author_topic_names(author))

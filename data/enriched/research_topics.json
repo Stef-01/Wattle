@@ -1,8 +1,8 @@
 {
- "generated_at": "2026-10-16T02:27:54+00:00",
+ "generated_at": "2026-10-16T02:28:31+00:00",
  "input": "data/enriched/publications/2026-10-16.jsonl",
  "doctors_in_input": 876,
- "doctors_with_topics": 201,
+ "doctors_with_topics": 194,
  "field_note": "inferred_research_topics are OpenAlex topic labels counted across each doctor's most-cited works. They are inferred research topics only: not clinical interests, not declared by the doctor, and not evidence of clinical quality. Source: OpenAlex (CC0).",
  "doctors": {
   "obstetrics-gynaecology:adriana-olog": {
@@ -66,39 +66,6 @@
     },
     {
      "topic": "Gynecological conditions and treatments",
-     "works": 2,
-     "share": 0.2
-    }
-   ]
-  },
-  "obstetrics-gynaecology:akwasi-amoako": {
-   "name": "Dr. Akwasi Amoako",
-   "specialty": "obstetrics-gynaecology",
-   "openalex_author_id": "A5065312830",
-   "works_considered": 10,
-   "inferred_research_topics": [
-    {
-     "topic": "Cannabis and Cannabinoid Research",
-     "works": 5,
-     "share": 0.5
-    },
-    {
-     "topic": "Endometriosis Research and Treatment",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Reproductive System and Pregnancy",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Sperm and Testicular Function",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Ectopic Pregnancy Diagnosis and Management",
      "works": 2,
      "share": 0.2
     }
@@ -1534,72 +1501,6 @@
      "topic": "Urinary Bladder and Prostate Research",
      "works": 1,
      "share": 0.5
-    }
-   ]
-  },
-  "obstetrics-gynaecology:kanapathippillai-sivanesan": {
-   "name": "Dr. Kanapathippillai Sivanesan",
-   "specialty": "obstetrics-gynaecology",
-   "openalex_author_id": "A5008814656",
-   "works_considered": 10,
-   "inferred_research_topics": [
-    {
-     "topic": "Pelvic floor disorders treatments",
-     "works": 5,
-     "share": 0.5
-    },
-    {
-     "topic": "Gynecological conditions and treatments",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Ureteral procedures and complications",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Urinary Bladder and Prostate Research",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Hernia repair and management",
-     "works": 2,
-     "share": 0.2
-    }
-   ]
-  },
-  "obstetrics-gynaecology:karl-kristensen": {
-   "name": "Dr. Karl Kristensen",
-   "specialty": "obstetrics-gynaecology",
-   "openalex_author_id": "A5065492721",
-   "works_considered": 10,
-   "inferred_research_topics": [
-    {
-     "topic": "Pregnancy and preeclampsia studies",
-     "works": 6,
-     "share": 0.6
-    },
-    {
-     "topic": "Pregnancy-related medical research",
-     "works": 4,
-     "share": 0.4
-    },
-    {
-     "topic": "Gestational Diabetes Research and Management",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Neurological Complications and Syndromes",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Pregnancy and Medication Impact",
-     "works": 3,
-     "share": 0.3
     }
    ]
   },
@@ -3165,39 +3066,6 @@
     }
    ]
   },
-  "obstetrics-gynaecology:sinead-barry": {
-   "name": "Dr. Sinead Barry",
-   "specialty": "obstetrics-gynaecology",
-   "openalex_author_id": "A5016318990",
-   "works_considered": 10,
-   "inferred_research_topics": [
-    {
-     "topic": "Chronic Obstructive Pulmonary Disease (COPD) Research",
-     "works": 5,
-     "share": 0.5
-    },
-    {
-     "topic": "Cystic Fibrosis Research Advances",
-     "works": 5,
-     "share": 0.5
-    },
-    {
-     "topic": "Gestational Diabetes Research and Management",
-     "works": 4,
-     "share": 0.4
-    },
-    {
-     "topic": "Body Composition Measurement Techniques",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Cardiovascular and exercise physiology",
-     "works": 2,
-     "share": 0.2
-    }
-   ]
-  },
   "obstetrics-gynaecology:soheil-farnaghi": {
    "name": "Dr Soheil Farnaghi",
    "specialty": "obstetrics-gynaecology",
@@ -4431,39 +4299,6 @@
     }
    ]
   },
-  "psychiatry:carlos-hojaij": {
-   "name": "Prof Carlos Hojaij",
-   "specialty": "psychiatry",
-   "openalex_author_id": "A5043851975",
-   "works_considered": 10,
-   "inferred_research_topics": [
-    {
-     "topic": "Mental Health and Psychiatry",
-     "works": 6,
-     "share": 0.6
-    },
-    {
-     "topic": "Schizophrenia research and treatment",
-     "works": 6,
-     "share": 0.6
-    },
-    {
-     "topic": "Psychology and Mental Health",
-     "works": 3,
-     "share": 0.3
-    },
-    {
-     "topic": "Anesthesia and Pain Management",
-     "works": 1,
-     "share": 0.1
-    },
-    {
-     "topic": "Ethics and bioethics in healthcare",
-     "works": 1,
-     "share": 0.1
-    }
-   ]
-  },
   "psychiatry:catherine-llewellyn": {
    "name": "Dr Catherine Llewellyn",
    "specialty": "psychiatry",
@@ -4583,39 +4418,6 @@
      "topic": "Psychiatric care and mental health services",
      "works": 1,
      "share": 1.0
-    }
-   ]
-  },
-  "psychiatry:conor-o-luanaigh": {
-   "name": "Dr Conor O'Luanaigh",
-   "specialty": "psychiatry",
-   "openalex_author_id": "A5043230014",
-   "works_considered": 3,
-   "inferred_research_topics": [
-    {
-     "topic": "Alcoholism and Thiamine Deficiency",
-     "works": 1,
-     "share": 0.33
-    },
-    {
-     "topic": "Electroconvulsive Therapy Studies",
-     "works": 1,
-     "share": 0.33
-    },
-    {
-     "topic": "Healthcare Decision-Making and Restraints",
-     "works": 1,
-     "share": 0.33
-    },
-    {
-     "topic": "Intensive Care Unit Cognitive Disorders",
-     "works": 1,
-     "share": 0.33
-    },
-    {
-     "topic": "Pain Management and Opioid Use",
-     "works": 1,
-     "share": 0.33
     }
    ]
   },
@@ -5758,39 +5560,6 @@
      "topic": "Treatment of Major Depression",
      "works": 1,
      "share": 1.0
-    }
-   ]
-  },
-  "psychiatry:scott-newman": {
-   "name": "Dr Scott Newman",
-   "specialty": "psychiatry",
-   "openalex_author_id": "A5061609027",
-   "works_considered": 4,
-   "inferred_research_topics": [
-    {
-     "topic": "Caribbean and African Literature and Culture",
-     "works": 3,
-     "share": 0.75
-    },
-    {
-     "topic": "Postcolonial and Cultural Literary Studies",
-     "works": 3,
-     "share": 0.75
-    },
-    {
-     "topic": "Sound Studies and Aurality",
-     "works": 2,
-     "share": 0.5
-    },
-    {
-     "topic": "African history and culture studies",
-     "works": 1,
-     "share": 0.25
-    },
-    {
-     "topic": "Diverse Musicological Studies",
-     "works": 1,
-     "share": 0.25
     }
    ]
   },
