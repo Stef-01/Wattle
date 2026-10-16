@@ -17,6 +17,9 @@ importers:
       '@fontsource-variable/roboto':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/lobster':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/poppins':
         specifier: ^5.3.0
         version: 5.3.0
@@ -237,6 +240,9 @@ packages:
 
   '@fontsource-variable/roboto@5.3.0':
     resolution: {integrity: sha512-BoaaZiQf8fgtxv07KXkTwx1bKz/EoqIlTXq2OOKKXINxp6qXWdnlChqV+hSaDANS49yyUASFl3OVBMMDTCIHFA==}
+
+  '@fontsource/lobster@5.3.0':
+    resolution: {integrity: sha512-jt+RDk/8Sstl1Omhox62gTbvRSLbh06kn5BNfDFgf4rNuDPHF+19eWYFxzq5FsdkalbRJNtc5p5C3qE0+leNVg==}
 
   '@fontsource/poppins@5.3.0':
     resolution: {integrity: sha512-cms1nM7U6SN8epIV1WMVOV8VsA645aSm3wHfzIQnkk188U341ThbJGSl2Sv54V29gnDbT2arMPfLzvVIIVCceQ==}
@@ -1276,6 +1282,8 @@ snapshots:
   '@fontsource-variable/newsreader@5.3.0': {}
 
   '@fontsource-variable/roboto@5.3.0': {}
+
+  '@fontsource/lobster@5.3.0': {}
 
   '@fontsource/poppins@5.3.0': {}
 

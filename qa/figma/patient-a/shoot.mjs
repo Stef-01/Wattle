@@ -1,0 +1,50 @@
+// Playwright screenshots of P01–P05 at 430×932 against the dev server (pnpm dev, port 3300).
+import { chromium } from "@playwright/test";
+const base = process.env.BASE ?? "http://localhost:3300";
+const out = "qa/figma/patient-a";
+const browser = await chromium.launch();
+const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 1 });
+const shot = (name) => page.screenshot({ path: `${out}/${name}.png` });
+
+await page.goto(`${base}/splash`);
+await page.waitForTimeout(800);
+await shot("p01-splash");
+await page.evaluate(() => localStorage.setItem("wattle.name", JSON.stringify("Priya")));
+await page.click("main");
+await page.waitForURL(`${base}/`);
+await page.waitForTimeout(600);
+await shot("p02-home-empty");
+await page.getByRole("button", { name: "Endometriosis, someone who listens" }).click();
+await page.waitForURL(`${base}/heard`, { timeout: 120000 });
+await page.waitForSelector("text=Dark ones are must-haves.");
+await page.waitForTimeout(400);
+await shot("p03-heard");
+await page.getByRole("button", { name: "Meet your matches" }).click();
+await page.waitForURL(`${base}/match/1`);
+await page.waitForSelector("text=Fee");
+await page.waitForTimeout(400);
+await shot("p04-match-1");
+await page.keyboard.press("ArrowRight");
+await page.waitForURL(`${base}/match/2`);
+await page.waitForTimeout(500);
+await shot("p04-match-2");
+await page.goto(`${base}/results`);
+await page.waitForSelector("text=Your matches");
+await page.waitForTimeout(600);
+await shot("p05-results");
+await page.goto(`${base}/`);
+await page.waitForSelector("text=Recent");
+await page.waitForTimeout(400);
+await shot("p02-home-recent");
+// Empty state: park a response with no cards.
+await page.evaluate(() => {
+  const id = "empty";
+  const response = { order: "unserved", orderNote: "", cards: [], chips: [], clarifiers: [], place: { typed: "Brisbane", suburb: "Brisbane City" }, rosterSize: 876, unserved: [{ ask: "within 20 km", restoreCount: 12 }, { ask: "telehealth only", restoreCount: 4 }] };
+  sessionStorage.setItem("wattle.req.empty", JSON.stringify({ id, sentence: "x", suburb: "Brisbane", removed: [], response, at: "" }));
+  sessionStorage.setItem("wattle.req.current", JSON.stringify(id));
+});
+await page.goto(`${base}/results`);
+await page.waitForSelector("text=No strong match yet");
+await page.waitForTimeout(400);
+await shot("p05-results-empty");
+await browser.close();

@@ -1,8 +1,7 @@
-import { Results } from "@/src/ui/Results";
+import { Matches } from "@/src/ui/screens/patient-a/Matches";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Your doctors · Wattle Health" };
+export const metadata = { title: "Your matches · Wattle" };
 
 export default function ResultsPage() {
-  return <Results />;
+  return <Matches />;
 }
