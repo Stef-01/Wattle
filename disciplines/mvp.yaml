@@ -39,7 +39,7 @@ conditions:
   - id: endometriosis
     label: Endometriosis
     specialties: [obstetrics-gynaecology, general-practice, pain-medicine]
-    cues: [endometriosis, endo, adenomyosis, "painful periods", "period pain", "heavy periods", "pain with sex", dysmenorrhoea, laparoscopy, "endo excision"]
+    cues: [endometriosis, endo, adenomyosis, "painful periods", "period pain", "heavy periods", dysmenorrhoea, laparoscopy, "endo excision"]
   - id: pcos
     label: Polycystic ovary syndrome
     specialties: [obstetrics-gynaecology, endocrinology, general-practice]
@@ -51,7 +51,7 @@ conditions:
   - id: pelvic-pain
     label: Persistent pelvic pain
     specialties: [obstetrics-gynaecology, pain-medicine, general-practice]
-    cues: ["pelvic pain", "chronic pelvic pain", "persistent pelvic pain", vulvodynia, vaginismus, "pelvic floor", "bladder pain", "interstitial cystitis", "pain down there"]
+    cues: ["pelvic pain", "chronic pelvic pain", "persistent pelvic pain", "pain with sex", "painful sex", dyspareunia, vulvodynia, vaginismus, "pelvic floor", "bladder pain", "interstitial cystitis", "pain down there"]
   - id: menopause
     label: Menopause and perimenopause
     specialties: [obstetrics-gynaecology, endocrinology, general-practice]
@@ -190,7 +190,7 @@ emergency_cues:
   - "taken (all|too many) (pills|tablets)"
   - "heavy bleeding"
   - "bleeding heavily"
-  - "(thoughts|thinking) of (hurting|harming) (my|the) baby"
+  - "(thought|thoughts|thinking|think) (of|about) (hurting|harming) (my|the|our) baby"
 
 # Layer-1 manner (declared on the doctor record, ranks in the contributory tier).
 manner:
@@ -199,13 +199,13 @@ manner:
     cues: [direct, "straight talking", blunt, "tell it like it is", "no nonsense"]
   - id: gentle
     label: Gentle
-    cues: [gentle, warm, kind, "takes time", calm, "softly spoken"]
+    cues: [gentle, warm, "kind and", "takes time", calm, "softly spoken"]
   - id: collaborative
     label: Collaborative
     cues: [collaborative, "collaborative approach", "involve me", "explain things", "my say", "work together", "shared decision"]
   - id: lgbtq-affirming
     label: LGBTQ+ affirming
-    cues: [lgbt, lgbtq, lgbtqia, queer, "trans", transgender, "non-binary", gay, lesbian, affirming]
+    cues: ["trans woman", "trans man", "transgender woman", "transgender man", "trans person", lgbt, lgbtq, lgbtqia, queer, "trans", transgender, "non-binary", gay, lesbian, affirming]
   - id: culturally-safe
     label: Culturally safe
     cues: [aboriginal, "torres strait", indigenous, "first nations", "culturally safe", "my culture", "understands my background"]
@@ -223,7 +223,7 @@ human_fit:
     cues: [collaborative, "collaborative approach", "work together", "work with me", "partner with me", "shared decision", "involve me in decisions", "involve me", "my say", "decide together", "team with me"]
   - id: listens
     label: Listens and takes you seriously
-    cues: ["nobody listens", "no one listens", "noone listens", "not listened to", "actually listens", "really listens", "listens to me", "listen to me", dismissed, dismiss, dismissive, "dismiss how i feel", "dismiss how i'm feeling", "taken seriously", "take me seriously", "takes me seriously", "believes me", "believe me", "feel heard", "be heard", "not in my head", "all in my head", "not believed", "fobbed off", "brushed off", "written off", "ignored by doctors", "gaslit", "medical gaslighting"]
+    cues: ["nobody listens", "no one listens", "noone listens", "not listened to", "actually listens", "really listens", "listens to me", "listen to me", "someone who listens", "who listens", "will listen", "to listen", listens, dismissed, dismiss, dismissive, "dismiss how i feel", "dismiss how i'm feeling", "taken seriously", "take me seriously", "takes me seriously", "believes me", "believe me", "feel heard", "be heard", "not in my head", "all in my head", "not believed", "fobbed off", "brushed off", "written off", "ignored by doctors", "gaslit", "medical gaslighting"]
   - id: evidence-based
     label: Evidence-based
     cues: ["evidence based", "evidence-based", "based on evidence", "follows the evidence", "scientific approach", "the science", "latest guidelines", "guideline based"]
@@ -235,7 +235,7 @@ human_fit:
     cues: [direct, "straight talking", "straight talker", blunt, "tell it like it is", "tells it like it is", "no nonsense", "straight answers", "straight with me", "honest with me"]
   - id: gentle
     label: Gentle
-    cues: [gentle, warm, kind, "takes time", calm, "softly spoken", "patient with me", "not rushed", "doesn't rush", "won't rush me", "unhurried", "compassionate", "caring"]
+    cues: [gentle, warm, "kind and", "takes time", calm, "softly spoken", "patient with me", "not rushed", "doesn't rush", "won't rush me", "unhurried", "compassionate"]
   - id: lived-experience
     label: Lived experience
     cues: ["lived experience", "understands what living with", "understands what it's like", "understands what its like", "knows what it's like", "knows what its like", "been through it", "been through it themselves", "been there themselves", "has it themselves", "lives with it too", "lives with it themselves", "personal experience of", "from the inside", "first hand", "first-hand", "understands what living with a chronic condition"]

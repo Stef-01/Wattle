@@ -72,3 +72,37 @@ describe("loadDiscipline", () => {
     expect(() => loadDiscipline("nope")).toThrow();
   });
 });
+
+describe("mvp.yaml and the specialty set", () => {
+  it("loads mvp.yaml with specialties on every condition and a human_fit section", () => {
+    const d = loadDiscipline("mvp");
+    expect(d.slug).toBe("mvp");
+    expect(d.conditions.length).toBeGreaterThanOrEqual(24);
+    for (const condition of d.conditions) expect(condition.specialties.length).toBeGreaterThan(0);
+    expect(d.conditions.find((c) => c.id === "endometriosis")?.specialties).toEqual(["obstetrics-gynaecology", "general-practice", "pain-medicine"]);
+    expect(d.humanFit.map((g) => g.id)).toEqual([
+      "collaborative", "listens", "evidence-based", "holistic", "direct", "gentle", "lived-experience",
+      "lgbtq-affirming", "culturally-safe", "neurodiversity-affirming", "research-active", "long-appointments", "trauma-informed",
+    ]);
+  });
+
+  it("psychiatry.yaml carries no specialties and no human_fit, and still loads", () => {
+    const d = loadDiscipline("psychiatry");
+    expect(d.conditions.every((c) => c.specialties.length === 0)).toBe(true);
+    expect(d.humanFit).toEqual([]);
+  });
+
+  it("rejects an unknown specialty", () => {
+    const bad = minimal.replace("cues: [anxiety]", "cues: [anxiety]\n    specialties: [homeopathy]");
+    expect(() => parseDiscipline(bad)).toThrow(/unknown specialty "homeopathy"/);
+  });
+
+  it("no bare word the port's false-positive register flagged appears as an mvp cue", () => {
+    const d = loadDiscipline("mvp");
+    const bare = new Set(["ice", "flat", "checking", "court", "memory", "free", "patient"]);
+    for (const group of [...d.conditions, ...d.manner, ...d.humanFit]) {
+      for (const cue of group.cues) expect(bare.has(cue.toLowerCase()), `${group.id}: "${cue}"`).toBe(false);
+    }
+    for (const cues of Object.values(d.constraints)) for (const cue of cues) expect(bare.has(cue.toLowerCase())).toBe(false);
+  });
+});

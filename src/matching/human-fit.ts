@@ -11,6 +11,7 @@
 
 import type { Discipline } from "@/src/disciplines/load";
 import { buildLexicon, readNeeds, type Lexicon } from "./needs";
+import { collapsedCueSatisfied, findCue, tokenise, tokeniseKeepingStopwords } from "./read";
 
 const HUMAN_FIT_LEXICONS = new WeakMap<Discipline, Lexicon>();
 
@@ -43,6 +44,21 @@ export function readHumanFit(text: string, discipline: Discipline): string[] {
     if (signal.facet.kind === "manner") reached.add(signal.facet.trait);
   }
   return discipline.humanFit.map((group) => group.id).filter((id) => reached.has(id));
+}
+
+/**
+ * Whether one authored phrase is present in a text, through the lexicon's tokeniser and under
+ * the reader's collapse rule (O45): a multi-word phrase that ships as one content token ("this
+ * week" as [week], "live with" as [live]) fires only when the raw stream carries an adjacent
+ * authored pair, so "every week" and "their own lives" do not read as it. Used wherever a yaml
+ * or authored list is read outside the lexicon's own claiming pass.
+ */
+export function phrasePresent(text: string, phrase: string): boolean {
+  const tokens = tokenise(phrase);
+  if (tokens.length === 0) return false;
+  const collapsed = phrase.trim().split(/\s+/).length >= 2 && tokens.length <= 1;
+  if (collapsed && !collapsedCueSatisfied(tokeniseKeepingStopwords(text), tokeniseKeepingStopwords(phrase))) return false;
+  return findCue(tokenise(text), tokens) !== null;
 }
 
 /** The closed label for a human-fit id, or the id itself when the yaml does not declare it. */

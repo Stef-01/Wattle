@@ -18,11 +18,10 @@
 import type { Discipline } from "@/src/disciplines/load";
 import type { SuburbPoint } from "@/src/geo/suburbs";
 import type { Clinician } from "./clinician";
-import { readHumanFit } from "./human-fit";
+import { phrasePresent, readHumanFit } from "./human-fit";
 import { matchableLanguages } from "./languages";
 import { facetKey, hardAsks as hardAsksOf, isEmergency, languageNeeds, readNeeds, type Lexicon, type NeedSignal } from "./needs";
 import { nearestKm } from "./rank";
-import { findCue, tokenise } from "./read";
 import { isSpecialtyField, type ClinicalFit, type Doctor, type FilterReason, type Intent, type Population, type Reason, type SpecialtyField } from "./types";
 
 /** In-person reach: beyond this a doctor is out of reach unless they consult by telehealth. */
@@ -100,13 +99,9 @@ export function isMandatory(text: string, phrase: string): boolean {
   return lead.test(normalised) || trail.test(normalised);
 }
 
-/** Whether any cue in a yaml constraint list is present, through the lexicon's tokeniser. */
+/** Whether any cue in a yaml list is present (`phrasePresent`: tokeniser plus the collapse rule). */
 function anyCue(text: string, cues: readonly string[]): boolean {
-  const sentence = tokenise(text);
-  return cues.some((cue) => {
-    const tokens = tokenise(cue);
-    return tokens.length > 0 && findCue(sentence, tokens) !== null;
-  });
+  return cues.some((cue) => phrasePresent(text, cue));
 }
 
 /** Emergency → urgent (yaml `constraints.urgent`) → routine. */

@@ -11,13 +11,12 @@
 // yaml; `labelPersonal` throws otherwise, so a typo is a build failure and never a silent miss.
 
 import type { Discipline } from "@/src/disciplines/load";
-import { readHumanFit } from "./human-fit";
-import { findCue, tokenise } from "./read";
+import { phrasePresent, readHumanFit } from "./human-fit";
 import type { Doctor, PersonalProfile } from "./types";
 
 /** Doctor-side phrases → human_fit label id. Multi-word on purpose (see disciplines/mvp.yaml). */
 export const DOCTOR_PHRASES: Readonly<Record<string, readonly string[]>> = {
-  collaborative: ["shared decision", "shared decisions", "decide together", "work together", "work with you", "work alongside", "partnership with", "in partnership", "your goals", "you are the expert", "you know your body"],
+  collaborative: ["shared decision", "shared decisions", "decisions are shared", "decide together", "work together", "work with you", "work alongside", "partnership with", "in partnership", "your goals", "you are the expert", "you know your body"],
   listens: ["take time to listen", "time to listen", "listen first", "listen carefully", "listening", "take you seriously", "taken seriously", "believe you", "believe patients", "your experience is real", "never dismissed", "not dismissed", "you are not imagining"],
   "evidence-based": ["evidence based", "best available evidence", "current evidence", "guidelines", "what the research shows", "research informed", "research-informed"],
   holistic: ["whole person", "the whole person", "whole of life", "beyond the diagnosis", "more than a diagnosis", "mind and body", "biopsychosocial", "lifestyle", "sleep, movement", "not just the symptoms"],
@@ -31,10 +30,6 @@ export const DOCTOR_PHRASES: Readonly<Record<string, readonly string[]>> = {
   "long-appointments": ["longer appointments", "long appointments", "extended consultations", "longer consultations", "45 minute", "60 minute", "an hour", "enough time"],
   "trauma-informed": ["trauma informed", "trauma-informed", "trauma aware", "ask before", "explain before", "your consent", "consent at every step"],
 };
-
-const PHRASE_TOKENS: ReadonlyMap<string, readonly string[][]> = new Map(
-  Object.entries(DOCTOR_PHRASES).map(([label, phrases]) => [label, phrases.map((phrase) => tokenise(phrase)).filter((tokens) => tokens.length > 0)]),
-);
 
 /** The free-text fields the labeller reads, joined. Lived experience is presence-only and is NOT read. */
 function freeText(profile: PersonalProfile): string {
@@ -58,10 +53,9 @@ export function labelPersonal(profile: PersonalProfile, discipline: Discipline):
   }
   const text = freeText(profile);
   const reached = new Set<string>(readHumanFit(text, discipline));
-  const sentence = tokenise(text);
-  for (const [label, phrases] of PHRASE_TOKENS) {
+  for (const [label, phrases] of Object.entries(DOCTOR_PHRASES)) {
     if (reached.has(label)) continue;
-    if (phrases.some((tokens) => findCue(sentence, tokens) !== null)) reached.add(label);
+    if (phrases.some((phrase) => phrasePresent(text, phrase))) reached.add(label);
   }
   for (const label of profile.communication ?? []) reached.add(label);
   return discipline.humanFit.map((group) => group.id).filter((id) => reached.has(id));
