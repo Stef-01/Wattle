@@ -37,7 +37,7 @@ await go(first); await page.waitForTimeout(700); await shot("P06-profile");
 await page.evaluate(() => window.scrollBy(0, 700)); await page.waitForTimeout(300); await shot("P06-profile-2");
 for (const t of ["Research", "Practical", "Why this match"]) { const b = page.getByRole("button", { name: new RegExp(`^${t}`) }); if (await b.count()) await b.first().click(); }
 await page.waitForTimeout(400); await shot("P06-profile-open");
-await page.getByRole("button", { name: /Call .*rooms/ }).first().click(); await page.waitForTimeout(500); await shot("P06-contact");
+await page.getByRole("button", { name: /^Call to book/ }).first().click(); await page.waitForTimeout(500); await shot("P06-contact");
 await go("/heard"); await shot("P03-heard");
 await go(`${first}/expertise`); await shot("P07-expertise");
 await go(`${first}/why`); await shot("P09-why");

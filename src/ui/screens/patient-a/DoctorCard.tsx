@@ -6,8 +6,8 @@ import Link from "next/link";
 import type { Card } from "@/src/data/search-types";
 import type { DoctorRecord } from "@/src/data/types";
 import { doctorHref } from "@/src/data/doctor-slug";
-import { Avatar, Chip, Chips, Heart } from "@/src/ui/kit";
-import { drName, personalOf, practicalChips, quoteOf, specialtyTitle, yearsLine } from "@/src/ui/screens/patient-b/facts";
+import { Avatar, Check, Chip, Chips, Heart } from "@/src/ui/kit";
+import { clip, drName, personalOf, practicalChips, quoteOf, specialtyTitle, yearsLine } from "@/src/ui/screens/patient-b/facts";
 import { listedOnly, matchChips } from "./card";
 import { placeLine, suburbOf } from "./lib";
 
@@ -23,14 +23,14 @@ export function DoctorCard({ card, labels, saved, onSave, index = 0 }: { card: C
   const near = card.distanceKm !== undefined && card.distanceKm <= 20;
   const place = near ? suburbOf(card) : placeLine(card);
   const km = card.distanceKm !== undefined ? `${Math.max(1, Math.round(card.distanceKm))} km` : d.telehealth.value === "only" ? "Telehealth" : null;
-  const head = [specialtyTitle(d.specialty), place, km].filter(Boolean).join(" · ");
+  const tail = [place, km].filter(Boolean).map((t) => ` · ${t}`).join("");
   const chips = matchChips(card);
   const quote = quoteOf(d);
   const practical = [yearsLine(d), ...practicalChips(d)].filter(Boolean) as string[];
   const personal = personalOf(d);
 
   return (
-    <article className="rise relative rounded-[20px] border border-hairline bg-white p-5" style={{ "--i": index } as React.CSSProperties}>
+    <article className="rise relative rounded-[20px] border border-hairline bg-white p-4 pt-5" style={{ "--i": index } as React.CSSProperties}>
       <button
         type="button"
         aria-label={saved ? "Remove from saved" : "Save"}
@@ -44,20 +44,19 @@ export function DoctorCard({ card, labels, saved, onSave, index = 0 }: { card: C
         <div className="flex items-center gap-4 pr-12">
           <Avatar name={name} size={56} />
           <div className="flex min-w-0 flex-col gap-1">
-            <h3 className="display truncate text-[19px] leading-tight text-ink">{name}{d.synthetic ? " (example)" : ""}</h3>
-            <p className="truncate text-[14px] text-grey">{head}</p>
+            <h3 className="display line-clamp-2 text-[20px] leading-[1.15] tracking-[-0.015em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h3>
+            <p className="truncate text-[15px] text-charcoal">{specialtyTitle(d.specialty)}<span className="text-grey">{tail}</span></p>
           </div>
         </div>
         {chips.length > 0 ? (
           <Chips className="mt-4">
             {chips.map((c) => (
-              <Chip key={c} tone="match">{c}</Chip>
+              <Chip key={c} tone="soft"><Check size={14} className="mr-1 text-accent" />{c}</Chip>
             ))}
           </Chips>
         ) : null}
-        <p className="mt-4 text-[16px] leading-[1.5] text-charcoal">{quote ? `“${quote.text}”` : clinicalLine(card, labels)}</p>
-        {quote && personal ? <p className="caption mt-1 text-[12px] text-grey">{personal.status === "illustrative" ? "Illustrative example" : personal.status === "published" ? `From ${personal.sourceName ?? "their practice website"}` : "In their words"}</p> : null}
-        {practical.length > 0 ? <p className="mt-3 text-[13px] text-grey">{practical.join(" · ")}</p> : null}
+        <p className="mt-3 text-[15px] leading-[1.45] text-charcoal">{quote ? `“${clip(quote.text, 110)}”` : clinicalLine(card, labels)}</p>
+        {practical.length > 0 || (personal && personal.status === "illustrative") ? <p className="caption mt-2 text-[12px] text-grey">{[personal?.status === "illustrative" ? "Illustrative example" : null, ...practical].filter(Boolean).join(" · ")}</p> : null}
       </Link>
     </article>
   );

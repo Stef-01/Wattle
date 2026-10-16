@@ -195,8 +195,19 @@ export function quoteOf(d: Pick<DoctorRecord, "personal">, max = 28): { text: st
   return hobby ?? null;
 }
 
+/** Clip on a word boundary, so a cut never lands mid-word. */
 export function clip(text: string, chars: number): string {
-  return text.length > chars ? `${text.slice(0, chars - 1).trimEnd()}…` : text;
+  if (text.length <= chars) return text;
+  const head = text.slice(0, chars - 1);
+  const cut = head.lastIndexOf(" ") > chars * 0.6 ? head.slice(0, head.lastIndexOf(" ")) : head;
+  return `${cut.replace(/[,;:\s]+$/, "")}…`;
+}
+
+/** A human_fit id as a label ("lgbtq-affirming" → "LGBTQ+ affirming"). */
+export function styleLabel(id: string): string {
+  const special: Record<string, string> = { "lgbtq-affirming": "LGBTQ+ affirming", "evidence-based": "Evidence-based", "research-active": "Research active", "trauma-informed": "Trauma-informed", "neurodiversity-affirming": "Neurodiversity-affirming", "culturally-safe": "Culturally safe", "long-appointments": "Longer appointments", "lived-experience": "Lived experience" };
+  const s = special[id] ?? id.replace(/-/g, " ");
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 /** Hobbies as short chips (first clause of each, under 5 words where possible). */

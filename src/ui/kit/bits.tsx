@@ -54,8 +54,8 @@ export function Chips({ children, className }: { children: ReactNode; className?
 /** Labelled section: a 12 px caption label, then the content. Keeps facts flat and scannable. */
 export function Labelled({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
-    <section className={cx("flex flex-col gap-2", className)}>
-      <h2 className="caption font-sans text-[12px] font-medium uppercase tracking-[0.06em] text-grey">{label}</h2>
+    <section className={cx("flex flex-col gap-3", className)}>
+      <h2 className="font-sans text-[13px] font-semibold uppercase tracking-[0.04em] text-charcoal/70">{label}</h2>
       {children}
     </section>
   );

@@ -7,7 +7,7 @@ import type { DoctorRecord } from "@/src/data/types";
 import { asList } from "@/src/data/types";
 import { Avatar, Chip, Chips, Circle, Clamp, Disclosure, FigmaIcon, Labelled, SourceRow } from "@/src/ui/kit";
 import { HeroScreen, Space } from "./bits";
-import { clip, conditionLabels, drName, drShort, feeOf, hobbyChips, personalOf, placeOf, practicalChips, primaryRoom, pronouns, specialtyTitle, verifiedPublications, wordsSource, yearsLine } from "./facts";
+import { clip, conditionLabels, styleLabel, drName, drShort, feeOf, hobbyChips, personalOf, placeOf, practicalChips, primaryRoom, pronouns, specialtyTitle, verifiedPublications, wordsSource, yearsLine } from "./facts";
 import { BookmarkCircle, ContactCta } from "./ProfileClient";
 import { ConditionChips } from "./ProfileBits";
 import { WhyInline } from "./WhyInline";
@@ -24,9 +24,9 @@ function Header({ d }: { d: DoctorRecord }) {
       </div>
       <Space h={24} />
       <div className="flex items-center gap-4">
-        <Avatar name={name} size={72} tone="ink" />
+        <Avatar name={name} size={64} />
         <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="display text-[24px] leading-tight text-ink">{name}{d.synthetic ? " (example)" : ""}</h1>
+          <h1 className="display text-[28px] leading-[1.1] tracking-[-0.02em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h1>
           <p className="text-[14px] leading-snug text-grey">{line}</p>
           <p className="text-[14px] text-grey">{placeOf(d)}</p>
         </div>
@@ -38,13 +38,7 @@ function Header({ d }: { d: DoctorRecord }) {
 function Facts({ d }: { d: DoctorRecord }) {
   const facts = [yearsLine(d), ...practicalChips(d)].filter(Boolean) as string[];
   if (facts.length === 0) return null;
-  return (
-    <Chips>
-      {facts.map((f) => (
-        <Chip key={f} tone="line">{f}</Chip>
-      ))}
-    </Chips>
-  );
+  return <p className="text-[14px] leading-[1.5] text-grey">{facts.join(" · ")}</p>;
 }
 
 function Words({ d }: { d: DoctorRecord }) {
@@ -59,9 +53,9 @@ function Words({ d }: { d: DoctorRecord }) {
   const outside = p.outsideMedicine ?? null;
   const quotes = (p.quotes ?? []).filter((q) => q.about === "hobbies" || q.about === "lived" || q.about === "why");
   const hobbyQuote = quotes.find((q) => q.about === "hobbies")?.text ?? null;
-  const styles = (p.communication ?? []).map((c) => c.replace(/-/g, " "));
+  const styles = (p.communication ?? []).map(styleLabel);
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-8">
       {philosophy ? (
         <Labelled label="In their words">
           <Clamp text={`“${philosophy}”`} />
@@ -77,11 +71,11 @@ function Words({ d }: { d: DoctorRecord }) {
           {styles.length ? (
             <Chips>
               {styles.map((s) => (
-                <Chip key={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</Chip>
+                <Chip key={s}>{s}</Chip>
               ))}
             </Chips>
           ) : null}
-          {approach ? <p className="text-[16px] leading-[1.5] text-charcoal">{clip(approach, 220)}</p> : null}
+          {approach && !styles.length ? <p className="text-[16px] leading-[1.5] text-charcoal">{clip(approach, 220)}</p> : null}
         </Labelled>
       ) : null}
       {hobbies.length || outside ? (
@@ -186,7 +180,7 @@ export function Profile({ doctor: d, labels, photo = null }: { doctor: DoctorRec
           ) : null}
         </p>
       ) : null}
-      <ContactCta doctor={d} label={`Call ${drShort(d)}’s rooms`} note={referral ? "Ask your GP for a referral first." : undefined} />
+      <ContactCta doctor={d} label="Call to book" note={referral ? "GP referral needed first" : undefined} />
     </HeroScreen>
   );
 }

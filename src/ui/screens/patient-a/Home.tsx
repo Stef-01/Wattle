@@ -82,7 +82,7 @@ export function Home() {
   return (
     <Screen padBottom="pb-[190px]">
       <div className="flex items-center justify-between">
-        <Title sub="Who are you looking for?">Hi, {display}</Title>
+        <Title>{name ? `Hi, ${display}.` : "Who do you need?"}</Title>
         {initials ? (
           <span aria-hidden="true" className="inline-flex size-[50px] shrink-0 items-center justify-center rounded-full bg-charcoal font-inter text-[18px] font-semibold text-white">
             {initials}
@@ -98,7 +98,7 @@ export function Home() {
       >
         <FieldBox className="flex flex-col gap-6 pb-[18px] pl-[31px] pr-6 pt-[22px]">
           <label className="sr-only" htmlFor="sentence">
-            Describe it in your own words
+            Describe who you need, in your own words
           </label>
           <textarea
             id="sentence"
@@ -112,7 +112,7 @@ export function Home() {
                 void submit(text);
               }
             }}
-            placeholder="Describe it in your own words"
+            placeholder="Endometriosis, someone who listens"
             className="w-full resize-none bg-transparent text-[16px] font-medium leading-[1.5] text-charcoal outline-none placeholder:text-grey"
           />
           <div className="flex items-center justify-between">

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { SearchResponse } from "@/src/data/search-types";
-import { Body, Cta, Divider, Gap, Pill, Row, Screen, TabBar, TogglePill } from "@/src/ui/kit";
+import { Body, Cta, Divider, Gap, Row, Screen, Sliders, TabBar, TogglePill } from "@/src/ui/kit";
 import { getCurrentRequest, getSavedIds, setDraft, toggleSavedId, type StoredRequest } from "@/src/ui/store";
 import { Dock } from "./Dock";
 import { DoctorCard } from "./DoctorCard";
@@ -59,19 +59,19 @@ export function Matches() {
   return (
     <Screen padBottom="pb-[110px]">
       <div className="flex items-center justify-between">
-        <h1 className="display text-[24px] text-ink">{cards.length > 0 ? `${cards.length} ${cards.length === 1 ? "doctor" : "doctors"} for you` : "Your matches"}</h1>
-        <Link href="/adjust" className="press-dim text-[14px] font-medium text-accent">Adjust</Link>
+        <h1 className="display text-[28px] tracking-[-0.02em] text-ink">{cards.length > 0 ? `${cards.length} ${cards.length === 1 ? "doctor" : "doctors"} for you` : "Your matches"}</h1>
+        <Link href="/adjust" className="press-dim -mr-2 inline-flex h-11 items-center gap-1.5 px-2 text-[15px] font-medium text-accent"><Sliders size={16} />Adjust</Link>
       </div>
       {req ? (
         <>
           <Gap h={12} />
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]" aria-label="What we heard">
             {pills.map((p) => (
-              <Pill key={p.id} small on={p.must} onClick={p.removable ? () => void drop(p.id) : undefined}>
-                {p.label}{p.removable ? " ×" : ""}
-              </Pill>
+              <button key={p.id} type="button" disabled={!p.removable} onClick={p.removable ? () => void drop(p.id) : undefined} className={`press inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[14px] font-medium ${p.must ? "bg-surface text-charcoal" : "bg-surface-soft text-grey"}`}>
+                {p.label}{p.removable ? <span aria-hidden="true" className="text-grey">×</span> : null}
+              </button>
             ))}
-            <Link href="/" onClick={() => setDraft(req.sentence)} className="press inline-flex h-11 shrink-0 items-center rounded-pill px-4 text-[14px] font-medium text-accent">
+            <Link href="/" onClick={() => setDraft(req.sentence)} className="press inline-flex h-9 shrink-0 items-center rounded-pill px-3 text-[14px] font-medium text-accent">
               Edit
             </Link>
           </div>
@@ -97,7 +97,7 @@ export function Matches() {
       {res && cards.length === 0 ? (
         <Empty res={res} place={place} busy={busy} onWiden={() => void rerun({ anywhere: true })} onTelehealth={() => void rerun({ sentence: `${req!.sentence}, telehealth only` })} onChange={() => router.push("/")} onClosest={() => void rerun({ anywhere: true })} />
       ) : null}
-      <div className="flex flex-col gap-4" style={busy ? { opacity: 0.5, transition: "opacity 150ms ease" } : { transition: "opacity 150ms ease" }}>
+      <div className="flex flex-col gap-3" style={busy ? { opacity: 0.5, transition: "opacity 150ms ease" } : { transition: "opacity 150ms ease" }}>
         {cards.map((card, i) => (
           <DoctorCard key={card.doctor.id} card={card} labels={labels} index={i} saved={saved.includes(card.doctor.id)} onSave={() => setSaved(toggleSavedId(card.doctor.id))} />
         ))}
