@@ -101,13 +101,38 @@ export const yearsOf = (d: DoctorRecord): number | null => d.yearsInSpecialty?.v
 export const hasTelehealth = (d: DoctorRecord): boolean => d.telehealth.value !== "none";
 export const needsReferral = (d: DoctorRecord): boolean => d.referralRequired?.value === true;
 
-/** "Declares X as a condition they see" → "Focuses on X." Other reasons keep their closed wording. */
+/** Condition id → yaml label; the response carries the map, older stored requests fall back to the id. */
+export type ConditionLabels = Record<string, string>;
+
+/** "ADHD", "ME/CFS", "COVID-19" keep their caps mid-sentence; "Persistent pelvic pain" does not. */
+export function isAcronym(label: string): boolean {
+  const head = label.split(/\s+/)[0] ?? label;
+  return /^[A-Z0-9/-]+$/.test(head) || /\d/.test(head);
+}
+
+/** Lowercases the first letter of a label unless it is an acronym. */
+export function midSentence(label: string): string {
+  return isAcronym(label) ? label : label.charAt(0).toLowerCase() + label.slice(1);
+}
+
+/** "a", "a and b", "a, b and c". */
+export function joinAnd(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? "";
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+const DECLARES = /^Declares (.+) as a condition they see$/;
+
+/** "Declares X as a condition they see" reasons, merged: "Focuses on X and Y." Other reasons keep their closed wording. */
 function clinicalSentences(card: Card): string[] {
-  return card.clinicalFit.reasons.map((r) => {
-    const m = /^Declares (.+) as a condition they see$/.exec(r);
-    if (m) return `Focuses on ${m[1]!.toLowerCase()}.`;
-    return r.endsWith(".") ? r : `${r}.`;
-  });
+  const focuses: string[] = [];
+  const rest: string[] = [];
+  for (const r of card.clinicalFit.reasons) {
+    const m = DECLARES.exec(r);
+    if (m) focuses.push(midSentence(m[1]!));
+    else rest.push(r.endsWith(".") ? r : `${r}.`);
+  }
+  return focuses.length > 0 ? [`Focuses on ${joinAnd(focuses)}.`, ...rest] : rest;
 }
 
 /** Human-fit reasons only when a profile backs them; "no profile yet" is neutral, not a sentence. */
@@ -116,27 +141,30 @@ function humanSentences(card: Card): string[] {
   return card.humanFit.reasons.map((r) => (r.endsWith(".") ? r : `${r}.`));
 }
 
-/** "Lists pelvic pain and adolescent gynaecology." from the doctor's other declared conditions. */
-function listsSentence(card: Card, max = 3): string | null {
-  const focused = new Set(card.clinicalFit.reasons.map((r) => /^Declares (.+) as a condition they see$/.exec(r)?.[1]?.toLowerCase()).filter(Boolean));
-  const others = card.doctor.conditions.value.map(idLabel).filter((l) => !focused.has(l)).slice(0, max);
+/** "Lists PCOS, pelvic pain and menopause." from the doctor's other declared conditions, by yaml label. */
+function listsSentence(card: Card, labels: ConditionLabels, max = 3): string | null {
+  const focused = new Set(card.clinicalFit.reasons.map((r) => DECLARES.exec(r)?.[1]?.toLowerCase()).filter(Boolean));
+  const others = card.doctor.conditions.value
+    .map((id) => labels[id] ?? idLabel(id))
+    .filter((l) => !focused.has(l.toLowerCase()))
+    .slice(0, max)
+    .map(midSentence);
   if (others.length === 0) return null;
-  const joined = others.length === 1 ? others[0]! : `${others.slice(0, -1).join(", ")} and ${others[others.length - 1]}`;
-  return `Lists ${joined}.`;
+  return `Lists ${joinAnd(others)}.`;
 }
 
 /** P04 paragraph: clinical reasons, the other listed conditions, then any profile-backed human-fit reasons. */
-export function paragraphFor(card: Card): string {
+export function paragraphFor(card: Card, labels: ConditionLabels = {}): string {
   const parts = [...clinicalSentences(card)];
-  const lists = listsSentence(card);
+  const lists = listsSentence(card, labels);
   if (lists) parts.push(lists);
   parts.push(...humanSentences(card));
   return parts.join(" ");
 }
 
-/** P05 one line under each card: the first clinical reason and the first human reason. */
-export function lineFor(card: Card): string {
-  const parts = [clinicalSentences(card)[0], humanSentences(card)[0] ?? listsSentence(card, 2)].filter((p): p is string => Boolean(p));
+/** P05 one line under each card: the merged clinical reason and the first human reason. */
+export function lineFor(card: Card, labels: ConditionLabels = {}): string {
+  const parts = [clinicalSentences(card)[0], humanSentences(card)[0] ?? listsSentence(card, labels, 2)].filter((p): p is string => Boolean(p));
   return parts.join(" ");
 }
 

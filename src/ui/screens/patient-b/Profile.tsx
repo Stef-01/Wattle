@@ -33,10 +33,12 @@ function Hero({ d, photo }: { d: DoctorRecord; photo: string | null }) {
             <span className="truncate">{placeOf(d)}</span>
           </span>
         </span>
-        <span className="flex shrink-0 flex-col items-end gap-1.5 leading-normal">
-          <span className="text-[16px] text-caption-text">Fee</span>
-          {fee ? <span className="text-[24px] font-medium">{fee}</span> : <span className="text-[14px] font-medium">Not listed</span>}
-        </span>
+        {fee ? (
+          <span className="flex shrink-0 flex-col items-end gap-1.5 leading-normal">
+            <span className="text-[16px] text-caption-text">Fee</span>
+            <span className="text-[24px] font-medium">{fee}</span>
+          </span>
+        ) : null}
       </div>
     </div>
   );

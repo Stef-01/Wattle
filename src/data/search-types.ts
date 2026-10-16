@@ -46,6 +46,8 @@ export interface SearchResponse {
   clarifiers: MatchResult["clarifiers"];
   place: { typed: string; suburb: string | null };
   rosterSize: number;
+  /** Closed condition id → yaml `label` ("pcos" → "Polycystic ovary syndrome"), so the browser can name listed conditions properly. */
+  conditionLabels?: Record<string, string>;
 }
 
 export interface SearchRequest {

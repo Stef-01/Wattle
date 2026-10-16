@@ -16,6 +16,7 @@ const RANKS = 3;
 export function Match({ rank }: { rank: number }) {
   const router = useRouter();
   const [card, setCard] = useState<Card | null>(null);
+  const [labels, setLabels] = useState<Record<string, string>>({});
   const [count, setCount] = useState(0);
   const [missing, setMissing] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -32,6 +33,7 @@ export function Match({ rank }: { rank: number }) {
     }
     setCount(Math.min(cards.length, RANKS));
     setCard(c);
+    setLabels(req.response.conditionLabels ?? {});
     setSaved(isSavedId(c.doctor.id));
   }, [rank, router]);
 
@@ -112,10 +114,12 @@ export function Match({ rank }: { rank: number }) {
                 </span>
               ) : null}
             </span>
-            <span className="flex shrink-0 flex-col items-end gap-1.5 whitespace-nowrap">
-              <span className="text-[16px] leading-normal text-caption-text">{fee ? "Fee" : "Fee not listed"}</span>
-              <span className="text-[24px] font-medium leading-normal">{fee ?? "—"}</span>
-            </span>
+            {fee ? (
+              <span className="flex shrink-0 flex-col items-end gap-1.5 whitespace-nowrap">
+                <span className="text-[16px] leading-normal text-caption-text">Fee</span>
+                <span className="text-[24px] font-medium leading-normal">{fee}</span>
+              </span>
+            ) : null}
           </div>
         </PhotoCard>
       </div>
@@ -134,7 +138,7 @@ export function Match({ rank }: { rank: number }) {
           <Gap h={34} />
         </>
       ) : null}
-      <Body>{paragraphFor(card)}</Body>
+      <Body>{paragraphFor(card, labels)}</Body>
       <Dock>
         <Cta fixed={false} href={`/doctor/${encodeURIComponent(d.id)}`}>
           Get to know Dr {familyOf(d)}

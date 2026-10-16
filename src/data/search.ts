@@ -128,6 +128,7 @@ export async function runSearch(req: SearchRequest): Promise<SearchResponse> {
     clarifiers: result.clarifiers,
     place: { typed, suburb: place?.suburb ?? null },
     rosterSize: doctors.length,
+    conditionLabels: Object.fromEntries(discipline.conditions.map((c) => [c.id, c.label])),
   };
   if (result.careGuidance) response.careGuidance = result.careGuidance;
   if (result.emergency) response.emergency = result.emergency;

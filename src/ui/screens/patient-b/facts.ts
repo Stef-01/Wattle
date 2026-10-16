@@ -93,6 +93,26 @@ export function personalStatusLabel(d: Pick<DoctorRecord, "personal" | "name">):
   return "Illustrative example, not this doctor’s words";
 }
 
+/** "Polycystic ovary syndrome" → "polycystic ovary syndrome"; "ADHD" and "IVF" keep their capitals. */
+function lowerLabel(label: string): string {
+  return label
+    .split(" ")
+    .map((w) => (/^[A-Z0-9]{2,}$/.test(w) || /^.+[A-Z]/.test(w) ? w : w.toLowerCase()))
+    .join(" ");
+}
+
+/**
+ * The engine's reason text in the Figma's closed phrasing (P06, P07, P09):
+ * "Declares X as a condition they see" → "Lists x as a condition they see",
+ * "Declares X as a primary interest" → "Lists x as a primary interest"; anything else is sentence-cased.
+ */
+export function humanReason(reason: string): string {
+  const m = /^Declares (.+) as a (condition they see|primary interest)$/.exec(reason.trim());
+  if (m) return `Lists ${lowerLabel(m[1] ?? "")} as a ${m[2]}`;
+  const t = reason.trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
 /** Where a reason's evidence lives on the record, as a one-line source note. */
 export function sourceForReason(d: DoctorRecord, reason: Reason): SourceNote {
   const f = reason.field;
