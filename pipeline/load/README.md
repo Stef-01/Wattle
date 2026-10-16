@@ -36,9 +36,24 @@ Then execute the files in filename order. Files of the same table are independen
 tables must finish in the order `sources, practitioners, locations, roles, observations, focus`.
 
 ```
-mcp: execute_sql(project_id=zbwvctztpdiugvwjwzbl, query=<file contents>)     # one call per file
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f data/load/qld_001_sources.sql       # or psql, same order
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f data/load/qld_001_sources.sql       # psql, same order
 ```
+
+### Transport without psql (how the 2026-10-16 load ran)
+
+Pasting 7 MB of SQL through the MCP `execute_sql` tool does not scale (one 150 KB file is several
+reads and a 45k-token call). Instead the batches go through the project itself:
+
+1. `pipeline/load/run_load_file.sql`: creates a public Storage bucket `load`, temporary anon policies on
+   it, and a `security definer` function `run_load_file(fname)` that fetches
+   `storage/v1/object/public/load/<fname>` with the `http` extension and `execute`s it.
+2. Upload with the publishable key:
+   `curl -X POST $URL/storage/v1/object/load/<name> -H "apikey: $KEY" -H "Authorization: Bearer $KEY" -H "x-upsert: true" --data-binary @data/load/<name>`
+3. `select public.run_load_file(f) from unnest(array[...]) with ordinality as t(f, n) order by n;`
+   (one call per table stage; 30 files of ~100 KB run in well under the statement timeout).
+4. Tear down: delete the objects and bucket through the Storage API (direct deletes on `storage.*`
+   are blocked), drop the four `load_anon_*` policies and the function. The bucket itself needs the
+   dashboard or a service-role call to delete; an empty public bucket with no policies is inert.
 
 Afterwards:
 
