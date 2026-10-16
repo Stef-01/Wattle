@@ -6,6 +6,8 @@ A patient-first map of the Australian healthcare system. Sibling venture of ADHD
 
 ## Live demo
 
+**Public:** https://stef-01.github.io/Wattle-Health/ — static export (GitHub Pages); matching runs in the browser on the 888-doctor Queensland roster (876 real + 12 labelled illustrative); the clinician flow runs in labelled local mode. `pnpm build:static && pnpm deploy:pages` republishes.
+
 Preview deployment (Vercel, built from branch `wattle-health-demo` of `Stef-01/Wattle`, the Vercel-linked company repo): https://wattle-git-wattle-health-demo-stefan01-7725s-projects.vercel.app — the company project has Vercel Authentication on previews, so open it while logged into Vercel, or use a share link generated from the Vercel dashboard. To get a public production URL: create a `wattle-health` Vercel project linked to this repo (the MCP token cannot; `npx vercel login` then `vercel link`), add the env from `.env.production`, and `SUPABASE_SERVICE_ROLE_KEY` for clinician writes.
 
 ## Run
