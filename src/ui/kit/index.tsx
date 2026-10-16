@@ -3,7 +3,7 @@
 // Measurements come from the Rules frame (225:145) and P02/P04 design context.
 import Link from "next/link";
 import { asset } from "@/src/ui/base-path";
-import type { ReactNode } from "react";
+import { Children, type CSSProperties, type ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, Heart, Home, User } from "./icons";
 
 export * from "./icons";
@@ -15,8 +15,8 @@ const cx = (...parts: Array<string | false | null | undefined>) => parts.filter(
 /** The phone frame. `padBottom` leaves room for a fixed CTA and/or the tab bar. */
 export function Screen({ children, className, padBottom = "pb-[120px]" }: { children: ReactNode; className?: string; padBottom?: string }) {
   return (
-    <main className={cx("relative mx-auto min-h-dvh w-full max-w-[430px] bg-white sm:my-6 sm:min-h-[932px] sm:rounded-[50px] sm:shadow-[0_30px_80px_rgba(0,0,0,0.35)] overflow-x-clip", className)}>
-      <div className={cx("px-7 pt-[34px]", padBottom)}>{children}</div>
+    <main className={cx("frame overflow-x-clip bg-white", className)}>
+      <div className={cx("frame-pad pt-[34px]", padBottom)}>{children}</div>
     </main>
   );
 }
@@ -24,7 +24,7 @@ export function Screen({ children, className, padBottom = "pb-[120px]" }: { chil
 /** Round 44 px icon button: light on white, blurred dark over photos. */
 export function Circle({ children, href, onClick, label, over = false, className }: { children: ReactNode; href?: string; onClick?: () => void; label: string; over?: boolean; className?: string }) {
   const cls = cx(
-    "inline-flex size-11 shrink-0 items-center justify-center rounded-full",
+    "press inline-flex size-11 shrink-0 items-center justify-center rounded-full",
     over ? "bg-caption text-white backdrop-blur-[20px]" : "bg-surface text-charcoal",
     className,
   );
@@ -39,16 +39,18 @@ export function TopBar({ title, back = "/", right, rightHref, onRight }: { title
       <Circle href={back} label="Back"><ArrowLeft size={20} /></Circle>
       {title ? <h1 className="display text-[20px] text-charcoal">{title}</h1> : null}
       <span className="ml-auto">
-        {right && rightHref ? <Link href={rightHref} className="text-[14px] font-medium text-grey">{right}</Link> : null}
-        {right && !rightHref ? <button type="button" onClick={onRight} className="text-[14px] font-medium text-grey">{right}</button> : null}
+        {right && rightHref ? <Link href={rightHref} className="press-dim text-[14px] font-medium text-accent">{right}</Link> : null}
+        {right && !rightHref ? <button type="button" onClick={onRight} className="press-dim text-[14px] font-medium text-accent">{right}</button> : null}
       </span>
     </div>
   );
 }
 
 /** Vertical rhythm helper: gaps in the design are explicit (8, 24, 32, 38, 40). */
-export function Gap({ h }: { h: 8 | 12 | 16 | 24 | 32 | 34 | 38 | 40 }) {
-  return <div style={{ height: h }} aria-hidden="true" />;
+const SNAP: Record<number, number> = { 34: 32, 38: 40 };
+/** Off-grid Figma gaps (34, 38) snap to the 8 px base. */
+export function Gap({ h }: { h: 8 | 12 | 16 | 24 | 32 | 34 | 38 | 40 | 48 }) {
+  return <div style={{ height: SNAP[h] ?? h }} aria-hidden="true" />;
 }
 
 /* ---------------------------------------------------------------- text */
@@ -66,7 +68,7 @@ export function SectionTitle({ children, right, rightHref }: { children: ReactNo
   return (
     <div className="flex items-center justify-between">
       <h2 className="display text-[20px] text-charcoal">{children}</h2>
-      {right && rightHref ? <Link href={rightHref} className="text-[14px] text-grey">{right}</Link> : null}
+      {right && rightHref ? <Link href={rightHref} className="press-dim text-[14px] font-medium text-accent">{right}</Link> : null}
     </div>
   );
 }
@@ -91,7 +93,7 @@ export function Body({ children, className }: { children: ReactNode; className?:
 }
 
 export function Hint({ children }: { children: ReactNode }) {
-  return <p className="text-[12px] leading-normal text-grey">{children}</p>;
+  return <p className="caption text-[12px] leading-normal text-grey">{children}</p>;
 }
 
 /* --------------------------------------------------------------- pills */
@@ -99,7 +101,7 @@ export function Hint({ children }: { children: ReactNode }) {
 /** Pill 54 r20 (small = 44). `on` = charcoal fill, white text. */
 export function Pill({ children, on = false, small = false, onClick, href }: { children: ReactNode; on?: boolean; small?: boolean; onClick?: () => void; href?: string }) {
   const cls = cx(
-    "inline-flex shrink-0 items-center justify-center rounded-pill px-[21px] text-[16px] font-medium whitespace-nowrap",
+    "press inline-flex shrink-0 items-center justify-center rounded-pill px-[21px] text-[16px] font-medium whitespace-nowrap",
     small ? "h-11 text-[14px]" : "h-[54px]",
     on ? "bg-charcoal text-white" : "bg-surface-soft text-grey",
   );
@@ -108,14 +110,20 @@ export function Pill({ children, on = false, small = false, onClick, href }: { c
 }
 
 export function Pills({ children }: { children: ReactNode }) {
-  return <div className="flex flex-wrap gap-3">{children}</div>;
+  return (
+    <div className="flex flex-wrap gap-3">
+      {Children.map(children, (c, i) => (
+        <div className="rise" style={{ "--i": i } as CSSProperties}>{c}</div>
+      ))}
+    </div>
+  );
 }
 
 /* -------------------------------------------------------------- fields */
 
 /** Field r20 2px #D2D2D2. */
 export function FieldBox({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cx("rounded-field border-2 border-line bg-white", className)}>{children}</div>;
+  return <div className={cx("field rounded-field border-2 border-line bg-white", className)}>{children}</div>;
 }
 
 /* -------------------------------------------------------------- rows */
@@ -133,14 +141,14 @@ export function Row({ icon, title, sub, meta, href, onClick, chevron = true }: {
       {chevron && (href || onClick) ? <ChevronRight size={20} className="text-grey" /> : null}
     </>
   );
-  const cls = "flex w-full items-center gap-[14px] py-[14px] text-left";
+  const cls = "press press-soft flex w-full items-center gap-[14px] py-[14px] text-left";
   if (href) return <Link href={href} className={cls}>{inner}</Link>;
   if (onClick) return <button type="button" onClick={onClick} className={cls}>{inner}</button>;
   return <div className={cls}>{inner}</div>;
 }
 
 export function Divider() {
-  return <div className="h-px w-full bg-surface" />;
+  return <div className="h-px w-full bg-divider" />;
 }
 
 /** Check row (P07, P09): tick box 24 r6 + text + optional source link. */
@@ -155,7 +163,7 @@ export function CheckRow({ title, sub, href, checked = true }: { title: ReactNod
         {sub ? <span className="text-[12px] text-grey">{sub}</span> : null}
       </span>
       {href ? (
-        <a href={href} target="_blank" rel="noreferrer" aria-label="Source" className="text-grey">
+        <a href={href} target="_blank" rel="noreferrer" aria-label="Source" className="press text-accent">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 4h6v6" /><path d="M20 4 10 14" /><path d="M18 13v7H4V6h7" /></svg>
         </a>
       ) : null}
@@ -176,7 +184,7 @@ export function Stat({ icon, children }: { icon: ReactNode; children: ReactNode 
 /** On/Off toggle pill (C07). */
 export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
-    <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className={cx("inline-flex h-8 w-[38px] items-center justify-center rounded-[10px] text-[12px] font-medium", on ? "bg-charcoal text-white" : "bg-surface text-grey")}>
+    <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className={cx("press inline-flex h-8 w-[38px] items-center justify-center rounded-[10px] text-[12px] font-medium", on ? "bg-accent text-white" : "bg-surface text-grey")}>
       {on ? "On" : "Off"}
     </button>
   );
@@ -186,7 +194,7 @@ export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boo
 export function Progress({ step, of }: { step: number; of: number }) {
   return (
     <div className="h-0.5 w-full bg-surface" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={of}>
-      <div className="h-full bg-charcoal" style={{ width: `${(step / of) * 100}%` }} />
+      <div className="bar-fill h-full w-full bg-charcoal" style={{ transform: `scaleX(${step / of})` }} />
     </div>
   );
 }
@@ -220,7 +228,7 @@ export function PhotoCard({ name, place, fee, photo, height = 460, caption = tru
           <span className="flex min-w-0 flex-1 flex-col gap-2.5">
             <span className="truncate font-inter text-[24px] font-semibold">{name}</span>
             {place ? (
-              <span className="inline-flex items-center gap-1.5 text-[18px] text-caption-text">
+              <span className="caption inline-flex items-center gap-1.5 text-[18px] font-medium text-caption-text">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10Z" /><circle cx="12" cy="11" r="2.2" /></svg>
                 <span className="truncate">{place}</span>
               </span>
@@ -228,7 +236,7 @@ export function PhotoCard({ name, place, fee, photo, height = 460, caption = tru
           </span>
           {fee ? (
             <span className="flex flex-col items-end gap-1.5">
-              <span className="text-[16px] text-caption-text">Fee</span>
+              <span className="caption text-[16px] font-medium text-caption-text">Fee</span>
               <span className="text-[24px] font-medium">{fee}</span>
             </span>
           ) : null}
@@ -237,7 +245,7 @@ export function PhotoCard({ name, place, fee, photo, height = 460, caption = tru
       {children}
     </div>
   );
-  return href ? <Link href={href} className="block">{body}</Link> : body;
+  return href ? <Link href={href} className="press press-soft block">{body}</Link> : body;
 }
 
 /* ----------------------------------------------------------------- cta */
@@ -245,7 +253,7 @@ export function PhotoCard({ name, place, fee, photo, height = 460, caption = tru
 /** CTA 373x66 r20 #1B1B1B, fixed to the frame bottom. `arrow` shows the trailing arrow. */
 export function Cta({ children, href, onClick, type = "button", arrow = true, icon, disabled, fixed = true, secondary }: { children: ReactNode; href?: string; onClick?: () => void; type?: "button" | "submit"; arrow?: boolean; icon?: ReactNode; disabled?: boolean; fixed?: boolean; secondary?: ReactNode }) {
   const cls = cx(
-    "flex h-[66px] w-full items-center justify-center gap-5 rounded-cta bg-ink text-[20px] font-medium text-white shadow-cta",
+    "press flex h-[66px] w-full items-center justify-center gap-5 rounded-cta bg-ink text-[20px] font-medium text-white shadow-cta",
     disabled && "opacity-50",
   );
   const inner = (
@@ -261,8 +269,8 @@ export function Cta({ children, href, onClick, type = "button", arrow = true, ic
   );
   if (!fixed) return button;
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[430px] sm:absolute">
-      <div className="pointer-events-auto flex items-center gap-3 px-7 pb-[26px] pt-3">
+    <div className="frame-fixed pointer-events-none bottom-0 z-20">
+      <div className="frame-pad pointer-events-auto flex items-center gap-3 pb-[26px] pt-3">
         {secondary}
         {button}
       </div>
@@ -282,12 +290,12 @@ const TABS = [
 /** Bottom tab bar: four 23 px icons, red 8 px dot under the active one. */
 export function TabBar({ active }: { active: (typeof TABS)[number]["href"] }) {
   return (
-    <nav aria-label="Primary" className="pointer-events-none fixed inset-x-0 bottom-0 z-10 mx-auto w-full max-w-[430px] sm:absolute">
-      <div className="pointer-events-auto flex h-[88px] items-start justify-around bg-white/90 px-9 pt-[14px] backdrop-blur-md">
+    <nav aria-label="Primary" className="frame-fixed pointer-events-none bottom-0 z-10">
+      <div className="material pointer-events-auto flex h-[88px] items-start justify-around px-9 pt-[14px]">
         {TABS.map(({ href, label, Icon }) => (
-          <Link key={href} href={href} aria-label={label} aria-current={active === href ? "page" : undefined} className="flex size-11 flex-col items-center gap-[9px] text-charcoal">
+          <Link key={href} href={href} aria-label={label} aria-current={active === href ? "page" : undefined} className={cx("press flex size-11 flex-col items-center gap-[9px]", active === href ? "text-ink" : "text-grey")}>
             <Icon size={23} />
-            <span className={cx("size-2 rounded-full", active === href ? "bg-dot" : "bg-transparent")} />
+            <span className={cx("size-2 rounded-full transition-colors duration-150", active === href ? "bg-accent" : "bg-transparent")} />
           </Link>
         ))}
       </div>
@@ -314,7 +322,7 @@ export function SourceRow({ icon, title, sub, href }: { icon: ReactNode; title: 
         {sub ? <span className="text-[14px] leading-normal text-grey">{sub}</span> : null}
       </span>
       {href ? (
-        <a href={href} target="_blank" rel="noreferrer" aria-label="Source" className="shrink-0 text-grey">
+        <a href={href} target="_blank" rel="noreferrer" aria-label="Source" className="press shrink-0 text-accent">
           <FigmaIcon name="external" size={18} />
         </a>
       ) : null}
@@ -337,16 +345,16 @@ export function CheckItem({ children, sub }: { children: ReactNode; sub?: ReactN
 
 /** The 70 px white fade above a fixed CTA (P06/P07 228:15). */
 export function Fade() {
-  return <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 bottom-[118px] z-10 mx-auto h-[70px] w-full max-w-[430px] bg-gradient-to-b from-white/0 to-white sm:absolute" />;
+  return <div aria-hidden="true" className="frame-fixed pointer-events-none bottom-[118px] z-10 h-[70px] bg-gradient-to-b from-white/0 to-white" />;
 }
 
 /** Bottom sheet over the frame (contact handoff). */
 export function Sheet({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-30 mx-auto w-full max-w-[430px] sm:absolute" role="dialog" aria-modal="true" aria-label={title}>
-      <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-ink/40" />
-      <div className="absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-[25.5px] bg-white px-7 pb-[34px] pt-6">
+    <div className="frame-fixed inset-y-0 z-30" role="dialog" aria-modal="true" aria-label={title}>
+      <button type="button" aria-label="Close" onClick={onClose} className="sheet-scrim absolute inset-0 bg-ink/40" />
+      <div className="sheet-panel frame-pad absolute inset-x-0 bottom-0 flex flex-col gap-4 rounded-t-[25.5px] bg-white pb-[34px] pt-6">
         <h2 className="display text-[20px] text-charcoal">{title}</h2>
         {children}
       </div>

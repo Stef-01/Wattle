@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 
 export function Dock({ children, bottom = 56 }: { children: ReactNode; bottom?: number }) {
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[430px] sm:absolute">
-      <div className="pointer-events-auto px-7" style={{ paddingBottom: bottom }}>
+    <div className="frame-fixed pointer-events-none bottom-0 z-20">
+      <div className="pointer-events-auto frame-pad" style={{ paddingBottom: bottom }}>
         {children}
       </div>
     </div>

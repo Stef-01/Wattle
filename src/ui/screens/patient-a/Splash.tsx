@@ -22,7 +22,7 @@ export function Splash() {
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") router.push("/");
       }}
-      className="relative mx-auto min-h-dvh w-full max-w-[430px] cursor-pointer overflow-clip sm:my-6 sm:min-h-[932px] sm:rounded-[50px] sm:shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
+      className="frame cursor-pointer overflow-clip"
       style={{ background: "linear-gradient(180deg, #2f5d3a 0%, #0f2c1c 100%)" }}
     >
       <div className="absolute left-[141px] top-[390px] flex items-center gap-[10px]">

@@ -299,7 +299,7 @@ function loadPersonal(): Map<string, PersonalProfile> {
 
 let cache: DoctorRecord[] | null = null;
 
-/** The file-backed roster exactly as getDoctors() serves it without Supabase; scripts/build-static-data.mts writes it to src/generated/roster.json. */
+/** The file-backed roster exactly as getDoctors() serves it without Supabase. */
 export function buildRoster(): DoctorRecord[] {
   return withIllustrative(fromJsonl());
 }

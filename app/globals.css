@@ -7,7 +7,12 @@
 /* Figma "Wattle" system (file NEbiukDE3TyWFptwaCBhwV, frame "Rules" 225:145):
    white, charcoal #2F2F2F / #1B1B1B, grey text #767676 (4.5:1), surfaces #EDEDED #FBFBFB.
    Roboto, Inter, Poppins. Pills 54 r20, small pills 44. Fields r20 2px #D2D2D2.
-   Photo cards r25.5 with #1D1D1D 40% blurred captions. CTA 373x66 r20. Missing photo = #D9D9D9 with initials. */
+   Photo cards r25.5 with #1D1D1D 40% blurred captions. CTA 373x66 r20. Missing photo = #D9D9D9 with initials.
+
+   Refinement layer (designmd.co/d/apple + Apple HIG + Emil Kowalski's design-eng notes):
+   one interactive colour (Action Blue #0066cc, focus #0071e3), hairline #E0E0E0 and soft
+   divider #F0F0F0, size-specific tracking, an 8 px spacing base, strong custom easings,
+   press feedback on every pressable, translucent chrome that degrades to solid. */
 @theme {
   --color-ink: #1b1b1b;
   --color-charcoal: #2f2f2f;
@@ -15,12 +20,18 @@
   --color-surface: #ededed;
   --color-surface-soft: #fbfbfb;
   --color-line: #d2d2d2;
+  --color-hairline: #e0e0e0;
+  --color-divider: #f0f0f0;
   --color-placeholder: #d9d9d9;
   --color-caption: rgba(29, 29, 29, 0.4);
-  --color-caption-text: #cac8c8;
+  --color-caption-text: #d6d4d4;
   --color-splash: #2f5d3a;
   --color-splash-deep: #0f2c1c;
-  --color-dot: #e5484d;
+  --color-accent: #0066cc;
+  --color-accent-focus: #0071e3;
+  --color-accent-soft: #e3effb;
+  --color-dot: #0066cc;
+  --color-danger: #d70015;
   --font-display: "Poppins", "Inter Variable", system-ui, sans-serif;
   --font-sans: "Roboto Variable", "Inter Variable", system-ui, sans-serif;
   --font-inter: "Inter Variable", system-ui, sans-serif;
@@ -30,6 +41,9 @@
   --radius-cta: 20px;
   --shadow-cta: 0 13px 13px rgba(0, 0, 0, 0.12);
   --shadow-photo: 0 18px 40px rgba(0, 0, 0, 0.16);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
@@ -42,6 +56,7 @@ html {
   font-family: var(--font-sans);
   font-variation-settings: "wdth" 100;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   font-size: 16px;
 }
 
@@ -58,6 +73,8 @@ body {
   }
 }
 
+/* Tracking is size-specific: display text tightens as it grows, body stays near zero,
+   captions open up slightly for legibility. */
 h1,
 h2,
 h3,
@@ -65,7 +82,15 @@ h3,
   font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: 0;
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+}
+h1,
+.display-lg {
+  letter-spacing: -0.02em;
+}
+.caption {
+  letter-spacing: 0.01em;
 }
 
 /* Base resets live in the base layer so utilities such as `text-white` on a button or link win. */
@@ -85,6 +110,17 @@ h3,
   button {
     cursor: pointer;
   }
+
+  /* One focus style, in the one interactive colour; pointer users never see it. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+  }
 }
 
 details > summary {
@@ -95,11 +131,34 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
-/* Restrained motion: one fade for arriving content, nothing that loops. */
+/* ---------------------------------------------------------------- motion */
+
+/* Every pressable confirms the press on pointer-down, before anything else happens. */
+.press {
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 150ms ease,
+    color 150ms ease,
+    opacity 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.press:active {
+  transform: scale(0.97);
+}
+.press-soft:active {
+  transform: scale(0.98);
+}
+@media (hover: hover) and (pointer: fine) {
+  .press-dim:hover {
+    opacity: 0.85;
+  }
+}
+
+/* Arriving content fades up once. A `--i` index on the element staggers a group. */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -107,10 +166,124 @@ details > summary::-webkit-details-marker {
   }
 }
 .rise {
-  animation: rise 240ms ease-out both;
+  animation: rise 320ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 28ms);
 }
+
+/* Bottom sheet: scrim cross-fades, the panel slides on the iOS drawer curve. */
+.sheet-scrim {
+  opacity: 1;
+  transition: opacity 240ms ease;
+  @starting-style {
+    opacity: 0;
+  }
+}
+.sheet-panel {
+  transform: translateY(0);
+  transition: transform 320ms var(--ease-drawer);
+  @starting-style {
+    transform: translateY(100%);
+  }
+}
+
+/* Translucent chrome: a light material with content scrolling under it. */
+.material {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Field focus moves the border to the interactive colour, nothing else. */
+.field {
+  transition: border-color 150ms ease;
+}
+.field:focus-within {
+  border-color: var(--color-accent-focus);
+}
+
+/* Progress bar fill: scaleX from the left stays on the compositor. */
+.bar-fill {
+  transform-origin: left center;
+  transition: transform 300ms var(--ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rise {
     animation: none;
+  }
+  .press,
+  .press:active,
+  .press-soft:active {
+    transform: none;
+    transition: none;
+  }
+  .sheet-panel {
+    transition: opacity 200ms ease;
+    transform: none;
+    @starting-style {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  .bar-fill {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .material {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more) {
+  .material {
+    background: #ffffff;
+    border-top: 1px solid var(--color-hairline);
+  }
+}
+
+/* ---------------------------------------------------------------- frames */
+/* Phone: edge to edge. Tablet: a 430 px device frame on the dark canvas. Laptop (≥1024 px):
+   a 560 px reading column on white, no device chrome; fixed chrome keeps the same width. */
+.frame {
+  position: relative;
+  margin-inline: auto;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 430px;
+}
+.frame-fixed {
+  position: fixed;
+  inset-inline: 0;
+  margin-inline: auto;
+  width: 100%;
+  max-width: 430px;
+}
+.frame-pad {
+  padding-inline: 28px;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .frame {
+    margin-block: 24px;
+    min-height: 932px;
+    border-radius: 50px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    overflow: clip;
+  }
+  .frame-fixed {
+    position: absolute;
+  }
+}
+@media (min-width: 1024px) {
+  body {
+    background: #ffffff;
+  }
+  .frame,
+  .frame-fixed {
+    max-width: 560px;
+  }
+  .frame-pad {
+    padding-inline: 32px;
   }
 }

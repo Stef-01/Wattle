@@ -114,7 +114,7 @@ export function VerifyScreen() {
           <Note>{registerLine}</Note>
         </div>
       ) : null}
-      {error ? <p role="alert" className="mt-3 text-[14px] text-dot">{error}</p> : null}
+      {error ? <p role="alert" className="mt-3 text-[14px] text-danger">{error}</p> : null}
       <Cta onClick={thatsMe} disabled={pending || !ahpra || !name || !email} icon={<Asset name="arrow-right" size={22} />}>
         {result ? "That’s me" : "Look me up"}
       </Cta>

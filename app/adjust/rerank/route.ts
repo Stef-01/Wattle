@@ -1,7 +1,6 @@
 // POST /adjust/rerank. Reranks the Layer-1 survivors of a request with the person's "what matters
 // most" choices; the rerank itself is rerankWith (src/data/rerank-core.ts), pure over the roster
-// and the vocabulary read from disk here. Named route.server.ts so the static build
-// (pageExtensions without "server.ts") leaves it out; the browser then reranks in the page.
+// and the vocabulary read from disk here.
 import { NextResponse } from "next/server";
 import { getDoctors, mvpDiscipline } from "@/src/data/providers";
 import { RerankBadRequest, rerankWith, type RerankBody } from "@/src/data/rerank-core";

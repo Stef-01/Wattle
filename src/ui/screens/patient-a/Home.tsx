@@ -114,7 +114,7 @@ export function Home() {
             className="w-full resize-none bg-transparent text-[16px] font-medium leading-[1.5] text-charcoal outline-none placeholder:text-grey"
           />
           <div className="flex items-center justify-between">
-            <button type="button" onClick={toggleMic} disabled={!canListen} aria-pressed={listening} aria-label={listening ? "Stop listening" : "Speak instead"} className={listening ? "text-dot" : canListen ? "text-grey" : "text-line"}>
+            <button type="button" onClick={toggleMic} disabled={!canListen} aria-pressed={listening} aria-label={listening ? "Stop listening" : "Speak instead"} className={listening ? "text-accent" : canListen ? "text-grey" : "text-line"}>
               <Mic size={24} />
             </button>
             <button type="submit" aria-label="Send" disabled={busy} className="inline-flex size-11 items-center justify-center rounded-full bg-charcoal text-white disabled:opacity-50">

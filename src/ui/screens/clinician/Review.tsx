@@ -78,7 +78,7 @@ export function ReviewScreen() {
       <Divider />
       <Row icon={<Asset name="check" size={17} className={outside ? undefined : "opacity-30"} />} title="Outside medicine" sub={`${outside} shared`} meta={<span className="text-[14px]">Edit</span>} href="/join/share" chevron={false} />
       <Divider />
-      {error ? <p role="alert" className="mt-3 text-[14px] text-dot">{error}</p> : null}
+      {error ? <p role="alert" className="mt-3 text-[14px] text-danger">{error}</p> : null}
       <Cta onClick={publish} disabled={pending} icon={<Asset name="arrow-right" size={22} />}>
         Publish
       </Cta>

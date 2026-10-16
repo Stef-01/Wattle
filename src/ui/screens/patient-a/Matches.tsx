@@ -98,7 +98,7 @@ export function Matches() {
           <p className="text-[14px] leading-normal text-grey">{res.orderNote}</p>
         </>
       ) : null}
-      <div className="pointer-events-none fixed inset-x-0 bottom-[88px] z-[9] mx-auto h-[50px] w-full max-w-[430px] bg-gradient-to-b from-white/0 to-white sm:absolute" aria-hidden="true" />
+      <div className="frame-fixed pointer-events-none bottom-[88px] z-[9] h-[50px] bg-gradient-to-b from-white/0 to-white" aria-hidden="true" />
       <TabBar active="/" />
     </Screen>
   );
