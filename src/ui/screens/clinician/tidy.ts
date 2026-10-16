@@ -18,8 +18,32 @@ function sentences(text: string): string[] {
     .filter(Boolean);
 }
 
+// A comma followed by one of these words starts a new independent clause ("…options, most have
+// been rushed before"). The comma becomes a full stop unless the sentence opened with a
+// subordinator ("If they need time, I give it") or the first clause is too short to stand alone.
+const CLAUSE_STARTERS = new Set([
+  "i", "i'm", "i've", "i'd", "i'll", "we", "we're", "we've", "we'd", "we'll", "they", "they're", "he", "she", "it", "it's", "you",
+  "most", "many", "some", "people", "patients", "that's", "there's", "this", "these", "those", "everyone", "nobody", "others",
+]);
+const SUBORDINATORS = /^(if|when|whenever|while|because|although|though|since|unless|before|after|once|as|until|where|whereas|even)\b/i;
+
+function splitSplices(sentence: string): string {
+  if (SUBORDINATORS.test(sentence)) return sentence;
+  return sentence.replace(/, ([A-Za-z']+)(?=\s|$)/g, (m, next: string, offset: number) => {
+    const before = sentence.slice(0, offset).trim();
+    if (before.split(" ").length < 3 || !CLAUSE_STARTERS.has(next.toLowerCase())) return m;
+    return `. ${next.charAt(0).toUpperCase()}${next.slice(1)}`;
+  });
+}
+
 export function tidy(raw: string): string {
-  let t = raw.replace(/\s+/g, " ").trim();
+  // A line break after an unpunctuated fragment is a pause the speaker took: keep it as a comma
+  // so the clause rule below can decide whether it was a list or a new sentence.
+  let t = raw
+    .replace(/\r/g, "")
+    .replace(/([^.!?,;\s])[ \t]*\n+[ \t]*(?=\S)/g, "$1, ")
+    .replace(/\s+/g, " ")
+    .trim();
   for (const [re, rep] of FILLERS) t = t.replace(re, rep);
   t = t
     .replace(/\s+([,.;!?])/g, "$1")
@@ -34,6 +58,7 @@ export function tidy(raw: string): string {
       let x = s.replace(/^[,;\s]+/, "");
       x = x.charAt(0).toUpperCase() + x.slice(1);
       x = x.replace(/\bi\b/g, "I");
+      x = splitSplices(x);
       if (!/[.!?]$/.test(x)) x += ".";
       return x;
     })
@@ -53,11 +78,20 @@ function conjugate(verb: string): string {
   return `${verb}s`;
 }
 
+// "I'm" → "Dr Reilly is" on the naming mention, "they're" after it.
 const CONTRACTIONS: Record<string, [string, string]> = {
-  "i'm": ["is", "are"],
-  "i've": ["has", "have"],
-  "i'd": ["would", "would"],
-  "i'll": ["will", "will"],
+  "i'm": ["is", "'re"],
+  "i've": ["has", "'ve"],
+  "i'd": ["would", "'d"],
+  "i'll": ["will", "'ll"],
+};
+
+// First-person plural and the object/possessive forms map straight to the plural third person;
+// only "I" names the doctor, since "we" is usually the practice.
+const PLURAL: Record<string, string> = {
+  we: "they", "we're": "they're", "we've": "they've", "we'd": "they'd", "we'll": "they'll",
+  us: "them", our: "their", ours: "theirs", ourselves: "themselves",
+  my: "their", me: "them", mine: "theirs", myself: "themselves",
 };
 
 /** Rewrites "I" to the doctor's name in the first sentence that has one, then to "they". */
@@ -77,15 +111,13 @@ export function thirdPerson(text: string, drName: string): string {
         const subject = useName ? name : i === 0 ? "They" : "they";
         if (CONTRACTIONS[lower]) {
           const [sing, plural] = CONTRACTIONS[lower];
-          words[i] = `${subject} ${useName ? sing : plural}${trail}`;
+          words[i] = useName ? `${subject} ${sing}${trail}` : `${subject}${plural}${trail}`;
           changed = true;
           continue;
         }
         if (bare !== "I") {
-          if (lower === "my") words[i] = (i === 0 ? "Their" : "their") + trail;
-          else if (lower === "me") words[i] = "them" + trail;
-          else if (lower === "mine") words[i] = "theirs" + trail;
-          else if (lower === "myself") words[i] = "themselves" + trail;
+          const p = PLURAL[lower];
+          if (p) words[i] = (i === 0 ? p.charAt(0).toUpperCase() + p.slice(1) : p) + trail;
           continue;
         }
         words[i] = subject + trail;
@@ -111,7 +143,7 @@ export function thirdPerson(text: string, drName: string): string {
 export function draftFor(raw: string, drName: string, lead: string): string {
   const clean = tidy(raw);
   if (!clean) return "";
-  if (/\bI\b|\bI'/.test(clean)) return thirdPerson(clean, drName);
+  if (/\bI\b|\bI'|\b(we|we're|we've|we'd|we'll|us|our|ours|my|me|mine|myself|ourselves)\b/i.test(clean)) return thirdPerson(clean, drName);
   const lower = clean.charAt(0).toLowerCase() + clean.slice(1);
   return `${drName} ${lead} ${lower}`;
 }

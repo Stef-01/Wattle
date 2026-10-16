@@ -12,7 +12,7 @@ import { Space } from "./bits";
 
 /** Mirrors NO_PROFILE_REASON in src/matching/layer2 (not imported: that module reads yaml with fs). */
 const NO_PROFILE_REASON = "No personal profile yet";
-import { drShort, sourceForReason } from "./facts";
+import { drShort, humanReason, sourceForReason } from "./facts";
 import { fetchRerank } from "./rerank-client";
 
 type State = { kind: "loading" } | { kind: "none" } | { kind: "absent" } | { kind: "ready"; ranked: Ranked };
@@ -35,7 +35,7 @@ function ReasonRows({ doctor, reasons }: { doctor: DoctorRecord; reasons: Reason
         const s = sourceForReason(doctor, r);
         return (
           <div key={`${r.field}-${r.label ?? i}`}>
-            <SourceRow icon={<FigmaIcon name="check" size={17} />} title={r.text} sub={s.text} href={s.href} />
+            <SourceRow icon={<FigmaIcon name="check" size={17} />} title={humanReason(r.text)} sub={s.text} href={s.href} />
             <Divider />
           </div>
         );
