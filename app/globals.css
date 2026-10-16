@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@fontsource/poppins/600.css";
 @import "@fontsource/poppins/500.css";
+@import "@fontsource-variable/newsreader/opsz.css";
 @import "@fontsource-variable/roboto/wdth.css";
 @import "@fontsource-variable/inter/opsz.css";
 
@@ -32,7 +33,8 @@
   --color-accent-soft: #e3effb;
   --color-dot: #0066cc;
   --color-danger: #d70015;
-  --font-display: "Poppins", "Inter Variable", system-ui, sans-serif;
+  --font-display: "Newsreader Variable", Georgia, serif;
+  --font-poppins: "Poppins", "Inter Variable", system-ui, sans-serif;
   --font-sans: "Roboto Variable", "Inter Variable", system-ui, sans-serif;
   --font-inter: "Inter Variable", system-ui, sans-serif;
   --radius-pill: 20px;
@@ -75,15 +77,22 @@ body {
 
 /* Tracking is size-specific: display text tightens as it grows, body stays near zero,
    captions open up slightly for legibility. */
+/* Newsreader carries names and headings (CLAUDE.md: Newsreader display over Inter): the one
+   typographic contrast on the page, as Headway and One Medical do. Poppins stays for the
+   clinician flow's step titles via .poppins. */
 h1,
 h2,
 h3,
 .display {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 500;
+  line-height: 1.15;
   letter-spacing: -0.01em;
   font-optical-sizing: auto;
+}
+.poppins {
+  font-family: var(--font-poppins);
+  font-weight: 600;
 }
 h1,
 .display-lg {

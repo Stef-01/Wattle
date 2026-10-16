@@ -44,7 +44,7 @@ export function DoctorCard({ card, labels, saved, onSave, index = 0 }: { card: C
         <div className="flex items-center gap-4 pr-12">
           <Avatar name={name} size={56} />
           <div className="flex min-w-0 flex-col gap-1">
-            <h3 className="display line-clamp-2 text-[20px] leading-[1.15] tracking-[-0.015em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h3>
+            <h3 className="display line-clamp-2 text-[22px] leading-[1.15] tracking-[-0.01em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h3>
             <p className="truncate text-[15px] text-charcoal">{specialtyTitle(d.specialty)}<span className="text-grey">{tail}</span></p>
           </div>
         </div>

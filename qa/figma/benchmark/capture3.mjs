@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+const OUT = 'C:/Users/stefa/wattle-health/qa/figma/benchmark/';
+const ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+const browser = await chromium.launch({ headless: true });
+const ctx = await browser.newContext({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, userAgent: ua });
+const page = await ctx.newPage();
+await page.goto('https://headway.co/therapists/texas/austin', { waitUntil: 'domcontentloaded', timeout: 45000 });
+await page.waitForTimeout(5000);
+const h = page.getByText('Top therapists in Austin', { exact: false }).first();
+await h.scrollIntoViewIfNeeded();
+await page.evaluate(() => window.scrollBy(0, 560));
+await page.waitForTimeout(1500);
+await page.screenshot({ path: OUT + 'headway-results.png' });
+console.log('ok');
+await browser.close();

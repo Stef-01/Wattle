@@ -32,13 +32,14 @@ export function Avatar({ name, size = 56, tone = "soft" }: { name: string; size?
 }
 
 /** Small chip (32 high): a condition, a hobby, a practical fact. `tone` marks the matched ones. */
-export function Chip({ children, tone = "soft" }: { children: ReactNode; tone?: "soft" | "match" | "line" }) {
+export function Chip({ children, tone = "soft" }: { children: ReactNode; tone?: "soft" | "match" | "line" | "text" }) {
+  if (tone === "text") return <span className="text-[16px] leading-[1.5] text-charcoal [&:not(:last-child)]:after:mx-2 [&:not(:last-child)]:after:text-grey [&:not(:last-child)]:after:content-['·']">{children}</span>;
   return (
     <span
       className={cx(
         "inline-flex h-8 items-center whitespace-nowrap rounded-full px-3 text-[13px] font-medium leading-none",
         tone === "match" && "bg-accent-soft text-accent",
-        tone === "soft" && "bg-surface-soft text-charcoal",
+        tone === "soft" && "bg-surface text-charcoal",
         tone === "line" && "border border-hairline text-grey",
       )}
     >
@@ -54,8 +55,8 @@ export function Chips({ children, className }: { children: ReactNode; className?
 /** Labelled section: a 12 px caption label, then the content. Keeps facts flat and scannable. */
 export function Labelled({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
-    <section className={cx("flex flex-col gap-3", className)}>
-      <h2 className="font-sans text-[13px] font-semibold uppercase tracking-[0.04em] text-charcoal/70">{label}</h2>
+    <section className={cx("flex flex-col gap-2.5", className)}>
+      <h2 className="display text-[19px] text-ink">{label}</h2>
       {children}
     </section>
   );

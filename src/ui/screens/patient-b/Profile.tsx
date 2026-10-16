@@ -26,7 +26,7 @@ function Header({ d }: { d: DoctorRecord }) {
       <div className="flex items-center gap-4">
         <Avatar name={name} size={64} />
         <div className="flex min-w-0 flex-col gap-1">
-          <h1 className="display text-[28px] leading-[1.1] tracking-[-0.02em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h1>
+          <h1 className="display text-[30px] leading-[1.1] tracking-[-0.01em] text-ink">{name}{d.synthetic ? " (example)" : ""}</h1>
           <p className="text-[14px] leading-snug text-grey">{line}</p>
           <p className="text-[14px] text-grey">{placeOf(d)}</p>
         </div>
@@ -57,7 +57,7 @@ function Words({ d }: { d: DoctorRecord }) {
   return (
     <div className="flex flex-col gap-8">
       {philosophy ? (
-        <Labelled label="In their words">
+        <Labelled label={`Meet ${drShort(d)}`}>
           <Clamp text={`“${philosophy}”`} />
         </Labelled>
       ) : null}
@@ -69,17 +69,17 @@ function Words({ d }: { d: DoctorRecord }) {
       {approach || styles.length ? (
         <Labelled label={`How ${pr.subject} ${pr.practises}`}>
           {styles.length ? (
-            <Chips>
+            <p className="flex flex-wrap">
               {styles.map((s) => (
-                <Chip key={s}>{s}</Chip>
+                <Chip key={s} tone="text">{s}</Chip>
               ))}
-            </Chips>
+            </p>
           ) : null}
           {approach && !styles.length ? <p className="text-[16px] leading-[1.5] text-charcoal">{clip(approach, 220)}</p> : null}
         </Labelled>
       ) : null}
       {hobbies.length || outside ? (
-        <Labelled label="Outside the clinic">
+        <Labelled label={`${drShort(d)} outside the clinic`}>
           {hobbies.length ? (
             <Chips>
               {hobbies.map((h) => (
@@ -159,7 +159,7 @@ export function Profile({ doctor: d, labels, photo = null }: { doctor: DoctorRec
         </p>
       )}
       <Space h={28} />
-      <Labelled label="Sees">
+      <Labelled label="Conditions seen">
         <ConditionChips items={conditions} />
       </Labelled>
       <Space h={16} />
