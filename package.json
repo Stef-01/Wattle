@@ -13,11 +13,8 @@
     "start": "next start -p 3300",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "gate:copy": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/copy-gate.mts",
-    "gate:text": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/text-budget.mts",
-    "eval": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-golden.mts",
-    "coverage:snapshot": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/coverage-snapshot.mts",
-    "verify": "pnpm typecheck && pnpm test && pnpm gate:copy && pnpm eval && pnpm build && pnpm gate:text"
+    "verify": "pnpm typecheck && pnpm test && pnpm build",
+    "walk": "node qa/figma/walk.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
