@@ -1,0 +1,440 @@
+{
+  "category": "overlooked-chronic",
+  "researched_at": "2026-10-16",
+  "doctors": [
+    {
+      "name": "Dr Marek Ciarkowski",
+      "given": "Marek",
+      "family": "Ciarkowski",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "Vigour Medical",
+        "address": "5/18 Campus Crescent, Robina QLD 4226",
+        "suburb": "Robina",
+        "postcode": "4226",
+        "phone": "1800 343 191",
+        "website": "https://vigourmedical.com.au/"
+      },
+      "telehealth": "some",
+      "referral_required": false,
+      "fee_initial_dollars": 580,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": null,
+      "conditions": ["pots", "chronic-fatigue", "fibromyalgia", "hypermobility", "ibs"],
+      "populations": ["adult"],
+      "focus_tags": ["the unwell and undiagnosed", "complex care reviews", "second opinions", "MCAS", "POTS", "ME/CFS", "hEDS", "longer appointments"],
+      "personal": {
+        "philosophy_of_care": "Complex problems need time, so new appointments are long; the aim is to understand what is driving things, explain it clearly and build a step-by-step plan, without unnecessary tests or guesswork.",
+        "why_medicine": "His focus on chronic disease came from accompanying a close relative who was unwell but kept being told there was nothing wrong, which led him to learn the underpinnings of multiple health conditions.",
+        "communication_approach": "A fresh set of eyes and a careful rethink for people told everything looks normal; testing ideas, treating what is found and adjusting as more is learned.",
+        "communication": ["listens", "holistic", "long-appointments", "lived-experience", "collaborative"],
+        "lived_experience": "Family lived experience: a close relative struggled with their health while being told there was nothing wrong.",
+        "hobbies": ["Time with his wife and three dogs"],
+        "outside_medicine": "Grew up on the Gold Coast; outside work he is with his family of wife and three dogs.",
+        "quotes": [
+          {
+            "text": "Growing up on the sunny Gold Coast in Queensland, Dr Marek Ciarkowski spends his time working or with his family of wife and three dogs.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Riding shotgun with a close relative that was struggling with their health but being told that “there was nothing wrong” led me to learn organically the underpinnings of multiple health conditions, why they happen and how to help improve them.",
+            "about": "lived"
+          },
+          {
+            "text": "If you’ve been told “everything looks normal” but you still don’t feel right, you’re not alone.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://vigourmedical.com.au/",
+        "page_title": "Vigour Medical | Specialising in the unwell and undiagnosed",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "New patients via waitlist form only (site asks callers not to phone about new-patient enquiries). Fee shown is the extended 60-minute consultation; standard 30 min $290, comprehensive 90 min $850. Telehealth and Gold Coast home visits available. Same bio also at https://drmarek.com.au/."
+      },
+      "personal_richness": 4
+    },
+    {
+      "name": "Dr Peter Landsberg",
+      "given": "Peter",
+      "family": "Landsberg",
+      "specialty": "rheumatology",
+      "gender": "man",
+      "practice": {
+        "name": "ArthritisCARE",
+        "address": "24 Railway Terrace (corner Pound Street), Dutton Park QLD 4102",
+        "suburb": "Dutton Park",
+        "postcode": "4102",
+        "phone": "(07) 3255 1066",
+        "website": "https://arthritiscare.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": 25,
+      "conditions": ["fibromyalgia", "chronic-pain"],
+      "populations": ["adult"],
+      "focus_tags": ["general rheumatology", "inflammatory arthritis", "connective tissue disorders", "fibromyalgia as a pain disorder", "former rural GP"],
+      "personal": {
+        "philosophy_of_care": "A holistic approach to medicine that he traces to his 12 years as a GP before rheumatology; with fibromyalgia, the biggest role is to reassure people they do not have an autoimmune disease while confirming the pain is real.",
+        "why_medicine": null,
+        "communication_approach": "Plain-spoken explainer: in his own fibromyalgia article he describes the condition as a pain disorder tied to stress, sleep and trauma, warns against useless cortisone or immune drugs, and encourages gentle exercise, counselling and a good pain psychologist and GP.",
+        "communication": ["holistic", "direct", "evidence-based", "listens"],
+        "lived_experience": null,
+        "hobbies": ["Downhill mountain biking", "Fishing on Moreton Bay in his tinnie with family and the dog"],
+        "outside_medicine": "Weekends are spent on downhill mountain-bike tracks or out on Moreton Bay fishing with his family and the dog.",
+        "quotes": [
+          {
+            "text": "On weekends you’ll find him trying (not always successfully) to stay upright on his mountain bike as he rides downhill tracks. Or out on Moreton Bay in his well-used tinnie, fishing with his family and the dog.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Probably the biggest role we have as a rheumatologist is to reassure people that they don’t have an auto-immune disease. We also confirm that the patient is really in pain.",
+            "about": "approach"
+          },
+          {
+            "text": "He came to rheumatology relatively late in his career, qualifying in 2001, following on from a successful 12 year career as a General Practitioner in rural settings across Queensland and New South Wales.",
+            "about": "why"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://arthritiscare.com.au/doctor/dr-peter-landsberg/",
+        "page_title": "Dr Peter Landsberg - arthritisCARE",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "Approach quote from his own article on the same site: https://arthritiscare.com.au/managing-fibromyalgia/ (Managing Fibromyalgia, by Dr Peter Landsberg). Practice requires a current GP or specialist referral. Also consults at Greenslopes Private Hospital."
+      },
+      "personal_richness": 4
+    },
+    {
+      "name": "Dr Chris Homan",
+      "given": "Chris",
+      "family": "Homan",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "Dr Chris Homan - Musculoskeletal Medicine",
+        "address": "AMA Place, 32/88 L'Estrange Terrace, Kelvin Grove QLD 4059",
+        "suburb": "Kelvin Grove",
+        "postcode": "4059",
+        "phone": "(07) 3839 7600",
+        "website": "https://www.solvingproblempain.com/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": 19,
+      "conditions": ["chronic-pain"],
+      "populations": ["adult"],
+      "focus_tags": ["persistent body pain", "non-surgical solutions", "musculoskeletal medicine", "whole-of-body view", "pain education", "former rural GP"],
+      "personal": {
+        "philosophy_of_care": "Takes a truly comprehensive, whole-of-body view of a patient's health and aims for long-lasting non-surgical solutions to persistent pain, combining gentle physical treatments and injection therapies with investigation, pain education, judicious prescribing and referral.",
+        "why_medicine": "After 15 years as a rural doctor doing everything from obstetrics to surgery, he saw many patients with painful conditions who were not adequately treated by the traditional system; his own chronic musculoskeletal pain pushed him to study the field.",
+        "communication_approach": "Explains and educates about pain rather than defaulting to surgery; judicious with drugs.",
+        "communication": ["lived-experience", "holistic", "evidence-based", "listens"],
+        "lived_experience": "A personal experience with chronic musculoskeletal pain motivated him to start studying musculoskeletal medicine.",
+        "hobbies": [],
+        "outside_medicine": "Spent 15 years as a rural doctor providing all medical services to a small community; former President of the Rural Doctors Association of Queensland.",
+        "quotes": [
+          {
+            "text": "A personal experience with chronic musculoskeletal pain motivated him to start studying in the area.",
+            "about": "lived"
+          },
+          {
+            "text": "Over time, he became increasingly aware of the large number of patients with painful conditions who weren’t adequately treated by the traditional medical system.",
+            "about": "why"
+          },
+          {
+            "text": "Chris Homan is a medical pain doctor who strives to take a truly comprehensive view of his patients’ health, and offer a whole-of-body, long-lasting solution to their pain.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.solvingproblempain.com/about",
+        "page_title": "Learn More About Dr. Chris Homan | Dr. Chris Homan",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "FRACGP with a Postgraduate Diploma in Musculoskeletal Medicine (Otago); not a FFPMANZCA pain specialist. About page text says clinic is in Spring Hill while the site footer lists Kelvin Grove; confirm location."
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Professor Graeme Jones",
+      "given": "Graeme",
+      "family": "Jones",
+      "specialty": "rheumatology",
+      "gender": "man",
+      "practice": {
+        "name": "Professor Graeme Jones Rheumatology, Noosa Hospital",
+        "address": "Suite 4, 111 Goodchap Street, Noosaville QLD 4566",
+        "suburb": "Noosaville",
+        "postcode": "4566",
+        "phone": "0476 419 638",
+        "website": "https://www.ramsayhealth.com.au/en/specialists-and-practitioners/professor-graeme-jones/"
+      },
+      "telehealth": "some",
+      "referral_required": true,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": 30,
+      "conditions": ["chronic-pain"],
+      "populations": ["adult", "older-adult"],
+      "focus_tags": ["personalised medicine", "patient advocacy", "telehealth", "inflammatory arthritis", "osteoporosis", "autoimmune conditions"],
+      "personal": {
+        "philosophy_of_care": "Interested in personalised medicine, patient care (including telehealth) and advocacy, having served as Medical Director of Arthritis Australia for over 10 years.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": ["research-active", "evidence-based"],
+        "lived_experience": null,
+        "hobbies": ["Bushwalking", "Water sport and adventure activities with his wife", "Golf", "Cycling", "Learning Italian", "Cooking"],
+        "outside_medicine": "Relocated his practice from Tasmania to Noosa for the lifestyle and warmth; loves time with family and keeps working on his Italian language and culinary skills.",
+        "quotes": [
+          {
+            "text": "In his spare time, Graeme loves bushwalking, water sport and adventure activities with his wife as well as golf and cycling. He loves spending time with the family and continues to work on his Italian language and culinary skills.",
+            "about": "hobbies"
+          },
+          {
+            "text": "He is looking forward to the lifestyle opportunities and warmth that the Sunny Coast offers.",
+            "about": "hobbies"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.ramsayhealth.com.au/en/specialists-and-practitioners/professor-graeme-jones/",
+        "page_title": "Professor Graeme Jones | Ramsay Health Care",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from the hospital's 'our specialists' page; short quotations attributed; no images copied",
+        "notes": "Listed interests are inflammatory arthritis and osteoporosis; chronic widespread pain/fibromyalgia is not named on the page, so condition fit for this category is weak. Referrals via MedicalObjects. Sunshine Coast, outside Brisbane 25 km radius."
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr David Jaa-Kwee",
+      "given": "David",
+      "family": "Jaa-Kwee",
+      "specialty": "general-practice",
+      "gender": "man",
+      "practice": {
+        "name": "IMH Gold Coast - Integrative Medical Health",
+        "address": "Suite 6, Riverwalk One, 140 Robina Town Centre Drive, Robina QLD 4226",
+        "suburb": "Robina",
+        "postcode": "4226",
+        "phone": "07 5562 5333",
+        "website": "https://imhgoldcoast.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": 37,
+      "conditions": ["chronic-pain", "chronic-fatigue"],
+      "populations": ["adult"],
+      "focus_tags": ["integrative medicine", "musculoskeletal therapy and acupuncture for chronic pain", "nutritional and functional medicine", "lifestyle management", "Bio Balance mental health therapy"],
+      "personal": {
+        "philosophy_of_care": "Integrative GP who combines nutritional and environmental medicine with musculoskeletal medicine and acupuncture for chronic pain, plus lifestyle management.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": ["holistic"],
+        "lived_experience": null,
+        "hobbies": ["Gardening", "Dog training", "Snow skiing", "Time with family"],
+        "outside_medicine": "Born and raised in Queensland, mostly on the Gold Coast, where he has practised since 1989; married with three children.",
+        "quotes": [
+          {
+            "text": "Dr David Jaa-Kwee was born and raised in Queensland primarily on the Gold Coast. He has been in practice on the Gold Coast since 1989. He is married and has three children.",
+            "about": "hobbies"
+          },
+          {
+            "text": "In his spare time, Dr David Jaa enjoys gardening, dog training, spending time with his family and snow skiing.",
+            "about": "hobbies"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://imhgoldcoast.com.au/doctors-profiles/dr-david-jaa/",
+        "page_title": "Dr David Jaa - IMH Gold Coast - Integrative Medical Health",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "Page lists him as Dr David Jaa; full name on the page is Dr David Jaa-Kwee. Chronic Fatigue Syndrome is listed among the therapies he offers on this page. Practice offers IV nutrient therapy and other integrative modalities; each doctor has their own fee schedule."
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Dominique Wells",
+      "given": "Dominique",
+      "family": "Wells",
+      "specialty": "general-practice",
+      "gender": "woman",
+      "practice": {
+        "name": "IMH Gold Coast - Integrative Medical Health",
+        "address": "Suite 6, Riverwalk One, 140 Robina Town Centre Drive, Robina QLD 4226",
+        "suburb": "Robina",
+        "postcode": "4226",
+        "phone": "07 5562 5333",
+        "website": "https://imhgoldcoast.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": 22,
+      "conditions": ["chronic-fatigue", "ibs", "depression"],
+      "populations": ["adult"],
+      "focus_tags": ["fatigue", "adrenal fatigue", "MCAS treatments", "gut health", "food intolerance", "inflammation", "thyroid and hormonal imbalance", "mindfulness"],
+      "personal": {
+        "philosophy_of_care": "Aims to alleviate symptoms and address disease at its source; when the body is out of balance the most important question is what has happened and why the body is not healing.",
+        "why_medicine": "Two years after her GP fellowship she felt ill-equipped to meet most of her patients' needs, seeing people with real symptoms before drug therapy was appropriate, so she trained in nutritional and environmental medicine.",
+        "communication_approach": "Looks for the cause rather than treating symptoms alone; believes physical balance frees people to access their 'Higher Mind'.",
+        "communication": ["holistic", "listens"],
+        "lived_experience": null,
+        "hobbies": ["Mindfulness", "Reading Eckhart Tolle; has attended three of his retreats internationally"],
+        "outside_medicine": "Interested in mindfulness and the writing of Eckhart Tolle; has presented integrative-health seminars at Camp Eden in the Currumbin Valley.",
+        "quotes": [
+          {
+            "text": "By 2006 she realised that she felt ill-equipped to effectively meet the majority of her patients' needs.",
+            "about": "why"
+          },
+          {
+            "text": "When the body is out of balance, she believes that the most important question one can ask is; “What has happened? Why is the body not healing?”",
+            "about": "approach"
+          },
+          {
+            "text": "Dominique is also very interested in mindfulness and the writing of Eckhart Tolle, and has attended three of his retreats internationally.",
+            "about": "hobbies"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://imhgoldcoast.com.au/doctors-profiles/dr-dominique-wells/",
+        "page_title": "Dr Dominique Wells - IMH Gold Coast - Integrative Medical Health",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "Integrative/functional medicine GP (ACNEM trained); page lists Chronic Fatigue Syndrome and MCAS treatments among her services and provides MCAS questionnaires for new patients."
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Ping Jaa",
+      "given": "Ping",
+      "family": "Jaa",
+      "specialty": "general-practice",
+      "gender": "woman",
+      "practice": {
+        "name": "IMH Gold Coast - Integrative Medical Health",
+        "address": "Suite 6, Riverwalk One, 140 Robina Town Centre Drive, Robina QLD 4226",
+        "suburb": "Robina",
+        "postcode": "4226",
+        "phone": "07 5562 5333",
+        "website": "https://imhgoldcoast.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": false,
+      "fee_initial_dollars": null,
+      "taking_new_patients": true,
+      "languages": ["English"],
+      "years_in_specialty": 37,
+      "conditions": ["chronic-fatigue", "depression", "menopause", "perinatal-mh"],
+      "populations": ["adult", "perinatal"],
+      "focus_tags": ["whole-person integrative medicine", "adrenal fatigue", "natural hormonal therapy", "antenatal and postnatal care", "hypnosis", "acupuncture", "gut and food intolerance"],
+      "personal": {
+        "philosophy_of_care": "Aims medical care at the whole person, addressing the cause and optimising the function of mind and body to maintain good health and prevent illness.",
+        "why_medicine": null,
+        "communication_approach": null,
+        "communication": ["holistic"],
+        "lived_experience": null,
+        "hobbies": ["Farm lifestyle with horses and lots of animals"],
+        "outside_medicine": "Born in Brisbane and raised on the Gold Coast from age two; mother of four; joined her father's Burleigh Heads practice in 1988 and enjoys the balance of work, family and farm life.",
+        "quotes": [
+          {
+            "text": "Dr Ping was born in Brisbane and raised on the Gold Coast from the age of two. She is a mother of 4 children. She enjoys the balance of work and family, farm lifestyle with horses and lots of animals.",
+            "about": "hobbies"
+          },
+          {
+            "text": "Her practice principal is to aim medical care at the whole person addressing the cause, optimising the function of mind and body to maintain good health and prevent illness.",
+            "about": "approach"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://imhgoldcoast.com.au/doctors-profiles/dr-ping-jaa/",
+        "page_title": "Dr Ping Jaa - IMH Gold Coast - Integrative Medical Health",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "Primary interest is women's medicine and natural hormonal therapy; chronic-fatigue fit rests on her listed 'adrenal fatigue' interest and the Chronic Fatigue Syndrome therapy listed on her page. Weaker category fit than the other IMH doctors."
+      },
+      "personal_richness": 3
+    },
+    {
+      "name": "Dr Rob Park",
+      "given": "Rob",
+      "family": "Park",
+      "specialty": "pain-medicine",
+      "gender": "man",
+      "practice": {
+        "name": "Resolve Pain",
+        "address": "Suite 3, Floor 2, 1 Courage Street, Sippy Downs QLD 4556",
+        "suburb": "Sippy Downs",
+        "postcode": "4556",
+        "phone": "(07) 5476 9222",
+        "website": "https://www.resolvepain.com.au/"
+      },
+      "telehealth": null,
+      "referral_required": null,
+      "fee_initial_dollars": null,
+      "taking_new_patients": null,
+      "languages": ["English"],
+      "years_in_specialty": 2,
+      "conditions": ["chronic-pain", "fibromyalgia"],
+      "populations": ["adult"],
+      "focus_tags": ["complex pain with a fresh perspective", "plain-language explanations", "widespread pain and fibromyalgia", "former GP", "medical education"],
+      "personal": {
+        "philosophy_of_care": "Values exploring complex pain conditions with a fresh perspective and explaining medical conditions in language that people can understand.",
+        "why_medicine": null,
+        "communication_approach": "Explains conditions in plain language; a long-time GP educator and examiner who writes for Australian Doctor and co-authored a medical textbook.",
+        "communication": ["direct", "listens", "research-active"],
+        "lived_experience": null,
+        "hobbies": ["Writing (freelance for Australian Doctor, textbook co-author)", "Convening the Sunshine Coast MSK and pain conference"],
+        "outside_medicine": "Grew up in Cairns; was a well-known Buderim GP for almost ten years before retraining as a pain specialist.",
+        "quotes": [
+          {
+            "text": "Dr Rob Park is a pain specialist who values exploring complex pain conditions with a fresh perspective and explaining medical conditions in language that people can understand.",
+            "about": "approach"
+          },
+          {
+            "text": "Dr Park grew up in Cairns and studied at the University of Queensland before completing training at Nambour Hospital.",
+            "about": "hobbies"
+          }
+        ]
+      },
+      "source": {
+        "url": "https://www.resolvepain.com.au/team",
+        "page_title": "Resolve Pain Team",
+        "observed_at": "2026-10-16",
+        "legal_basis": "facts and the doctor's own published words from their practice website; short quotations attributed; no images copied",
+        "notes": "Fellow of the Faculty of Pain Medicine and FRACGP. Practice homepage lists 'Widespread pain and fibromyalgia' among conditions. Sunshine Coast, outside Brisbane 25 km radius. Personal content is thinner than the other entries (no hobbies/family), included for pain-medicine coverage."
+      },
+      "personal_richness": 2
+    }
+  ],
+  "reviewed_and_excluded": [
+    {"name": "Dr Jason Lam (The Dance Dr)", "reason": "Rich lived-experience bio (hypermobility, POTS, ME/CFS) but practises in Victoria; complex-illness bookings closed."},
+    {"name": "Dr Megan Thomas (EDS & Co)", "reason": "Lived experience of EDS but based in NSW (Wollongong)."},
+    {"name": "Dr Hanish Bagga (Brisbane Rheumatology)", "reason": "Page states he is no longer accepting new patients."},
+    {"name": "Dr Paul Payton (IMH Gold Coast)", "reason": "Page states he is on extended leave and not taking new patients."},
+    {"name": "Dr Sandeep Gupta (Lotus Holistic Medicine, Maroochydore)", "reason": "Site states bookings closed to new patients."},
+    {"name": "iHealth Long COVID Clinic, Indooroopilly", "reason": "Clinic has paused intake; individual GP bios (Dart, Campbell, Kerr) carry no personal content."},
+    {"name": "Dr Brendan Hanrahan (Auchenflower, POTS)", "reason": "General Physician, not in the allowed specialty list."},
+    {"name": "Dr Jin (Robin) Kang, Dr Clare Costello, Dr Drew Yates, Dr Madhu Lakshmaiah", "reason": "Queensland and in scope but personal_richness 2 (one line of hobbies); Axxon, Brisbane Pain Medicine, Managing Pain, Interventus, Brisbane Pain Specialists, Specialists in Pain, SVPH/Mater pain bios reviewed and found generic."}
+  ]
+}
