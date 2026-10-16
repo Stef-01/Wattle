@@ -6,3 +6,4 @@ __pycache__/
 tsconfig.tsbuildinfo
 next-env.d.ts
 *.tmp
+data/load/

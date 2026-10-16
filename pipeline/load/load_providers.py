@@ -88,12 +88,17 @@ def qarr(items) -> str:
     return "array[" + ",".join(q(i) for i in items) + "]::text[]"
 
 
-def qjson(v) -> str:
-    return q(json.dumps(v, ensure_ascii=False, separators=(",", ":"))) + "::jsonb"
+def qjson(v, typed: bool = True) -> str:
+    return cast(q(json.dumps(v, ensure_ascii=False, separators=(",", ":"))), "jsonb", typed)
 
 
-def quuid(u: uuid.UUID) -> str:
-    return f"'{u}'::uuid"
+def quuid(u: uuid.UUID, typed: bool = True) -> str:
+    return f"'{u}'::uuid" if typed else f"'{u}'"
+
+
+def cast(lit: str, typ: str, typed: bool) -> str:
+    """VALUES lists resolve column types from the first row, so later rows carry no casts (smaller batches)."""
+    return f"{lit}::{typ}" if typed else lit
 
 
 def u5(*parts: str) -> uuid.UUID:
@@ -248,8 +253,8 @@ def sql_sources(rows: list[dict]) -> str:
 
 def sql_practitioners(rows: list[dict]) -> str:
     vals = ",\n".join(
-        f"({quuid(r['id'])},{q(r['source_key'])},{q(r['given'])},{q(r['family'])},{q(r['display'])},'medical',{qarr([r['specialty']])})"
-        for r in rows
+        f"({quuid(r['id'], i == 0)},{q(r['source_key'])},{q(r['given'])},{q(r['family'])},{q(r['display'])},'medical',{qarr([r['specialty']])})"
+        for i, r in enumerate(rows)
     )
     return (
         "insert into practitioners (id, source_key, given_name, family_name, display_name, profession, specialties) values\n" + vals +
@@ -261,11 +266,11 @@ def sql_practitioners(rows: list[dict]) -> str:
 def sql_locations(rows: list[dict]) -> str:
     def geo(r):
         if r["lat"] is None or r["lng"] is None:
-            return "null"
+            return "null::geography"
         return f"st_setsrid(st_makepoint({float(r['lng'])!r},{float(r['lat'])!r}),4326)::geography"
     vals = ",\n".join(
-        f"({quuid(r['id'])},{q(r['name'])},{q(r['address'])},{q(r['suburb'])},{q(r['state'])},{q(r['postcode'])},{geo(r)})"
-        for r in rows
+        f"({quuid(r['id'], i == 0)},{q(r['name'])},{q(r['address'])},{q(r['suburb'])},{q(r['state'])},{q(r['postcode'])},{geo(r)})"
+        for i, r in enumerate(rows)
     )
     return (
         "insert into locations (id, name, address_line, suburb, state, postcode, geo) values\n" + vals +
@@ -276,8 +281,9 @@ def sql_locations(rows: list[dict]) -> str:
 
 def sql_roles(rows: list[dict]) -> str:
     vals = ",\n".join(
-        f"({quuid(r['id'])},{quuid(r['practitioner_id'])},{quuid(r['location_id'])},{q(r['primary'])},{qjson(r['booking']) if r['booking'] else 'null'})"
-        for r in rows
+        f"({quuid(r['id'], i == 0)},{quuid(r['practitioner_id'], i == 0)},{quuid(r['location_id'], i == 0)},{q(r['primary'])},"
+        f"{qjson(r['booking'], i == 0) if r['booking'] else cast('null', 'jsonb', i == 0)})"
+        for i, r in enumerate(rows)
     )
     return (
         "insert into practitioner_roles (id, practitioner_id, location_id, \"primary\", booking) values\n" + vals +
@@ -288,9 +294,9 @@ def sql_roles(rows: list[dict]) -> str:
 
 def sql_observations(rows: list[dict]) -> str:
     vals = ",\n".join(
-        f"({q(r['entity_type'])},{quuid(r['entity_id'])},{q(r['field'])},{qjson(r['value'])},'found',{q(r['source_id'])},"
-        f"{q(r['source_url'])},{q(r['observed_at'])}::timestamptz,{q(r['expires_at'])}::timestamptz)"
-        for r in rows
+        f"({q(r['entity_type'])},{quuid(r['entity_id'], i == 0)},{q(r['field'])},{qjson(r['value'], i == 0)},'found',{q(r['source_id'])},"
+        f"{q(r['source_url'])},{cast(q(r['observed_at']), 'timestamptz', i == 0)},{cast(q(r['expires_at']), 'timestamptz', i == 0)})"
+        for i, r in enumerate(rows)
     )
     return (
         "insert into observations (entity_type, entity_id, field, value, tier, source_id, source_url, observed_at, expires_at)\n"
@@ -302,8 +308,8 @@ def sql_observations(rows: list[dict]) -> str:
 
 def sql_focus(rows: list[dict]) -> str:
     vals = ",\n".join(
-        f"({quuid(r['practitioner_id'])},{q(r['slug'])},{q(r['source_id'])},{q(r['source_url'])},{q(r['observed_at'])}::timestamptz)"
-        for r in rows
+        f"({quuid(r['practitioner_id'], i == 0)},{q(r['slug'])},{q(r['source_id'])},{q(r['source_url'])},{cast(q(r['observed_at']), 'timestamptz', i == 0)})"
+        for i, r in enumerate(rows)
     )
     return (
         "insert into provider_clinical_focus (practitioner_id, condition_id, strength, tier, source_id, source_url, observed_at)\n"
