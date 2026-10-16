@@ -1,0 +1,117 @@
+[
+  {
+    "name": "P01-splash",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\01-P01-splash.png",
+    "url": "http://localhost:3300/splash"
+  },
+  {
+    "name": "P02-home",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\02-P02-home.png",
+    "url": "http://localhost:3300/"
+  },
+  {
+    "name": "P02-home-filled",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\03-P02-home-filled.png",
+    "url": "http://localhost:3300/"
+  },
+  {
+    "name": "P03-heard",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\04-P03-heard.png",
+    "url": "http://localhost:3300/heard"
+  },
+  {
+    "name": "P04-match-1",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\05-P04-match-1.png",
+    "url": "http://localhost:3300/match/1"
+  },
+  {
+    "name": "P04-match-2",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\06-P04-match-2.png",
+    "url": "http://localhost:3300/match/2"
+  },
+  {
+    "name": "P05-results",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\07-P05-results.png",
+    "url": "http://localhost:3300/results"
+  },
+  {
+    "name": "P06-profile",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\08-P06-profile.png",
+    "url": "http://localhost:3300/doctor/obstetrics-gynaecology%3Amatthew-mcknoulty"
+  },
+  {
+    "name": "P07-expertise",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\09-P07-expertise.png",
+    "url": "http://localhost:3300/doctor/obstetrics-gynaecology%3Amatthew-mcknoulty/expertise"
+  },
+  {
+    "name": "P09-why",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\10-P09-why.png",
+    "url": "http://localhost:3300/doctor/obstetrics-gynaecology%3Amatthew-mcknoulty/why"
+  },
+  {
+    "name": "P08-adjust",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\11-P08-adjust.png",
+    "url": "http://localhost:3300/adjust"
+  },
+  {
+    "name": "P10-nomatch",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\12-P10-nomatch.png",
+    "url": "http://localhost:3300/results/none"
+  },
+  {
+    "name": "tab-saved",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\13-tab-saved.png",
+    "url": "http://localhost:3300/saved"
+  },
+  {
+    "name": "tab-recent",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\14-tab-recent.png",
+    "url": "http://localhost:3300/recent"
+  },
+  {
+    "name": "tab-me",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\15-tab-me.png",
+    "url": "http://localhost:3300/me"
+  },
+  {
+    "name": "C01-join",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\16-C01-join.png",
+    "url": "http://localhost:3300/join"
+  },
+  {
+    "name": "C02-verify",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\17-C02-verify.png",
+    "url": "http://localhost:3300/join/verify"
+  },
+  {
+    "name": "C03-practice",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\18-C03-practice.png",
+    "url": "http://localhost:3300/join/practice"
+  },
+  {
+    "name": "C04-interview",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\19-C04-interview.png",
+    "url": "http://localhost:3300/join/interview"
+  },
+  {
+    "name": "C05-question",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\20-C05-question.png",
+    "url": "http://localhost:3300/join/interview/3"
+  },
+  {
+    "name": "C06-draft",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\21-C06-draft.png",
+    "url": "http://localhost:3300/join/draft/3"
+  },
+  {
+    "name": "C07-share",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\22-C07-share.png",
+    "url": "http://localhost:3300/join/share"
+  },
+  {
+    "name": "C08-review",
+    "file": "C:\\Users\\stefa\\wattle-health\\qa\\figma\\walk\\23-C08-review.png",
+    "url": "http://localhost:3300/join/review"
+  }
+]
