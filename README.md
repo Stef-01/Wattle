@@ -4,6 +4,10 @@ A patient-first map of the Australian healthcare system. Sibling venture of ADHD
 
 **Status (2026-10-16):** Queensland MVP running on real data. 4,736 doctors nationally (psychiatry, obstetrics-gynaecology, paediatrics) from 12 public sources; 876 in Queensland; 195 Queensland doctors linked to 1,077 verified publications. Patient journey and clinician onboarding implemented to the Figma design (file `NEbiukDE3TyWFptwaCBhwV`), 19 screens, two-layer matching ported from ADHD.ME (600 tests). Supabase project `wattle-health` (ap-southeast-2) holds the same data behind `published_*` views.
 
+## Live demo
+
+Preview deployment (Vercel, built from branch `wattle-health-demo` of `Stef-01/Wattle`, the Vercel-linked company repo): https://wattle-git-wattle-health-demo-stefan01-7725s-projects.vercel.app — the company project has Vercel Authentication on previews, so open it while logged into Vercel, or use a share link generated from the Vercel dashboard. To get a public production URL: create a `wattle-health` Vercel project linked to this repo (the MCP token cannot; `npx vercel login` then `vercel link`), add the env from `.env.production`, and `SUPABASE_SERVICE_ROLE_KEY` for clinician writes.
+
 ## Run
 
 ```

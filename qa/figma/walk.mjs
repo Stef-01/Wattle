@@ -13,6 +13,7 @@ const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
 const page = await ctx.newPage();
 const shots = [];
+if (process.env.SHARE) { await page.goto(process.env.SHARE); await page.waitForTimeout(1500); }
 async function shot(name) {
   await page.waitForTimeout(400);
   const file = path.join(OUT, `${String(shots.length + 1).padStart(2, "0")}-${name}.png`);
